@@ -1,0 +1,24 @@
+.text-link-container {
+    display: inline;
+}
+
+.text-link {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.text-link.light-mode {
+    color: #3366ff;
+}
+
+.text-link.light-mode:hover {
+    color: rgb(0, 0, 207);
+}
+
+.text-link.dark-mode {
+    color: #4493f8;
+}
+
+.text-link.dark-mode:hover {
+    color: #2177e8; 
+}
