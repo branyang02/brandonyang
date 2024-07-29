@@ -1,47 +1,73 @@
-import { Routes, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import { useDarkMode } from './context/DarkModeContext';
-import { Pane, majorScale } from 'evergreen-ui';
-import './styles/App.css';
+import { Route, Routes } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
+import NotieLayout from './layouts/NotieLayout';
 import Projects from './pages/Projects';
 import Home from './pages/Home';
-import Blog from './pages/Blog';
-import Notes from './pages/Notes';
 import Coursework from './pages/Coursework';
+import NoteBlogCards from './pages/NoteBlogCards';
+import NotesBlogs from './pages/NoteBlogs';
 
 const App = () => {
-    const { darkMode } = useDarkMode();
-
     return (
-        <Pane
-            background={darkMode ? '#333' : 'tint2'}
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-            }}
-        >
-            <NavBar />
-            <Pane display="flex" alignItems="center" justifyContent="center">
-                <Pane
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    width="100%"
-                    maxWidth={majorScale(150)}
-                    padding={majorScale(3)}
-                    // background="grey"
-                >
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/projects" element={<Projects />} />
-                        <Route path="/blog" element={<Blog />} />
-                        <Route path="/notes" element={<Notes />} />
-                        <Route path="/coursework" element={<Coursework />} />
-                    </Routes>
-                </Pane>
-            </Pane>
-        </Pane>
+        <Routes>
+            <Route
+                path="/"
+                element={
+                    <MainLayout>
+                        <Home />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/projects"
+                element={
+                    <MainLayout>
+                        <Projects />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/coursework"
+                element={
+                    <MainLayout>
+                        <Coursework />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/blog"
+                element={
+                    <NotieLayout>
+                        <NoteBlogCards type="blogs" />
+                    </NotieLayout>
+                }
+            />
+            <Route
+                path="/notes"
+                element={
+                    <NotieLayout>
+                        <NoteBlogCards type="notes" />
+                    </NotieLayout>
+                }
+            />
+
+            <Route
+                path="/notes/:noteId"
+                element={
+                    <NotieLayout>
+                        <NotesBlogs type="notes" />
+                    </NotieLayout>
+                }
+            />
+            <Route
+                path="/blogs/:blogId"
+                element={
+                    <NotieLayout>
+                        <NotesBlogs type="blogs" />
+                    </NotieLayout>
+                }
+            />
+        </Routes>
     );
 };
 

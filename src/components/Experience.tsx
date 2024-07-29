@@ -12,11 +12,19 @@ import MarkdownParagraph from './MarkdownParagraph';
 const Experience = () => {
     const experience = [
         {
+            date: `May 2024 - Present`,
+            title: 'Research with [Jia-Bin Huang](https://jbhuang0604.github.io/)',
+        },
+        {
             date: 'Jan 2024 - May 2024',
             title: 'TA for Theory of Computation',
         },
         {
-            date: 'May 2020 - Current',
+            date: 'Oct 2023 - Present',
+            title: 'Co-founder at Voy',
+        },
+        {
+            date: 'May 2020 - Present',
             title: "Research Assistant at UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/)",
         },
         {

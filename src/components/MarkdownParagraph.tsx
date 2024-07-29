@@ -54,11 +54,18 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
         return parts;
     };
 
-    return (
-        <Paragraph color={darkMode ? 'tint2' : 'default'} size={TEXT_SIZE}>
-            {parseText(text)}
+    const paragraphs = text.split(/\n\s*\n/).map((paragraph, index) => (
+        <Paragraph
+            key={index}
+            color={darkMode ? 'tint2' : 'default'}
+            size={TEXT_SIZE}
+            marginBottom={index < text.split(/\n\s*\n/).length - 1 ? 16 : 0}
+        >
+            {parseText(paragraph)}
         </Paragraph>
-    );
+    ));
+
+    return <>{paragraphs}</>;
 };
 
 export default MarkdownParagraph;
