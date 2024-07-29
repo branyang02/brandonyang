@@ -3,9 +3,9 @@ import MainLayout from './layouts/MainLayout';
 import NotieLayout from './layouts/NotieLayout';
 import Projects from './pages/Projects';
 import Home from './pages/Home';
-import Coursework from './pages/Coursework';
 import NoteBlogCards from './pages/NoteBlogCards';
 import NotesBlogs from './pages/NoteBlogs';
+import Courses from './pages/Courses';
 
 const App = () => {
     return (
@@ -30,7 +30,7 @@ const App = () => {
                 path="/coursework"
                 element={
                     <MainLayout>
-                        <Coursework />
+                        <Courses />
                     </MainLayout>
                 }
             />

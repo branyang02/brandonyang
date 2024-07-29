@@ -1,5 +1,4 @@
 import { Text, Avatar, Heading, Pane } from 'evergreen-ui';
-import avatarImage from '../assets/Brandon_Yang.jpg';
 import Contact from '../components/Contact';
 import { useDarkMode } from '../context/DarkModeContext';
 
@@ -8,7 +7,11 @@ const Profile = () => {
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
-            <Avatar src={avatarImage} name="Brandon (Yifan) Yang" size={300} />
+            <Avatar
+                src={'/Brandon_Yang.jpg'}
+                name="Brandon (Yifan) Yang"
+                size={300}
+            />
             <Heading
                 size={900}
                 marginTop={10}

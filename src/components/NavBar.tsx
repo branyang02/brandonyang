@@ -9,11 +9,13 @@ import {
 import { useDarkMode } from '../context/DarkModeContext';
 import { useEffect, useState } from 'react';
 import { NavButton, NavMobileMenu } from './NavButton';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
     const { darkMode, toggleDarkMode } = useDarkMode();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
     const [checked, setChecked] = useState(darkMode);
+    const navigate = useNavigate();
 
     const NAME = 'Brandon (Yifan) Yang';
     const TABS = [
@@ -58,7 +60,12 @@ const NavBar = () => {
                 maxWidth={majorScale(150)}
                 padding={majorScale(3)}
             >
-                <Heading size={800} color={darkMode ? 'white' : 'default'}>
+                <Heading
+                    size={800}
+                    color={darkMode ? 'white' : 'default'}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => navigate('/')}
+                >
                     {NAME}
                 </Heading>
                 <Pane display="flex" alignItems="center">

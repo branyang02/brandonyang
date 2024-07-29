@@ -1,0 +1,17 @@
+.project-page a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+    color: #3366ff;
+}
+
+.project-page a:hover {
+    color: rgb(0, 0, 207);
+}
+
+body.dark-mode .project-page a {
+    color: #4493f8;
+}
+
+body.dark-mode .project-page a:hover {
+    color: #2177e8;
+}

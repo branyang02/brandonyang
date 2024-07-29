@@ -177,7 +177,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
                         marginBottom={16}
                     >
                         <Card
-                            background="tint1"
+                            background="gray50"
                             padding={16}
                             elevation={1}
                             borderRadius={8}
