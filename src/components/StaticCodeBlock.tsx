@@ -1,5 +1,7 @@
 import { Pane } from 'evergreen-ui';
-import { atomOneLight, CodeBlock, CopyBlock } from 'react-code-blocks';
+import { atomOneLight, CodeBlock, CopyBlock, nord } from 'react-code-blocks';
+
+import { useDarkMode } from '../context/DarkModeContext';
 
 const StaticCodeBlock = ({
     code,
@@ -8,6 +10,8 @@ const StaticCodeBlock = ({
     code: string;
     language: string;
 }) => {
+    const { darkMode } = useDarkMode();
+
     return (
         <Pane>
             <Pane
@@ -29,7 +33,7 @@ const StaticCodeBlock = ({
                         text={code}
                         language={language}
                         showLineNumbers={false}
-                        theme={atomOneLight}
+                        theme={darkMode ? nord : atomOneLight}
                         startingLineNumber={0}
                         customStyle={{ borderRadius: '0 0 10px 10px' }}
                     />
@@ -38,7 +42,7 @@ const StaticCodeBlock = ({
                         text={code}
                         language={language}
                         showLineNumbers={false}
-                        theme={atomOneLight}
+                        theme={darkMode ? nord : atomOneLight}
                         startingLineNumber={0}
                         customStyle={{ borderRadius: '0 0 10px 10px' }}
                     />
