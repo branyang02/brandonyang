@@ -2,22 +2,24 @@ import { Heading, Pane, majorScale } from 'evergreen-ui';
 import MarkdownParagraph from '../components/MarkdownParagraph';
 import Profile from '../components/Profile';
 import { useDarkMode } from '../context/DarkModeContext';
-import '../styles/Home.css'; // Import the CSS file
+import '../styles/Home.css';
 import Experience from '../components/Experience';
 
 const Home = () => {
     const { darkMode } = useDarkMode();
     const paragraphText = `
         I am a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/).
-        I am interested in Machine Learning (ML), Reinforcement Learning (RL), Computer Vision, Robotics, and Software Development.
-        I am currently working as a research assistant with [Professor Iqbal](https://engineering.virginia.edu/faculty/tariq-iqbal)
-        at the [Collaborative Robotics Lab](https://www.collabrobotics.com/) at UVA. I am particularly interested in applying ML and RL to
-        robotics applications, as well as building software applications using AI components such as LLM. I am also interested in the
-        intersection between ML and Computer Vision, and I am currently working on a project that uses LLM and Diffusion Models to
-        generate goal images for Imitation and Reinforcement Learning.
+        I am interested in the intersection of Machine Learning (ML), Computer Vision, and Robotics. My current research focuses on
+        improving robotic reasoning and manipulation using Language and Vision models in both 2D and 3D space. 
+        I have worked with [Tariq Iqbal](https://engineering.virginia.edu/faculty/tariq-iqbal) at the [Collaborative Robotics Lab](https://www.collabrobotics.com/), and 
+        I will be advised by [Yen-Ling Kuo](https://engineering.virginia.edu/faculty/yen-ling-kuo) for my undergraduate thesis. 
+        I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park. 
+        I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
     `;
 
     const newsParagraphText = `
+    05/2024: Started working with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park!
+
     03/2024: Accepted to UVA's Master of Science in Computer Science program!
 
     01/2024: Started working as a TA for CS 3120: Theory of Computation at UVA!
@@ -41,8 +43,6 @@ const Home = () => {
     01/2023: Started working as a Lab Lead TA for CS 2130: Computer Systems & Organizations at UVA!
 
     11/2022: Demoed robot grasping system using Fetch Robot and AprilTag at UVA Engineering Open House.
-
-    09/2022: Developed object localization tool for Panda Robot using AprilTag, ROS, and OpenCV.
 
     07/2022: Invited to work with high schooler as part of UVA Advance program. Developed room mapping navigation system with Double Robot using Python and ROS.
 

@@ -12,12 +12,16 @@ import MarkdownParagraph from './MarkdownParagraph';
 const Experience = () => {
     const experience = [
         {
+            date: `Aug 2024 - Present`,
+            title: '[Machine Learning](https://www.cs.virginia.edu/~nn4pj/teaching) (CS 4774) Teaching Assistant',
+        },
+        {
             date: `May 2024 - Present`,
-            title: 'Research with [Jia-Bin Huang](https://jbhuang0604.github.io/)',
+            title: 'Research Assistant at [UMD](https://www.cs.umd.edu/) with [Jia-Bin Huang](https://jbhuang0604.github.io/)',
         },
         {
             date: 'Jan 2024 - May 2024',
-            title: 'TA for Theory of Computation',
+            title: '[Theory of Computation](https://markfloryan.github.io/dmt2/readme.html) (CS 3120) Teaching Assistant',
         },
         {
             date: 'Oct 2023 - Present',
@@ -33,7 +37,7 @@ const Experience = () => {
         },
         {
             date: 'Jan 2023 - May 2023',
-            title: 'Lab Lead TA for [Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/)',
+            title: '[Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/) Lab Lead TA',
         },
     ];
 

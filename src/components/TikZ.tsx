@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 
 function tidyTikzSource(tikzSource: string) {
     // Remove non-breaking space characters, otherwise we get errors
-    const remove = '&nbsp;';
-    tikzSource = tikzSource.replaceAll(remove, '');
+    const remove = /&nbsp;/g;
+    tikzSource = tikzSource.replace(remove, '');
 
     let lines = tikzSource.split('\n');
 
