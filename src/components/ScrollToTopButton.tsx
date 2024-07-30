@@ -31,28 +31,26 @@ const ScrollToTopButton = () => {
         };
     }, [lastScrollTop]);
 
-    return (
-        isVisible && (
-            <Pane
-                zIndex={1000}
-                position="fixed"
-                top="10px"
-                width="100%"
-                display="flex"
-                justifyContent="center"
-                maxWidth="1000px"
+    return isVisible ? (
+        <Pane
+            zIndex={1000}
+            position="fixed"
+            top="10px"
+            width="100%"
+            display="flex"
+            justifyContent="center"
+            maxWidth="1000px"
+        >
+            <Button
+                appearance="default"
+                intent="none"
+                onClick={scrollToTop}
+                iconBefore={ArrowUpIcon}
             >
-                <Button
-                    appearance="default"
-                    intent="none"
-                    onClick={scrollToTop}
-                    iconBefore={ArrowUpIcon}
-                >
-                    Scroll to Top
-                </Button>
-            </Pane>
-        )
-    );
+                Scroll to Top
+            </Button>
+        </Pane>
+    ) : null;
 };
 
 export default ScrollToTopButton;
