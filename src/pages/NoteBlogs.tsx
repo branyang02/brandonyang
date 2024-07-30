@@ -2,7 +2,7 @@ import 'katex/dist/katex.min.css';
 import '../styles/note-post.css';
 
 import { majorScale, Pane, Spinner } from 'evergreen-ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import rehypeHighlight from 'rehype-highlight';
@@ -70,6 +70,8 @@ function processMarkdown(markdownContent: string): string {
 const NotesBlogs = ({ type }: { type: string }) => {
     const params = useParams();
     const [markdownContent, setMarkdownContent] = useState<string>('');
+    const [activeId, setActiveId] = useState<string>('');
+    const contentRef = useRef<HTMLDivElement>(null);
 
     const contentId = type === 'notes' ? params.noteId : params.blogId;
 
@@ -86,6 +88,30 @@ const NotesBlogs = ({ type }: { type: string }) => {
 
         fetchNote();
     }, [contentId]);
+
+    useEffect(() => {
+        if (!contentRef.current) return;
+
+        const headings = contentRef.current.querySelectorAll(
+            'h1, h2, h3, h4, h5, h6',
+        );
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveId(entry.target.id);
+                    }
+                });
+            },
+            { rootMargin: '0px 0px -80% 0px' },
+        );
+
+        headings.forEach((heading) => observer.observe(heading));
+
+        return () => {
+            headings.forEach((heading) => observer.unobserve(heading));
+        };
+    }, [markdownContent]);
 
     if (!markdownContent) {
         return (
@@ -104,10 +130,13 @@ const NotesBlogs = ({ type }: { type: string }) => {
         <div className="notie-container">
             <Pane className="mw-page-container-inner">
                 <Pane className="vector-column-start">
-                    <NoteToc markdownContent={markdownContent} />
+                    <NoteToc
+                        markdownContent={markdownContent}
+                        activeId={activeId}
+                    />
                 </Pane>
                 <Pane className="mw-content-container">
-                    <Pane className="blog-content">
+                    <Pane className="blog-content" ref={contentRef}>
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[

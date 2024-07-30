@@ -10,6 +10,10 @@
     text-decoration: none;
 }
 
+.note-toc a.active {
+    font-weight: bold;
+}
+
 body.dark-mode .note-toc a {
     color: #ffffff;
 }
