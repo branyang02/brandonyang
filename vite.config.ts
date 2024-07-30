@@ -5,9 +5,4 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [react()],
     assetsInclude: ['**/*.md'],
-    build: {
-        rollupOptions: {
-            external: ['vfile'],
-        },
-    },
 });
