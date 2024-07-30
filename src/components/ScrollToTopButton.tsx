@@ -32,23 +32,25 @@ const ScrollToTopButton = () => {
     }, [lastScrollTop]);
 
     return isVisible ? (
-        <Pane
-            zIndex={1000}
-            position="fixed"
-            top="10px"
-            width="100%"
-            display="flex"
-            justifyContent="center"
-            maxWidth="1000px"
-        >
-            <Button
-                appearance="default"
-                intent="none"
-                onClick={scrollToTop}
-                iconBefore={ArrowUpIcon}
+        <Pane display="flex" justifyContent="center">
+            <Pane
+                zIndex={1000}
+                position="fixed"
+                top="10px"
+                display="flex"
+                justifyContent="center"
+                maxWidth="inherit"
             >
-                Scroll to Top
-            </Button>
+                <Button
+                    appearance="default"
+                    intent="none"
+                    onClick={scrollToTop}
+                    iconBefore={ArrowUpIcon}
+                    borderRadius={50}
+                >
+                    Scroll to Top
+                </Button>
+            </Pane>
         </Pane>
     ) : null;
 };
