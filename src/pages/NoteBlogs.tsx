@@ -16,6 +16,7 @@ import CodeBlock from '../components/CodeBlock';
 import NoteToc from '../components/NoteToc';
 import StaticCodeBlock from '../components/StaticCodeBlock';
 import TikZ from '../components/TikZ';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const NoteModules = import.meta.glob('../assets/notes/*.md', { as: 'raw' });
 const BlogModules = import.meta.glob('../assets/blogs/*.md', { as: 'raw' });
@@ -119,6 +120,7 @@ const NotesBlogs = ({ type }: { type: string }) => {
                         >
                             {markdownContent}
                         </ReactMarkdown>
+                        <ScrollToTopButton />
                     </Pane>
                 </Pane>
             </Pane>
