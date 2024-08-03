@@ -1,8 +1,7 @@
-import '../styles/note-post.css';
-
 import { Card, Heading, majorScale, Pane, Text } from 'evergreen-ui';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const NoteModules = import.meta.glob('../assets/notes/*.md', { as: 'raw' });
 const BlogModules = import.meta.glob('../assets/blogs/*.md', { as: 'raw' });
@@ -17,6 +16,7 @@ interface NotesMetaData {
 const NoteBlogCards = ({ type }: { type: string }) => {
     const [notesMetaData, setNotesMetaData] = useState<NotesMetaData[]>([]);
     const navigate = useNavigate();
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         function fetchNotes() {
@@ -91,7 +91,13 @@ const NoteBlogCards = ({ type }: { type: string }) => {
     }
 
     return (
-        <Pane padding={majorScale(2)}>
+        <Pane
+            padding={majorScale(2)}
+            maxWidth="1000px"
+            style={{
+                margin: '0 auto',
+            }}
+        >
             {notesMetaData.map((post, index) => (
                 <Card
                     key={index}
@@ -105,11 +111,13 @@ const NoteBlogCards = ({ type }: { type: string }) => {
                     justifyContent="space-between"
                     onClick={() => handleCardClick(post.link)}
                     cursor="pointer"
+                    background={darkMode ? '#424242' : 'white'}
                 >
                     <Heading
                         size={500}
                         marginBottom={majorScale(1)}
                         className="note-postHeading"
+                        color={darkMode ? '#F9FAFC' : 'default'}
                     >
                         {post.title}
                     </Heading>
@@ -118,14 +126,17 @@ const NoteBlogCards = ({ type }: { type: string }) => {
                         justifyContent="space-between"
                         alignItems="center"
                     >
-                        <Text size={300} color={'A7B6C2'}>
+                        <Text
+                            size={300}
+                            color={darkMode ? '#F9FAFC' : 'default'}
+                        >
                             {post.subtitle}
                         </Text>
                         {post.date && (
                             <Text
                                 size={300}
                                 fontStyle="italic"
-                                color={'A7B6C2'}
+                                color={darkMode ? '#F9FAFC' : 'default'}
                             >
                                 {post.date}
                             </Text>

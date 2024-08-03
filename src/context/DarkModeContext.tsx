@@ -20,18 +20,21 @@ export const DarkModeProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
     const [darkMode, setDarkMode] = useState<boolean>(() => {
         const savedMode = localStorage.getItem('darkMode');
-        return savedMode === 'true'
-            ? true
-            : new Date().getHours() >= 18 || new Date().getHours() < 6;
+        if (savedMode === null) {
+            const currentHour = new Date().getHours();
+            return currentHour >= 18 || currentHour < 6;
+        }
+        return savedMode === 'true';
     });
 
     useEffect(() => {
-        document.body.classList.toggle('dark-mode', darkMode);
         localStorage.setItem('darkMode', darkMode.toString());
+
+        document.body.classList.toggle('dark-mode', darkMode);
     }, [darkMode]);
 
     const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
+        setDarkMode((prevMode) => !prevMode);
     };
 
     return (
