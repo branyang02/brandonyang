@@ -8,7 +8,7 @@ const Profile = () => {
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
             <Avatar
-                src={'/Brandon_Yang.jpg'}
+                src={'Brandon_Yang.jpg'}
                 name="Brandon (Yifan) Yang"
                 size={300}
             />

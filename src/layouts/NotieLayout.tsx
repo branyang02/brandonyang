@@ -15,7 +15,16 @@ const NotieLayout = ({ children }: { children: React.ReactNode }) => {
             }}
         >
             <NavBar />
-            <Pane className="main-content">{children}</Pane>
+            <Pane
+                className="main-content"
+                style={{
+                    margin: '0 auto',
+                    maxWidth: '1500px',
+                    width: '100%',
+                }}
+            >
+                {children}
+            </Pane>
         </Pane>
     );
 };

@@ -1,3 +1,4 @@
+import './styles/App.css';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import NotieLayout from './layouts/NotieLayout';
