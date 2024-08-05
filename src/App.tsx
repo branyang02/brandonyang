@@ -9,65 +9,49 @@ import NotesBlogs from "./pages/NoteBlogs";
 import Courses from "./pages/Courses";
 
 const App = () => {
+    const routes = [
+        { path: "/", Layout: MainLayout, Component: Home },
+        { path: "/projects", Layout: MainLayout, Component: Projects },
+        { path: "/coursework", Layout: MainLayout, Component: Courses },
+        {
+            path: "/blog",
+            Layout: NotieLayout,
+            Component: NoteBlogCards,
+            props: { type: "blogs" },
+        },
+        {
+            path: "/notes",
+            Layout: NotieLayout,
+            Component: NoteBlogCards,
+            props: { type: "notes" },
+        },
+        {
+            path: "/notes/:noteId",
+            Layout: NotieLayout,
+            Component: NotesBlogs,
+            props: { type: "notes" },
+        },
+        {
+            path: "/blogs/:blogId",
+            Layout: NotieLayout,
+            Component: NotesBlogs,
+            props: { type: "blogs" },
+        },
+    ];
+
     return (
         <Routes>
-            <Route
-                path="/"
-                element={
-                    <MainLayout>
-                        <Home />
-                    </MainLayout>
-                }
-            />
-            <Route
-                path="/projects"
-                element={
-                    <MainLayout>
-                        <Projects />
-                    </MainLayout>
-                }
-            />
-            <Route
-                path="/coursework"
-                element={
-                    <MainLayout>
-                        <Courses />
-                    </MainLayout>
-                }
-            />
-            <Route
-                path="/blog"
-                element={
-                    <NotieLayout>
-                        <NoteBlogCards type="blogs" />
-                    </NotieLayout>
-                }
-            />
-            <Route
-                path="/notes"
-                element={
-                    <NotieLayout>
-                        <NoteBlogCards type="notes" />
-                    </NotieLayout>
-                }
-            />
-
-            <Route
-                path="/notes/:noteId"
-                element={
-                    <NotieLayout>
-                        <NotesBlogs type="notes" />
-                    </NotieLayout>
-                }
-            />
-            <Route
-                path="/blogs/:blogId"
-                element={
-                    <NotieLayout>
-                        <NotesBlogs type="blogs" />
-                    </NotieLayout>
-                }
-            />
+            {routes.map(({ path, Layout, Component, props }) => (
+                <Route
+                    key={path}
+                    path={path}
+                    element={
+                        <Layout>
+                            {props ? <Component {...props} /> : <Component />}
+                        </Layout>
+                    }
+                />
+            ))}
         </Routes>
     );
 };
