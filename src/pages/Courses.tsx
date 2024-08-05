@@ -1,15 +1,15 @@
-import '../styles/Courses.css';
+import "../styles/Courses.css";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import OrgChartTree from '../components/CourseTree';
+import OrgChartTree from "../components/CourseTree";
 
 const Courses = () => {
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
 
         return () => {
-            document.body.style.overflow = '';
+            document.body.style.overflow = "";
         };
     }, []);
     return (

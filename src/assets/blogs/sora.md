@@ -97,7 +97,7 @@ Here, $$\textbf{Z}_0$$ is the initial input matrix to the transformer encoder, c
 
 Next, we feed our text embeddings to a Transformer encoder, which consists of Multi-Head
 Self-Attention (MSA) and Feedforward Neural Network (FNN) as shown in [_Fig. 2_](#fig2).
-![](https://branyang02.github.io/images/transformer-encoder.jpg 'Standard Transformer Encoder')
+![](https://branyang02.github.io/images/transformer-encoder.jpg "Standard Transformer Encoder")
 <span id="fig2" 
 class="caption">Fig. 2: Standard Transformer Encoder. (Source: Yu Meng, <a href="https://yumeng5.github.io/teaching/2024-spring-cs6501">UVA CS 6501 NLP</a>)
 </span>
@@ -227,7 +227,7 @@ The key advantages of ViT over CNNs are:
 -   **Transfer Learning**: ViT can be fine-tuned on downstream tasks with fewer labeled examples,
     while CNNs require a large amount of labeled data to achieve good performance.
 
-![](https://branyang02.github.io/images/vit_performance.png 'ViT Performance vs SOTA CNNs')
+![](https://branyang02.github.io/images/vit_performance.png "ViT Performance vs SOTA CNNs")
 <span id="fig3"
 class="caption">Fig. 3: ViT Performance on ImageNet Classification. (Source: Dosovitskiy et al.[^3])
 </span>
@@ -437,8 +437,13 @@ $$
 $$
 
 [^1]: Brooks, Peebles, et al., "Video generation models as world simulators,", 2024.
+
 [^2]: Vaswani, A., et al. "Attention is all you need," in Advances in neural information processing systems, vol. 30, 2017.
+
 [^3]: Dosovitskiy, A., et al. "An image is worth 16x16 words: Transformers for image recognition at scale," in arXiv preprint arXiv:2010.11929, 2020.
+
 [^4]: J. Ba, J. Kiros, G. Hinton. "Layer normalization," in arXiv preprint arXiv:1607.06450, 2016.
+
 [^5]: J. Ho, A. Jain, P. Abbeel. "Denoising diffusion probabilistic models," in Advances in neural information processing systems, vol. 33, pp. 6840–6851, 2020.
+
 [^6]: R. O'Connor, "Introduction to Diffusion Models for Machine Learning," in AssemblyAI Blog, 2022.

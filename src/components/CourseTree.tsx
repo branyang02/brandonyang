@@ -1,120 +1,120 @@
-import '../styles/CourseTree.css';
+import "../styles/CourseTree.css";
 
-import { useEffect, useRef, useState } from 'react';
-import Tree from 'react-d3-tree';
+import { useEffect, useRef, useState } from "react";
+import Tree from "react-d3-tree";
 
 const orgChart = {
-    name: 'UVA',
+    name: "UVA",
     children: [
         {
-            name: 'Introduction to Programming',
+            name: "Introduction to Programming",
             attributes: {
-                Achievements: 'Python goes 🚀🚀🚀',
+                Achievements: "Python goes 🚀🚀🚀",
             },
             children: [
                 {
-                    name: 'Computer Systems & Organization I ',
+                    name: "Computer Systems & Organization I ",
                     attributes: {
                         Achievement: "Lab Lead TA for Spring '23 🧑‍🏫️",
                     },
                     children: [
                         {
-                            name: 'Computer Systems & Organization II',
+                            name: "Computer Systems & Organization II",
                             attributes: {
-                                Achievement: '0.038% away from A+ 💯',
+                                Achievement: "0.038% away from A+ 💯",
                             },
                         },
                         {
-                            name: 'Cybersecurity',
+                            name: "Cybersecurity",
                             attributes: {
-                                Achievement: 'Hashed stuff',
-                            },
-                        },
-                    ],
-                },
-                {
-                    name: 'Software Development Essentials',
-                    attributes: {
-                        Achievement: 'Java is cool 👨‍💻. OOP is cool 👨‍💻.',
-                    },
-                    children: [
-                        {
-                            name: 'Advanced Software Development',
-                            attributes: {
-                                Achievement:
-                                    'Python Django JavaScript HTML 😤😤😤',
+                                Achievement: "Hashed stuff",
                             },
                         },
                     ],
                 },
                 {
-                    name: 'Discrete Mathematics',
+                    name: "Software Development Essentials",
                     attributes: {
-                        Language: 'Lean Language 😵‍💫😵‍💫😵‍💫',
+                        Achievement: "Java is cool 👨‍💻. OOP is cool 👨‍💻.",
                     },
                     children: [
                         {
-                            name: 'Theory of Computation',
+                            name: "Advanced Software Development",
                             attributes: {
                                 Achievement:
-                                    'Achieved Turing Completeness 🤖🤖🤖',
+                                    "Python Django JavaScript HTML 😤😤😤",
+                            },
+                        },
+                    ],
+                },
+                {
+                    name: "Discrete Mathematics",
+                    attributes: {
+                        Language: "Lean Language 😵‍💫😵‍💫😵‍💫",
+                    },
+                    children: [
+                        {
+                            name: "Theory of Computation",
+                            attributes: {
+                                Achievement:
+                                    "Achieved Turing Completeness 🤖🤖🤖",
                                 Role: "TA for Spring '24 🧑‍🏫️",
                             },
                         },
                     ],
                 },
                 {
-                    name: 'Data Structures',
+                    name: "Data Structures",
                     attributes: {
-                        Language: 'Java',
+                        Language: "Java",
                     },
                     children: [
                         {
-                            name: 'Algorithms',
+                            name: "Algorithms",
                             attributes: {
-                                Language: 'Python, Java',
+                                Language: "Python, Java",
                             },
                             children: [
                                 {
-                                    name: 'Optimization',
+                                    name: "Optimization",
                                     attributes: {
-                                        Achievement: 'KL KL KL KL',
+                                        Achievement: "KL KL KL KL",
                                     },
                                 },
                                 {
-                                    name: 'Machine Learning',
+                                    name: "Machine Learning",
                                     attributes: {
                                         Description:
-                                            'SVM, BN, ANN, CNN, RNN + LSTM, LLM, VAE',
+                                            "SVM, BN, ANN, CNN, RNN + LSTM, LLM, VAE",
                                         Role: "TA for Fall '24 🧑‍🏫️",
                                     },
                                     children: [
                                         {
-                                            name: 'Natural Language Processing (G)',
+                                            name: "Natural Language Processing (G)",
                                             attributes: {
                                                 Achievement:
-                                                    'LLM is cool 🤖🤖🤖',
+                                                    "LLM is cool 🤖🤖🤖",
                                             },
                                         },
                                         {
-                                            name: 'Human Robot Interaction (HRI) (G)',
+                                            name: "Human Robot Interaction (HRI) (G)",
                                             attributes: {
                                                 Achievement:
-                                                    'Robot moves 🚀🚀🚀',
+                                                    "Robot moves 🚀🚀🚀",
                                             },
                                         },
                                         {
-                                            name: 'Probabilistic ML (G)',
+                                            name: "Probabilistic ML (G)",
                                             attributes: {
                                                 Achievement:
-                                                    'Bayesian Bayesian BAYESIAN 🦦🦦🦦',
+                                                    "Bayesian Bayesian BAYESIAN 🦦🦦🦦",
                                             },
                                         },
                                         {
-                                            name: 'Reinforcement Learning (G)',
+                                            name: "Reinforcement Learning (G)",
                                             attributes: {
                                                 Achievement:
-                                                    'MDP, DP, Monte-Carlo, TD, Blah Blah Blah 🤖🤖🤖',
+                                                    "MDP, DP, Monte-Carlo, TD, Blah Blah Blah 🤖🤖🤖",
                                             },
                                         },
                                     ],
@@ -126,30 +126,30 @@ const orgChart = {
             ],
         },
         {
-            name: 'Multivariable Calculus',
+            name: "Multivariable Calculus",
             attributes: {
-                Achievement: '🧮 🧮 🧮',
+                Achievement: "🧮 🧮 🧮",
             },
             children: [
                 {
-                    name: 'Linear Algebra',
+                    name: "Linear Algebra",
                     attributes: {
-                        Language: 'MATLAB 👎👎👎',
+                        Language: "MATLAB 👎👎👎",
                     },
                     children: [
                         {
-                            name: 'Probability',
+                            name: "Probability",
                             attributes: {
                                 Achievement:
-                                    'Created a Monte Carlo Simulation.',
+                                    "Created a Monte Carlo Simulation.",
                             },
                         },
                     ],
                 },
                 {
-                    name: 'Ordinary Differential Equations',
+                    name: "Ordinary Differential Equations",
                     attributes: {
-                        Achievement: 'ODEEEE',
+                        Achievement: "ODEEEE",
                     },
                 },
             ],
@@ -176,10 +176,10 @@ export default function OrgChartTree() {
 
         resizeTree();
 
-        window.addEventListener('resize', resizeTree);
+        window.addEventListener("resize", resizeTree);
 
         return () => {
-            window.removeEventListener('resize', resizeTree);
+            window.removeEventListener("resize", resizeTree);
         };
     }, []);
 
@@ -187,7 +187,7 @@ export default function OrgChartTree() {
         <div
             id="treeWrapper"
             ref={treeContainerRef}
-            style={{ width: '100%', height: '100vh' }}
+            style={{ width: "100%", height: "100vh" }}
         >
             <Tree
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, Paragraph, Text } from 'evergreen-ui';
-import '../styles/TextLink.css';
-import { useDarkMode } from '../context/DarkModeContext';
+import React from "react";
+import { Link, Paragraph, Text } from "evergreen-ui";
+import "../styles/TextLink.css";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const TEXT_SIZE = 500;
 
@@ -14,7 +14,7 @@ const TextLink = ({
     darkMode?: boolean;
     children: React.ReactNode;
 }) => {
-    const colorClass = darkMode ? 'dark-mode' : 'light-mode';
+    const colorClass = darkMode ? "dark-mode" : "light-mode";
 
     return (
         <div className="text-link-container">
@@ -43,7 +43,7 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
             parts.push(
                 <TextLink key={match[2]} href={match[2]} darkMode={darkMode}>
                     {match[1]}
-                </TextLink>,
+                </TextLink>
             );
             lastIndex = regex.lastIndex;
         }
@@ -57,7 +57,7 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
     const paragraphs = text.split(/\n\s*\n/).map((paragraph, index) => (
         <Paragraph
             key={index}
-            color={darkMode ? 'tint2' : 'default'}
+            color={darkMode ? "tint2" : "default"}
             size={TEXT_SIZE}
             marginBottom={index < text.split(/\n\s*\n/).length - 1 ? 16 : 0}
         >

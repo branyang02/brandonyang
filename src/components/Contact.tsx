@@ -1,6 +1,6 @@
-import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Link,
     ListItem,
@@ -8,8 +8,8 @@ import {
     Pane,
     UnorderedList,
     Text,
-} from 'evergreen-ui';
-import { useDarkMode } from '../context/DarkModeContext';
+} from "evergreen-ui";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const Contact = () => {
     const { darkMode } = useDarkMode();
@@ -17,18 +17,18 @@ const Contact = () => {
     const contactItems = [
         {
             icon: faEnvelope,
-            href: 'mailto:jqm9ba@virginia.edu',
-            text: 'jqm9ba@virginia.edu',
+            href: "mailto:jqm9ba@virginia.edu",
+            text: "jqm9ba@virginia.edu",
         },
         {
             icon: faGithub,
-            href: 'https://github.com/branyang02',
-            text: 'branyang02',
+            href: "https://github.com/branyang02",
+            text: "branyang02",
         },
         {
             icon: faLinkedin,
-            href: 'https://linkedin.com/in/byang02',
-            text: 'in/byang02',
+            href: "https://linkedin.com/in/byang02",
+            text: "in/byang02",
         },
     ];
 
@@ -42,12 +42,12 @@ const Contact = () => {
                             <FontAwesomeIcon
                                 icon={icon}
                                 size="lg"
-                                color={darkMode ? '#c1c4d6' : undefined}
+                                color={darkMode ? "#c1c4d6" : undefined}
                             />
                         }
                     >
                         <Link href={href} marginRight={12} color="neutral">
-                            <Text color={darkMode ? 'gray500' : 'muted'}>
+                            <Text color={darkMode ? "gray500" : "muted"}>
                                 {text}
                             </Text>
                         </Link>

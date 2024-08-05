@@ -5,11 +5,11 @@ import {
     Switch,
     MoonIcon,
     LightbulbIcon,
-} from 'evergreen-ui';
-import { useDarkMode } from '../context/DarkModeContext';
-import { useEffect, useState } from 'react';
-import { NavButton, NavMobileMenu } from './NavButton';
-import { useNavigate } from 'react-router-dom';
+} from "evergreen-ui";
+import { useDarkMode } from "../context/DarkModeContext";
+import { useEffect, useState } from "react";
+import { NavButton, NavMobileMenu } from "./NavButton";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
     const { darkMode, toggleDarkMode } = useDarkMode();
@@ -17,8 +17,8 @@ const NavBar = () => {
     const [checked, setChecked] = useState(darkMode);
     const navigate = useNavigate();
 
-    const NAME = 'Brandon (Yifan) Yang';
-    const TABS = ['Home', 'Relevant Coursework', 'Blog', 'Notes', 'Projects'];
+    const NAME = "Brandon (Yifan) Yang";
+    const TABS = ["Home", "Relevant Coursework", "Blog", "Notes", "Projects"];
 
     const handleSwitchChange = () => {
         setChecked(!checked);
@@ -30,10 +30,10 @@ const NavBar = () => {
     };
 
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
 
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener("resize", handleResize);
         };
     }, []);
 
@@ -55,9 +55,9 @@ const NavBar = () => {
             >
                 <Heading
                     size={800}
-                    color={darkMode ? 'white' : 'default'}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => navigate('/')}
+                    color={darkMode ? "white" : "default"}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/")}
                 >
                     {NAME}
                 </Heading>

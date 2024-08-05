@@ -1,17 +1,17 @@
-import { Pane, majorScale } from 'evergreen-ui';
-import { useDarkMode } from '../context/DarkModeContext';
-import NavBar from '../components/NavBar';
+import { Pane, majorScale } from "evergreen-ui";
+import { useDarkMode } from "../context/DarkModeContext";
+import NavBar from "../components/NavBar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
     const { darkMode } = useDarkMode();
 
     return (
         <Pane
-            background={darkMode ? '#333' : 'tint2'}
+            background={darkMode ? "#333" : "tint2"}
             style={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh",
             }}
         >
             <NavBar />

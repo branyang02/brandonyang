@@ -1,9 +1,9 @@
-import { Heading, Pane, majorScale } from 'evergreen-ui';
-import MarkdownParagraph from '../components/MarkdownParagraph';
-import Profile from '../components/Profile';
-import { useDarkMode } from '../context/DarkModeContext';
-import '../styles/Home.css';
-import Experience from '../components/Experience';
+import { Heading, Pane, majorScale } from "evergreen-ui";
+import MarkdownParagraph from "../components/MarkdownParagraph";
+import Profile from "../components/Profile";
+import { useDarkMode } from "../context/DarkModeContext";
+import "../styles/Home.css";
+import Experience from "../components/Experience";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -57,7 +57,7 @@ const Home = () => {
                 <Heading
                     size={800}
                     marginBottom={majorScale(2)}
-                    color={darkMode ? 'white' : 'default'}
+                    color={darkMode ? "white" : "default"}
                 >
                     Biography
                 </Heading>
@@ -66,7 +66,7 @@ const Home = () => {
                     size={800}
                     marginTop={majorScale(2)}
                     marginBottom={majorScale(2)}
-                    color={darkMode ? 'white' : 'default'}
+                    color={darkMode ? "white" : "default"}
                 >
                     Experience
                 </Heading>
@@ -74,7 +74,7 @@ const Home = () => {
                 <Heading
                     size={800}
                     marginBottom={majorScale(2)}
-                    color={darkMode ? 'white' : 'default'}
+                    color={darkMode ? "white" : "default"}
                 >
                     News
                 </Heading>
