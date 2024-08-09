@@ -19,7 +19,7 @@
         "@mui/lab": "^5.0.0-alpha.173",
         "@mui/styled-engine": "^5.16.6",
         "evergreen-ui": "^7.1.9",
-        "notie-markdown": "^1.0.11",
+        "notie-markdown": "^1.0.19",
         "prettier": "^3.3.3",
         "react": "^18.3.1",
         "react-d3-tree": "^3.6.2",
