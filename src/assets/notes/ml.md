@@ -108,11 +108,12 @@ One common loss function used in linear regression is the **mean squared error (
 **Mean Squared Error (MSE)**:
 
 $$
-\label{1.1.1}\tag{1.1.1}
-\begin{aligned}
+\begin{equation} \label{eq:mse}
+\begin{split}
 \text{MSE}(\mathbf{\theta}) &= \frac{1}{m} \sum_{i=1}^{m} \left( h_{\mathbf{\theta}}(\mathbf{x}^{(i)}) - y^{(i)} \right)^2 \\
 &= \frac{1}{m} \left\| h_{\mathbf{\theta}}(\mathbf{X}) - \mathbf{y} \right\|_2^2
-\end{aligned}
+\end{split}
+\end{equation}
 $$
 
 </blockquote>
@@ -132,8 +133,9 @@ The normal equation is a closed-form solution to the linear regression problem. 
 **Normal Equation**:
 
 $$
-\label{1.1.2}\tag{1.1.2}
+\begin{equation} \label{eq:normal-equation}
 \mathbf{\theta} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}
+\end{equation}
 $$
 
 </blockquote>
@@ -142,7 +144,7 @@ where $\mathbf{X}^T$ is the transpose of the feature matrix $\mathbf{X}$, and $\
 
 <details><summary>Normal Equation Proof</summary>
 
-To prove the normal equation, we start by defining the loss function as:
+To prove the normal equation $\eqref{eq:normal-equation}$, we start by rearranging $\eqref{eq:mse}$:
 
 $$
 \begin{aligned}
@@ -217,8 +219,9 @@ Gradient descent is an iterative optimization algorithm used to minimize the los
 **Gradient Descent Update Rule**:
 
 $$
-\label{1.1.3}\tag{1.1.3}
+\begin{equation} \label{eq:gd}
 \mathbf{\theta}^{(t+1)} = \mathbf{\theta}^{(t)} - \alpha \nabla_{\mathbf{\theta}} L(\mathbf{\theta})
+\end{equation}
 $$
 
 </blockquote>
@@ -226,14 +229,16 @@ $$
 where $L(\mathbf{\theta})$ is the loss function, and $\alpha$ is the learning rate that controls the step size of the update. In the case of linear regression with the MSE loss function, the gradient is given by:
 
 $$
+\begin{equation} \label{eq:mse-gradient}
 \nabla_{\mathbf{\theta}} \text{MSE}(\mathbf{\theta}) = \frac{2}{m} \mathbf{X}^T (\hat{\mathbf{y}} - \mathbf{y}),
+\end{equation}
 $$
 
 where $\hat{\mathbf{y}} = \mathbf{X}\mathbf{\theta}$ is the predicted label vector.
 
 <details><summary>MSE Gradient Proof</summary>
 
-To compute the gradient of the MSE loss function, we start by expanding Equation $\eqref{1.1.1}$:
+To compute $\eqref{eq:mse-gradient}$, we start by expanding Equation $\eqref{eq:mse}$:
 
 $$
 \begin{aligned}
@@ -377,8 +382,9 @@ The update rule for stochastic gradient descent is defined as:
 **Stochastic Gradient Descent Update Rule**:
 
 $$
-\label{1.1.4}\tag{1.1.4}
-\mathbf{\theta}^{(t+1)} = \mathbf{\theta}^{(t)} - \alpha \nabla_{\mathbf{\theta}} L(\mathbf{\theta}^{(t)}) \label{eq:sgd}
+\begin{equation} \label{eq:sgd}
+\mathbf{\theta}^{(t+1)} = \mathbf{\theta}^{(t)} - \alpha \nabla_{\mathbf{\theta}} L(\mathbf{\theta}^{(t)})
+\end{equation}
 $$
 
 </blockquote>
@@ -388,7 +394,9 @@ where $L(\mathbf{\theta}^{(t)})$ is the loss function computed using a single tr
 In the case of linear regression with the MSE loss function, the gradient for a single training example $(\mathbf{x}^{(i)}, y^{(i)})$ is given by:
 
 $$
+\begin{equation} \label{eq:mse-gradient-sgd}
 \nabla_{\mathbf{\theta}} \text{MSE}(\mathbf{\theta}) = 2 \mathbf{x}^{(i)} (\hat{y}^{(i)} - y^{(i)}),
+\end{equation}
 $$
 
 where $\hat{y}^{(i)} = \mathbf{\theta}^T \mathbf{x}^{(i)}$ is the predicted value for the training example.
