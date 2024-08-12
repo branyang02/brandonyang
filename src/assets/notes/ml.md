@@ -133,7 +133,7 @@ The normal equation is a closed-form solution to the linear regression problem. 
 **Normal Equation**:
 
 $$
-\begin{equation}
+\begin{equation} \label{eq:normal-equation}
 \mathbf{\theta} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}
 \end{equation}
 $$
@@ -144,7 +144,7 @@ where $\mathbf{X}^T$ is the transpose of the feature matrix $\mathbf{X}$, and $\
 
 <details><summary>Normal Equation Proof</summary>
 
-To prove the normal equation, we start by rearranging $\eqref{eq:mse}$:
+To prove the normal equation $\eqref{eq:normal-equation}$, we start by rearranging $\eqref{eq:mse}$:
 
 $$
 \begin{aligned}
@@ -238,7 +238,7 @@ where $\hat{\mathbf{y}} = \mathbf{X}\mathbf{\theta}$ is the predicted label vect
 
 <details><summary>MSE Gradient Proof</summary>
 
-To compute the gradient of the MSE loss function, we start by expanding Equation $\eqref{eq:mse}$:
+To compute $\eqref{eq:mse-gradient}$, we start by expanding Equation $\eqref{eq:mse}$:
 
 $$
 \begin{aligned}

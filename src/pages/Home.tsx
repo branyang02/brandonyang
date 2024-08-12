@@ -20,8 +20,6 @@ const Home = () => {
     const newsParagraphText = `
     05/2024: Started working with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park!
 
-    03/2024: Accepted to UVA's Master of Science in Computer Science program!
-
     01/2024: Started working as a TA for CS 3120: Theory of Computation at UVA!
 
     11/2023: Voy received $1,000 in funding from winning UVA's Entrepreneurship Cup!
