@@ -116,7 +116,7 @@ const Projects = () => {
                 },
                 {
                     name: "Live Demo",
-                    link: "https://notie-nine.vercel.app/",
+                    link: "https://notie-markdown.vercel.app/",
                 },
             ],
             techStack: ["TypeScript", "React", "Python", "Flask"],
