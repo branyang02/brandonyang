@@ -1,8 +1,10 @@
 # **A Deep Dive into OpenAI's Sora**
 
-<span class="subtitle">
-Date: 3/5/2024  | Author: Brandon Yang
-</span>
+<div class="subtitle">
+
+Date: 3/5/2024 | Author: Brandon Yang
+
+</div>
 
 # **Introduction**
 
@@ -32,9 +34,12 @@ the ViT architecture and its performance on image classification tasks.
 ### **ViT Architecture**
 
 ![](https://1.bp.blogspot.com/-_mnVfmzvJWc/X8gMzhZ7SkI/AAAAAAAAG24/8gW2AHEoqUQrBwOqjhYB37A7OOjNyKuNgCLcBGAsYHQ/s1600/image1.gif)
-<span id="fig1" 
-class="caption">Fig. 1: Vision Transformer treats an input image as a sequence of patches. (Source: <a href="https://blog.research.google/2020/12/transformers-for-image-recognition-at.html">Gooble AI Blog</a>)
-</span>
+
+<div id="fig1" class="caption">
+
+Fig. 1: Vision Transformer treats an input image as a sequence of patches. (Source: <a href="https://blog.research.google/2020/12/transformers-for-image-recognition-at.html">Gooble AI Blog</a>)
+
+</div>
 
 #### **Image Input to Patch Embeddings**
 
@@ -98,9 +103,14 @@ Here, $$\textbf{Z}_0$$ is the initial input matrix to the transformer encoder, c
 Next, we feed our text embeddings to a Transformer encoder, which consists of Multi-Head
 Self-Attention (MSA) and Feedforward Neural Network (FNN) as shown in [_Fig. 2_](#fig2).
 ![](https://branyang02.github.io/images/transformer-encoder.jpg "Standard Transformer Encoder")
-<span id="fig2" 
-class="caption">Fig. 2: Standard Transformer Encoder. (Source: Yu Meng, <a href="https://yumeng5.github.io/teaching/2024-spring-cs6501">UVA CS 6501 NLP</a>)
-</span>
+
+<div id="fig2" 
+class="caption">
+
+Fig. 2: Standard Transformer Encoder. (Source: Yu Meng, [UVA CS 6501 NLP](https://yumeng5.github.io/teaching/2024-spring-cs6501))
+
+</div>
+
 First we pass through the Multi-Head Self-Attention (MSA) layer, which computes the attention
 weights for each token in the sequence. The MSA layer is defined as follows:
 
@@ -228,9 +238,12 @@ The key advantages of ViT over CNNs are:
     while CNNs require a large amount of labeled data to achieve good performance.
 
 ![](https://branyang02.github.io/images/vit_performance.png "ViT Performance vs SOTA CNNs")
-<span id="fig3"
-class="caption">Fig. 3: ViT Performance on ImageNet Classification. (Source: Dosovitskiy et al.[^3])
-</span>
+
+<div class="caption" id="fig3">
+
+Fig. 3: ViT Performance on ImageNet Classification. (Source: Dosovitskiy et al.[^3])
+
+</div>
 
 ## **Diffusion Models**
 
@@ -254,9 +267,12 @@ To learn the distribution $$p(\textbf{x})$$, we follow a two-step process:
 
 ![](https://www.assemblyai.com/blog/content/images/2022/05/image.png)
 ![](https://www.assemblyai.com/blog/content/images/2022/05/image-1.png)
-<span id="fig4"
-class="caption">Fig. 4: Foward(Top) and Backward(Bottom) Process. (Source: <a href="https://www.assemblyai.com/blog/diffusion-models-for-machine-learning-introduction/">AssemblyAI Blog</a>)
-</span>
+
+<div id="fig4" class="caption">
+
+Fig. 4: Foward(Top) and Backward(Bottom) Process. (Source [AssemblyAI Blog](https://www.assemblyai.com/blog/diffusion-models-for-machine-learning-introduction/))
+
+</div>
 
 ### **Forward Process**
 
