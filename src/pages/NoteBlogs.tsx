@@ -1,7 +1,7 @@
 import { Notie, NotieConfig, Theme as NotieTheme } from "notie-markdown";
 import { useParams } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { majorScale, Pane, Spinner } from "evergreen-ui";
 
 const NoteModules = import.meta.glob("../assets/notes/*.md", {
@@ -41,8 +41,15 @@ const NotesBlogs = ({ type }: { type: string }) => {
     const { darkMode } = useDarkMode();
     const contentId = type === "notes" ? params.noteId : params.blogId;
 
-    const theme = darkMode ? "default dark" : "default";
-    const config = getConfig(contentId as string, darkMode);
+    const theme = useMemo(
+        () => (darkMode ? "default dark" : "default"),
+        [darkMode]
+    );
+
+    const config = useMemo(
+        () => getConfig(contentId as string, darkMode),
+        [contentId, darkMode]
+    );
 
     useEffect(() => {
         async function fetchNotes() {
