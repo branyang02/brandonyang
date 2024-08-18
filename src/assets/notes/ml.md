@@ -371,6 +371,16 @@ As shown in the plot, the gradient descent algorithm converges to the optimal pa
 
 </details>
 
+Below is a demonstration of the gradient descent algorithm for linear regression. Note the influence of the learning rate on the convergence of the loss function.
+
+```component
+
+{
+    componentName: "linearRegression"
+}
+
+```
+
 ##### Stochastic Gradient Descent
 
 Stochastic gradient descent (SGD) is a variant of gradient descent that updates the parameter vector using a single training example at a time, instead of the entire dataset. This approach is computationally efficient for large datasets and can escape local minima due to the stochastic nature of the updates.
