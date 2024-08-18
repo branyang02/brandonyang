@@ -11,13 +11,16 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@emotion/react": "^11.13.0",
         "@emotion/styled": "^11.13.0",
         "@fortawesome/free-brands-svg-icons": "^6.6.0",
         "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@icons-pack/react-simple-icons": "^9.6.0",
         "@mui/lab": "^5.0.0-alpha.173",
+        "@mui/material": "^5.16.7",
         "@mui/styled-engine": "^5.16.6",
+        "@mui/x-charts": "^7.13.0",
         "evergreen-ui": "^7.1.9",
         "notie-markdown": "^1.2.6",
         "prettier": "^3.3.3",

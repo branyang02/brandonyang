@@ -3,6 +3,20 @@ import { useParams } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
 import { useEffect, useState, useMemo } from "react";
 import { majorScale, Pane, Spinner } from "evergreen-ui";
+import LinearRegression from "../components/notie-components/LinearRegression";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: "dark",
+    },
+});
+
+const lightTheme = createTheme({
+    palette: {
+        mode: "light",
+    },
+});
 
 const NoteModules = import.meta.glob("../assets/notes/*.md", {
     query: "?raw",
@@ -69,21 +83,35 @@ const NotesBlogs = ({ type }: { type: string }) => {
         fetchNotes();
     }, [contentId, type]);
 
+    const customComponents = useMemo(
+        () => ({
+            linearRegression: () => <LinearRegression />,
+        }),
+        []
+    );
+
     return (
-        <Pane margin="auto" padding={majorScale(3)}>
-            {isLoading ? (
-                <Pane
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    height={400}
-                >
-                    <Spinner />
-                </Pane>
-            ) : (
-                <Notie markdown={markdown} theme={theme} config={config} />
-            )}
-        </Pane>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+            <Pane margin="auto" padding={majorScale(3)}>
+                {isLoading ? (
+                    <Pane
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        height={400}
+                    >
+                        <Spinner />
+                    </Pane>
+                ) : (
+                    <Notie
+                        markdown={markdown}
+                        theme={theme}
+                        config={config}
+                        customComponents={customComponents}
+                    />
+                )}
+            </Pane>
+        </ThemeProvider>
     );
 };
 
