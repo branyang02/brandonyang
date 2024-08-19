@@ -1,7 +1,13 @@
 import { Notie, NotieConfig, Theme as NotieTheme } from "notie-markdown";
 import { useParams } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
-import { useEffect, useState, useMemo } from "react";
+import {
+    useEffect,
+    useState,
+    useMemo,
+    useCallback,
+    useLayoutEffect,
+} from "react";
 import { majorScale, Pane, Spinner } from "evergreen-ui";
 import LinearRegression from "../components/notie-components/LinearRegression";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -37,6 +43,9 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
         customFontUrl:
             "https://cdn.jsdelivr.net/gh/bitmaks/cm-web-fonts@latest/fonts.css",
         linkHoverColor: "#0056b3",
+        blockquoteStyle: "latex",
+        numberedHeading: true,
+        tocMarker: false,
     };
 
     const mergedTheme: NotieTheme =
@@ -65,6 +74,37 @@ const NotesBlogs = ({ type }: { type: string }) => {
         [contentId, darkMode]
     );
 
+    const customComponents = useMemo(
+        () => ({
+            linearRegression: () => <LinearRegression />,
+        }),
+        []
+    );
+
+    const scrollPositionKey = `scrollPosition-${contentId}`;
+
+    const restoreScrollPosition = useCallback(() => {
+        const savedPosition = localStorage.getItem(scrollPositionKey);
+        if (savedPosition) {
+            console.log("Restoring scroll position", savedPosition);
+            const originalBehavior =
+                document.documentElement.style.scrollBehavior;
+            document.documentElement.style.scrollBehavior = "auto";
+            window.scrollTo(0, parseInt(savedPosition, 10));
+            document.documentElement.style.scrollBehavior = originalBehavior;
+        }
+    }, [scrollPositionKey]);
+
+    const saveScrollPosition = useCallback(() => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY !== 0) {
+            console.log("Saving scroll position", currentScrollY);
+            localStorage.setItem(scrollPositionKey, currentScrollY.toString());
+        } else {
+            restoreScrollPosition();
+        }
+    }, [restoreScrollPosition, scrollPositionKey]);
+
     useEffect(() => {
         async function fetchNotes() {
             setIsLoading(true);
@@ -83,12 +123,16 @@ const NotesBlogs = ({ type }: { type: string }) => {
         fetchNotes();
     }, [contentId, type]);
 
-    const customComponents = useMemo(
-        () => ({
-            linearRegression: () => <LinearRegression />,
-        }),
-        []
-    );
+    useLayoutEffect(() => {
+        // Restore scroll position after content has been rendered
+        restoreScrollPosition();
+    }, [markdown, restoreScrollPosition]);
+
+    useEffect(() => {
+        // Save scroll position on scroll
+        window.addEventListener("scroll", saveScrollPosition);
+        return () => window.removeEventListener("scroll", saveScrollPosition);
+    }, [saveScrollPosition]);
 
     return (
         <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>

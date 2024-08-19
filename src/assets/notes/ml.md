@@ -120,11 +120,7 @@ $$
 
 where $m$ is the number of observations, $\mathbf{X}$ is the feature matrix, and $\mathbf{y}$ is the target vector. The goal is to minimize the loss function by finding the optimal parameter vector $\mathbf{\theta}$.
 
-#### Algorithms
-
-There are several algorithms to optimize the parameter vector $\mathbf{\theta}$. First, we introduce the closed-form solution using the **normal equation**.
-
-##### Normal Equation
+#### Normal Equation
 
 The normal equation is a closed-form solution to the linear regression problem. It is defined as:
 
@@ -143,6 +139,8 @@ $$
 where $\mathbf{X}^T$ is the transpose of the feature matrix $\mathbf{X}$, and $\mathbf{X}^T \mathbf{X}$ is a square matrix. The normal equation provides an analytical solution to the linear regression problem.
 
 <details><summary>Normal Equation Proof</summary>
+
+<blockquote class="proof">
 
 To prove the normal equation $\eqref{eq:normal-equation}$, we start by rearranging $\eqref{eq:mse}$:
 
@@ -167,6 +165,8 @@ $$
 $$
 
 Therefore, the normal equation provides the optimal parameter vector $\mathbf{\theta}$ that minimizes the loss function.
+
+</blockquote>
 
 </details>
 
@@ -210,7 +210,7 @@ The normal equation provides the optimal parameter vector $\mathbf{\theta}$ that
 
 Although the normal equation provides an optimal solution to linear regression, it is computationally expensive for large datasets due to the matrix inversion operation. For large datasets, we use iterative optimization algorithms such as **gradient descent**.
 
-##### Gradient Descent
+### Gradient Descent
 
 Gradient descent is an iterative optimization algorithm used to minimize the loss function by updating the parameter vector $\mathbf{\theta}$ in the direction of the negative gradient. The update rule for gradient descent is defined as:
 
@@ -237,6 +237,8 @@ $$
 where $\hat{\mathbf{y}} = \mathbf{X}\mathbf{\theta}$ is the predicted label vector.
 
 <details><summary>MSE Gradient Proof</summary>
+
+<blockquote class="proof">
 
 To compute $\eqref{eq:mse-gradient}$, we start by expanding Equation $\eqref{eq:mse}$:
 
@@ -270,6 +272,10 @@ $$
 &= \frac{2}{m} \mathbf{X}^T (\mathbf{X}\mathbf{\theta} - \mathbf{y})
 \end{aligned}
 $$
+
+Therefore, the gradient of the MSE loss function with respect to $\mathbf{\theta}$ is given by $\eqref{eq:mse-gradient}$.
+
+</blockquote>
 
 </details>
 
@@ -371,17 +377,7 @@ As shown in the plot, the gradient descent algorithm converges to the optimal pa
 
 </details>
 
-Below is a demonstration of the gradient descent algorithm for linear regression. Note the influence of the learning rate on the convergence of the loss function.
-
-```component
-
-{
-    componentName: "linearRegression"
-}
-
-```
-
-##### Stochastic Gradient Descent
+### Stochastic Gradient Descent
 
 Stochastic gradient descent (SGD) is a variant of gradient descent that updates the parameter vector using a single training example at a time, instead of the entire dataset. This approach is computationally efficient for large datasets and can escape local minima due to the stochastic nature of the updates.
 
@@ -552,3 +548,97 @@ Overall, we can compare the normal equation, gradient descent, and stochastic gr
 | Normal Equation                   | $O(n^3)$           | Instant (non-iterative)    | Exact solution for convex problems                                            |
 | Gradient Descent                  | $O(kn^2)$          | Linear convergence rate    | Can achieve high accuracy with proper learning rate and sufficient iterations |
 | Stochastic Gradient Descent (SGD) | $O(kn)$            | Sublinear convergence rate | Can approach optimal solution, but may oscillate around it                    |
+
+Below we present an interactive example of linear regression using gradient descent. Suppose we have a dataset with one feature and one target value. The linear regression hypothesis function can be represented as:
+
+$$
+\begin{equation} \label{eq:example-hypothesis}
+\hat{y} = h_{\theta}(x) = \theta_0 + \theta_1 x,
+\end{equation}
+$$
+
+where $\theta_0$ is the bias term and $\theta_1$ is the weight of the feature $x$, and $\bm{\theta} = [\theta_0, \theta_1]$ is the parameter vector. Next, we use MSE $\eqref{eq:mse}$ as the loss function:
+
+$$
+L(\theta) = \frac{1}{m} \sum_{i=1}^{m} (\hat{y}^{(i)} - y^{(i)})^2,
+$$
+
+where $m$ is the number of examples, $\hat{y}^{(i)}$ is the predicted value for example $i$, and $y^{(i)}$ is the actual target value. Next, we find the gradient of the loss function with respect to the parameter vector $\bm{\theta}$.
+
+-   **Gradient with respect to $\theta_0$**:
+
+$$
+\begin{aligned}
+L(\theta) &= \frac{1}{m} \sum_{i=1}^{m} (\hat{y}^{(i)} - y^{(i)})^2 \\
+L(\theta) &= \frac{1}{m} \sum_{i=1}^{m} (\theta_0 + \theta_1 x^{(i)} - y^{(i)})^2 \\
+\frac{\partial L(\theta)}{\partial \theta_0} &= \frac{2}{m} \sum_{i=1}^{m} (\theta_0 + \theta_1 x^{(i)} - y^{(i)}).
+\end{aligned}
+$$
+
+-   **Gradient with respect to $\theta_1$**:
+
+$$
+\begin{aligned}
+L(\theta) &= \frac{1}{m} \sum_{i=1}^{m} (\theta_0 + \theta_1 x^{(i)} - y^{(i)})^2 \\
+\frac{\partial L(\theta)}{\partial \theta_1} &= \frac{2}{m} \sum_{i=1}^{m} (\theta_0 + \theta_1 x^{(i)} - y^{(i)}) x^{(i)}.
+\end{aligned}
+$$
+
+The gradient descent update rule is then applied to update the parameter vector $\bm{\theta}$:
+
+$$
+\begin{aligned}
+\theta_0^{(t+1)} &= \theta_0^{(t)} - \alpha \frac{2}{m} \sum_{i=1}^{m} (\theta_0^{(t)} + \theta_1^{(t)} x^{(i)} - y^{(i)}), \\
+\theta_1^{(t+1)} &= \theta_1^{(t)} - \alpha \frac{2}{m} \sum_{i=1}^{m} (\theta_0^{(t)} + \theta_1^{(t)} x^{(i)} - y^{(i)}) x^{(i)},
+\end{aligned}
+$$
+
+where $\alpha$ is the learning rate.
+
+Since we are only dealing with two parameters $\theta_0$ and $\theta_1$, we can treat the hypothesis function $\eqref{eq:example-hypothesis}$ as a linear function in the form of $y = mx + b$ on a $xy$-plane, where $m = \theta_1$ and $b = \theta_0$.
+
+The interactive plot below allows you to adjust the learning rate and perform each iteration of gradient descent to find the optimal parameter vector $\bm{\theta}$ that minimizes the loss function.
+
+```component
+
+{
+    componentName: "linearRegression"
+}
+
+```
+
+### Convergence Analysis of Gradient Descent
+
+The convergence of gradient descent depends on the choice of the learning rate $\alpha$ and the properties of the loss function. For the following analysis, we only consider any loss function that is **convex** and **differentiable**.
+
+<blockquote class="definition">
+
+A function $ f: \mathbb{R}^n \to \mathbb{R} $ is **convex** if, for any two points $ x, y \in \mathbb{R}^n $ and any $ \lambda \in [0, 1] $, the following inequality holds:
+
+$$
+\begin{equation} \label{eq:convex}
+ f(\lambda x + (1 - \lambda) y) \leq \lambda f(x) + (1 - \lambda) f(y)
+\end{equation}
+$$
+
+In other words, the line segment connecting any two points on the graph of the function lies above or on the graph itself.
+
+</blockquote>
+
+<blockquote class="definition">
+
+A function $ f $ is **differentiable** at a point $ x \in \mathbb{R}^n $ if the following limit exists:
+
+$$
+\begin{equation} \label{eq:differentiable}
+\nabla f(x) = \lim_{h \to 0} \frac{f(x + h) - f(x) - \langle \nabla f(x), h \rangle}{\|h\|}
+\end{equation}
+$$
+
+where $ \nabla f(x) $ denotes the gradient vector of $ f $ at $ x $, and $ \langle \nabla f(x), h \rangle $ represents the dot product of $ \nabla f(x) $ and $ h $.
+
+</blockquote>
+
+#### Fixed Learning Rate
+
+coming soon...
