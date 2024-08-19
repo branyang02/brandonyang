@@ -52,7 +52,7 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
         contentId === "ml" ? { ...baseTheme, ...latexTheme } : baseTheme;
 
     return {
-        fontSize: contentId === "ml" ? "1.1em" : undefined,
+        fontSize: contentId === "ml" ? "1.05em" : undefined,
         theme: mergedTheme,
     };
 }
