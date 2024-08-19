@@ -67,6 +67,34 @@ function generateLinearEquation(equation: (x: number) => number) {
     return res;
 }
 
+function generateOptimalLinearEquation(data: ScatterPoint[]) {
+    const n = data.length;
+
+    let sumX = 0;
+    let sumY = 0;
+    let sumXY = 0;
+    let sumX2 = 0;
+
+    for (const point of data) {
+        const { x, y } = point;
+        sumX += x;
+        sumY += y;
+        sumXY += x * y;
+        sumX2 += x ** 2;
+    }
+
+    const denominator = n * sumX2 - sumX ** 2;
+
+    if (denominator === 0) {
+        throw new Error("Denominator is zero. The data may be degenerate.");
+    }
+
+    const optM = (n * sumXY - sumX * sumY) / denominator;
+    const optB = (sumY - optM * sumX) / n;
+
+    return { optM, optB };
+}
+
 function gradientDescentStep(
     data: ScatterPoint[],
     currentM: number,
@@ -107,6 +135,8 @@ function calcMSE(data: ScatterPoint[], m: number, b: number) {
 const LinearRegression = () => {
     const [m, setM] = useState(0);
     const [b, setB] = useState(0);
+    const [optM, setOptM] = useState(0);
+    const [optB, setOptB] = useState(0);
     const [data, setData] = useState<ScatterPoint[]>([]);
     const [axisRanges, setAxisRanges] = useState<AxisRanges>({
         xMin: -2,
@@ -116,22 +146,31 @@ const LinearRegression = () => {
     });
     const [learningRate, setLearningRate] = useState(0.01);
     const [mseValue, setMseValue] = useState(calcMSE(data, m, b));
+    const [optPoints, setOptPoints] = useState<number[]>([]);
+    const [stepCount, setStepCount] = useState(0);
 
     const generateNewData = useCallback(() => {
         const [newData, newAxisRanges] = generateLinearScatterData(100);
         setData(newData);
         setAxisRanges(newAxisRanges);
+        const { optM, optB } = generateOptimalLinearEquation(newData);
+        setOptM(optM);
+        setOptB(optB);
+        const optimalEquation = (x: number) => optM * x + optB;
+        const optPoints = generateLinearEquation(optimalEquation);
+        setOptPoints(optPoints);
 
         setM(0);
         setB(0);
         setMseValue(calcMSE(newData, 0, 0));
+        setStepCount(0);
     }, []);
 
     useEffect(() => {
         generateNewData();
     }, [generateNewData]);
 
-    const runGradientDescent = async () => {
+    const stepGradientDescent = async () => {
         let currentM = m;
         let currentB = b;
 
@@ -146,6 +185,30 @@ const LinearRegression = () => {
         setM(newM);
         setB(newB);
         setMseValue(calcMSE(data, newM, newB));
+        setStepCount(stepCount + 1);
+    };
+
+    const runGradientDescent = async () => {
+        const iterations = 1000;
+
+        let currentM = m;
+        let currentB = b;
+
+        for (let i = 0; i < iterations; i++) {
+            const { newM, newB } = gradientDescentStep(
+                data,
+                currentM,
+                currentB,
+                learningRate
+            );
+            currentM = newM;
+            currentB = newB;
+        }
+
+        setM(currentM);
+        setB(currentB);
+        setMseValue(calcMSE(data, currentM, currentB));
+        setStepCount(stepCount + iterations);
     };
 
     const equation = (x: number) => m * x + b;
@@ -161,8 +224,15 @@ const LinearRegression = () => {
             >
                 Reset
             </Button>
-            <Button variant="outlined" onClick={runGradientDescent}>
+            <Button
+                variant="outlined"
+                onClick={stepGradientDescent}
+                sx={{ marginRight: 2 }}
+            >
                 Step Gradient Descent
+            </Button>
+            <Button variant="outlined" onClick={runGradientDescent}>
+                Run 1000 Steps
             </Button>
             <Box sx={{ width: 300, marginY: 2 }}>
                 <Slider
@@ -177,8 +247,9 @@ const LinearRegression = () => {
                     valueLabelDisplay="auto"
                 />
                 <Box>Learning Rate: {learningRate}</Box>
+                <Box>Step Count: {stepCount}</Box>
             </Box>
-            <Paper sx={{ width: "100%", height: 300, borderRadius: 3 }}>
+            <Paper sx={{ width: "100%", height: 400, borderRadius: 3 }}>
                 <ResponsiveChartContainer
                     xAxis={[
                         {
@@ -201,11 +272,17 @@ const LinearRegression = () => {
                             type: "line",
                             data: linearPoints,
                             showMark: false,
-                            label: `y = ${m.toFixed(2)}x + ${b.toFixed(2)}`,
+                            label: `y = ${m.toFixed(10)}x + ${b.toFixed(10)}`,
+                        },
+                        {
+                            type: "line",
+                            data: optPoints,
+                            showMark: false,
+                            label: `optimal = ${optM.toFixed(10)}x + ${optB.toFixed(10)}`,
                         },
                     ]}
-                    height={300}
-                    margin={{ top: 10, right: 100 }}
+                    height={400}
+                    margin={{ top: 80, right: 100 }}
                 >
                     <ChartsGrid vertical horizontal />
                     <ScatterPlot />
