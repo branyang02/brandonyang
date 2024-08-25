@@ -621,9 +621,52 @@ $$
 \end{equation}
 $$
 
-In other words, the line segment connecting any two points on the graph of the function lies above or on the graph itself.
-
 </blockquote>
+
+```tikz
+
+\begin{document}
+\begin{tikzpicture}[scale=1.5]
+    % Define the convex function (a parabola in this case)
+    \draw[domain=0:3.75, smooth, variable=\x, thick, blue] plot ({\x}, {0.6*\x*\x - 2*\x + 2});
+
+    % Draw the axes
+    \draw[->] (-0.5,0) -- (4,0) node[right] {$x$};
+    \draw[->] (0,-0.5) -- (0,3) node[above] {$y$};
+
+    % Choose two points on the function
+    \coordinate (x1) at (0.5,1.15);
+    \coordinate (x2) at (3.5,2.35);
+
+    % Draw points and their projections
+    \fill[red] (x1) circle (2pt) node[below left] {$x_1$};
+    \fill[red] (x2) circle (2pt) node[below right] {$x_2$};
+    \draw[dashed] (x1) -- (0.5,0) node[below] {$x_1$};
+    \draw[dashed] (x2) -- (3.5,0) node[below] {$x_2$};
+
+    % Draw the line segment between the points
+    \draw[thick, red] (x1) -- (x2) node[midway, above, sloped] {};
+
+    % Choose a point for λx₁ + (1-λ)x₂
+    \coordinate (z) at (2,0.4);
+    \fill[green!50!black] (z) circle (2pt) node[below right] {$f(\lambda x_1 + (1-\lambda)x_2)$};
+    \draw[dashed] (z) -- (2,0) node[below] {$\lambda x_1 + (1-\lambda)x_2$};
+    \draw[dashed] (z) -- (2, 1.75) node[above, yshift=4mm] {};
+
+    \fill[blue!50!black] (2,1.75) circle (2pt) node[above, yshift=4mm, xshift=-2mm] {$\lambda f(x_1) + (1-\lambda)f(x_2)$};
+
+    % Label the function
+    \node[right] at (3.5,3) {$f(x)$};
+\end{tikzpicture}
+\end{document}
+
+```
+
+<div class="caption">
+
+A convex function states that the line segment connecting any two points on the graph of the function lies above or on the graph itself. In the graph above, the function $ f(x) $ is convex because the line segment connecting $ x_1 $ and $ x_2 $ lies above the function.
+
+</div>
 
 <blockquote class="definition">
 
