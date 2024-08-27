@@ -49,10 +49,13 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     };
 
     const mergedTheme: NotieTheme =
-        contentId === "ml" ? { ...baseTheme, ...latexTheme } : baseTheme;
+        contentId === "ml" || contentId === "ode"
+            ? { ...baseTheme, ...latexTheme }
+            : baseTheme;
 
     return {
-        fontSize: contentId === "ml" ? "1.05em" : undefined,
+        fontSize:
+            contentId === "ml" || contentId === "ode" ? "1.05em" : undefined,
         theme: mergedTheme,
     };
 }
