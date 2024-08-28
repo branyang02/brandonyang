@@ -89,7 +89,6 @@ const NotesBlogs = ({ type }: { type: string }) => {
     const restoreScrollPosition = useCallback(() => {
         const savedPosition = localStorage.getItem(scrollPositionKey);
         if (savedPosition) {
-            console.log("Restoring scroll position", savedPosition);
             const originalBehavior =
                 document.documentElement.style.scrollBehavior;
             document.documentElement.style.scrollBehavior = "auto";
@@ -101,7 +100,6 @@ const NotesBlogs = ({ type }: { type: string }) => {
     const saveScrollPosition = useCallback(() => {
         const currentScrollY = window.scrollY;
         if (currentScrollY !== 0) {
-            console.log("Saving scroll position", currentScrollY);
             localStorage.setItem(scrollPositionKey, currentScrollY.toString());
         } else {
             restoreScrollPosition();
