@@ -1,0 +1,195 @@
+%-------------------------
+% Resume in Latex
+% Author : Sourabh Bajaj
+% Website: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[pdftex]{hyperref}
+\usepackage{fancyhdr}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.375in}
+\addtolength{\evensidemargin}{-0.375in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \if\relax\detokenize{#1}\relax
+    \item\small{#2 \vspace{-2pt}}
+  \else
+    \item\small{
+      \textbf{#1}: #2 \vspace{-2pt}
+    }
+  \fi
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemii}{$\circ$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING-----------------
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+  \textbf{\href{https://brandonyifanyang.com/}{\Large Brandon (Yifan) Yang}} & Email : \href{mailto:jqm9ba@virginia.edu}{jqm9ba@virginia.edu}\\
+  \href{https://brandonyifanyang.com/}{brandonyifanyang.com} 
+\end{tabular*}
+
+
+%-----------EDUCATION-----------------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {University of Virginia}{Charlottesville, VA}
+      {Bachelor of Science in Computer Science;  GPA: 3.91}{Aug. 2021 -- May. 2025}
+  \resumeSubHeadingListEnd
+
+
+%-----------RESEARCH EXPERIENCE--------
+\section{Research Experience}
+  \resumeSubHeadingListStart
+  \resumeSubheading
+      {Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
+      {Advisor: Prof. Yen-Ling Kuo}{Aug 2024 - Present}
+      \resumeItemListStart
+        \resumeItem{Ongoing Senior Capstone}
+          {Vision-Language-Action model for robotic manipulation.}
+      \resumeItemListEnd
+
+
+  \resumeSubheading
+      {University of Maryland}{College Park, MD}
+      {Advisor: Prof. Jia-Bin Huang}{May 2024 - Present}
+      \resumeItemListStart
+        \resumeItem{}
+          {Injecting semantically aware and consistent embeddings into 3D Gaussian Splatting scenes.}
+      \resumeItemListEnd
+
+
+    \resumeSubheading
+      {Collaborative Robotics Lab, University of Virginia}{Charlottesville, VA}
+      {Advisor: Prof. Tariq Iqbal}{May 2022 - May 2024}
+      \resumeItemListStart
+        \item \textbf{Grounded Location for Object Manipulation (GLOMA)}
+        \begin{itemize}
+            \item Zero-shot image-editing model grounded by language instruction for object relocation and manipulation tasks.
+            \item Developed bounding box-guided object manipulation using Llama 2 backbone for goal location prediction, and pre-trained diffusion model for image generation.
+        \end{itemize}
+        \item \textbf{Centralized multi-agent RL for Collaborative Robots}
+        \begin{itemize}
+            \item Developed long-horizon offline centralized MARL for bolt screwing tasks.
+            \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
+        \end{itemize}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+
+
+%-----------EXPERIENCE-----------------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Teaching Assistant}{}
+      {Machine Learning w/ Prof. Rich Nguyen}{Aug 2024 - Present}
+    \resumeSubheading
+      {Teaching Assistant}{}
+      {Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
+    \resumeSubheading
+      {Lab Lead Teaching Assistant}{}
+      {Computer Systems Organizaiton w/ Prof. John Hott}{Jan 2023 - May 2023}
+      \resumeItemListStart
+        \resumeItem{}
+            {Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
+      \resumeItemListEnd
+
+
+
+    % \resumeSubheading
+    %   {Lucena Research}{Atlanta, GA}
+    %   {Data Scientist}{Summer 2012 and 2013}
+    %   \resumeItemListStart
+    %     \resumeItem{Portfolio Management}
+    %       {Created models for portfolio hedging,  portfolio optimization and price forecasting. Also creating a strategy backtesting engine used for simulating and backtesting strategies.}
+    %     \resumeItem{QuantDesk}
+    %       {Python backend for a web application used by hedge fund managers for portfolio management.}
+    %   \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECTS-----------------
+\section{Projects}
+  \resumeSubHeadingListStart
+    \resumeSubItem{QuantSoftware Toolkit}
+      {Open source python library for financial data analysis and machine learning for finance.}
+    \resumeSubItem{Github Visualization}
+      {Data Visualization of Git Log data using D3 to analyze project trends over time.}
+    \resumeSubItem{Recommendation System}
+      {Music and Movie recommender systems using collaborative filtering on public datasets.}
+%     \resumeSubItem{Mac Setup}
+%       {Book that gives step by step instructions on setting up developer environment on Mac OS.}
+  \resumeSubHeadingListEnd
+
+%
+%--------PROGRAMMING SKILLS------------
+\section{Programming Skills}
+ \resumeSubHeadingListStart
+   \item{
+     \textbf{Languages}{: Scala, Python, Javascript, C++, SQL, Java}
+     \hfill
+     \textbf{Technologies}{: AWS, Play, React, Kafka, GCE}
+   }
+ \resumeSubHeadingListEnd
+
+
+%-------------------------------------------
+\end{document}
