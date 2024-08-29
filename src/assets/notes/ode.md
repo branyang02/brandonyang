@@ -6,9 +6,31 @@ Fall 2024 | Author: Brandon Yang
 
 ---
 
-## Introduction
+## Introduction to ODEs
 
-An **ordinary differential equation (ODE)** is an equation that contains one or more functions of one independent variable and its derivatives. The **order** of an ODE is the highest derivative present in the equation.
+An **ordinary differential equation (ODE)** is an equation that contains one or more functions of one independent variable and its derivatives. For example, the following are ODEs:
+
+$$
+\begin{aligned}
+&y = y' \\
+&y'' + \sin(y) = 0 \\
+&e^x y'  + \cos(x) = 0,
+\end{aligned}
+$$
+
+where $y$ is the dependent variable and $x$ is the independent variable. The general form of an ODE is:
+
+$$
+F(x, y, y', y'', \ldots, y^{(n)}) = 0,
+$$
+
+where $F$ is a function of $x$ and $y$ and its derivatives.
+
+<blockquote class="important">
+
+We use the notation $y^{(n)}$ to denote the $n^{th}$ **derivative** of $y$, and we use the standard power notation $y^n$ to denote the $n^{th}$ power of $y$.
+
+</blockquote>
 
 <details open><summary>Solving an ODE</summary>
 
@@ -33,6 +55,12 @@ Given that our solution includes two constants, we have infinitely many solution
 
 ### Classification of ODEs
 
+<span class="subtitle">
+
+Section 1.3 in BOYCE, DIPRIMA.
+
+</span>
+
 There are two ways to classify ODEs:
 
 1. **By order**
@@ -53,12 +81,6 @@ y''' \ln(y)  + y^2 = \sin(y') &\quad \text{(3rd order)},
 $$
 
 where the order of an ODE is the highest derivative present.
-
-<blockquote class="important">
-
-We use the notation $y^{(n)}$ to denote the $n^{th}$ **derivative** of $y$, and we use the standard power notation $y^n$ to denote the $n^{th}$ power of $y$.
-
-</blockquote>
 
 <blockquote class="definition">
 
@@ -98,6 +120,14 @@ $$
 
 This function is linear in $y$, but non-linear in $y'$, since the term $\ln(y')$ is non-linear.
 
+Another example is:
+
+$$
+yy' + 10x = 0.
+$$
+
+This function is linear, since we treat each variable $y$ and $y'$ as separate variables one at the time, and both $y$ and $y'$ are linear.
+
 <blockquote class="definition">
 
 A **linear ODE** is of the form:
@@ -111,3 +141,226 @@ $$
 where $a_0(x), \ldots, a_n(x)$, and $F(x)$ are arbitrary differentiable functions that do not need to be linear.
 
 </blockquote>
+
+<details open><summary>Verify ODEs</summary>
+
+Suppose we have the following problem:
+
+Verify $y = x$ satisfies the ODE $y'=1$.
+
+<blockquote class="proof">
+
+We solve this by taking the derivative of $y$:
+
+$$
+y' = 1.
+$$
+
+Since $y' = 1$, we have verified that $y = x$ satisfies the ODE.
+
+</blockquote>
+
+Verify that the given function $y$ is a solution of the ODE:
+
+$$
+y' - 2ty = 1, \quad y = e^{t^2}\int_0^t e^{-s^2} \, ds + e^{t^2}.
+$$
+
+<blockquote class="proof">
+
+We take the derivative of $y$:
+
+$$
+y' = \frac{d}{dt} \left( e^{t^2}\int_0^t e^{-s^2} \, ds + e^{t^2} \right)
+$$
+
+We use the product rule in $\eqref{eq:productrule}$:
+
+$$
+e^{t^2} \cdot \frac{d}{dt} \int_0^t e^{-s^2} \, ds + \frac{d}{dt} e^{t^2} \cdot \int_0^t e^{-s^2} \, ds + \frac{d}{dt} e^{t^2}.
+$$
+
+Solving the first term using the Fundamental Theorem of Calculus in $\eqref{eq:ftc2}$:
+
+$$
+\begin{aligned}
+e^{t^2} \cdot \frac{d}{dt} \int_0^t e^{-s^2} \, ds &= e^{t^2} \cdot e^{-t^2} \cdot 1 = 1, \\
+\end{aligned}
+$$
+
+Similarly, solving the second term using the chain rule in $\eqref{eq:chainrule}$:
+
+$$
+\frac{d}{dt} e^{t^2} \cdot \int_0^t e^{-s^2} \, ds = 2te^{t^2} \cdot \int_0^t e^{-s^2} \, ds.
+$$
+
+Finally, solving the third term:
+
+$$
+\frac{d}{dt} e^{t^2} = 2te^{t^2}.
+$$
+
+Combining all terms:
+
+$$
+\begin{aligned}
+y' &= 1 + 2te^{t^2} \cdot \int_0^t e^{-s^2} \, ds + 2te^{t^2}
+\end{aligned}
+$$
+
+Finally, we substitute $y'$ back into the ODE:
+
+$$
+\begin{aligned}
+y' - 2ty &= 1 \\
+1 + \left(2te^{t^2} \cdot \int_0^t e^{-s^2} \, ds + 2te^{t^2}\right) - 2t\left( e^{t^2}\int_0^t e^{-s^2} \, ds + e^{t^2}\right) &= 1 \\
+1 + \left(2te^{t^2} \cdot \int_0^t e^{-s^2} \, ds + 2te^{t^2}\right) - \left(2t e^{t^2}\int_0^t e^{-s^2} \, ds - 2te^{t^2}\right) &= 1 \\
+1 &= 1.
+\end{aligned}
+$$
+
+Therefore, the function $y$ satisfies the ODE.
+
+</blockquote>
+
+</details>
+
+## Background
+
+### Review for Calculus
+
+1. Product Rule for derivatives:
+
+$$
+\begin{equation} \label{eq:productrule}
+(fg)' = f'g + fg'.
+\end{equation}
+$$
+
+2. Chain Rule for derivatives:
+
+$$
+\begin{equation} \label{eq:chainrule}
+\frac{d}{dx} \left[ f(g(x)) \right] = f'(g(x)) g'(x).
+\end{equation}
+$$
+
+3. Fundamental Theorem of Calculus:
+
+$$
+\begin{equation} \label{eq:ftc}
+\frac{d}{dx} \int f(x) \, dx = f(x).
+\end{equation}
+$$
+
+$$
+\begin{equation} \label{eq:ftc2}
+\frac{d}{dx} \int_a^{g(x)} f(x) \, dx = f(g(x)) g'(x).
+\end{equation}
+$$
+
+$$
+\begin{equation} \label{eq:ftc3}
+\frac{d}{dx} \int_{h(x)}^{g(x)} f(x) \, dx = f(g(x)) g'(x) - f(h(x)) h'(x).
+\end{equation}
+$$
+
+<details><summary>Examples</summary>
+
+For example, suppose we want to evaluate the following derivative:
+
+$$
+\frac{d}{dx} \cos(x^2 + 1).
+$$
+
+<blockquote class="proof">
+
+We use the chain rule from $\eqref{eq:chainrule}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \cos(x^2 + 1) &= -\sin(x^2 + 1) \cdot 2x \\
+&= -2x \sin(x^2 + 1).
+\end{aligned}
+$$
+
+</blockquote>
+
+Suppose we want to evaluate the following derivative:
+
+$$
+\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right).
+$$
+
+<blockquote class="proof">
+
+We use the product rule from $\eqref{eq:productrule}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right) &= 1 \cdot \cos(x^2 + 1) + x \cdot -\sin(x^2 + 1) \cdot 2x \\
+&= \cos(x^2 + 1) - 2x^2 \sin(x^2 + 1).
+\end{aligned}
+$$
+
+</blockquote>
+
+Suppose we want to evaluate the following integral:
+
+$$
+\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx.
+$$
+
+<blockquote class="proof">
+
+Since we are solving for a definite integral, we know from $\eqref{eq:ftc3}$ that the solution is a constant:
+
+$$
+\int_1^2 \left( \tan(x+100) - x \right) \, dx = C,
+$$
+
+where $C$ is a constant. Therefore, the derivative of a constant is zero:
+
+$$
+\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx = 0.
+$$
+
+</blockquote>
+
+Suppose we have the following derivative:
+
+$$
+\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds.
+$$
+
+<blockquote class="proof">
+
+We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc2}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds &= \sin^{-1}(x^2+1) \cdot 1 \\
+&= \sin^{-1}(x^2+1).
+\end{aligned}
+$$
+
+</blockquote>
+
+Suppose we have the following derivative:
+
+$$
+\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds.
+$$
+
+<blockquote class="proof">
+
+We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc3}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds &= \cos(10) \cdot 0 - \cos(x^2 - 1) \cdot 2x \\
+&= -2x \cos(x^2 - 1).
+\end{aligned}
+$$
+
+</details>
