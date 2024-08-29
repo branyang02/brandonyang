@@ -6,6 +6,164 @@ Fall 2024 | Author: Brandon Yang
 
 ---
 
+## Background
+
+<details><summary>Review for Calculus</summary>
+
+1. Product Rule for derivatives:
+
+$$
+\begin{equation} \label{eq:product_rule}
+(fg)' = f'g + fg'.
+\end{equation}
+$$
+
+2. Chain Rule for derivatives:
+
+$$
+\begin{equation} \label{eq:chain_rule}
+\frac{d}{dx} \left[ f(g(x)) \right] = f'(g(x)) g'(x).
+\end{equation}
+$$
+
+3. Fundamental Theorem of Calculus:
+
+$$
+\begin{equation} \label{eq:ftc}
+\frac{d}{dx} \int f(x) \, dx = f(x).
+\end{equation}
+$$
+
+$$
+\begin{equation} \label{eq:ftc2}
+\frac{d}{dx} \int_a^{g(x)} f(x) \, dx = f(g(x)) g'(x).
+\end{equation}
+$$
+
+$$
+\begin{equation} \label{eq:ftc3}
+\frac{d}{dx} \int_{h(x)}^{g(x)} f(x) \, dx = f(g(x)) g'(x) - f(h(x)) h'(x).
+\end{equation}
+$$
+
+<blockquote class="problem">
+
+For example, suppose we want to evaluate the following derivative:
+
+$$
+\frac{d}{dx} \cos(x^2 + 1).
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We use the chain rule from $\eqref{eq:chain_rule}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \cos(x^2 + 1) &= -\sin(x^2 + 1) \cdot 2x \\
+&= -2x \sin(x^2 + 1).
+\end{aligned}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we want to evaluate the following derivative:
+
+$$
+\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right).
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We use the product rule from $\eqref{eq:product_rule}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right) &= 1 \cdot \cos(x^2 + 1) + x \cdot -\sin(x^2 + 1) \cdot 2x \\
+&= \cos(x^2 + 1) - 2x^2 \sin(x^2 + 1).
+\end{aligned}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we want to evaluate the following integral:
+
+$$
+\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+Since we are solving for a definite integral, we know from $\eqref{eq:ftc3}$ that the solution is a constant:
+
+$$
+\int_1^2 \left( \tan(x+100) - x \right) \, dx = C,
+$$
+
+where $C$ is a constant. Therefore, the derivative of a constant is zero:
+
+$$
+\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx = 0.
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we have the following derivative:
+
+$$
+\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc2}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds &= \sin^{-1}(x^2+1) \cdot 1 \\
+&= \sin^{-1}(x^2+1).
+\end{aligned}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we have the following derivative:
+
+$$
+\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc3}$:
+
+$$
+\begin{aligned}
+\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds &= \cos(10) \cdot 0 - \cos(x^2 - 1) \cdot 2x \\
+&= -2x \cos(x^2 - 1).
+\end{aligned}
+$$
+
+</details>
+
 ## Introduction to ODEs
 
 An **ordinary differential equation (ODE)** is an equation that contains one or more functions of one independent variable and its derivatives. For example, the following are ODEs:
@@ -144,9 +302,13 @@ where $a_0(x), \ldots, a_n(x)$, and $F(x)$ are arbitrary differentiable function
 
 <details open><summary>Verify ODEs</summary>
 
+<blockquote class="problem">
+
 Suppose we have the following problem:
 
 Verify $y = x$ satisfies the ODE $y'=1$.
+
+</blockquote>
 
 <blockquote class="proof">
 
@@ -160,11 +322,15 @@ Since $y' = 1$, we have verified that $y = x$ satisfies the ODE.
 
 </blockquote>
 
+<blockquote class="problem">
+
 Verify that the given function $y$ is a solution of the ODE:
 
 $$
 y' - 2ty = 1, \quad y = e^{t^2}\int_0^t e^{-s^2} \, ds + e^{t^2}.
 $$
+
+</blockquote>
 
 <blockquote class="proof">
 
@@ -174,7 +340,7 @@ $$
 y' = \frac{d}{dt} \left( e^{t^2}\int_0^t e^{-s^2} \, ds + e^{t^2} \right)
 $$
 
-We use the product rule in $\eqref{eq:productrule}$:
+We use the product rule in $\eqref{eq:product_rule}$:
 
 $$
 e^{t^2} \cdot \frac{d}{dt} \int_0^t e^{-s^2} \, ds + \frac{d}{dt} e^{t^2} \cdot \int_0^t e^{-s^2} \, ds + \frac{d}{dt} e^{t^2}.
@@ -188,7 +354,7 @@ e^{t^2} \cdot \frac{d}{dt} \int_0^t e^{-s^2} \, ds &= e^{t^2} \cdot e^{-t^2} \cd
 \end{aligned}
 $$
 
-Similarly, solving the second term using the chain rule in $\eqref{eq:chainrule}$:
+Similarly, solving the second term using the chain rule in $\eqref{eq:chain_rule}$:
 
 $$
 \frac{d}{dt} e^{t^2} \cdot \int_0^t e^{-s^2} \, ds = 2te^{t^2} \cdot \int_0^t e^{-s^2} \, ds.
@@ -222,145 +388,5 @@ $$
 Therefore, the function $y$ satisfies the ODE.
 
 </blockquote>
-
-</details>
-
-## Background
-
-### Review for Calculus
-
-1. Product Rule for derivatives:
-
-$$
-\begin{equation} \label{eq:productrule}
-(fg)' = f'g + fg'.
-\end{equation}
-$$
-
-2. Chain Rule for derivatives:
-
-$$
-\begin{equation} \label{eq:chainrule}
-\frac{d}{dx} \left[ f(g(x)) \right] = f'(g(x)) g'(x).
-\end{equation}
-$$
-
-3. Fundamental Theorem of Calculus:
-
-$$
-\begin{equation} \label{eq:ftc}
-\frac{d}{dx} \int f(x) \, dx = f(x).
-\end{equation}
-$$
-
-$$
-\begin{equation} \label{eq:ftc2}
-\frac{d}{dx} \int_a^{g(x)} f(x) \, dx = f(g(x)) g'(x).
-\end{equation}
-$$
-
-$$
-\begin{equation} \label{eq:ftc3}
-\frac{d}{dx} \int_{h(x)}^{g(x)} f(x) \, dx = f(g(x)) g'(x) - f(h(x)) h'(x).
-\end{equation}
-$$
-
-<details><summary>Examples</summary>
-
-For example, suppose we want to evaluate the following derivative:
-
-$$
-\frac{d}{dx} \cos(x^2 + 1).
-$$
-
-<blockquote class="proof">
-
-We use the chain rule from $\eqref{eq:chainrule}$:
-
-$$
-\begin{aligned}
-\frac{d}{dx} \cos(x^2 + 1) &= -\sin(x^2 + 1) \cdot 2x \\
-&= -2x \sin(x^2 + 1).
-\end{aligned}
-$$
-
-</blockquote>
-
-Suppose we want to evaluate the following derivative:
-
-$$
-\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right).
-$$
-
-<blockquote class="proof">
-
-We use the product rule from $\eqref{eq:productrule}$:
-
-$$
-\begin{aligned}
-\frac{d}{dx} \left(x \cdot \cos(x^2 + 1)\right) &= 1 \cdot \cos(x^2 + 1) + x \cdot -\sin(x^2 + 1) \cdot 2x \\
-&= \cos(x^2 + 1) - 2x^2 \sin(x^2 + 1).
-\end{aligned}
-$$
-
-</blockquote>
-
-Suppose we want to evaluate the following integral:
-
-$$
-\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx.
-$$
-
-<blockquote class="proof">
-
-Since we are solving for a definite integral, we know from $\eqref{eq:ftc3}$ that the solution is a constant:
-
-$$
-\int_1^2 \left( \tan(x+100) - x \right) \, dx = C,
-$$
-
-where $C$ is a constant. Therefore, the derivative of a constant is zero:
-
-$$
-\frac{d}{dx} \int_1^2 \left( \tan(x+100) - x \right) \, dx = 0.
-$$
-
-</blockquote>
-
-Suppose we have the following derivative:
-
-$$
-\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds.
-$$
-
-<blockquote class="proof">
-
-We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc2}$:
-
-$$
-\begin{aligned}
-\frac{d}{dx} \int_0^x \sin^{-1}(s^2+1) \, ds &= \sin^{-1}(x^2+1) \cdot 1 \\
-&= \sin^{-1}(x^2+1).
-\end{aligned}
-$$
-
-</blockquote>
-
-Suppose we have the following derivative:
-
-$$
-\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds.
-$$
-
-<blockquote class="proof">
-
-We use the Fundamental Theorem of Calculus from $\eqref{eq:ftc3}$:
-
-$$
-\begin{aligned}
-\frac{d}{dx} \int_{x^2 - 1}^{10} \cos(s) \, ds &= \cos(10) \cdot 0 - \cos(x^2 - 1) \cdot 2x \\
-&= -2x \cos(x^2 - 1).
-\end{aligned}
-$$
 
 </details>
