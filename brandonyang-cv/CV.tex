@@ -89,7 +89,9 @@
   \resumeSubHeadingListStart
     \resumeSubheading
       {University of Virginia}{Charlottesville, VA}
-      {Bachelor of Science in Computer Science;  GPA: 3.91}{Aug. 2021 -- May. 2025}
+      {Bachelor of Science in Computer Science;  GPA: 3.91/4.00}{Aug. 2021 -- May. 2025}
+      \item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Human-Robot Interaction (G), Optimization, Data Structures
+      \& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering
   \resumeSubHeadingListEnd
 
 
@@ -101,7 +103,8 @@
       {Advisor: Prof. Yen-Ling Kuo}{Aug 2024 - Present}
       \resumeItemListStart
         \resumeItem{Ongoing Senior Capstone}
-          {Vision-Language-Action model for robotic manipulation.}
+          {Vision-Language-Action (VLA) model for robotic manipulation.}
+        \item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each timestep.
       \resumeItemListEnd
 
 
@@ -109,8 +112,12 @@
       {University of Maryland}{College Park, MD}
       {Advisor: Prof. Jia-Bin Huang}{May 2024 - Present}
       \resumeItemListStart
-        \resumeItem{}
-          {Injecting semantically aware and consistent embeddings into 3D Gaussian Splatting scenes.}
+      \item \textbf{Semantically Aware 3D Gaussian Splatting}
+      \begin{itemize}
+          \item Developed novel method to inject semantically aware embeddings into 3D Gaussian Splatting (3DGS) scenes for 3D understanding and segmentation tasks.
+          \item Leveraged video segmentation from SAMv2 to maintain temporal consistency in injection of CLIP features from 2D training set to 3DGS scene, ensuring stable and accuracte 3D embeddings.
+      \end{itemize}
+    
       \resumeItemListEnd
 
 
@@ -120,12 +127,14 @@
       \resumeItemListStart
         \item \textbf{Grounded Location for Object Manipulation (GLOMA)}
         \begin{itemize}
-            \item Zero-shot image-editing model grounded by language instruction for object relocation and manipulation tasks.
-            \item Developed bounding box-guided object manipulation using Llama 2 backbone for goal location prediction, and pre-trained diffusion model for image generation.
+            \item Zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL.
+            \item Integrated language grounding with visual perception using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision.
+            \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
         \end{itemize}
-        \item \textbf{Centralized multi-agent RL for Collaborative Robots}
+        \item \textbf{Centralized multi-agent RL for Collaborative Tasks}
         \begin{itemize}
-            \item Developed long-horizon offline centralized MARL for bolt screwing tasks.
+            \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks.
+            \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration.
             \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
         \end{itemize}
       \resumeItemListEnd
@@ -133,16 +142,24 @@
 
 
 
-%-----------EXPERIENCE-----------------
-\section{Experience}
+%-----------TEACHING EXPERIENCE-----------------
+\section{Teaching Experience}
   \resumeSubHeadingListStart
 
     \resumeSubheading
       {Teaching Assistant}{}
       {Machine Learning w/ Prof. Rich Nguyen}{Aug 2024 - Present}
+      \resumeItemListStart
+        \resumeItem{}
+            {Authored comprehensive course notes to support student learning and understanding.}
+      \resumeItemListEnd
     \resumeSubheading
       {Teaching Assistant}{}
       {Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
+      \resumeItemListStart
+        \resumeItem{}
+            {Held weekly office hours and review sessions to assist students with course material.}
+      \resumeItemListEnd
     \resumeSubheading
       {Lab Lead Teaching Assistant}{}
       {Computer Systems Organizaiton w/ Prof. John Hott}{Jan 2023 - May 2023}
@@ -166,6 +183,25 @@
   \resumeSubHeadingListEnd
 
 
+%-----------HONORS-----------------
+
+\section{Honors}
+  \resumeSubHeadingListStart
+    \resumeSubItem{Dean's Engineering Research Scholarship (Awarded \$5000)}{University of Virginia}
+    \resumeSubItem{Entrepreneurship Cup Winner (Given \$1000 in funding)}{University of Virginia}
+    \resumeSubItem{Dean's List}{University of Virginia}
+    \resumeSubItem{National Merit Scholar}{}
+  \resumeSubHeadingListEnd
+
+
+%-----------Presentations-----------------
+\section{Presentations}
+  \resumeSubHeadingListStart
+    \resumeSubItem{GLOMA: Grounded Location for Object Manipulation}{RSS 2023}
+    \resumeSubItem{Centralized Multi-Agent Reinforcement Learning for Collaborative Tasks}{ICRA 2023}
+  \resumeSubHeadingListEnd
+
+
 %-----------PROJECTS-----------------
 \section{Projects}
   \resumeSubHeadingListStart
@@ -175,8 +211,6 @@
       {Data Visualization of Git Log data using D3 to analyze project trends over time.}
     \resumeSubItem{Recommendation System}
       {Music and Movie recommender systems using collaborative filtering on public datasets.}
-%     \resumeSubItem{Mac Setup}
-%       {Book that gives step by step instructions on setting up developer environment on Mac OS.}
   \resumeSubHeadingListEnd
 
 %
