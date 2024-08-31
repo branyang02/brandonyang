@@ -71,6 +71,14 @@
 \newcommand{\resumeItemListStart}{\begin{itemize}}
 \newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
 
+\newcommand{\resumeItemWithDate}[3]{
+  \item
+    \begin{tabular*}{#1\textwidth}{@{\extracolsep{\fill}} l r}
+      #2 & \textit{#3} \\
+    \end{tabular*}
+}
+
+
 %-------------------------------------------
 %%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -168,18 +176,6 @@
             {Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
       \resumeItemListEnd
 
-
-
-    % \resumeSubheading
-    %   {Lucena Research}{Atlanta, GA}
-    %   {Data Scientist}{Summer 2012 and 2013}
-    %   \resumeItemListStart
-    %     \resumeItem{Portfolio Management}
-    %       {Created models for portfolio hedging,  portfolio optimization and price forecasting. Also creating a strategy backtesting engine used for simulating and backtesting strategies.}
-    %     \resumeItem{QuantDesk}
-    %       {Python backend for a web application used by hedge fund managers for portfolio management.}
-    %   \resumeItemListEnd
-
   \resumeSubHeadingListEnd
 
 
@@ -188,40 +184,59 @@
 \section{Honors}
   \resumeSubHeadingListStart
     \resumeSubItem{Dean's Engineering Research Scholarship (Awarded \$5000)}{University of Virginia}
+    \resumeSubItem{University of Virginia Research Computing Exhibition Finalist}{University of Virginia}
     \resumeSubItem{Entrepreneurship Cup Winner (Given \$1000 in funding)}{University of Virginia}
     \resumeSubItem{Dean's List}{University of Virginia}
-    \resumeSubItem{National Merit Scholar}{}
   \resumeSubHeadingListEnd
+
+
 
 
 %-----------Presentations-----------------
 \section{Presentations}
-  \resumeSubHeadingListStart
-    \resumeSubItem{GLOMA: Grounded Location for Object Manipulation}{RSS 2023}
-    \resumeSubItem{Centralized Multi-Agent Reinforcement Learning for Collaborative Tasks}{ICRA 2023}
-  \resumeSubHeadingListEnd
+\resumeSubHeadingListStart
+\resumeItem{}{\textbf{Mechanistic Interpretability in Large Language Models}}\vspace{-4pt}
+  \begin{itemize}
+    \resumeItemWithDate{0.925}{University of Virginia Research Computing Exhibition, Charlottesville, VA}{Spring 2024}
+  \end{itemize}\vspace{-9pt}
+\resumeItem{}{\textbf{GLOMA: Grounded Location for Object Manipulation}}\vspace{-4pt}
+  \begin{itemize}
+    \resumeItemWithDate{0.925}{University of Virginia Fall Engineering Research Expo, Charlottesville, VA}{Fall 2023}
+    \resumeItemWithDate{0.925}{University of Virginia Spring Thornton Society Dinner, Charlottesville, VA}{Fall 2023}
+    \resumeItemWithDate{0.925}{University of Virginia Summer Research Symposium, Charlottesville, VA}{Summer 2023}
+  \end{itemize}\vspace{-9pt} 
+\resumeItem{}{\textbf{Robot Tool Grasping with AprilTag}}\vspace{-4pt}
+  \begin{itemize}
+    \resumeItemWithDate{0.925}{University of Virginia Engineering Open House, Charlottesville, VA}{Fall 2022}
+  \end{itemize}\vspace{-9pt}
+\resumeSubHeadingListEnd
+
+
 
 
 %-----------PROJECTS-----------------
 \section{Projects}
-  \resumeSubHeadingListStart
-    \resumeSubItem{QuantSoftware Toolkit}
-      {Open source python library for financial data analysis and machine learning for finance.}
-    \resumeSubItem{Github Visualization}
-      {Data Visualization of Git Log data using D3 to analyze project trends over time.}
-    \resumeSubItem{Recommendation System}
-      {Music and Movie recommender systems using collaborative filtering on public datasets.}
-  \resumeSubHeadingListEnd
+\resumeSubHeadingListStart
+\resumeSubItem{notie-markdown}
+  {Open-source React component for Markdown rendering, built with TypeScript.}
+\resumeSubItem{SmartOH}
+  {AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd at VTHacks11.}
+\resumeSubItem{Voy}
+  {Volunteer and driver management platform for non-profits, built with Python and TypeScript. Received funding from UVA's Entrepreneurship Cup.}
+\resumeSubHeadingListEnd
+
 
 %
 %--------PROGRAMMING SKILLS------------
 \section{Programming Skills}
  \resumeSubHeadingListStart
-   \item{
-     \textbf{Languages}{: Scala, Python, Javascript, C++, SQL, Java}
-     \hfill
-     \textbf{Technologies}{: AWS, Play, React, Kafka, GCE}
-   }
+   \resumeSubItem{Languages}
+   {Python, C/C++, Java, JavaScript, TypeScript, HTML/CSS}
+  \resumeSubItem{Technologies}
+  {PyTorch, TensorFlow, Linux, Git, Docker, \LaTeX}
+  \resumeSubItem{Web Technologies}
+  {React, Node.js, Express, Django}
+   
  \resumeSubHeadingListEnd
 
 
