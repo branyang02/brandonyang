@@ -1,10 +1,3 @@
-%-------------------------
-% Resume in Latex
-% Author : Sourabh Bajaj
-% Website: https://github.com/sb2nov/resume
-% License : MIT
-%------------------------
-
 \documentclass[letterpaper,11pt]{article}
 
 \usepackage{latexsym}
@@ -19,7 +12,8 @@
 
 
 \pagestyle{fancy}
-\fancyhf{} % clear all header and footer fields
+\setlength{\footskip}{4.08003pt}
+\fancyhf{} 
 \fancyfoot{}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
@@ -88,106 +82,106 @@
 %----------HEADING-----------------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
   \textbf{\href{https://brandonyifanyang.com/}{\Large Brandon (Yifan) Yang}} & Email : \href{mailto:jqm9ba@virginia.edu}{jqm9ba@virginia.edu}\\
-  \href{https://brandonyifanyang.com/}{brandonyifanyang.com} 
+  \href{https://brandonyifanyang.com/}{brandonyifanyang.com}
 \end{tabular*}
 
 
 %-----------EDUCATION-----------------
 \section{Education}
-  \resumeSubHeadingListStart
-    \resumeSubheading
-      {University of Virginia}{Charlottesville, VA}
-      {Bachelor of Science in Computer Science;  GPA: 3.91/4.00}{Aug. 2021 -- May. 2025}
-      \item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Human-Robot Interaction (G), Optimization, Data Structures
-      \& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering
-  \resumeSubHeadingListEnd
+\resumeSubHeadingListStart
+\resumeSubheading
+{University of Virginia}{Charlottesville, VA}
+{Bachelor of Science in Computer Science;  GPA: 3.91/4.00}{Aug. 2021 -- May. 2025}
+\item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Human-Robot Interaction (G), Optimization, Data Structures
+\& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering
+\resumeSubHeadingListEnd
 
 
 %-----------RESEARCH EXPERIENCE--------
 \section{Research Experience}
-  \resumeSubHeadingListStart
-  \resumeSubheading
-      {Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
-      {Advisor: Prof. Yen-Ling Kuo}{Aug 2024 - Present}
-      \resumeItemListStart
-        \resumeItem{Ongoing Senior Capstone}
-          {Vision-Language-Action (VLA) model for robotic manipulation.}
-        \item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each timestep.
-      \resumeItemListEnd
+\resumeSubHeadingListStart
+\resumeSubheading
+{Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
+{Advisor: Prof. Yen-Ling Kuo}{Aug 2024 - Present}
+\resumeItemListStart
+\resumeItem{Ongoing Senior Capstone}
+{Vision-Language-Action (VLA) model for robotic manipulation.}
+\item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each timestep.
+\resumeItemListEnd
 
 
-  \resumeSubheading
-      {University of Maryland}{College Park, MD}
-      {Advisor: Prof. Jia-Bin Huang}{May 2024 - Present}
-      \resumeItemListStart
-      \item \textbf{Semantically Aware 3D Gaussian Splatting}
-      \begin{itemize}
-          \item Developed novel method to inject semantically aware embeddings into 3D Gaussian Splatting (3DGS) scenes for 3D understanding and segmentation tasks.
-          \item Leveraged video segmentation from SAMv2 to maintain temporal consistency in injection of CLIP features from 2D training set to 3DGS scene, ensuring stable and accuracte 3D embeddings.
-      \end{itemize}
-    
-      \resumeItemListEnd
+\resumeSubheading
+{University of Maryland}{College Park, MD}
+{Advisor: Prof. Jia-Bin Huang}{May 2024 - Present}
+\resumeItemListStart
+\item \textbf{Semantically Aware 3D Gaussian Splatting}
+\begin{itemize}
+  \item Developed novel method to inject semantically aware embeddings into 3D Gaussian Splatting (3DGS) scenes for 3D understanding and segmentation tasks.
+  \item Leveraged video segmentation from SAMv2 to maintain temporal consistency in injection of CLIP features from 2D training set to 3DGS scene, ensuring stable and accuracte 3D embeddings.
+\end{itemize}
+
+\resumeItemListEnd
 
 
-    \resumeSubheading
-      {Collaborative Robotics Lab, University of Virginia}{Charlottesville, VA}
-      {Advisor: Prof. Tariq Iqbal}{May 2022 - May 2024}
-      \resumeItemListStart
-        \item \textbf{Grounded Location for Object Manipulation (GLOMA)}
-        \begin{itemize}
-            \item Zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL.
-            \item Integrated language grounding with visual perception using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision.
-            \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
-        \end{itemize}
-        \item \textbf{Centralized multi-agent RL for Collaborative Tasks}
-        \begin{itemize}
-            \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks.
-            \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration.
-            \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
-        \end{itemize}
-      \resumeItemListEnd
-  \resumeSubHeadingListEnd
+\resumeSubheading
+{Collaborative Robotics Lab, University of Virginia}{Charlottesville, VA}
+{Advisor: Prof. Tariq Iqbal}{May 2022 - May 2024}
+\resumeItemListStart
+\item \textbf{Grounded Location for Object Manipulation (GLOMA)}
+\begin{itemize}
+  \item Zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL.
+  \item Integrated language grounding with visual perception using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision.
+  \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
+\end{itemize}
+\item \textbf{Centralized multi-agent RL for Collaborative Tasks}
+\begin{itemize}
+  \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks.
+  \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration.
+  \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
+\end{itemize}
+\resumeItemListEnd
+\resumeSubHeadingListEnd
 
 
 
 %-----------TEACHING EXPERIENCE-----------------
 \section{Teaching Experience}
-  \resumeSubHeadingListStart
+\resumeSubHeadingListStart
 
-    \resumeSubheading
-      {Teaching Assistant}{}
-      {Machine Learning w/ Prof. Rich Nguyen}{Aug 2024 - Present}
-      \resumeItemListStart
-        \resumeItem{}
-            {Authored comprehensive course notes to support student learning and understanding.}
-      \resumeItemListEnd
-    \resumeSubheading
-      {Teaching Assistant}{}
-      {Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
-      \resumeItemListStart
-        \resumeItem{}
-            {Held weekly office hours and review sessions to assist students with course material.}
-      \resumeItemListEnd
-    \resumeSubheading
-      {Lab Lead Teaching Assistant}{}
-      {Computer Systems Organizaiton w/ Prof. John Hott}{Jan 2023 - May 2023}
-      \resumeItemListStart
-        \resumeItem{}
-            {Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
-      \resumeItemListEnd
+\resumeSubheading
+{Teaching Assistant}{}
+{Machine Learning w/ Prof. Rich Nguyen}{Aug 2024 - Present}
+\resumeItemListStart
+\resumeItem{}
+{Authored comprehensive course notes to support student learning and understanding.}
+\resumeItemListEnd
+\resumeSubheading
+{Teaching Assistant}{}
+{Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
+\resumeItemListStart
+\resumeItem{}
+{Held weekly office hours and review sessions to assist students with course material.}
+\resumeItemListEnd
+\resumeSubheading
+{Lab Lead Teaching Assistant}{}
+{Computer Systems Organizaiton w/ Prof. John Hott}{Jan 2023 - May 2023}
+\resumeItemListStart
+\resumeItem{}
+{Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
+\resumeItemListEnd
 
-  \resumeSubHeadingListEnd
+\resumeSubHeadingListEnd
 
 
 %-----------HONORS-----------------
 
 \section{Honors}
-  \resumeSubHeadingListStart
-    \resumeSubItem{Dean's Engineering Research Scholarship (Awarded \$5000)}{University of Virginia}
-    \resumeSubItem{University of Virginia Research Computing Exhibition Finalist}{University of Virginia}
-    \resumeSubItem{Entrepreneurship Cup Winner (Given \$1000 in funding)}{University of Virginia}
-    \resumeSubItem{Dean's List}{University of Virginia}
-  \resumeSubHeadingListEnd
+\resumeSubHeadingListStart
+\resumeSubItem{Dean's Engineering Research Scholarship (Awarded \$5000)}{University of Virginia}
+\resumeSubItem{University of Virginia Research Computing Exhibition Finalist}{University of Virginia}
+\resumeSubItem{Entrepreneurship Cup Winner (Given \$1000 in funding)}{University of Virginia}
+\resumeSubItem{Dean's List}{University of Virginia}
+\resumeSubHeadingListEnd
 
 
 
@@ -196,48 +190,47 @@
 \section{Presentations}
 \resumeSubHeadingListStart
 \resumeItem{}{\textbf{Mechanistic Interpretability in Large Language Models}}\vspace{-4pt}
-  \begin{itemize}
-    \resumeItemWithDate{0.925}{University of Virginia Research Computing Exhibition, Charlottesville, VA}{Spring 2024}
-  \end{itemize}\vspace{-9pt}
+\begin{itemize}
+  \resumeItemWithDate{0.925}{University of Virginia Research Computing Exhibition, Charlottesville, VA}{Spring 2024}
+\end{itemize}\vspace{-9pt}
 \resumeItem{}{\textbf{GLOMA: Grounded Location for Object Manipulation}}\vspace{-4pt}
-  \begin{itemize}
-    \resumeItemWithDate{0.925}{University of Virginia Fall Engineering Research Expo, Charlottesville, VA}{Fall 2023}
-    \resumeItemWithDate{0.925}{University of Virginia Spring Thornton Society Dinner, Charlottesville, VA}{Fall 2023}
-    \resumeItemWithDate{0.925}{University of Virginia Summer Research Symposium, Charlottesville, VA}{Summer 2023}
-  \end{itemize}\vspace{-9pt} 
+\begin{itemize}
+  \resumeItemWithDate{0.925}{University of Virginia Fall Engineering Research Expo, Charlottesville, VA}{Fall 2023}
+  \resumeItemWithDate{0.925}{University of Virginia Spring Thornton Society Dinner, Charlottesville, VA}{Fall 2023}
+  \resumeItemWithDate{0.925}{University of Virginia Summer Research Symposium, Charlottesville, VA}{Summer 2023}
+\end{itemize}\vspace{-9pt}
 \resumeItem{}{\textbf{Robot Tool Grasping with AprilTag}}\vspace{-4pt}
-  \begin{itemize}
-    \resumeItemWithDate{0.925}{University of Virginia Engineering Open House, Charlottesville, VA}{Fall 2022}
-  \end{itemize}\vspace{-9pt}
+\begin{itemize}
+  \resumeItemWithDate{0.925}{University of Virginia Engineering Open House, Charlottesville, VA}{Fall 2022}
+\end{itemize}\vspace{-9pt}
 \resumeSubHeadingListEnd
 
 
 
 
-%-----------PROJECTS-----------------
-\section{Projects}
+%-----------SOFTWARE PROJECTS-----------------
+\section{Software Projects}
 \resumeSubHeadingListStart
 \resumeSubItem{notie-markdown}
-  {Open-source React component for Markdown rendering, built with TypeScript.}
+{Open-source React component for Markdown rendering, built with TypeScript.}
 \resumeSubItem{SmartOH}
-  {AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd at VTHacks11.}
+{AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd at VTHacks11.}
 \resumeSubItem{Voy}
-  {Volunteer and driver management platform for non-profits, built with Python and TypeScript. Received funding from UVA's Entrepreneurship Cup.}
+{Volunteer and driver management platform for non-profits, built with Python and TypeScript. Received funding from UVA's Entrepreneurship Cup.}
 \resumeSubHeadingListEnd
 
 
-%
 %--------PROGRAMMING SKILLS------------
 \section{Programming Skills}
- \resumeSubHeadingListStart
-   \resumeSubItem{Languages}
-   {Python, C/C++, Java, JavaScript, TypeScript, HTML/CSS}
-  \resumeSubItem{Technologies}
-  {PyTorch, TensorFlow, Linux, Git, Docker, \LaTeX}
-  \resumeSubItem{Web Technologies}
-  {React, Node.js, Express, Django}
-   
- \resumeSubHeadingListEnd
+\resumeSubHeadingListStart
+\resumeSubItem{Languages}
+{Python, C/C++, Java, JavaScript, TypeScript, HTML/CSS}
+\resumeSubItem{Technologies}
+{PyTorch, TensorFlow, Linux, Git, Docker, \LaTeX}
+\resumeSubItem{Web Technologies}
+{React, Node.js, Express, Django}
+
+\resumeSubHeadingListEnd
 
 
 %-------------------------------------------
