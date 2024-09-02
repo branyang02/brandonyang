@@ -549,6 +549,8 @@ Overall, we can compare the normal equation, gradient descent, and stochastic gr
 | Gradient Descent                  | $O(kn^2)$          | Linear convergence rate    | Can achieve high accuracy with proper learning rate and sufficient iterations |
 | Stochastic Gradient Descent (SGD) | $O(kn)$            | Sublinear convergence rate | Can approach optimal solution, but may oscillate around it                    |
 
+### Interactive Example
+
 Below we present an interactive example of linear regression using gradient descent. Suppose we have a dataset with one feature and one target value. The linear regression hypothesis function can be represented as:
 
 $$
