@@ -10,6 +10,7 @@
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 
+
 \pagestyle{fancy}
 \fancyhf{} 
 \fancyfoot{}
@@ -31,16 +32,16 @@
 
 % Sections formatting
 \titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
+  \vspace{-4pt}\scshape\raggedright\Large
 }{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
 
 %-------------------------
 % Custom commands
 \newcommand{\resumeItem}[2]{
   \if\relax\detokenize{#1}\relax
-    \item\small{#2 \vspace{-2pt}}
+    \item{#2 \vspace{-2pt}}
   \else
-    \item\small{
+    \item{
       \textbf{#1}: #2 \vspace{-2pt}
     }
   \fi
@@ -66,7 +67,7 @@
 \newcommand{\resumeItemWithDate}[3]{
   \item
     \begin{tabular*}{#1\textwidth}{@{\extracolsep{\fill}} l r}
-      #2 & \textit{#3} \\
+      #2 & \small\textit{#3} \\
     \end{tabular*}
 }
 
@@ -89,7 +90,7 @@
 \resumeSubHeadingListStart
 \resumeSubheading
 {\href{https://engineering.virginia.edu/department/computer-science}{University of Virginia}}{Charlottesville, VA}
-{B.S. in Computer Science;  Major GPA: 3.98/4.00; Cumulative GPA: 3.91/4.00}{Aug. 2021 -- May. 2025}
+{B.S. in Computer Science;  Major GPA: 3.98/4.00; Cumulative GPA: 3.91/4.00}{August 2021 - May 2025}
 \item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Human-Robot Interaction (G), Optimization, Data Structures
 \& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering
 \resumeSubHeadingListEnd
@@ -100,22 +101,22 @@
 \resumeSubHeadingListStart
 \resumeSubheading
 {Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
-{Advisor: Prof. Yen-Ling Kuo}{Aug 2024 - Present}
+{Advisor: \href{https://yenlingkuo.com/}{Prof. Yen-Ling Kuo}}{Aug 2024 - Present}
 \resumeItemListStart
 \resumeItem{Ongoing Senior Capstone}
 {Vision-Language-Action (VLA) model for robotic manipulation.}
-\item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each timestep.
+\item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each time step.
 \resumeItemListEnd
 
 
 \resumeSubheading
 {University of Maryland}{College Park, MD}
-{Advisor: Prof. Jia-Bin Huang}{May 2024 - Present}
+{Advisor: \href{https://jbhuang0604.github.io/}{Prof. Jia-Bin Huang}}{May 2024 - Present}
 \resumeItemListStart
 \item \textbf{Semantically Aware 3D Gaussian Splatting}
 \begin{itemize}
   \item Developed novel method to inject semantically aware embeddings into 3D Gaussian Splatting (3DGS) scenes for 3D understanding and segmentation tasks.
-  \item Leveraged video segmentation from SAMv2 to maintain temporal consistency in injection of CLIP features from 2D training set to 3DGS scene, ensuring stable and accuracte 3D embeddings.
+  \item Leveraged video segmentation from SAMv2 to maintain temporal consistency in injection of CLIP features from 2D training set to 3DGS scene, ensuring stable and accurate 3D embeddings.
 \end{itemize}
 
 \resumeItemListEnd
@@ -123,7 +124,7 @@
 
 \resumeSubheading
 {Collaborative Robotics Lab, University of Virginia}{Charlottesville, VA}
-{Advisor: Prof. Tariq Iqbal}{May 2022 - May 2024}
+{Advisor: \href{https://www.tiqbal.com/}{Prof. Tariq Iqbal}}{May 2022 - May 2024}
 \resumeItemListStart
 \item \textbf{Grounded Location for Object Manipulation (GLOMA)}
 \begin{itemize}
@@ -148,10 +149,10 @@
 
 \resumeSubheading
 {Teaching Assistant}{}
-{Machine Learning w/ Prof. Rich Nguyen}{Aug 2024 - Present}
+{Machine Learning w/ Prof. Rich Nguyen}{August 2024 - Present}
 \resumeItemListStart
 \resumeItem{}
-{Authored comprehensive course notes to support student learning and understanding.}
+{Authored comprehensive and interactive course notes to support student learning and understanding.}
 \resumeItemListEnd
 \resumeSubheading
 {Teaching Assistant}{}
@@ -162,7 +163,7 @@
 \resumeItemListEnd
 \resumeSubheading
 {Lab Lead Teaching Assistant}{}
-{Computer Systems Organizaiton w/ Prof. John Hott}{Jan 2023 - May 2023}
+{Computer Systems Organization w/ Prof. John Hott}{Jan 2023 - May 2023}
 \resumeItemListStart
 \resumeItem{}
 {Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
@@ -211,12 +212,12 @@
 %-----------SOFTWARE PROJECTS-----------------
 \section{Software Projects}
 \resumeSubHeadingListStart
-\resumeSubItem{notie-markdown}
+\resumeSubItem{\href{https://notie-markdown.vercel.app/}{notie-markdown}}
 {Open-source React component for Markdown rendering, built with TypeScript.}
 \resumeSubItem{SmartOH}
 {AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd overall at VTHacks11 (3/393).}
 \resumeSubItem{Voy}
-{Volunteer and driver management platform for non-profits, built with Python and TypeScript. Received funding from UVA's Entrepreneurship Cup.}
+{Collaborated with 7 non-profits to develop Voy, a volunteer and driver management platform using Python and TypeScript; received funding from UVA's Entrepreneurship Cup.}
 \resumeSubHeadingListEnd
 
 
@@ -227,7 +228,7 @@
 {Python, C/C++, Java, JavaScript, TypeScript, HTML/CSS}
 \resumeSubItem{Technologies}
 {PyTorch, TensorFlow, Linux, Git, Docker, \LaTeX}
-\resumeSubItem{Web Technologies}
+\resumeSubItem{Web Tools}
 {React, Node.js, Express, Django}
 
 \resumeSubHeadingListEnd
