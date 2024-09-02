@@ -12,7 +12,7 @@ const Home = () => {
         I am interested in the intersection of Machine Learning (ML), Computer Vision, and Robotics. My current research focuses on
         improving robotic reasoning and manipulation using Language and Vision models in both 2D and 3D space. 
         I have worked with [Tariq Iqbal](https://engineering.virginia.edu/faculty/tariq-iqbal) at the [Collaborative Robotics Lab](https://www.collabrobotics.com/), and 
-        I will be advised by [Yen-Ling Kuo](https://engineering.virginia.edu/faculty/yen-ling-kuo) for my undergraduate thesis. 
+        I am advised by [Yen-Ling Kuo](https://engineering.virginia.edu/faculty/yen-ling-kuo) for my undergraduate thesis. 
         I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park. 
         I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
     `;
