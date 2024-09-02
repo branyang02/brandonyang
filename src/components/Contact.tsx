@@ -1,5 +1,5 @@
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Link,
@@ -15,6 +15,11 @@ const Contact = () => {
     const { darkMode } = useDarkMode();
 
     const contactItems = [
+        {
+            icon: faBookOpen,
+            href: "/brandonyang_cv.pdf",
+            text: "Curriculum Vitae",
+        },
         {
             icon: faEnvelope,
             href: "mailto:branyang@virginia.edu",
@@ -46,7 +51,13 @@ const Contact = () => {
                             />
                         }
                     >
-                        <Link href={href} marginRight={12} color="neutral">
+                        <Link
+                            href={href}
+                            marginRight={12}
+                            color="neutral"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             <Text color={darkMode ? "gray500" : "muted"}>
                                 {text}
                             </Text>
