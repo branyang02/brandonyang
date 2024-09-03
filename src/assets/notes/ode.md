@@ -560,6 +560,12 @@ Therefore, the function $y$ satisfies the ODE.
 
 ### Separable ODEs
 
+<span class="subtitle">
+
+Section 2.2 in BOYCE, DIPRIMA.
+
+</span>
+
 We solved a [simple ODE](#simple-ode) initially by using direct integration, but we can also solve ODEs by separating variables. For example, let's solve the same ODE:
 
 <blockquote class="problem">
