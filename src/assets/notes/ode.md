@@ -166,9 +166,80 @@ $$
 
 </details>
 
-<details><summary>Integration</summary>
+<details open><summary>Integration</summary>
 
 ### Integration
+
+**Integration by substitution**:
+
+If $g(x)$ is a differentiable function and $f$ is a continuous function, then:
+
+$$
+\begin{equation} \label{eq:integration_by_substitution}
+\int f(g(x)) g'(x) \, dx = \int f(u) \, du,
+\end{equation}
+$$
+
+where $u = g(x)$ and $du = g'(x) dx$.
+
+In a definite integral, suppose $g(x)$ is a differentiable function and $f$ is continuous on the interval $[a,b]$, then:
+
+$$
+\begin{equation} \label{eq:integration_by_substitution_definite}
+\int_a^b f(g(x)) g'(x) \, dx = \int_{g(a)}^{g(b)} f(u) \, du,
+\end{equation}
+$$
+
+where $u = g(x)$ and $du = g'(x) dx$.
+
+<blockquote class="problem">
+
+For example, suppose we want to solve the following integral:
+
+$$
+\int \left(2x^3 + 1\right)^7 (x^2) \, dx.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+Let $u = 2x^3 + 1$, thus $du = 6x^2 \, dx$, and $dx = \frac{1}{6x^2}du$. We can 'rewrite using $u$:
+
+$$
+\begin{aligned}
+\int \left(u\right)^7 (x^2) \, \frac{1}{6x^2} du &= \frac{1}{6}\int u^7 \, du \\
+&= \frac{1}{6}\left(\frac{1}{8}u^8\right) + C \\
+&= \frac{1}{48} \left(2x^3+1\right)^8 + C.
+\end{aligned}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we have the same integral but we assign bounds:
+
+$$
+\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We follow the same $u$-substitution with $u = 2x^3 + 1$, but we assign new bounds for $u$
+
+$$
+\begin{aligned}
+\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx &= \frac{1}{6}\int_{2(1)^3 + 1}^{2(2)^3 + 1} u^7 \, du \\
+&= \frac{1}{6}\int_{3}^{17} u^7 \, du \\
+&= \frac{1}{48} [u]_3^17 \\
+&= \frac{1}{48} (17^8 - 3^8)
+\end{aligned}
+$$
+
+</blockquote>
 
 **Integration by parts**:
 

@@ -22,7 +22,7 @@
         "@mui/styled-engine": "^5.16.6",
         "@mui/x-charts": "^7.13.0",
         "evergreen-ui": "^7.1.9",
-        "notie-markdown": "^1.2.20",
+        "notie-markdown": "^1.2.23",
         "prettier": "^3.3.3",
         "react": "^18.3.1",
         "react-d3-tree": "^3.6.2",
