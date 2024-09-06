@@ -166,7 +166,7 @@ $$
 
 </details>
 
-<details open><summary>Integration</summary>
+<details><summary>Integration</summary>
 
 ### Integration
 
@@ -348,7 +348,7 @@ We use the notation $y^{(n)}$ to denote the $n^{th}$ **derivative** of $y$, and 
 
 </blockquote>
 
-<details open><summary>Solving an ODE</summary>
+<details><summary>Solving an ODE</summary>
 
 Solve for $y$:
 
@@ -510,7 +510,7 @@ A **linear ODE** is of the form:
 
 $$
 
-\begin{equation} \label{eq:linear*ode}
+\begin{equation} \label{eq:linear-ode}
 a_n(x) y^{(n)} + a*{n-1}(x) y^{(n-1)} + \ldots + a_1(x) y' + a_0(x) y = F(x),
 \end{equation}
 
@@ -629,6 +629,30 @@ Therefore, the function $y$ satisfies the ODE.
 
 ## First Order Differential Equations
 
+Following the definitions of order and linearity in $\eqref{eq:ode}, \eqref{eq:linear-ode}$, we focus on solving **first-order** ODEs in this section.
+
+<blockquote class="definition">
+
+A **first-order ODE** is of the form:
+
+$$
+\begin{equation} \label{eq:first-order-ode}
+\frac{dy}{dt} = f(t, y),
+\end{equation}
+$$
+
+where where $f$ is a given function of two variables.
+
+</blockquote>
+
+Any _differentiable function_ $y = \phi(t)$ that satisfies this equation for all $t$ in some interval is called a solution, and our objective is to determine whether such functions exist and, if so, to develop methods for finding them.
+
+The following are methods for solving first-order ODEs:
+
+1. **Separable ODEs**
+2. **Integrating Factors**
+3. **Exact ODEs**
+
 ### Separable ODEs
 
 <span class="subtitle">
@@ -639,19 +663,9 @@ Section 2.2 in BOYCE, DIPRIMA.
 
 We solved a [simple ODE](#simple-ode) initially by using direct integration, but we can also solve ODEs by separating variables. For example, let's solve the same ODE:
 
-<blockquote class="problem">
-
-Find the general solution for
-
 $$
-
 \frac{dy}{dx} = y' = y.
-
 $$
-
-</blockquote>
-
-<blockquote class="proof">
 
 We first separate variables:
 
@@ -683,7 +697,7 @@ y &= Ce^x.
 \end{align}
 $$
 
-</blockquote>
+<details><summary>Separable ODE Examples</summary>
 
 <blockquote class="problem">
 
@@ -957,3 +971,394 @@ y &= \ln\left(\frac{1}{3} \sin(3x) + 1\right) - 1.
 $$
 
 </blockquote>
+
+<blockquote class="problem">
+
+Find the solution of the I.V.P.:
+
+$$
+\begin{equation} \label{eq:general}
+y' = \frac{3x^2 +4x - 4}{2y-4}, \quad y(0) = -4.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We begin by separating the variables:
+
+$$
+\begin{align}
+y' &= \frac{3x^2 +4x - 4}{2y-4} \\
+\frac{dy}{dx} &= \frac{3x^2 +4x - 4}{2y-4} \\
+\left(2y - 4\right) \, dy &=  \left(3x^2 + 4x - 4\right) \, dx \\
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \left(2y - 4\right) \, dy &=  \int \left(3x^2 + 4x - 4\right) \, dx \\
+y^2 - 4y + C_1 &= x^3 + 2x^2 - 4x + C_2 \\
+y^2 - 4y  &= x^3 + 2x^2 - 4x  + C \\
+y^2 - 4y - x^3 - 2x^2 + 4x -C &= 0 \\
+\end{align}
+$$
+
+We finally use quadratic formula $y = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ with the form $ay^2 + by + c = 0$ to solve for $y$:
+
+$$
+\begin{align}
+y &= \frac{4 \pm \sqrt{16 - 4\left(1 \cdot \left(- x^3 - 2x^2 + 4x  - C\right)\right)}}{2} \\
+y &= \frac{4 \pm \sqrt{16 + 4x^3 + 8x^2 - 16x + 4C}}{2} \\
+y &= 2 \pm  \frac{1}{2} \sqrt{16 + 4x^3 + 8x^2 - 16x + 4C} \\
+y &= 2 \pm   \sqrt{4 + x^3 + 2x^2 - 4x + C} \\
+\end{align}
+$$
+
+We then use the initial condition in $\eqref{eq:general}$ to solve for $C$:
+
+$$
+\begin{align}
+-4 &= 2 \pm   \sqrt{4 + C} \\
+-6 &= \pm   \sqrt{4 + C} \\
+36 &= 4 + C \\
+C &= 32
+\end{align}
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+\begin{align}
+y &= 2 -   \sqrt{4 + x^3 + 2x^2 - 4x + 32} \\
+y &= 2 -   \sqrt{x^3 + 2x^2 - 4x + 36} \\
+\end{align}
+$$
+
+</blockquote>
+
+</details>
+
+### Integrating Factors
+
+<span class="subtitle">
+
+Section 2.1 in BOYCE, DIPRIMA.
+
+</span>
+
+We can rewrite a first-order ODE in the form:
+
+$$
+\begin{equation} \label{eq:integrating-factor}
+P(t)\frac{dy}{dt} + Q(t)y = G(t),
+\end{equation}
+$$
+
+where $P(t)$, $Q(t)$, and $G(t)$ are given arbitrary functions of $t$. We can first look at an example problem in this form:
+
+$$
+\begin{equation} \label{eq:example}
+(4 + t^2) \frac{dy}{dt} + 2ty = 4t.
+\end{equation}
+$$
+
+We can notice that the left side of $\eqref{eq:example}$ is in the form of $\eqref{eq:integrating-factor}$, where $P(t) = 4 + t^2$, $Q(t) = 2t$, and $G(t) = 4t$. Moreover, we observe that the left side of $\eqref{eq:example}$ is the derivative of a product following the product rule in $\eqref{eq:product_rule}$:
+
+$$
+\begin{align}
+(4 + t^2) \frac{dy}{dt} + 2ty = \frac{d}{dt} \left( (4 + t^2)y \right).
+\end{align}
+$$
+
+We can then rewrite $\eqref{eq:example}$ as:
+
+$$
+\begin{align}
+\frac{d}{dt} \left( (4 + t^2)y \right) &= 4t.
+\end{align}
+$$
+
+We can then integrate both sides with respect to $t$:
+
+$$
+\begin{align}
+\int \frac{d}{dt} \left( (4 + t^2)y \right) \, dt &= \int 4t \, dt \\
+(4 + t^2)y &= 2t^2 + C.
+\end{align}
+$$
+
+Finally, we solve for $y$:
+
+$$
+\begin{align}
+y &= \frac{2t^2 + C}{4 + t^2}.
+\end{align}
+$$
+
+However, in most cases, the left side of $\eqref{eq:integrating-factor}$ is not the derivative of a product. We can then multiply both sides of $\eqref{eq:integrating-factor}$ by an **integrating factor** $\mu(t)$:
+
+$$
+\begin{align}
+\mu(t)P(t)\frac{dy}{dt} + \mu(t)Q(t)y &= \mu(t)G(t). \label{eq:mu-factor}
+\end{align}
+$$
+
+For any differentiable function $\mu(t)$, we can use the product rule in $\eqref{eq:product_rule}$:
+
+$$
+\begin{align}
+\frac{d}{dt} \left( \mu(t)y \right) &= \mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y. \label{eq:product_rule_2}
+\end{align}
+$$
+
+Our goal is to choose $\mu(t)$ such that $\eqref{eq:product_rule_2}$ is equal to the left side of $\eqref{eq:mu-factor}$:
+
+$$
+\begin{align}
+\mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y = \mu(t)P(t)\frac{dy}{dt} + \mu(t)Q(t)y. \label{eq:mu-factor-2}
+\end{align}
+$$
+
+Then, we simply solve for $\mu(t)$, and plug it back into $\eqref{eq:mu-factor}$ to solve for $y$.
+
+Let's consider the following first-order ODE:
+
+$$
+\begin{equation} \label{eq:ode-example}
+\frac{dy}{dt} + \frac{1}{2}y = \frac{1}{2}e^{t/3}
+\end{equation}
+$$
+
+Following $\eqref{eq:mu-factor}$, we multiply both sides by $\mu(t)$:
+
+$$
+\begin{align}
+\mu(t) \frac{dy}{dt} + \frac{1}{2}\mu(t)y &= \frac{1}{2}\mu(t)e^{t/3}. \label{eq:mu-factor-example}
+\end{align}
+$$
+
+Following $\eqref{eq:mu-factor-2}$, we can solve for $\mu(t)$:
+
+$$
+\begin{align}
+\mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y &= \mu(t) \frac{dy}{dt} + \frac{1}{2}\mu(t)y \\
+\frac{d\mu(t)}{dt} &= \frac{1}{2}\mu(t) \\
+\end{align}
+$$
+
+This is a first-order linear ODE, and we can solve it by separating variables:
+
+$$
+\begin{align}
+\frac{1}{\mu(t)} d \mu(t) &= \frac{1}{2} dt \\
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{1}{\mu(t)} d \mu(t) &= \int \frac{1}{2} dt \\
+\ln|\mu(t)| &= \frac{1}{2}t + C \\
+\mu(t) &= e^{\frac{1}{2}t + C} \\
+\mu(t) &= e^{\frac{1}{2}t}e^C \\
+\mu(t) &= Ce^{\frac{1}{2}t}.
+\end{align}
+$$
+
+Therefore, $Ce^{\frac{1}{2}t}$ is an integrating factor for $\eqref{eq:ode-example}$, but since we do not need the most general integrating factor, we will choose $C$ to be $1$ and use $\mu(t) = e^{\frac{1}{2}t}$.
+
+Now we return to $\eqref{eq:mu-factor-example}$ with $\mu(t) = e^{\frac{1}{2}t}$:
+
+$$
+\begin{align}
+e^{\frac{1}{2}t} \frac{dy}{dt} + \frac{1}{2}e^{\frac{1}{2}t}y &= \frac{1}{2}e^{\frac{1}{2}t}e^{t/3} \label{eq:mu-factor-example-2}
+\end{align}
+$$
+
+We rewrite the left side as the derivative of a product:
+
+$$
+\begin{align}
+e^{\frac{1}{2}t} \frac{dy}{dt} + \frac{1}{2}e^{\frac{1}{2}t}y = \frac{d}{dt} \left( e^{\frac{1}{2}t}y \right)
+\end{align}
+$$
+
+We then rewrite $\eqref{eq:mu-factor-example-2}$ as:
+
+$$
+\begin{align}
+\frac{d}{dt} \left( e^{\frac{1}{2}t}y \right) &= \frac{1}{2}e^{\frac{1}{2}t}e^{t/3} = \frac{1}{2}e^{\frac{5}{6}t}
+\end{align}
+$$
+
+Integrating both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dt} \left( e^{\frac{1}{2}t}y \right) \, dt &= \int \frac{1}{2}e^{\frac{5}{6}t} \, dt \\
+e^{\frac{1}{2}t}y &= \frac{3}{5}e^{\frac{5}{6}t} + C \\
+y &= \frac{3}{5}e^{\frac{1}{3}t} + Ce^{-\frac{1}{2}t}
+\end{align}
+$$
+
+<details><summary>Integrating Factors Problems</summary>
+
+<blockquote class="problem">
+
+Find the solution of the I.V.P.:
+
+$$
+\begin{equation} \label{eq:ivp-1}
+y' + \frac{1}{t}y = \cos(t), \quad y(\pi) = 1.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We write the ODE in the form of $\eqref{eq:integrating-factor}$, and add the integrating factor $\mu(t)$:
+
+$$
+\begin{align}
+\mu(t) \frac{dy}{dt} + \frac{1}{t}\mu(t)y &= \mu(t)\cos(t). \label{eq:ivp-2}
+\end{align}
+$$
+
+We want to choose $\mu(t)$ such that:
+
+$$
+\begin{align}
+\frac{d}{dt}\left(\mu(t)y\right) = \mu(t)\frac{dy}{dt} + y\frac{d\mu(t)}{dt} &= \mu(t) \frac{dy}{dt} + \frac{1}{t}\mu(t)y \\
+y\frac{d\mu(t)}{dt} &=  \frac{1}{t}\mu(t)y \\
+\frac{1}{\mu(t)}d\mu(t) &= \frac{1}{t}dt.
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{1}{\mu(t)}d\mu(t) &= \int \frac{1}{t}dt \\
+\ln|\mu(t)| &= \ln|t| + C \\
+\mu(t) &= e^{\ln|t| + C} \\
+\mu(t) &= te^C \\
+\mu(t) &= Ct.
+\end{align}
+$$
+
+We choose $C = 1$ and use $\mu(t) = t$ as the **integrating factor**. We then rewrite $\eqref{eq:ivp-2}$ as:
+
+$$
+\begin{align}
+t \frac{dy}{dt} + \frac{1}{t}ty &= t\cos(t) \\
+\frac{d}{dt}\left(ty\right) &= t\cos(t).
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dt}\left(ty\right) \, dt &= \int t\cos(t) \, dt \\
+ty &= \int t\cos(t) \, dt \\
+ty &= t\sin(t) + \cos(t) + C \\
+y &= \sin(t) + \frac{\cos(t)}{t} + \frac{C}{t}.
+\end{align}
+$$
+
+Given the initial condition $y(\pi) = 1$, we substitute $t = \pi$ and $y = 1$ into the solution:
+
+$$
+\begin{align}
+1 &= \sin(\pi) + \frac{\cos(\pi)}{\pi} + \frac{C}{\pi} \\
+1 &= 0 - \frac{1}{\pi} + \frac{C}{\pi} \\
+1 &= \frac{C - 1}{\pi} \\
+C &= \pi + 1.
+\end{align}
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+\begin{align}
+y &= \sin(t) + \frac{\cos(t)}{t} + \frac{\pi + 1}{t}.
+\end{align}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Find the general solution of the differential equation
+
+$$
+\begin{equation} \label{eq:ivp-2}
+\frac{dy}{dt} - 2y = 4-t.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We add the integrating factor $\mu(t)$:
+
+$$
+\begin{align}
+\mu(t)\frac{dy}{dt} - \mu(t)2y = \mu(t) (4-t).
+\end{align}
+$$
+
+We solve for $\mu(t)$:
+
+$$
+\begin{align}
+\frac{d}{dt}\left( \mu(t)y \right) = \mu(t)\frac{dy}{dt} + y\frac{d\mu(t)}{dt} &= \mu(t)\frac{dy}{dt} - 2\mu(t)y \\
+\frac{d\mu(t)}{dt} &= -2\mu(t) \\
+\end{align}
+$$
+
+We solve this by separating variables and integrating:
+
+$$
+\begin{align}
+\frac{d\mu(t)}{dt} &= -2\mu(t) \\
+\frac{1}{-2\mu(t)}d\mu(t) &= dt \\
+\int \frac{1}{-2\mu(t)}d\mu(t) &= \int dt \\
+-\frac{1}{2}\ln|\mu(t)| &= t + C \\
+\ln|\mu(t)| &= -2t + C \\
+\mu(t) &= e^{-2t + C} \\
+\mu(t) &= e^Ce^{-2t} \\
+\mu(t) &= Ce^{-2t}.
+\end{align}
+$$
+
+We choose $C = 1$ and use $\mu(t) = e^{-2t}$ as the integrating factor:
+
+$$
+\begin{align}
+e^{-2t}\frac{dy}{dt} - e^{-2t}2y &= e^{-2t} (4-t) \\
+\frac{d}{dt}\left( e^{-2t}y \right) &= e^{-2t} (4-t).
+\end{align}
+$$
+
+We integrate both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dt}\left( e^{-2t}y \right) \, dt &= \int e^{-2t} (4-t) \, dt\\
+e^{-2t}y &= \int 4e^{-2t} - te^{-2t} \, dt \\
+e^{-2t}y &= \frac{1}{2}e^{-2t}t-\frac{7}{4}e^{-2t}+C \\
+y &= \frac{1}{2}t-\frac{7}{4}+Ce^{2t}.
+\end{align}
+$$
+
+</blockquote>
+
+</details>
