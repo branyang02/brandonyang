@@ -102,6 +102,15 @@ const orgChart = {
                                                 Achievement:
                                                     "Robot moves 🚀🚀🚀",
                                             },
+                                            children: [
+                                                {
+                                                    name: "Learning for Interactive Robots (G)",
+                                                    attributes: {
+                                                        Achievement:
+                                                            "Robot learns 🤖🤖🤖",
+                                                    },
+                                                },
+                                            ],
                                         },
                                         {
                                             name: "Probabilistic ML (G)",
