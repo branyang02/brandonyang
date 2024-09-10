@@ -8,6 +8,18 @@ Fall 2024 | Author: Brandon Yang
 
 ## Background
 
+<details><summary>Trig. Identities</summary>
+
+### Trigonometric Identities
+
+$$
+\begin{equation} \label{eq:trig_identities}
+\sin^2(x) + \cos^2(x) = 1.
+\end{equation}
+$$
+
+</details>
+
 <details><summary>Review for Calculus</summary>
 
 ### Differentiation
@@ -1206,6 +1218,24 @@ y &= \frac{3}{5}e^{\frac{1}{3}t} + Ce^{-\frac{1}{2}t}
 \end{align}
 $$
 
+Additionally, we can now extend the method of integrating factors to equations of the form:
+
+$$
+\begin{equation} \label{eq:shortcut-1}
+\frac{dy}{dt} + p(t)y = g(t),
+\end{equation}
+$$
+
+where $p(t)$ and $g(t)$ are continuous functions of $t$. We can take a shortcut and find the integrating factor $\mu(t)$ by:
+
+$$
+\begin{equation} \label{eq:shortcut-2}
+\mu(t) = e^{\int p(t) \, dt}.
+\end{equation}
+$$
+
+Next, we can simply multiply both sides of $\eqref{eq:shortcut-1}$ by $\mu(t)$ and solve for $y$.
+
 <details><summary>Integrating Factors Problems</summary>
 
 <blockquote class="problem">
@@ -1356,6 +1386,196 @@ $$
 e^{-2t}y &= \int 4e^{-2t} - te^{-2t} \, dt \\
 e^{-2t}y &= \frac{1}{2}e^{-2t}t-\frac{7}{4}e^{-2t}+C \\
 y &= \frac{1}{2}t-\frac{7}{4}+Ce^{2t}.
+\end{align}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Find the general solution of:
+
+$$
+\begin{equation} \label{eq:ivp-3}
+xy' - 2xy = x^3 + 1.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We first rewrite the ODE in the standard form of $\eqref{eq:shortcut-1}$:
+
+$$
+\begin{align}
+\frac{dy}{dx} - 2y = \frac{x^3+1}{x}
+\end{align}
+$$
+
+Using the formula for the integrating factor, we find that $p(t) = -2$, therefore $\mu(t) = e^{\int -2 \, dx} = e^{-2x}$. We then multiply both sides by $\mu(t)$:
+
+$$
+\begin{align}
+e^{-2x}\frac{dy}{dx} - 2e^{-2x}y &= e^{-2x}\frac{x^3+1}{x} \\
+\frac{d}{dx}\left(e^{-2x}y\right) &= e^{-2x}\frac{x^3+1}{x}.
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dx}\left(e^{-2x}y\right) \, dx &= \int e^{-2x}\frac{x^3+1}{x} \, dx \\
+e^{-2x}y &= \int e^{-2x}\frac{x^3+1}{x} \, dx \\
+y &= e^{2x}\int e^{-2x}\frac{x^3+1}{x} \, dx.
+\end{align}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Find the general solution of ODE:
+
+$$
+\begin{equation}
+t \ln(t) \frac{dy}{dt} + y = te^t.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockqoute class="proof">
+
+We first rewrite the equation in standard format $\eqref{eq:shortcut-1}$:
+
+$$
+\begin{align}
+\frac{dy}{dt} + \frac{y}{t\ln(t)} &= \frac{te^t}{t\ln(t)} \\
+\frac{dy}{dt} + \frac{y}{t\ln(t)} &= \frac{e^t}{\ln(t)}.
+\end{align}
+$$
+
+We find that $p(t) = \frac{1}{t\ln(t)}$ and we solve for the integrating factor $\mu$(t) using the formula $\eqref{eq:shortcut-2}$:
+
+$$
+\begin{align}
+\mu(t) &= e^{\int \frac{1}{t\ln(t)} \, dt} \\
+\mu(t) &= e^{\ln(\ln(t))} \\
+\mu(t) &= \ln(t).
+\end{align}
+$$
+
+We then multiply both sides by $\mu(t)$:
+
+$$
+\begin{align}
+\ln(t)\frac{dy}{dt} + \ln(t)\frac{y}{t\ln(t)} &= \ln(t)\frac{e^t}{\ln(t)} \\
+\frac{d}{dt}\left(\ln(t)y\right) &= e^t.
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dt}\left(\ln(t)y\right) \, dt &= \int e^t \, dt \\
+\ln(t)y &= e^t + C \\
+y &= \frac{e^t}{\ln(t)} + \frac{C}{\ln(t)}.
+\end{align}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Find the general solution of ODE:
+
+$$
+\begin{equation}
+4x^3y + x^4y' = \sin^3(x).
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We first rewrite the equation in the form $\eqref{eq:shortcut-1}$:
+
+$$
+\begin{align}
+x^4\frac{dy}{dx}  + 4x^3y  &= \sin^3(x) \\
+\frac{dy}{dx}  + \frac{4x^3y}{x^4}  &= \frac{\sin^3(x)}{x^4} \\
+\frac{dy}{dx}  + \frac{4y}{x}  &= \frac{\sin^3(x)}{x^4} \label{eq:example-fact-1}.
+\end{align}
+$$
+
+We see find that $p(t) = \frac{4}{x}$, and we solve for the integrating factor $\mu$ using the formula $\eqref{eq:shortcut-2}$:
+
+$$
+\begin{align}
+\mu &= e^{\int \frac{4}{x} \, dx} \\
+\mu &= e^{4\ln(x)} \\
+\mu &= x^4.
+\end{align}
+$$
+
+We then multiply both sides by $\mu$ in $\eqref{eq:example-fact-1}$:
+
+$$
+\begin{align}
+x^4\frac{dy}{dx}  + 4x^3y  &= \sin^3(x) \\
+\frac{d}{dx}\left(x^4y\right)  &= \sin^3(x).
+\end{align}
+$$
+
+We then integrate both sides:
+
+$$
+\begin{align}
+\int \frac{d}{dx}\left(x^4y\right) \, dx  &= \int \sin^3(x) \, dx \\
+x^4y  &= \int \sin^3(x) \, dx \\
+\end{align}
+$$
+
+We can solve the integral using $\eqref{eq:trig_identities}$:
+
+$$
+\begin{align}
+\int \sin^3(x) \, dx &= \int \sin^2(x)\sin(x) \, dx \\
+&= \int (1 - \cos^2(x))\sin(x) \, dx.
+\end{align}
+$$
+
+We use the substitution $u = \cos(x)$:
+
+$$
+\begin{aligned}
+u &= \cos(x) \\
+du &= -\sin(x) \, dx \\
+dx &= -\frac{du}{\sin(x)}.
+\end{aligned}
+$$
+
+We then substitute back into the integral:
+
+$$
+\begin{align}
+\int (1 - \cos^2(x))\sin(x) \, dx &= \int (1 - u^2) \sin(x) \, \frac{du}{-\sin(x)} \\
+&= -\int (1 - u^2) \, du \\
+&= - \left(u - \frac{u^3}{3}\right) + C \\
+&= -\cos(x) + \frac{\cos^3(x)}{3} + C.
+\end{align}
+$$
+
+Therefore, the solution to the ODE is:
+
+$$
+\begin{align}
+x^4y &= -\cos(x) + \frac{\cos^3(x)}{3} + C \\
+y &= -\frac{\cos(x)}{x^4} + \frac{\cos^3(x)}{3x^4} + \frac{C}{x^4}.
 \end{align}
 $$
 
