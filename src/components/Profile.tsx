@@ -9,7 +9,7 @@ const Profile = () => {
         <Pane display="flex" flexDirection="column" alignItems="center">
             <Avatar
                 src={"Brandon_Yang.jpg"}
-                name="Brandon (Yifan) Yang"
+                name="Brandon Yifan Yang"
                 size={300}
             />
             <Heading
@@ -17,7 +17,7 @@ const Profile = () => {
                 marginTop={10}
                 color={darkMode ? "white" : "default"}
             >
-                Brandon (Yifan) Yang
+                Brandon Yifan Yang
             </Heading>
             <Text
                 size={500}

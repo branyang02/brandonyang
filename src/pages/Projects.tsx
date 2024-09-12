@@ -66,7 +66,7 @@ const Projects = () => {
             title: "GLOMA: Grounded Location for Object Manipulation",
             authors: [
                 {
-                    name: "Yifan (Brandon) Yang",
+                    name: "Brandon Yifan Yang",
                     link: "https://www.brandon-yifan-yang.com",
                 },
                 {
