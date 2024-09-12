@@ -37,7 +37,7 @@ const Experience = () => {
         },
         {
             date: "Jan 2023 - May 2023",
-            title: "[Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/) Lab Lead TA",
+            title: "[Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/) (CS 2130) Lab Lead TA",
         },
     ];
 
