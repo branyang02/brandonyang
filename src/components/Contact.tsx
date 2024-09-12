@@ -1,5 +1,5 @@
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faBookOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Link,
@@ -15,11 +15,6 @@ const Contact = () => {
     const { darkMode } = useDarkMode();
 
     const contactItems = [
-        {
-            icon: faBookOpen,
-            href: "/brandonyang_cv.pdf",
-            text: "Curriculum Vitae",
-        },
         {
             icon: faEnvelope,
             href: "mailto:branyang@virginia.edu",

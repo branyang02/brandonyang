@@ -80,16 +80,21 @@ const NavButton = ({
         switch (label) {
             case "Home":
                 path = "/";
+                navigate(path);
                 break;
             case "Relevant Coursework":
                 path = "/coursework";
+                navigate(path);
+                break;
+            case "CV":
+                path = "/brandonyang_cv.pdf";
+                window.open(path, "_blank");
                 break;
             default:
                 path = `/${label.toLowerCase().replace(/\s+/g, "")}`;
+                navigate(path);
                 break;
         }
-
-        navigate(path);
     };
 
     return (
