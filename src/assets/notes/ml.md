@@ -42,10 +42,10 @@ Of course, we can't forget about the data!
 
 In this section we will cover the following topics:
 
--   [Linear Regression](#linear-regression)
--   [Normal Equation](#normal-equation)
--   [Gradient Descent](#gradient-descent)
--   [Stochastic Gradient Descent](#stochastic-gradient-descent)
+- [Linear Regression](#linear-regression)
+- [Normal Equation](#normal-equation)
+- [Gradient Descent](#gradient-descent)
+- [Stochastic Gradient Descent](#stochastic-gradient-descent)
 
 ### Linear Regression
 
@@ -567,7 +567,7 @@ $$
 
 where $m$ is the number of examples, $\hat{y}^{(i)}$ is the predicted value for example $i$, and $y^{(i)}$ is the actual target value. Next, we find the gradient of the loss function with respect to the parameter vector $\bm{\theta}$.
 
--   **Gradient with respect to $\theta_0$**:
+- **Gradient with respect to $\theta_0$**:
 
 $$
 \begin{aligned}
@@ -577,7 +577,7 @@ L(\theta) &= \frac{1}{m} \sum_{i=1}^{m} (\theta_0 + \theta_1 x^{(i)} - y^{(i)})^
 \end{aligned}
 $$
 
--   **Gradient with respect to $\theta_1$**:
+- **Gradient with respect to $\theta_1$**:
 
 $$
 \begin{aligned}

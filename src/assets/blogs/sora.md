@@ -93,9 +93,9 @@ $$
 
 Here, $$\textbf{Z}_0$$ is the initial input matrix to the transformer encoder, containing:
 
--   The class token $$\mathbf{x}_{class}$$, which is a learnable parameter representing the entire image.
--   The sequence of $$N$$ patch embeddings that have been projected into the $$D$$-dimensional space.
--   The positional embeddings $$\textbf{E}_{pos} \in \mathbb{R}^{(N + 1) \times D}$$,
+- The class token $$\mathbf{x}_{class}$$, which is a learnable parameter representing the entire image.
+- The sequence of $$N$$ patch embeddings that have been projected into the $$D$$-dimensional space.
+- The positional embeddings $$\textbf{E}_{pos} \in \mathbb{R}^{(N + 1) \times D}$$,
     which are added to each patch embedding and the class token embedding.
 
 #### **Feeding Into Transformer Encoder**
@@ -104,7 +104,7 @@ Next, we feed our text embeddings to a Transformer encoder, which consists of Mu
 Self-Attention (MSA) and Feedforward Neural Network (FNN) as shown in [_Fig. 2_](#fig2).
 ![](https://branyang02.github.io/images/transformer-encoder.jpg "Standard Transformer Encoder")
 
-<div id="fig2" 
+<div id="fig2"
 class="caption">
 
 Fig. 2: Standard Transformer Encoder. (Source: Yu Meng, [UVA CS 6501 NLP](https://yumeng5.github.io/teaching/2024-spring-cs6501))
@@ -207,22 +207,22 @@ $$y_{ij}$$ is the true label of the $$i$$-th sample for class $$j$$, and $$\hat{
 We can train the model using backpropagation and the Adam optimizer to minimize the loss function.
 Here is a list of all parameters that need to be learned during training:
 
--   **Patch Projection Parameters**: $$\textbf{E} \in \mathbb{R}^{(P^2 \times C) \times D}$$.
--   **Positional Embeddings**: $$\textbf{E}_{pos} \in \mathbb{R}^{(N + 1) \times D}$$.
--   **Class Token**: $$\textbf{x}_{class} \in \mathbb{R}^D$$.
--   **Transformer Parameters**:
-    -   **Attention Parameters**: For each attention head $i$ in the MSA, $$\textbf{Q}_i, \textbf{K}_i, \textbf{V}_i \in \mathbb{R}^{D \times d_{head}}$$.
-    -   **Output Projection of MSA**: $$\textbf{U}_{msa} \in \mathbb{R}^{k \cdot d_{head} \times D}$$.
--   **Feedforward Network Parameters**: Each FNN layer consists of two linear transformations with a ReLU activation in between.
+- **Patch Projection Parameters**: $$\textbf{E} \in \mathbb{R}^{(P^2 \times C) \times D}$$.
+- **Positional Embeddings**: $$\textbf{E}_{pos} \in \mathbb{R}^{(N + 1) \times D}$$.
+- **Class Token**: $$\textbf{x}_{class} \in \mathbb{R}^D$$.
+- **Transformer Parameters**:
+  - **Attention Parameters**: For each attention head $i$ in the MSA, $$\textbf{Q}_i, \textbf{K}_i, \textbf{V}_i \in \mathbb{R}^{D \times d_{head}}$$.
+  - **Output Projection of MSA**: $$\textbf{U}_{msa} \in \mathbb{R}^{k \cdot d_{head} \times D}$$.
+- **Feedforward Network Parameters**: Each FNN layer consists of two linear transformations with a ReLU activation in between.
     The weight matrices and bias vectors for the first and second linear transformations in the
     $l$-th layer FNN are represented as $$\textbf{W}_{1,l}, \textbf{b}_{1,l}, \textbf{W}_{2,l}, \textbf{b}_{2,l}$$.
-    -   $$\textbf{W}_{1,l} \in \mathbb{R}^{D \times D_{fnn}}, \textbf{b}_{1,l} \in \mathbb{R}^{D_{fnn}}$$.
-    -   $$\textbf{W}_{2,l} \in \mathbb{R}^{D_{fnn} \times D}, \textbf{b}_{2,l} \in \mathbb{R}^{D}$$.
-    -   $$D_{fnn}$$ is the dimension of the hidden layer in the FNN.
--   **Layer Normalization Parameters**: For each layer normalization step, the scale ($\gamma$) and shift ($\beta$) parameters are learned, where:
-    -   $$\gamma, \beta \in \mathbb{R}^D$$.
--   **Output Projection Parameters**: The output projection of the last layer of the transformer is represented as $$\textbf{W}_{out}, \textbf{b}_{out}$$.
-    -   $$\textbf{W}_{out} \in \mathbb{R}^{D \times C}, \textbf{b}_{out} \in \mathbb{R}^C$$.
+  - $$\textbf{W}_{1,l} \in \mathbb{R}^{D \times D_{fnn}}, \textbf{b}_{1,l} \in \mathbb{R}^{D_{fnn}}$$.
+  - $$\textbf{W}_{2,l} \in \mathbb{R}^{D_{fnn} \times D}, \textbf{b}_{2,l} \in \mathbb{R}^{D}$$.
+  - $$D_{fnn}$$ is the dimension of the hidden layer in the FNN.
+- **Layer Normalization Parameters**: For each layer normalization step, the scale ($\gamma$) and shift ($\beta$) parameters are learned, where:
+  - $$\gamma, \beta \in \mathbb{R}^D$$.
+- **Output Projection Parameters**: The output projection of the last layer of the transformer is represented as $$\textbf{W}_{out}, \textbf{b}_{out}$$.
+  - $$\textbf{W}_{out} \in \mathbb{R}^{D \times C}, \textbf{b}_{out} \in \mathbb{R}^C$$.
 
 #### **ViT vs. CNN**
 
@@ -230,11 +230,11 @@ The Vision Transformer has shown promising results in image classification tasks
 outperforming convolutional neural networks (CNNs) on several benchmarks.
 The key advantages of ViT over CNNs are:
 
--   **Scalability**: ViT can handle images of arbitrary size, while CNNs require resizing the input images.
--   **Global Context**: ViT captures global context information by treating the input image as a sequence of patches,
+- **Scalability**: ViT can handle images of arbitrary size, while CNNs require resizing the input images.
+- **Global Context**: ViT captures global context information by treating the input image as a sequence of patches,
     while CNNs use local receptive fields to capture spatial information.
--   **Fewer Parameters**: ViT has fewer parameters than CNNs, making it more efficient for training and inference.
--   **Transfer Learning**: ViT can be fine-tuned on downstream tasks with fewer labeled examples,
+- **Fewer Parameters**: ViT has fewer parameters than CNNs, making it more efficient for training and inference.
+- **Transfer Learning**: ViT can be fine-tuned on downstream tasks with fewer labeled examples,
     while CNNs require a large amount of labeled data to achieve good performance.
 
 ![](https://branyang02.github.io/images/vit_performance.png "ViT Performance vs SOTA CNNs")
@@ -461,5 +461,3 @@ $$
 [^4]: J. Ba, J. Kiros, G. Hinton. "Layer normalization," in arXiv preprint arXiv:1607.06450, 2016.
 
 [^5]: J. Ho, A. Jain, P. Abbeel. "Denoising diffusion probabilistic models," in Advances in neural information processing systems, vol. 33, pp. 6840–6851, 2020.
-
-[^6]: R. O'Connor, "Introduction to Diffusion Models for Machine Learning," in AssemblyAI Blog, 2022.
