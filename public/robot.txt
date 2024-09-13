@@ -1,0 +1,8 @@
+# Allow all crawlers access to all content
+User-agent: *
+Disallow:
+
+# Alternatively, you can disallow certain paths (e.g., admin or private routes)
+# User-agent: *
+# Disallow: /admin
+# Disallow: /private
