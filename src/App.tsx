@@ -5,7 +5,7 @@ import NotieLayout from "./layouts/NotieLayout";
 import Projects from "./pages/Projects";
 import Home from "./pages/Home";
 import NoteBlogCards from "./pages/NoteBlogCards";
-import NotesBlogs from "./pages/NoteBlogs";
+import NotesBlogs from "./pages/NoteBlog";
 import Courses from "./pages/Courses";
 
 const App = () => {
@@ -17,7 +17,7 @@ const App = () => {
             path: "/blog",
             Layout: NotieLayout,
             Component: NoteBlogCards,
-            props: { type: "blogs" },
+            props: { type: "blog" },
         },
         {
             path: "/notes",
@@ -32,10 +32,10 @@ const App = () => {
             props: { type: "notes" },
         },
         {
-            path: "/blogs/:blogId",
+            path: "/blog/:blogId",
             Layout: NotieLayout,
             Component: NotesBlogs,
-            props: { type: "blogs" },
+            props: { type: "blog" },
         },
     ];
 

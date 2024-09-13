@@ -2,12 +2,13 @@ import { Card, Heading, majorScale, Pane, Text } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
+import { Helmet } from "react-helmet";
 
 const NoteModules = import.meta.glob("../assets/notes/*.md", {
     query: "?raw",
     import: "default",
 });
-const BlogModules = import.meta.glob("../assets/blogs/*.md", {
+const BlogModules = import.meta.glob("../assets/blog/*.md", {
     query: "?raw",
     import: "default",
 });
@@ -98,60 +99,69 @@ const NoteBlogCards = ({ type }: { type: string }) => {
     }
 
     return (
-        <Pane
-            padding={majorScale(2)}
-            maxWidth={majorScale(100)}
-            style={{
-                margin: "0 auto",
-            }}
-        >
-            {notesMetaData.map((post, index) => (
-                <Card
-                    key={index}
-                    className="BlogCard"
-                    elevation={1}
-                    hoverElevation={2}
-                    marginY={majorScale(1)}
-                    padding={majorScale(2)}
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                    onClick={() => handleCardClick(post.link)}
-                    cursor="pointer"
-                    background={darkMode ? "#424242" : "white"}
-                >
-                    <Heading
-                        size={500}
-                        marginBottom={majorScale(1)}
-                        className="note-postHeading"
-                        color={darkMode ? "#F9FAFC" : "default"}
-                    >
-                        {post.title}
-                    </Heading>
-                    <Pane
+        <div>
+            <Helmet>
+                <title>{type} | Brandon Yifan Yang</title>
+                <meta
+                    name="description"
+                    content={`All ${type} written by Brandon Yifan Yang`}
+                />
+            </Helmet>
+            <Pane
+                padding={majorScale(2)}
+                maxWidth={majorScale(100)}
+                style={{
+                    margin: "0 auto",
+                }}
+            >
+                {notesMetaData.map((post, index) => (
+                    <Card
+                        key={index}
+                        className="BlogCard"
+                        elevation={1}
+                        hoverElevation={2}
+                        marginY={majorScale(1)}
+                        padding={majorScale(2)}
                         display="flex"
+                        flexDirection="column"
                         justifyContent="space-between"
-                        alignItems="center"
+                        onClick={() => handleCardClick(post.link)}
+                        cursor="pointer"
+                        background={darkMode ? "#424242" : "white"}
                     >
-                        <Text
-                            size={300}
+                        <Heading
+                            size={500}
+                            marginBottom={majorScale(1)}
+                            className="note-postHeading"
                             color={darkMode ? "#F9FAFC" : "default"}
                         >
-                            {post.subtitle}
-                        </Text>
-                        {post.date && (
+                            {post.title}
+                        </Heading>
+                        <Pane
+                            display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
                             <Text
                                 size={300}
-                                fontStyle="italic"
                                 color={darkMode ? "#F9FAFC" : "default"}
                             >
-                                {post.date}
+                                {post.subtitle}
                             </Text>
-                        )}
-                    </Pane>
-                </Card>
-            ))}
-        </Pane>
+                            {post.date && (
+                                <Text
+                                    size={300}
+                                    fontStyle="italic"
+                                    color={darkMode ? "#F9FAFC" : "default"}
+                                >
+                                    {post.date}
+                                </Text>
+                            )}
+                        </Pane>
+                    </Card>
+                ))}
+            </Pane>
+        </div>
     );
 };
 

@@ -19,6 +19,7 @@ import {
     SiTypescript,
 } from "@icons-pack/react-simple-icons";
 import React from "react";
+import { Helmet } from "react-helmet";
 
 function getLogo(tech: string) {
     switch (tech) {
@@ -204,62 +205,81 @@ const Projects = () => {
     ];
 
     return (
-        <Pane className="project-page">
-            <Pane display="flex" flexDirection="column" alignItems="center">
-                {projects.map((project, index) => (
-                    <Pane
-                        key={index}
-                        width="100%"
-                        marginBottom={24}
-                        display="flex"
-                        flexDirection="row"
-                        padding={16}
-                        background={darkMode ? "#333" : "white"}
-                        borderRadius={4}
-                        color={darkMode ? "white" : "black"}
-                    >
-                        <Pane flex={1} marginRight={16}>
-                            {project.image && (
-                                <a
-                                    href={project.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <img
-                                        src={project.image}
-                                        alt={project.title}
-                                        style={{
-                                            width: "100%",
-                                            borderRadius: "4px",
-                                        }}
-                                    />
-                                </a>
-                            )}
-                            {project.gif && (
-                                <a
-                                    href={project.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <img
-                                        src={project.gif}
-                                        alt={project.title}
-                                        style={{
-                                            width: "100%",
-                                            borderRadius: "4px",
-                                        }}
-                                    />
-                                </a>
-                            )}
-                        </Pane>
-                        <Pane flex={2}>
-                            {project.link ? (
-                                <a
-                                    href={project.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{ textDecoration: "none" }}
-                                >
+        <div>
+            <Helmet>
+                <title>projects | Brandon Yifan Yang</title>
+                <meta
+                    name="description"
+                    content="Projects by Brandon Yifan Yang."
+                />
+            </Helmet>
+            <Pane className="project-page">
+                <Pane display="flex" flexDirection="column" alignItems="center">
+                    {projects.map((project, index) => (
+                        <Pane
+                            key={index}
+                            width="100%"
+                            marginBottom={24}
+                            display="flex"
+                            flexDirection="row"
+                            padding={16}
+                            background={darkMode ? "#333" : "white"}
+                            borderRadius={4}
+                            color={darkMode ? "white" : "black"}
+                        >
+                            <Pane flex={1} marginRight={16}>
+                                {project.image && (
+                                    <a
+                                        href={project.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src={project.image}
+                                            alt={project.title}
+                                            style={{
+                                                width: "100%",
+                                                borderRadius: "4px",
+                                            }}
+                                        />
+                                    </a>
+                                )}
+                                {project.gif && (
+                                    <a
+                                        href={project.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src={project.gif}
+                                            alt={project.title}
+                                            style={{
+                                                width: "100%",
+                                                borderRadius: "4px",
+                                            }}
+                                        />
+                                    </a>
+                                )}
+                            </Pane>
+                            <Pane flex={2}>
+                                {project.link ? (
+                                    <a
+                                        href={project.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ textDecoration: "none" }}
+                                    >
+                                        <Text
+                                            size={600}
+                                            marginTop={minorScale(2)}
+                                            color={darkMode ? "white" : "black"}
+                                            display="block"
+                                            fontWeight="bold"
+                                        >
+                                            {project.title}
+                                        </Text>
+                                    </a>
+                                ) : (
                                     <Text
                                         size={600}
                                         marginTop={minorScale(2)}
@@ -269,119 +289,122 @@ const Projects = () => {
                                     >
                                         {project.title}
                                     </Text>
-                                </a>
-                            ) : (
+                                )}
+                                {project.authors && (
+                                    <Text
+                                        size={400}
+                                        marginTop={minorScale(1)}
+                                        color={darkMode ? "white" : "black"}
+                                        display="block"
+                                    >
+                                        {project.authors.map(
+                                            (author, authorIndex) => (
+                                                <React.Fragment
+                                                    key={authorIndex}
+                                                >
+                                                    <a
+                                                        href={author.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            textDecoration:
+                                                                "none",
+                                                            fontWeight:
+                                                                author.name.includes(
+                                                                    "Brandon"
+                                                                )
+                                                                    ? "bold"
+                                                                    : "normal",
+                                                        }}
+                                                    >
+                                                        {author.name}
+                                                    </a>
+                                                    {authorIndex <
+                                                        project.authors.length -
+                                                            1 && ", "}
+                                                </React.Fragment>
+                                            )
+                                        )}
+                                    </Text>
+                                )}
                                 <Text
-                                    size={600}
+                                    size={400}
                                     marginTop={minorScale(2)}
                                     color={darkMode ? "white" : "black"}
                                     display="block"
-                                    fontWeight="bold"
                                 >
-                                    {project.title}
+                                    {project.description}
                                 </Text>
-                            )}
-                            {project.authors && (
-                                <Text
-                                    size={400}
-                                    marginTop={minorScale(1)}
-                                    color={darkMode ? "white" : "black"}
-                                    display="block"
-                                >
-                                    {project.authors.map(
-                                        (author, authorIndex) => (
-                                            <React.Fragment key={authorIndex}>
-                                                <a
-                                                    href={author.link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style={{
-                                                        textDecoration: "none",
-                                                        fontWeight:
-                                                            author.name.includes(
-                                                                "Brandon"
-                                                            )
-                                                                ? "bold"
-                                                                : "normal",
-                                                    }}
+                                {project.metaLinks && (
+                                    <Text
+                                        size={400}
+                                        marginTop={minorScale(1)}
+                                        color={darkMode ? "white" : "black"}
+                                        display="block"
+                                    >
+                                        {project.metaLinks.map(
+                                            (metaLink, metaLinkIndex) => (
+                                                <React.Fragment
+                                                    key={metaLinkIndex}
                                                 >
-                                                    {author.name}
-                                                </a>
-                                                {authorIndex <
-                                                    project.authors.length -
-                                                        1 && ", "}
-                                            </React.Fragment>
-                                        )
-                                    )}
-                                </Text>
-                            )}
-                            <Text
-                                size={400}
-                                marginTop={minorScale(2)}
-                                color={darkMode ? "white" : "black"}
-                                display="block"
-                            >
-                                {project.description}
-                            </Text>
-                            {project.metaLinks && (
-                                <Text
-                                    size={400}
-                                    marginTop={minorScale(1)}
-                                    color={darkMode ? "white" : "black"}
-                                    display="block"
+                                                    <a
+                                                        href={metaLink.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            textDecoration:
+                                                                "none",
+                                                        }}
+                                                    >
+                                                        {metaLink.name}
+                                                    </a>
+                                                    {metaLinkIndex <
+                                                        project.metaLinks
+                                                            .length -
+                                                            1 && " / "}
+                                                </React.Fragment>
+                                            )
+                                        )}
+                                    </Text>
+                                )}
+                                <Pane
+                                    display="flex"
+                                    flexWrap="wrap"
+                                    marginTop={minorScale(2)}
                                 >
-                                    {project.metaLinks.map(
-                                        (metaLink, metaLinkIndex) => (
-                                            <React.Fragment key={metaLinkIndex}>
-                                                <a
-                                                    href={metaLink.link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style={{
-                                                        textDecoration: "none",
-                                                    }}
+                                    {project.techStack &&
+                                        project.techStack.map(
+                                            (tech, techIndex) => (
+                                                <Pane
+                                                    key={techIndex}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    marginRight={majorScale(1)}
                                                 >
-                                                    {metaLink.name}
-                                                </a>
-                                                {metaLinkIndex <
-                                                    project.metaLinks.length -
-                                                        1 && " / "}
-                                            </React.Fragment>
-                                        )
-                                    )}
-                                </Text>
-                            )}
-                            <Pane
-                                display="flex"
-                                flexWrap="wrap"
-                                marginTop={minorScale(2)}
-                            >
-                                {project.techStack &&
-                                    project.techStack.map((tech, techIndex) => (
-                                        <Pane
-                                            key={techIndex}
-                                            display="flex"
-                                            alignItems="center"
-                                            marginRight={majorScale(1)}
-                                        >
-                                            {getLogo(tech)}
-                                            <Text
-                                                size={300}
-                                                marginLeft={minorScale(1)}
-                                                color={
-                                                    darkMode ? "white" : "black"
-                                                }
-                                            >
-                                                {tech}
-                                            </Text>
-                                        </Pane>
-                                    ))}
+                                                    {getLogo(tech)}
+                                                    <Text
+                                                        size={300}
+                                                        marginLeft={minorScale(
+                                                            1
+                                                        )}
+                                                        color={
+                                                            darkMode
+                                                                ? "white"
+                                                                : "black"
+                                                        }
+                                                    >
+                                                        {tech}
+                                                    </Text>
+                                                </Pane>
+                                            )
+                                        )}
+                                </Pane>
                             </Pane>
                         </Pane>
-                    </Pane>
-                ))}
+                    ))}
+                </Pane>
             </Pane>
-        </Pane>
+        </div>
     );
 };
 

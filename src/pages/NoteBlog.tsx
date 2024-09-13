@@ -11,6 +11,7 @@ import {
 import { majorScale, Pane, Spinner } from "evergreen-ui";
 import LinearRegression from "../components/notie-components/LinearRegression";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Helmet } from "react-helmet";
 
 const darkTheme = createTheme({
     palette: {
@@ -28,7 +29,7 @@ const NoteModules = import.meta.glob("../assets/notes/*.md", {
     query: "?raw",
     import: "default",
 });
-const BlogModules = import.meta.glob("../assets/blogs/*.md", {
+const BlogModules = import.meta.glob("../assets/blog/*.md", {
     query: "?raw",
     import: "default",
 });
@@ -136,27 +137,36 @@ const NotesBlogs = ({ type }: { type: string }) => {
     }, [saveScrollPosition]);
 
     return (
-        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-            <Pane margin="auto" padding={majorScale(3)}>
-                {isLoading ? (
-                    <Pane
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        height={400}
-                    >
-                        <Spinner />
-                    </Pane>
-                ) : (
-                    <Notie
-                        markdown={markdown}
-                        theme={theme}
-                        config={config}
-                        customComponents={customComponents}
-                    />
-                )}
-            </Pane>
-        </ThemeProvider>
+        <div>
+            <Helmet>
+                <title>{contentId} | Brandon Yifan Yang</title>
+                <meta
+                    name="description"
+                    content={`Notes and blog on ${contentId} by Brandon Yifan Yang`}
+                />
+            </Helmet>
+            <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+                <Pane margin="auto" padding={majorScale(3)}>
+                    {isLoading ? (
+                        <Pane
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            height={400}
+                        >
+                            <Spinner />
+                        </Pane>
+                    ) : (
+                        <Notie
+                            markdown={markdown}
+                            theme={theme}
+                            config={config}
+                            customComponents={customComponents}
+                        />
+                    )}
+                </Pane>
+            </ThemeProvider>
+        </div>
     );
 };
 

@@ -4,6 +4,7 @@ import Profile from "../components/Profile";
 import { useDarkMode } from "../context/DarkModeContext";
 import "../styles/Home.css";
 import Experience from "../components/Experience";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -50,38 +51,47 @@ const Home = () => {
 `;
 
     return (
-        <Pane className="home-container">
-            <Pane flex={1} marginRight={majorScale(2)}>
-                <Heading
-                    size={800}
-                    marginBottom={majorScale(2)}
-                    color={darkMode ? "white" : "default"}
-                >
-                    Biography
-                </Heading>
-                <MarkdownParagraph text={paragraphText} />
-                <Heading
-                    size={800}
-                    marginTop={majorScale(2)}
-                    marginBottom={majorScale(2)}
-                    color={darkMode ? "white" : "default"}
-                >
-                    Experience
-                </Heading>
-                <Experience />
-                <Heading
-                    size={800}
-                    marginBottom={majorScale(2)}
-                    color={darkMode ? "white" : "default"}
-                >
-                    News
-                </Heading>
-                <MarkdownParagraph text={newsParagraphText} />
+        <div>
+            <Helmet>
+                <title>Brandon Yifan Yang</title>
+                <meta
+                    name="description"
+                    content="Brandon Yifan Yang's personal website"
+                />
+            </Helmet>
+            <Pane className="home-container">
+                <Pane flex={1} marginRight={majorScale(2)}>
+                    <Heading
+                        size={800}
+                        marginBottom={majorScale(2)}
+                        color={darkMode ? "white" : "default"}
+                    >
+                        Biography
+                    </Heading>
+                    <MarkdownParagraph text={paragraphText} />
+                    <Heading
+                        size={800}
+                        marginTop={majorScale(2)}
+                        marginBottom={majorScale(2)}
+                        color={darkMode ? "white" : "default"}
+                    >
+                        Experience
+                    </Heading>
+                    <Experience />
+                    <Heading
+                        size={800}
+                        marginBottom={majorScale(2)}
+                        color={darkMode ? "white" : "default"}
+                    >
+                        News
+                    </Heading>
+                    <MarkdownParagraph text={newsParagraphText} />
+                </Pane>
+                <Pane className="profile-container" flexShrink={0}>
+                    <Profile />
+                </Pane>
             </Pane>
-            <Pane className="profile-container" flexShrink={0}>
-                <Profile />
-            </Pane>
-        </Pane>
+        </div>
     );
 };
 

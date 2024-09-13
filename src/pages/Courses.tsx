@@ -1,6 +1,7 @@
 import "../styles/Courses.css";
 
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 import OrgChartTree from "../components/CourseTree";
 
@@ -14,6 +15,13 @@ const Courses = () => {
     }, []);
     return (
         <div className="full-padding">
+            <Helmet>
+                <title>coursework | Brandon Yifan Yang</title>
+                <meta
+                    name="description"
+                    content="Relevant coursework taken by Brandon Yifan Yang"
+                />
+            </Helmet>
             <OrgChartTree />
         </div>
     );
