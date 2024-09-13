@@ -611,9 +611,9 @@ The interactive plot below allows you to adjust the learning rate and perform ea
 
 ### Convergence Analysis of Gradient Descent
 
-The convergence of gradient descent depends on the choice of the learning rate $\alpha$ and the properties of the loss function. For the following analysis, we only consider any loss function that is **convex** and **differentiable**.
+The convergence of gradient descent depends on the choice of the learning rate $\alpha$ and the properties of the loss function. For the following analysis, we only consider any loss function that is **convex** and **differentiable**. We define these terms in [**Definition 2.2**](#def:convex) and [**Definition 2.3**](#def:differentiable).
 
-<blockquote class="definition">
+<blockquote class="definition" id="def:convex">
 
 A function $ f: \mathbb{R}^n \to \mathbb{R} $ is **convex** if, for any two points $ x, y \in \mathbb{R}^n $ and any $ \lambda \in [0, 1] $, the following inequality holds:
 
@@ -670,7 +670,7 @@ A convex function states that the line segment connecting any two points on the 
 
 </div>
 
-<blockquote class="definition">
+<blockquote class="definition" id="def:differentiable">
 
 A function $ f $ is **differentiable** at a point $ x \in \mathbb{R}^n $ if the following limit exists:
 
@@ -684,6 +684,85 @@ where $ \nabla f(x) $ denotes the gradient vector of $ f $ at $ x $, and $ \lang
 
 </blockquote>
 
-#### Fixed Learning Rate
+Furthermore, for the sake of this analysis, we assume that the _gradient_ of the loss function is **Lipschitz continuous**. We define this term in [**Definition 2.4**](#def:lipschitz).
 
-coming soon...
+<blockquote class="definition" id="def:lipschitz">
+
+A differentiable function $ f: \mathbb{R}^n \to \mathbb{R} $ is said to have an **Lipschitz continuous** gradient if, for any two points $ x, y \in \mathbb{R}^n $, the following inequality holds given a constant $ L $:
+
+$$
+\begin{equation} \label{eq:lipschitz}
+\| \nabla f(x) - \nabla f(y) \| \leq L \| x - y \|
+\end{equation}
+$$
+
+</blockquote>
+
+This condition restricts how rapidly the function itself can change between two points. In other words, the function's rate of change is bounded by $L$, which is called the **Lipschitz constant**. Any function where the gradient is Lipschitz continuous is said to be **L-smooth** with respect to the Lipschitz constant $L$.
+
+<details open><summary>Example of Lipschitz Continuous Gradient</summary>
+
+Consider the following function:
+
+$$
+\begin{equation} \label{eq:lipschitz-example}
+f(x) = x^4
+\end{equation}
+$$
+
+The gradient of this function is:
+
+$$
+\begin{equation} \label{eq:lipschitz-gradient}
+\nabla f(x) = 4x^3
+\end{equation}
+$$
+
+We show that $\eqref{eq:lipschitz-example}$ is **L-smooth**, or $\eqref{eq:lipschitz-gradient}$ is **Lipschitz continuous**.
+
+<blockquote class="proof">
+
+We need to show that $\eqref{eq:lipschitz-gradient}$ satisfies the Lipschitz condition, which is:
+
+$$
+|4x^3 - 4y^3| \leq L|x - y|.
+$$
+
+Factor the left-hand side:
+
+$$
+\begin{aligned}
+|4x^3 - 4y^3| = 4|x^3 - y^3| = 4|x - y||x^2 + xy + y^2|.
+\end{aligned}
+$$
+
+Therefore, we need $L$ to satisfy:
+
+$$
+\begin{aligned}
+4|x - y||x^2 + xy + y^2| &\leq L|x - y| \\
+4|x^2 + xy + y^2| &\leq L.
+\end{aligned}
+$$
+
+Thus, to find the Lipschitz constant $L$, we need to bound $|x^2 + xy + y^2|$ for all $x, y \in \mathbb{R}$. We can analyze the following cases:
+
+1. If $x = y$, then $|x^2 + xy + y^2| = 3x^2$.
+2. If $x = 0$ and $y \neq 0$, then $|x^2 + xy + y^2| = y^2$.
+3. If $x \neq 0$ and $y = 0$, then $|x^2 + xy + y^2| = x^2$.
+
+Therefore, for general $x$ and $y$, $x^2 + xy + y^2$ grows quadratically with $x$ and $y$, where the largest possible value is proportional to $3x^2$. Thus, we can replace $|x^2 + xy + y^2|$ with $3x^2$:
+
+$$
+\begin{aligned}
+4|x^2 + xy + y^2| &\leq 4 \cdot 3x^2 = 12x^2.
+\end{aligned}
+$$
+
+Therefore, we can choose $L = 12$ as the Lipschitz constant for the gradient of $f(x) = x^4$.
+
+</blockquote>
+
+</details>
+
+#### Fixed Learning Rate
