@@ -56,7 +56,7 @@ const Home = () => {
                 <title>Brandon Yifan Yang</title>
                 <meta
                     name="description"
-                    content="Brandon Yifan Yang's personal website"
+                    content="I am a fourth-year B.S. Computer Science student at the University of Virginia. I am interested in the intersection of Machine Learning (ML), Computer Vision, and Robotics. My current research focuses on improving robotic reasoning and manipulation using Language and Vision models in both 2D and 3D space. I have worked with Tariq Iqbal at the Collaborative Robotics Lab, and I am advised by Yen-Ling Kuo for my undergraduate thesis. I am also affiliated with Jia-Bin Huang at University of Maryland, College Park. I am applying to graduate programs in Computer Science and Robotics for Fall 2025."
                 />
             </Helmet>
             <Pane className="home-container">
