@@ -11,6 +11,7 @@ const Profile = () => {
                 src={"Brandon_Yang.jpg"}
                 name="Brandon Yifan Yang"
                 size={300}
+                alt="Brandon Yifan Yang"
             />
             <Heading
                 size={900}
