@@ -8,28 +8,41 @@ import {
     Position,
     Text,
 } from "evergreen-ui";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { useDarkMode } from "../context/DarkModeContext";
+
+const handleSelect = (tab: string, navigate: NavigateFunction) => {
+    let path: string;
+
+    switch (tab) {
+        case "Home":
+            path = "/";
+            navigate(path);
+            break;
+        case "Relevant Coursework":
+            path = "/coursework";
+            navigate(path);
+            break;
+        case "CV":
+            path = "/brandonyang_cv.pdf";
+            window.open(path, "_blank");
+            break;
+        default:
+            path = `/${tab.toLowerCase().replace(/\s+/g, "")}`;
+            navigate(path);
+            break;
+    }
+};
+
+const NavWebMenu = ({ tabs }: { tabs: string[] }) => {
+    const { darkMode } = useDarkMode();
+    return tabs.map((label) => (
+        <NavButton key={label} label={label} darkMode={darkMode} />
+    ));
+};
 
 const NavMobileMenu = ({ tabs }: { tabs: string[] }) => {
     const navigate = useNavigate();
-
-    const handleSelect = (tab: string) => {
-        let path: string;
-
-        switch (tab) {
-            case "Home":
-                path = "/";
-                break;
-            case "Relevant Coursework":
-                path = "/coursework";
-                break;
-            default:
-                path = `/${tab.toLowerCase().replace(/\s+/g, "")}`;
-                break;
-        }
-
-        navigate(path);
-    };
 
     return (
         <Popover
@@ -40,7 +53,7 @@ const NavMobileMenu = ({ tabs }: { tabs: string[] }) => {
                         {tabs.map((tab) => (
                             <Menu.Item
                                 key={tab}
-                                onSelect={() => handleSelect(tab)}
+                                onSelect={() => handleSelect(tab, navigate)}
                             >
                                 {tab}
                             </Menu.Item>
@@ -74,35 +87,12 @@ const NavButton = ({
         appearance: "none",
     };
 
-    const handleClick = () => {
-        let path: string;
-
-        switch (label) {
-            case "Home":
-                path = "/";
-                navigate(path);
-                break;
-            case "Relevant Coursework":
-                path = "/coursework";
-                navigate(path);
-                break;
-            case "CV":
-                path = "/brandonyang_cv.pdf";
-                window.open(path, "_blank");
-                break;
-            default:
-                path = `/${label.toLowerCase().replace(/\s+/g, "")}`;
-                navigate(path);
-                break;
-        }
-    };
-
     return (
         <Button
             appearance="minimal"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onClick={handleClick}
+            onClick={() => handleSelect(label, navigate)}
             style={darkMode ? buttonStyle : defaultStyle}
         >
             <Text size={500} color={darkMode ? "tint2" : "default"}>
@@ -112,4 +102,4 @@ const NavButton = ({
     );
 };
 
-export { NavButton, NavMobileMenu };
+export { NavMobileMenu, NavWebMenu };

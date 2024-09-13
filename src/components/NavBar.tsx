@@ -8,7 +8,7 @@ import {
 } from "evergreen-ui";
 import { useDarkMode } from "../context/DarkModeContext";
 import { useEffect, useState } from "react";
-import { NavButton, NavMobileMenu } from "./NavButton";
+import { NavMobileMenu, NavWebMenu } from "./NavButton";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
@@ -91,13 +91,7 @@ const NavBar = () => {
                     {isMobile ? (
                         <NavMobileMenu tabs={TABS} />
                     ) : (
-                        TABS.map((label) => (
-                            <NavButton
-                                key={label}
-                                label={label}
-                                darkMode={darkMode}
-                            />
-                        ))
+                        <NavWebMenu tabs={TABS} />
                     )}
                 </Pane>
             </Pane>
