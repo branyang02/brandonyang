@@ -611,7 +611,7 @@ The interactive plot below allows you to adjust the learning rate and perform ea
 
 ### Convergence Analysis of Gradient Descent
 
-The convergence of gradient descent depends on the choice of the learning rate $\alpha$ and the properties of the loss function. For the following analysis, we only consider any loss function that is **convex** and **differentiable**. We define these terms in [**Definition 2.2**](#def:convex) and [**Definition 2.3**](#def:differentiable).
+The convergence of gradient descent depends on the choice of the learning rate $\alpha$ and the properties of the loss function. For the following analysis, we only consider any loss function that is **convex** and **differentiable**.
 
 <blockquote class="definition" id="def:convex">
 
@@ -670,17 +670,41 @@ A convex function states that the line segment connecting any two points on the 
 
 </div>
 
-<blockquote class="definition" id="def:differentiable">
+Given that most optimization problems involve convex and differentiable functions, we deduce the following property for convex and differentiable functions:
 
-A function $ f $ is **differentiable** at a point $ x \in \mathbb{R}^n $ if the following limit exists:
+<blockquote class="lemma">
+
+If $f: \mathbb{R}^n \to \mathbb{R}$ is a **convex** and **differentiable** function, then the following inequality holds for any two points $x, y \in \mathbb{R}^n$:
 
 $$
-\begin{equation} \label{eq:differentiable}
-\nabla f(x) = \lim_{h \to 0} \frac{f(x + h) - f(x) - \langle \nabla f(x), h \rangle}{\|h\|}
+\begin{equation} \label{eq:convex-gradient}
+f(y) \geq f(x) + \langle \nabla f(x), y - x \rangle
 \end{equation}
 $$
 
-where $ \nabla f(x) $ denotes the gradient vector of $ f $ at $ x $, and $ \langle \nabla f(x), h \rangle $ represents the dot product of $ \nabla f(x) $ and $ h $.
+</blockquote>
+
+<blockquote class="proof">
+
+We can deduce $\eqref{eq:convex-gradient}$ from $\eqref{eq:convex}$ by rearranging the terms:
+
+$$
+\begin{aligned}
+f(\lambda x + (1 - \lambda) y) &\leq \lambda f(x) + (1 - \lambda) f(y) \\
+f(\lambda x + (1 - \lambda) y) &\leq \lambda f(x) + f(y) - \lambda f(y) \\
+f(\lambda x + y - \lambda y) - f(y) &\leq \lambda (f(x) - f(y)) \\
+\frac{f(y  + \lambda (x - y)) - f(y)}{\lambda} &\leq f(x) - f(y) \\
+\end{aligned}
+$$
+
+Now taking the limit when $\lambda \to 0$, and using the definition of [directional derivative](https://en.wikipedia.org/wiki/Directional_derivative#For_differentiable_functions):
+
+$$
+\begin{aligned}
+\lim_{\lambda \to 0} \frac{f(y  + \lambda (x - y)) - f(y)}{\lambda} &\leq f(x) - f(y) \\
+\langle \nabla f(y), x - y \rangle &\leq f(x) - f(y).
+\end{aligned}
+$$
 
 </blockquote>
 
@@ -700,7 +724,7 @@ $$
 
 This condition restricts how rapidly the function itself can change between two points. In other words, the function's rate of change is bounded by $L$, which is called the **Lipschitz constant**. Any function where the gradient is Lipschitz continuous is said to be **L-smooth** with respect to the Lipschitz constant $L$.
 
-<details open><summary>Example of Lipschitz Continuous Gradient</summary>
+<details><summary>Example of Lipschitz Continuous Gradient</summary>
 
 Consider the following function:
 
@@ -717,6 +741,43 @@ $$
 \nabla f(x) = 4x^3
 \end{equation}
 $$
+
+```tikz
+\usepackage{pgfplots}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        axis lines = center,
+        xlabel = $x$,
+        ylabel = {$f(x), \nabla f(x)$},
+        xmin = -2, xmax = 2,
+        ymin = -4, ymax = 8,
+        samples = 100,
+        domain = -2:2,
+        legend pos = north west,
+        legend style={draw=none, fill=none},
+        smooth
+    ]
+    % Plot of the function f(x) = x^4
+    \addplot[
+        blue,
+        thick
+    ]{x^4};
+    \addlegendentry{$f(x) = x^4$}
+
+    % Plot of the gradient f'(x) = 4x^3
+    \addplot[
+        red,
+        dashed,
+        thick
+    ]{4*x^3};
+    \addlegendentry{$\nabla f(x) = 4x^3$}
+
+    \end{axis}
+\end{tikzpicture}
+\end{document}
+```
 
 We show that $\eqref{eq:lipschitz-example}$ is **L-smooth**, or $\eqref{eq:lipschitz-gradient}$ is **Lipschitz continuous**.
 
@@ -765,4 +826,123 @@ Therefore, we can choose $L = 12$ as the Lipschitz constant for the gradient of 
 
 </details>
 
+<blockquote class="lemma">
+
+If $f: \mathbb{R}^n \to \mathbb{R}$ is L-smooth, then for any two points $x, y \in \mathbb{R}^n$, the following inequality holds:
+
+$$
+\begin{equation} \label{eq:l-smooth}
+f(y) \leq f(x) + \langle \nabla f(x), y - x \rangle + \frac{L}{2} \| y - x \|_2^2
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+Let $x, y \in \mathbb{R}^n$ be fixed, and let $g(t) = f(x + t(y - x))$. By the chain rule, we have:
+
+$$
+\begin{aligned}
+g'(t) &= \nabla f(x + t(y - x))^T (y - x) \\
+&= \langle \nabla f(x + t(y - x)), y - x \rangle.
+\end{aligned}
+$$
+
+Using the Fundamental Theorem of Calculus, we can write:
+
+$$
+\begin{aligned}
+f(y) &= f(x) + \int_{0}^{1} g'(t) dt \\
+&= f(x) + \int_{0}^{1} \langle \nabla f(x + t(y - x)), y - x \rangle dt.
+\end{aligned}
+$$
+
+Applying linearity of the inner product $\langle a+b, c \rangle = \langle a, c \rangle + \langle b, c \rangle$, we get:
+
+$$
+\begin{aligned}
+f(y) &= f(x) + \int_{0}^{1} \langle \nabla f(x), y - x \rangle  + \langle \nabla f(x + t(y - x)) - \nabla f(x), y - x \rangle dt \\
+&= f(x) + \langle \nabla f(x), y - x \rangle + \int_{0}^{1} \langle \nabla f(x + t(y - x)) - \nabla f(x), y - x \rangle dt.
+\end{aligned}
+$$
+
+Applying [Cauchy-Schwarz inequality](https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality) to the inner product, we get:
+
+$$
+\begin{aligned}
+f(y) &\leq f(x) + \langle \nabla f(x), y - x \rangle + \int_{0}^{1} \| \nabla f(x + t(y - x)) - \nabla f(x) \| \| y - x \| dt.
+\end{aligned}
+$$
+
+Since $f$ is L-smooth, we can apply the Lipschitz condition $\eqref{eq:lipschitz}$ to deduce
+
+$$
+\begin{aligned}
+\| \nabla f(x + t(y - x)) - \nabla f(x) \| \leq L \|x + t(y - x) -x\| = Lt \|y - x\|.
+\end{aligned}
+$$
+
+Plugging this back into the inequality, we get:
+
+$$
+\begin{aligned}
+f(y) &\leq f(x) + \langle \nabla f(x), y - x \rangle + \int_{0}^{1} Lt \|y - x\| \|y - x\| dt \\
+&\leq f(x) + \langle \nabla f(x), y - x \rangle + \frac{L}{2} \|y - x\|_2^2.
+\end{aligned}
+$$
+
+</blockquote>
+
+We can also relate L-smoothness to the convergence of gradient descent. We can see the relationship in the following lemma:
+
+<blockquote class="lemma">
+
+If $f$ is L-smooth and $\alpha > 0$, then the following inequality holds for any two points $x, y \in \mathbb{R}^n$:
+
+$$
+\begin{equation} \label{eq:l-smooth-convergence}
+f(x - \alpha \nabla f(x)) \leq f(x) - \frac{\alpha (1 - \alpha L)}{2} \| \nabla f(x) \|_2^2.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+Coming soon...
+
+</blockquote>
+
 #### Fixed Learning Rate
+
+<blockquote class="theorem">
+
+Suppose the function $f: \mathbb{R}^n \to \mathbb{R}$ is convex and L-smooth and $x^{*} = \arg\min_{x} f(x)$, then, GD with learning rate (step size) $\alpha = \frac{1}{L}$ satisfies the following convergence rate:
+
+$$
+\begin{equation} \label{eq:gd-convergence}
+f(x^k) \leq f(x^*) + \frac{\|x^0 - x^*\|_2^2}{2\alpha k},
+\end{equation}
+$$
+
+where $x^k$ is the parameter vector at iteration $k$ and $x^0$ is the initial parameter vector.
+
+</blockquote>
+
+<blockquote class="proof">
+
+Given $\alpha = \frac{1}{L}$, we can apply the update rule for GD in $\eqref{eq:gd}$:
+
+$$
+\begin{aligned}
+x^{k+1} &= x^k - \alpha \nabla f(x^k) \\
+&= x^k - \frac{1}{L} \nabla f(x^k).
+\end{aligned}
+$$
+
+Our goal is to bound $f(x^k) - f(x^*)$ in terms of $\|x^0 - x^*\|$ and $k$.
+
+Coming soon...
+
+</blockquote>
