@@ -9,6 +9,9 @@
 \usepackage{enumitem}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\definecolor{linkblue}{rgb}{0, 0, 1}
 
 
 \pagestyle{fancy}
@@ -55,6 +58,14 @@
     \end{tabular*}\vspace{-5pt}
 }
 
+\newcommand{\honoritem}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      #1 & \textit{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
 \newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
 
 \renewcommand{\labelitemii}{$\circ$}
@@ -71,6 +82,10 @@
     \end{tabular*}
 }
 
+\newcommand{\linkhref}[2]{\textcolor{linkblue}{\href{#1}{#2}}}
+
+
+
 
 %-------------------------------------------
 %%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,8 +95,9 @@
 
 %----------HEADING-----------------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{\href{https://brandonyifanyang.com/}{\Large Brandon (Yifan) Yang}} & Email : \href{mailto:branyang@virginia.edu}{branyang@virginia.edu}\\
-  \href{https://brandonyifanyang.com/}{brandonyifanyang.com}
+  \textbf{\href{https://brandonyifanyang.com/}{\Large Brandon Yifan Yang}} &
+  Email : \textcolor{linkblue}{\href{mailto:branyang@virginia.edu}{branyang@virginia.edu}} \\
+  \textcolor{linkblue}{\href{https://brandonyifanyang.com/}{brandonyifanyang.com}}
 \end{tabular*}
 
 
@@ -91,7 +107,7 @@
 \resumeSubheading
 {\href{https://engineering.virginia.edu/department/computer-science}{University of Virginia}}{Charlottesville, VA}
 {B.S. in Computer Science;  Major GPA: 3.98/4.00; Cumulative GPA: 3.91/4.00}{August 2021 - May 2025}
-\item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Human-Robot Interaction (G), Optimization, Data Structures
+\item \textbf{Relevant Coursework}: ML, RL (G), NLP (G), Probabilistic ML (G), Learning for Interactive Robotics (G), Human-Robot Interaction (G), Optimization, Data Structures
 \& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering
 \resumeSubHeadingListEnd
 
@@ -105,7 +121,7 @@
 \resumeItemListStart
 \resumeItem{Ongoing Senior Capstone}
 {Vision-Language-Action (VLA) model for robotic manipulation.}
-\item Investigating VLA model outputting both language and corresponding actions within a unified transformer output space, grounding both domains simultaneously at each time step.
+\item Investigating action-language grounding in VLAs for robotic manipulation tasks, focusing on interpretability and generalizability.
 \resumeItemListEnd
 
 
@@ -143,44 +159,22 @@
 
 
 
-%-----------TEACHING EXPERIENCE-----------------
-\section{Teaching Experience}
-\resumeSubHeadingListStart
-
-\resumeSubheading
-{Teaching Assistant}{}
-{Machine Learning w/ Prof. Rich Nguyen}{August 2024 - Present}
-\resumeItemListStart
-\resumeItem{}
-{Authored comprehensive and interactive course notes to support student learning and understanding.}
-\resumeItemListEnd
-\resumeSubheading
-{Teaching Assistant}{}
-{Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
-\resumeItemListStart
-\resumeItem{}
-{Held weekly office hours and review sessions to assist students with course material.}
-\resumeItemListEnd
-\resumeSubheading
-{Lab Lead Teaching Assistant}{}
-{Computer Systems Organization w/ Prof. John Hott}{Jan 2023 - May 2023}
-\resumeItemListStart
-\resumeItem{}
-{Led weekly lab sections with short lectures and hands-on activities for 70+ students.}
-\resumeItemListEnd
-
-\resumeSubHeadingListEnd
-
 
 %-----------HONORS-----------------
 
 \section{Honors}
 \resumeSubHeadingListStart
-\resumeItemWithDate{0.97}{\textbf{Dean's Engineering Research Scholarship (\$5000)}: University of Virginia}{May 2023}\vspace{-5pt}
-\resumeItemWithDate{0.97}{\textbf{University of Virginia Research Computing Exhibition Finalist}: University of Virginia}{April 2024}\vspace{-5pt}
-\resumeItemWithDate{0.97}{\textbf{Entrepreneurship Cup Winner (Received \$1000 in funding)}: University of Virginia}{November 2023}\vspace{-5pt}
-\resumeItemWithDate{0.97}{\textbf{Dean's List}: University of Virginia}{}\vspace{-5pt}
-
+\honoritem
+{\textbf{Dean's Engineering Research Scholarship} \textit{(\$5000 stipend)}}{\textit{May 2023}}
+{University of Virginia School of Engineering and Applied Science}{}
+\honoritem
+{\textbf{University of Virginia Research Computing Exhibition Finalist}}{\textit{April 2024}}
+{University of Virginia Research Computing}{}
+\honoritem
+{\textbf{Entrepreneurship Cup Winner} \textit{(Received \$1000 in funding)}}{\textit{November 2023}}
+{University of Virginia Darden School of Business}{}
+\honoritem
+{\textbf{Dean's List}}{}{University of Virginia}{}
 \resumeSubHeadingListEnd
 
 
@@ -207,14 +201,49 @@
 \resumeSubHeadingListEnd
 
 
+%-----------TEACHING EXPERIENCE-----------------
+\section{Teaching Experience}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+{Teaching Assistant}{University of Virginia}
+{Machine Learning w/ Prof. Rich Nguyen}{August 2024 - Present}
+\resumeItemListStart
+\resumeItem{}
+{Authored comprehensive and interactive \linkhref{https://www.brandonyifanyang.com/notes/ml}{course notes} to support student learning and understanding.}
+\resumeItem{}
+{Collaborated with course staff to develop and grade assignments, exams, and projects.}
+\resumeItemListEnd
+\resumeSubheading
+{Teaching Assistant}{University of Virginia}
+{Theory of Computation w/ Prof. Mark Floryan}{Jan 2024 - May 2024}
+\resumeItemListStart
+\resumeItem{}
+{Held weekly office hours, one-on-one tutoring, and review sessions to assist students with course material.}
+\resumeItemListEnd
+\resumeSubheading
+{Lab Lead Teaching Assistant}{University of Virginia}
+{Computer Systems Organization w/ Prof. John Hott}{Jan 2023 - May 2023}
+\resumeItemListStart
+\resumeItem{}
+{Led and co-lectured weekly lab sections on computer systems topics with interactive activities for 70+ students.}
+\resumeItem{}
+{Supervised and coordinated a team of 6 TAs to facilitate effective learning and lab management.}
+\resumeItem{}
+{Held office hours and whiteboard sessions to provide additional support for students.}
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+
 
 
 %-----------SOFTWARE PROJECTS-----------------
 \section{Software Projects}
 \resumeSubHeadingListStart
-\resumeSubItem{\href{https://notie-markdown.vercel.app/}{notie-markdown}}
-{Open-source React component for Markdown rendering, built with TypeScript.}
-\resumeSubItem{SmartOH}
+\resumeSubItem{\linkhref{https://notie-markdown.vercel.app/}{notie-markdown}}
+{Developed open-source React component for Markdown rendering using TypeScript. Used notie-markdown to create \linkhref{https://www.brandonyifanyang.com/notes}{course notes} and \linkhref{https://www.brandonyifanyang.com/blog}{blog posts} on machine learning topics.}
+\resumeSubItem{\linkhref{https://github.com/ewei2406/SmartOH}{SmartOH}}
 {AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd overall at VTHacks11 (3/393).}
 \resumeSubItem{Voy}
 {Collaborated with 7 non-profits to develop Voy, a volunteer and driver management platform using Python and TypeScript; received funding from UVA's Entrepreneurship Cup.}
@@ -225,11 +254,11 @@
 \section{Programming Skills}
 \resumeSubHeadingListStart
 \resumeSubItem{Languages}
-{Python, C/C++, Java, JavaScript, TypeScript, HTML/CSS}
-\resumeSubItem{Technologies}
-{PyTorch, TensorFlow, Linux, Git, Docker, \LaTeX}
-\resumeSubItem{Web Tools}
-{React, Node.js, Express, Django}
+{Python, C/C++, CUDA, Java, JavaScript, TypeScript, HTML/CSS}
+\resumeSubItem{ML + Robotics}
+{PyTorch, TensorFlow, OpenCV, MuJoCo, ROS, IsaacGym, Habitat, RLBench}
+\resumeSubItem{Other Tools \& Frameworks}
+{Git, Docker, Slurm, Linux, \LaTeX, React, Node.js, Express, Django}
 
 \resumeSubHeadingListEnd
 
