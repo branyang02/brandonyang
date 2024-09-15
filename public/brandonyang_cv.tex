@@ -10,6 +10,7 @@
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
+\usepackage{fontawesome}
 
 \definecolor{linkblue}{rgb}{0, 0, 1}
 
@@ -94,11 +95,20 @@
 \begin{document}
 
 %----------HEADING-----------------
-\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{\href{https://brandonyifanyang.com/}{\Large Brandon Yifan Yang}} &
-  Email : \textcolor{linkblue}{\href{mailto:branyang@virginia.edu}{branyang@virginia.edu}} \\
+\begin{minipage}[t]{0.5\textwidth}
+  \vspace*{-7pt}
+  \textbf{\href{https://brandonyifanyang.com/}{\huge Brandon Yifan Yang}} \\
   \textcolor{linkblue}{\href{https://brandonyifanyang.com/}{brandonyifanyang.com}}
-\end{tabular*}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+  \raggedleft
+  \faEnvelope \, \textcolor{linkblue}{\href{mailto:branyang@virginia.edu}{branyang@virginia.edu}} \\
+  \faPhone \, \textcolor{linkblue}{123-456-7890} \\
+  \faMapMarker \, Charlottesville, VA
+\end{minipage}
+
+
+
 
 
 %-----------EDUCATION-----------------
