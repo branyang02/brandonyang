@@ -8,123 +8,62 @@ const orgChart = {
     children: [
         {
             name: "Introduction to Programming",
-            attributes: {
-                Achievements: "Python goes 🚀🚀🚀",
-            },
             children: [
                 {
                     name: "Computer Systems & Organization I ",
-                    attributes: {
-                        Achievement: "Lab Lead TA for Spring '23 🧑‍🏫️",
-                    },
                     children: [
                         {
                             name: "Computer Systems & Organization II",
-                            attributes: {
-                                Achievement: "0.038% away from A+ 💯",
-                            },
                         },
                         {
                             name: "Cybersecurity",
-                            attributes: {
-                                Achievement: "Hashed stuff",
-                            },
                         },
                     ],
                 },
                 {
                     name: "Software Development Essentials",
-                    attributes: {
-                        Achievement: "Java is cool 👨‍💻. OOP is cool 👨‍💻.",
-                    },
                     children: [
                         {
                             name: "Advanced Software Development",
-                            attributes: {
-                                Achievement:
-                                    "Python Django JavaScript HTML 😤😤😤",
-                            },
                         },
                     ],
                 },
                 {
                     name: "Discrete Mathematics",
-                    attributes: {
-                        Language: "Lean Language 😵‍💫😵‍💫😵‍💫",
-                    },
                     children: [
                         {
                             name: "Theory of Computation",
-                            attributes: {
-                                Achievement:
-                                    "Achieved Turing Completeness 🤖🤖🤖",
-                                Role: "TA for Spring '24 🧑‍🏫️",
-                            },
                         },
                     ],
                 },
                 {
                     name: "Data Structures",
-                    attributes: {
-                        Language: "Java",
-                    },
                     children: [
                         {
                             name: "Algorithms",
-                            attributes: {
-                                Language: "Python, Java",
-                            },
                             children: [
                                 {
                                     name: "Optimization",
-                                    attributes: {
-                                        Achievement: "KL KL KL KL",
-                                    },
                                 },
                                 {
                                     name: "Machine Learning",
-                                    attributes: {
-                                        Description:
-                                            "SVM, BN, ANN, CNN, RNN + LSTM, LLM, VAE",
-                                        Role: "TA for Fall '24 🧑‍🏫️",
-                                    },
                                     children: [
                                         {
                                             name: "Natural Language Processing (G)",
-                                            attributes: {
-                                                Achievement:
-                                                    "LLM is cool 🤖🤖🤖",
-                                            },
                                         },
                                         {
                                             name: "Human Robot Interaction (HRI) (G)",
-                                            attributes: {
-                                                Achievement:
-                                                    "Robot moves 🚀🚀🚀",
-                                            },
                                             children: [
                                                 {
                                                     name: "Learning for Interactive Robots (G)",
-                                                    attributes: {
-                                                        Achievement:
-                                                            "Robot learns 🤖🤖🤖",
-                                                    },
                                                 },
                                             ],
                                         },
                                         {
                                             name: "Probabilistic ML (G)",
-                                            attributes: {
-                                                Achievement:
-                                                    "Bayesian Bayesian BAYESIAN 🦦🦦🦦",
-                                            },
                                         },
                                         {
                                             name: "Reinforcement Learning (G)",
-                                            attributes: {
-                                                Achievement:
-                                                    "MDP, DP, Monte-Carlo, TD, Blah Blah Blah 🤖🤖🤖",
-                                            },
                                         },
                                     ],
                                 },
@@ -136,30 +75,17 @@ const orgChart = {
         },
         {
             name: "Multivariable Calculus",
-            attributes: {
-                Achievement: "🧮 🧮 🧮",
-            },
             children: [
                 {
                     name: "Linear Algebra",
-                    attributes: {
-                        Language: "MATLAB 👎👎👎",
-                    },
                     children: [
                         {
                             name: "Probability",
-                            attributes: {
-                                Achievement:
-                                    "Created a Monte Carlo Simulation.",
-                            },
                         },
                     ],
                 },
                 {
                     name: "Ordinary Differential Equations",
-                    attributes: {
-                        Achievement: "ODEEEE",
-                    },
                 },
             ],
         },
