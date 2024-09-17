@@ -663,7 +663,6 @@ The following are methods for solving first-order ODEs:
 
 1. **Separable ODEs**
 2. **Integrating Factors**
-3. **Exact ODEs**
 
 ### Separable ODEs
 
@@ -1576,6 +1575,143 @@ $$
 \begin{align}
 x^4y &= -\cos(x) + \frac{\cos^3(x)}{3} + C \\
 y &= -\frac{\cos(x)}{x^4} + \frac{\cos^3(x)}{3x^4} + \frac{C}{x^4}.
+\end{align}
+$$
+
+</blockquote>
+
+</details>
+
+### Non-Linear ODEs
+
+Suppose we have a non-linear first-order ODE:
+
+$$
+\begin{equation} \label{eq:non-linear}
+y' + \sin(x)y = y^4.
+\end{equation}
+$$
+
+We can see from $\eqref{eq:linear-ode}$ that this is a non-linear ODE because of the $y^4$ term. The idea is to rewrite the ODE into a linear ODE. We start by dividing both sides by $y^4$:
+
+$$
+\begin{align}
+\frac{y'}{y^4} + \frac{\sin(x)}{y^3} &= 1 \label{eq:non-linear-2}.
+\end{align}
+$$
+
+Next, we introduce a new variable $u$, and we want to rewrite $\eqref{eq:non-linear}$ in the form of $u' + p(x) u = g(x)$. We can see from $\eqref{eq:non-linear-2}$ that $u = \frac{1}{y^3}$, and we can solve for $u'$ and y'$:
+
+$$
+\begin{align}
+u &= \frac{1}{y^3} = y^{-3} \\
+u' &= -3y^{-4}y' \\
+y' &= \frac{u'}{-3y^{-4}} = - \frac{1}{3} y^4 u'.
+\end{align}
+$$
+
+We can then substitute $y'$ into $\eqref{eq:non-linear-2}$:
+
+$$
+\begin{align}
+\frac{- \frac{1}{3} y^4 u'}{y^4} + \sin(x) u &= 1 \\
+- \frac{1}{3} u' + \sin(x) u &= 1.
+\end{align}
+$$
+
+Now this becomes a linear ODE, and we can solve for $u$ and then $y$.
+
+$$
+\begin{aligned}
+- \frac{1}{3} u' + \sin(x) u &= 1 \implies u' + -3\sin(x)u = -3 \\
+\mu(x) = e^{\int -3\sin(x) \, dx} &= e^{3\cos(x)} \\
+\frac{d}{dx}\left(e^{3\cos(x)}u\right) &= -3e^{3\cos(x)} \\
+\int \frac{d}{dx}\left(e^{3\cos(x)}u\right) dx &= \int -3e^{3\cos(x)}dx \\
+e^{3\cos(x)}u &= \int -3e^{3\cos(x)}dx \\
+u &= \frac{1}{e^{3\cos(x)}}\int -3e^{3\cos(x)}dx \\
+u &= -3e^{-3\cos(x)} \int e^{3\cos(x)}dx.
+\end{aligned}
+$$
+
+Since $u = \frac{1}{y^3}$, we get $y = \sqrt[3]{1/u}$. Therefore, we get the general solution for $y$ as:
+
+$$
+\begin{align}
+y = \sqrt[3]{\frac{1}{-3e^{-3\cos(x)} \int e^{3\cos(x)}dx}}
+\end{align}
+$$
+
+<details open><summary>Non-Linear ODEs Problems</summary>
+
+<blockquote class="problem">
+Find the solution of the ODE:
+
+$$
+\begin{equation} \label{eq:non-linear-problem}
+y' = 5y + e^{-2x} \cdot y^{-2}, \quad y(0) = 2.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We divide both sides by $y^2$ to get the form of $u' + p(x) u = g(x)$ and find $u$:
+
+$$
+\begin{align}
+y' &= 5y + e^{-2x} \cdot  \\
+\frac{1}{y^{-2}}y' - \frac{1}{y^{-2}}5y &= e^{-2x} \\
+y^2y' - 5y^3 &= e^{-2x}.
+\end{align}
+$$
+
+This implies that $u = y^3$ and $u' = 3y^2y' \implies y' = \frac{u'}{3y^2}$. We substitute $y'$ into the ODE:
+
+$$
+\begin{align}
+y^2\frac{u'}{3y^2} - 5u &= e^{-2x} \implies \frac{1}{3} u' - 5u &= e^{-2x}.
+\end{align}
+$$
+
+We solve by finding the integrating factor $\mu(x)$:
+
+$$
+\begin{align}
+\frac{1}{3} u' - 5u &= e^{-2x} \implies u' - 15u = 3e^{-2x} \\
+\mu(x) = e^{\int -15 \, dx} &= e^{-15x} \\
+e^{-15x}u' - e^{-15x}15u &= 3e^{-15x}e^{-2x} \implies \frac{d}{dx}\left(e^{-15x} \cdot u \right) = 3e^{-15x}e^{-2x} \\
+\int \frac{d}{dx}\left(e^{-15x} \cdot u \right) dx &=  \int 3e^{-15x}e^{-2x} dx \\
+e^{-15x} \cdot u &= \int 3e^{-17x} dx = -\frac{3}{17}e^{-17x}+C \\
+u &= e^{15x} \left(-\frac{3}{17}e^{-17x}+C  \right) \\
+u &= -\frac{3}{17}e^{-2x}+Ce^{15x}.
+\end{align}
+$$
+
+Since $u = y^3$, this means $y = \sqrt[3]{u}$, and we substitute $u$ back into the solution:
+
+$$
+\begin{align}
+y &= \sqrt[3]{-\frac{3}{17}e^{-2x}+Ce^{15x}}.
+\end{align}
+$$
+
+Finally we solve for $C$ given the initial condition $y(0) = 2$:
+
+$$
+\begin{align}
+2 &= \sqrt[3]{-\frac{3}{17}e^{-2(0)}+Ce^{15(0)}} \\
+2 &= \sqrt[3]{-\frac{3}{17}+C} \\
+8 &= -\frac{3}{17}+C \\
+C &= \frac{139}{17}.
+\end{align}
+$$
+
+Therefore, the solution to the ODE is:
+
+$$
+\begin{align}
+y &= \sqrt[3]{-\frac{3}{17}e^{-2x}+  \frac{139}{17}  e^{15x}}.
 \end{align}
 $$
 
