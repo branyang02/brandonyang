@@ -1600,7 +1600,7 @@ $$
 \end{align}
 $$
 
-Next, we introduce a new variable $u$, and we want to rewrite $\eqref{eq:non-linear}$ in the form of $u' + p(x) u = g(x)$. We can see from $\eqref{eq:non-linear-2}$ that $u = \frac{1}{y^3}$, and we can solve for $u'$ and y'$:
+Next, we introduce a new variable $u$, and we want to rewrite $\eqref{eq:non-linear}$ in the form of $u' + p(x) u = g(x)$. We can see from $\eqref{eq:non-linear-2}$ that $u = \frac{1}{y^3}$, and we can solve for $u'$ and $y'$:
 
 $$
 \begin{align}
@@ -1641,7 +1641,7 @@ y = \sqrt[3]{\frac{1}{-3e^{-3\cos(x)} \int e^{3\cos(x)}dx}}
 \end{align}
 $$
 
-<details open><summary>Non-Linear ODEs Problems</summary>
+<details><summary>Non-Linear ODEs Problems</summary>
 
 <blockquote class="problem">
 Find the solution of the ODE:
@@ -1656,7 +1656,7 @@ $$
 
 <blockquote class="proof">
 
-We divide both sides by $y^2$ to get the form of $u' + p(x) u = g(x)$ and find $u$:
+We divide both sides by $y^{-2}$ to get the form of $u' + p(x) u = g(x)$ and find $u$:
 
 $$
 \begin{align}
@@ -1718,3 +1718,146 @@ $$
 </blockquote>
 
 </details>
+
+## Applications to ODEs
+
+<span class="subtitle">
+
+Section 2.3 in BOYCE, DIPRIMA.
+
+</span>
+
+### Interest Problems
+
+<blockquote class="problem">
+
+A recent college graduate borrows 150K at an interest 6% to puchase a condo. The buyer expects to make payments at a rate $800 + 10t$ per month.
+
+- When will the load be paid off?
+- How large a load could be paid off in exactly 20 years?
+
+</blockquote>
+
+**Part 1**: Suppose $y(t)$ is the amount of load at any time $t$ (months). We want to find the rate of change of the loan, which is the difference between the _rate of borrowing_ and the _rate of payment_:
+
+- rate of borrowing: $0.06 \frac{\%}{year} \cdot \frac{1}{12}\frac{year}{months} \cdot y(t)$.
+- rate of payment: $800 + 10t$.
+
+Therefore, the rate of change of the loan is:
+
+$$
+\begin{align}
+\frac{dy}{dt} &= \frac{0.06}{12}y(t) - (800 + 10t) \\
+\frac{dy}{dt} - 0.005y(t)&= - 800 - 10t.
+\end{align}
+$$
+
+And the initial condition is $y(0) = 150000$. We can then solve the I.V.P.
+
+**Part 2**: We find the solution to the I.V.P. and then find $y(240)$.
+
+### Newton's Law of Cooling
+
+Newton's Law of Cooling states that the temperature of an object changes at a rate proportional to the difference between its temperature and the surrounding temperature.
+
+Suppose $T(t)$ is the temperature of the object at time $t$, we can model the law as:
+
+$$
+\begin{equation}
+\frac{dT}{dt} \propto T - T_a = k(T - T_a),
+\end{equation}
+$$
+
+where $T_a$ is the surrounding temperature and $k$ is a positive constant.
+
+<details><summary>Newton's Law of Cooling Problems</summary>
+
+<blockquote class="problem">
+
+Suppose a cup of coffee obeys Newton's Law of Cooling with $T_a = 70$ and $T(0) = 200F$. If the coffee cools to $190F$ in $1$ minutes, when will it cool to $150F$?
+
+</blockquote>
+
+We model $T(t)$ as the temperature of the coffee at time $t$ and we have the initial condition $T(0) = 200$. We then model the ODE as:
+
+$$
+\begin{align}
+\frac{dT}{dt} = k(T - 70)
+\end{align}
+$$
+
+We then solve the I.V.P:
+
+$$
+\begin{aligned}
+\frac{dT}{dt} &= k(T - 70) \implies \frac{dT}{dt} = kT - 70k \implies \frac{dT}{dt} - kT = - 70k \\
+\mu(t) &= e^{\int -k \, dt} = e^{-kt} \implies \frac{d}{dt}\left(e^{-kt}T\right) = -70ke^{-kt} \\
+\int \frac{d}{dt}\left(e^{-kt}T\right) \, dt &= \int -70ke^{-kt} \, dt \\
+T(t) &= 70 + Ce^{kt}.
+\end{aligned}
+$$
+
+We solve for $C$ using the initial condition $T(0) = 200$:
+
+$$
+\begin{align}
+200 &= 70 + Ce^{k(0)} \\
+130 &= Ce^0 \\
+C &= 130.
+\end{align}
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+\begin{align}
+T(t) &= 70 + 130e^{kt}.
+\end{align}
+$$
+
+We then solve for $k$ using the condition that the coffee cools to $190F$ in $1$ minute:
+
+$$
+\begin{align}
+190 &= 70 + 130e^{k(1)} \\
+120 &= 130e^k \\
+e^k &= \frac{120}{130} = \frac{12}{13} \\
+k &= \ln\left(\frac{12}{13}\right).
+\end{align}
+$$
+
+Finally, we solve for $t$ when the coffee cools to $150F$:
+
+$$
+\begin{align}
+150 &= 70 + 130e^{\ln\left(\frac{12}{13}\right)t} \\
+80 &= 130e^{\ln\left(\frac{12}{13}\right)t} \\
+\frac{8}{13} &= e^{\ln\left(\frac{12}{13}\right)t} \\
+\ln\left(\frac{8}{13}\right) &= \ln\left(\frac{12}{13}\right)t \\
+t &= \frac{\ln\left(\frac{8}{13}\right)}{\ln\left(\frac{12}{13}\right)}.
+\end{align}
+$$
+
+</details>
+
+### Population Problems
+
+<span class="subtitle">
+
+Section 2.3 in BOYCE, DIPRIMA.
+
+</span>
+
+Logistic growth is a model of population growth where the rate of growth is proportional to the population size and the difference between the population size and the carrying capacity.
+
+Suppose $P(t)$ is the population size at time $t$, we can model the logistic growth as:
+
+$$
+\begin{equation}
+\frac{dP}{dt} = rP\left(1 - \frac{P}{k}\right), \quad r, k > 0.
+\end{equation}
+$$
+
+where $r$ is the growth rate and $k$ is the carrying capacity.
+
+We can find the critical points of the ODE by setting $\frac{dP}{dt} = 0$, where we find that $P = 0$ and $P = k$. These are also known as the **equilibrium points**.
