@@ -1327,7 +1327,7 @@ $$
 Find the general solution of the differential equation
 
 $$
-\begin{equation} \label{eq:ivp-2}
+\begin{equation}
 \frac{dy}{dt} - 2y = 4-t.
 \end{equation}
 $$
