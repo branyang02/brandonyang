@@ -1858,6 +1858,65 @@ $$
 \end{equation}
 $$
 
-where $r$ is the growth rate and $k$ is the carrying capacity.
+where $r$ is the **growth rate** and $k$ is the **carrying capacity**.
 
-We can find the critical points of the ODE by setting $\frac{dP}{dt} = 0$, where we find that $P = 0$ and $P = k$. These are also known as the **equilibrium points**.
+We can find the critical points of the ODE by setting $\frac{dP}{dt} = 0$, where we find that $P = 0$ and $P = k$. These are also known as the **equilibrium points**. We can plot $\frac{dP}{dt}$ below:
+
+```desmos
+
+rx\left(1 - \frac{x}{k}\right)
+
+```
+
+Suppose we denote $f(P) = rP\left(1 - \frac{P}{k}\right)$, we can see that $f(P) = 0$ at $P = 0$ and $P = k$. We can then use the first derivative test to determine the stability of the equilibrium points. We can also see from the graph that $\frac{dP}{dt}$ is positive when $0 < P < k$ and negative when $P > k$, meaning that the population grows when $0 < P < k$ and decreases when $P > k$.
+
+We can solve the ODE by the method of integrating factors (or separation of variables and using partial fractions):
+
+$$
+\begin{align}
+\frac{dP}{dt} &= rP\left(1 - \frac{P}{k}\right) = rP - \frac{rP^2}{k} \\
+\frac{1}{P^2}\frac{dP}{dt} &= \frac{1}{P}r - \frac{1}{k} \implies \frac{1}{P^2}\frac{dP}{dt} - \frac{1}{P}r =  - \frac{1}{k} \\
+u &= \frac{1}{P} \implies u' = -\frac{1}{P^2}P'\implies P' = -P^2u' \\
+\frac{1}{P^2}\left(-P^2u'\right) -ur &= -\frac{1}{k}  \implies -u' -ur = -\frac{1}{k} \implies u' + ur = \frac{1}{k} \\
+\mu(t) &= e^{\int r \, dt} = e^{rt} \implies \frac{d}{dt}\left(e^{rt}u\right) = \frac{1}{k}e^{rt} \\
+\int \frac{d}{dt}\left(e^{rt}u\right) \, dt &= \int \frac{1}{k}e^{rt} \, dt \implies e^{rt}u = \frac{1}{rk}e^{rt} + C \\
+u &= \frac{1}{rk} + Ce^{-rt} \implies P = \frac{1}{u} = \frac{rk}{1 + Ce^{-rt}}.
+\end{align}
+$$
+
+Suppose we have initial condition $P(0) = P_0$, we can solve for $C$:
+
+$$
+\begin{align}
+P_0 &= \frac{rk}{1 + Ce^{-r(0)}} = \frac{rk}{1 + C} \\
+P_0(1 + C) &= rk \implies C = \frac{rk}{P_0} - 1.
+\end{align}
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+\begin{align}
+P(t) &= \frac{rk}{1 + \left(\frac{rk}{P_0} - 1\right)e^{-rt}} = \frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)e^{-rt}}.
+\end{align}
+$$
+
+Therefore, we can plot the graph of $P(t)$ below, as well as the equilibrium points at $0$ and $k$. We can adjust $P_0$ to see how the population changes with different initial conditions.
+
+```desmos
+
+\frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)e^{-rx}}
+y = 0
+y = k
+
+```
+
+We can see that all initial conditions will converge to the carrying capacity $k$. We can also take the limit as $t \to \infty$:
+
+$$
+\begin{align}
+\lim_{t \to \infty} P(t) &= \lim_{t \to \infty} \frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)e^{-rt}} = \frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)0} = k.
+\end{align}
+$$
+
+The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**.
