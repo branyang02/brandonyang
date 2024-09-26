@@ -12,31 +12,60 @@ Machine learning is a field of artificial intelligence that focuses on developin
 2. **Unsupervised Learning**: Algorithms learn from unlabeled data to discover hidden patterns or structures.
 3. **Reinforcement Learning**: Algorithms learn through trial and error to maximize rewards in a given environment.
 
-Every machine learning model consists of two main components:
+For every machine learning problem, we need to define the following components:
 
-1. **Model**: A mathematical representation of the relationship between the input features and the target values.
-2. **Learning Algorithm**: A method to optimize the model parameters based on the training data.
+1. **Model**
+2. **Objective**
+3. **Optimization**
 
-A model is essentially a mapping function that takes input features and produces output predictions. Let's call this function the **hypothesis function** $h(\cdot)$:
+### Model
+
+**A model is a mapping function that takes input features and produces output based on the task.** For example, we can have a _regression_ model that takes in a list of house features (e.g., size, number of bedrooms) and predicts the house price, or a _classification_ model that takes in an image and predicts the text in the image. In the case of _unsupervised learning_, the model may map input features to some underlying structure or pattern, such as assigning data points to clusters or reducing dimensionality.
+
+A model can be represented as a function $f(\cdot)$ that maps input features to an output:
 
 $$
-h: \mathcal{X} \rightarrow \mathcal{Y},
+\mathbf{z} = f(\mathbf{x}; \theta),
 $$
 
-where $\mathcal{X}$ is the input space (features) and $\mathcal{Y}$ is the output space (target values). Since the goal of machine learning is to find the optimal **model parameters**, we can to define the hypothesis function as:
+where:
+
+- $\mathbf{x}$ is the input feature vector,
+- $\mathbf{z}$ is the output, which could represent:
+  - $\hat{\mathbf{y}}$, the predicted value in supervised learning,
+  - A latent representation, cluster assignment, or other structure in unsupervised learning,
+- $\theta$ is the **parameter** vector of the model, also known as the **weights**.
+
+### Objective
+
+The objective of a machine learning problem is to find the _optimal_ model parameters $\theta$ that maximize performance. To define what is _optimal_, we use a _loss function_ (also known as a _cost function_ or _objective function_). A loss function is a mathematical function that measures how well the model's output aligns with the desired outcomes or patterns in the data. **Therefore, the objective of a machine learning problem is to minimize the loss function.**
+
+We can define the general form of a loss function as:
 
 $$
-\hat{\mathbf{y}} = h_{\theta}(\mathbf{x}) = f(\mathbf{x}; \theta),
+L = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}, \mathbf{x})
 $$
 
-where $\theta$ is the **parameter** that we aim to optimize, and $f(\cdot)$ is the model function that maps the input features $\mathbf{x} \in \mathcal{X}$ to the predicted values $\hat{\mathbf{y}} \in \mathcal{Y}$. Finding the optimal $\theta$ is the same as minimizing some **loss function** that measures the difference between the predicted values and the actual values. Therefore, the learning algorithm aims to minimize the loss function typically defined as $L(\theta)$. There are various optimization algorithms to minimize the loss function and find the optimal parameter vector $\theta$.
+where:
 
-To summarize, for every machine learning model, we need to define the following components:
+- $\hat{\mathbf{y}}$ represents the model's prediction,
+- $\mathbf{y}$ is the true target value (for supervised learning),
+- $\mathbf{x}$ is the input feature vector.
+- $L$ is the loss value.
 
-1. **Model**: A hypothesis function $h_{\theta}(\mathbf{x}) = f(\mathbf{x}; \theta)$ that maps input features to predicted values.
-2. **Loss Function**: A function $L(\theta)$ that measures the difference between the predicted values and the actual values.
+Typically, $L$ is a _scalar value_ representing the overall loss. In some cases, such as with multiple samples or structured outputs (e.g., images), the loss may initially be computed as a set of individual scalar losses (e.g., per sample or per pixel), which are then aggregated (e.g., summed or averaged) to yield a single scalar value.
 
-Of course, we can't forget about the data!
+### Optimization
+
+**Optimization refers to the process of _minimizing_ the loss function $\mathcal{L}$ in order to _optimize_ the model's performance by adjusting the model parameters $\theta$.**  In other words, we aim to find the optimal model parameters that will minimize the loss function and improve the model's performance.
+
+Formally, the optimization problem can be written as:
+
+$$
+\theta^* = \arg\min_{\theta} \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}, \mathbf{x})
+$$
+
+where $\theta^*$ represents the optimal parameter values that minimize the loss function.
 
 ## Regression & Gradient Descent
 
@@ -946,3 +975,5 @@ Our goal is to bound $f(x^k) - f(x^*)$ in terms of $\|x^0 - x^*\|$ and $k$.
 Coming soon...
 
 </blockquote>
+
+## Support Vector Machines (SVM)
