@@ -1868,7 +1868,15 @@ rx\left(1 - \frac{x}{k}\right)
 
 ```
 
-Suppose we denote $f(P) = rP\left(1 - \frac{P}{k}\right)$, we can see that $f(P) = 0$ at $P = 0$ and $P = k$. We can then use the first derivative test to determine the stability of the equilibrium points. We can also see from the graph that $\frac{dP}{dt}$ is positive when $0 < P < k$ and negative when $P > k$, meaning that the population grows when $0 < P < k$ and decreases when $P > k$.
+Suppose we define the ODE as a function:
+
+$$
+\begin{equation}
+f(P) = rP\left(1 - \frac{P}{k}\right) \label{eq:logistic-ode},
+\end{equation}
+$$
+
+we can see that $f(P) = 0$ at $P = 0$ and $P = k$. We can then use the first derivative test to determine the stability of the equilibrium points. We can also see from the graph that $\frac{dP}{dt}$ is positive when $0 < P < k$ and negative when $P > k$, meaning that the population grows when $0 < P < k$ and decreases when $P > k$.
 
 We can solve the ODE by the method of integrating factors (or separation of variables and using partial fractions):
 
@@ -1920,3 +1928,15 @@ $$
 $$
 
 The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**.
+
+<blockquote class="definition">
+
+Given an ODE that models population in the form:
+
+$$
+\frac{dy}{dt} = f(y),
+$$
+
+where $f(y)$ is a continuous function of $y$, we say that $y = y_0$ is an **equilibrium solution** if $f(y_0) = 0$. We say that $y = y_0$ is an **asymptotically stable solution** if $f'(y_0) < 0$ and $y = y_0$ is an **unstable equilibrium solution** if $f'(y_0) > 0$.
+
+</blockquote>
