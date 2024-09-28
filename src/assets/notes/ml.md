@@ -545,13 +545,21 @@ In the previous section, we have definied the general form of _model_, _objectiv
 
   $$
   \begin{equation} \label{eq:loss-supervised}
-  L = \mathcal{L}(f_{\theta}(\mathbf{x}), \mathbf{y}).
+  L = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}).
   \end{equation}
   $$
 
 - **Optimization**: This is the same as the optimization step described in $\eqref{eq:optimization}$, where we aim to find the optimal parameter vector $\theta$ that minimizes the loss function.
 
-### Supervised Learning Algorithms
+### Regression
+
+<blockquote class="definition">
+
+**Regression** is a type of supervised learning algorithm used to predict continuous values. In regression, the model learns the relationship between the input features and the target values to make predictions.
+
+</blockquote>
+
+In regression, the target values are continuous, and the goal is to predict a continuous value based on the input features. For example, we can use regression to predict house prices based on features like size, number of bedrooms, and location.
 
 #### Linear Regression
 
@@ -624,7 +632,7 @@ Recall that a loss function is used to _evaluate_ the model's performance. Expan
 $$
 \begin{equation} \label{eq:mse}
 \begin{split}
-L_{\text{MSE}} = \mathcal{L}(f_{\theta}(\mathbf{X}), \mathbf{y}) &= \frac{1}{m} \left\| \mathbf{X}\mathbf{\theta} - \mathbf{y} \right\|_2^2 \\
+L_{\text{MSE}} = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) &= \frac{1}{m} \left\| \mathbf{X}\mathbf{\theta} - \mathbf{y} \right\|_2^2 \\
 &= \frac{1}{m} \sum_{i=1}^{m} \left( \hat{y}^{(i)} - y^{(i)} \right)^2.
 \end{split}
 \end{equation}
@@ -1118,12 +1126,296 @@ The interactive plot below allows you to adjust the learning rate and perform ea
 
 ```
 
+### Classification
+
+<blockquote class="definition">
+
+**Classification** is a type of supervised learning algorithm used to predict discrete values (classes or categories). In classification, the model learns the relationship between the input features and the target classes to make predictions.
+
+</blockquote>
+
+In classification, the target values are discrete classes or categories, and the goal is to predict the class label based on the input features. For example, we can use classification to predict whether an email is spam or not based on the email content.
+
+There are many terms to evaluate the performance of a classification model. We will discuss some of the most common terms:
+
+- **Confusion Matrix**
+- **Precision and Recall**
+- **F1 Score**
+- **ROC Curve and AUC**
+
+**Confusion Matrix**
+
+A confusion matrix is a table that is often used to describe the performance of a classification model on a set of test data for which the true values are known. The confusion matrix consists of four terms:
+
+- **True Positives (TP)**: The number of positive instances correctly classified as positive.
+- **True Negatives (TN)**: The number of negative instances correctly classified as negative.
+- **False Positives (FP)**: The number of negative instances incorrectly classified as positive.
+- **False Negatives (FN)**: The number of positive instances incorrectly classified as negative.
+
+The confusion matrix is often represented as:
+
+$$
+\begin{array}{|c|c|c|}
+\hline
+& \text{Actual Positive} & \text{Actual Negative} \\
+\hline
+\text{Predicted Positive} & \text{TP} & \text{FP} \\
+\text{Predicted Negative} & \text{FN} & \text{TN} \\
+\hline
+\end{array}
+$$
+
+We can also have a confusion matrix for multi-class classification problems, where each row and column represent a class, for example, we can have the following confusion matrix for a 5-class classification problem, where the classes are $\{i, e, a, o, u\}$. Each row represents the predicted class, and each column represents the actual class:
+
+$$
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+\text{Predicted\,\textbackslash\ Actual} & \text{i} & \text{e} & \text{a} & \text{o} & \text{u} \\ \hline
+\text{i} & 15 & 1 &   &   &   \\ \hline
+\text{e} & 1  & 1 &   &   &   \\ \hline
+\text{a} &    &   & 79 & 5 &   \\ \hline
+\text{o} &    &   & 4  & 15 & 3 \\ \hline
+\text{u} &    &   &    & 2  & 2 \\ \hline
+\end{array}
+$$
+
+<div class="caption">
+    Source: <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Wikipedia</a>
+</div>
+
+Fo example, $79$ at the intersection of the row $a$ and the column $a$ means that $79$ instances of class $a$ were correctly classified as class $a$, while $5$ instances of class $a$ were incorrectly classified as class $o$.
+
+**Precision and Recall**
+
+<blockquote class="definition">
+
+**Precision** is the ratio of correctly predicted positive observations to the total predicted positive observations. It is defined as:
+
+$$
+\begin{equation} \label{eq:precision}
+\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}.
+\end{equation}
+$$
+
+</blockquote>
+
+<blockquote class="definition">
+
+**Recall** is the ratio of correctly predicted positive observations to the all observations in actual class. It is defined as:
+
+$$
+\begin{equation} \label{eq:recall}
+\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}.
+\end{equation}
+$$
+
+</blockquote>
+
+Precision and recall are important metrics in classification problems, especially when the classes are imbalanced. Precision measures the accuracy of the positive predictions, while recall measures the coverage of the positive instances.
+
+**F1 Score**
+
+<blockquote class="definition">
+
+**F1 Score** is the harmonic mean of precision and recall. It is defined as:
+
+$$
+\begin{equation} \label{eq:f1-score}
+\text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{\text{TP}}{\text{TP} + \frac{1}{2}(\text{FN} + \text{FP})}.
+\end{equation}
+$$
+
+</blockquote>
+
+The F1 score is a single metric that combines both precision and recall. It is useful when we want to balance the _trade-off_ between precision and recall.
+
+**ROC Curve and AUC**
+
+**ROC Curve** (Receiver Operating Characteristic Curve) is a graphical representation of the true positive rate (recall) $\left(\frac{\text{TP}}{\text{TP} + \text{FN}}\right)$ against the false positive rate $\left(\frac{\text{FP}}{\text{FP} + \text{TN}}\right)$. The ROC curve is used to evaluate the performance of a classification model at various thresholds.
+
+<img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Bgc9QOjhnL70g2SQxyj6hQ.png" alt="ROC Curve" style="max-height: 300px;">
+<div class="caption">
+    Source: <a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">ROC Curve and AUC: Evaluating Model Performance</a>
+</div>
+
+**AUC** (Area Under the Curve) is the area under the ROC curve. The AUC score ranges from 0 to 1, where a score of 1 indicates a perfect classifier, and a score of 0.5 indicates a random classifier.
+
 #### Logistic Regression
 
-#### Support Vector Machines (SVM)
+Logistic regression is a **classification** algorithm that models the probability of a **binary outcome** based on one or more input features. The logistic regression model uses the logistic function (sigmoid function) to predict the probability that the dependent variable belongs to a particular category.
 
-### Unsupervised Learning
+For the following section, we define class $0$ as the negative class and class $1$ as the positive class.
 
-#### Clustering
+<blockquote class="note">
 
-### Reinforcement Learning
+Despite its name, logistic regression is a classification algorithm, not a regression algorithm.
+
+</blockquote>
+
+**Data Representation**
+
+In logistic regression, we have a set of _observations_ $\mathbf{X} = \begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & \cdots & x_n^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & \cdots & x_n^{(2)} \\
+\vdots & \vdots & \vdots & \vdots \\
+x_1^{(m)} & x_2^{(m)} & \cdots & x_n^{(m)}
+\end{bmatrix}$, where each row represents an observation and each column represents a feature. We have target values $\mathbf{y} = \begin{bmatrix}
+y^{(1)} \\
+y^{(2)} \\
+\vdots \\
+y^{(m)}
+\end{bmatrix}$, where $y^{(i)} \in \{0, 1\}$ is the binary class label for observation $i$.
+
+**Model**
+
+Following the general form of supervised learning modeles in $\eqref{eq:model-supervised}$, the logistic regression model is defined as:
+
+$$
+\begin{equation} \label{eq:logistic-regression}
+\hat{y}^{(i)}  = f_{\theta}(\mathbf{x}^{(i)}) = \sigma(\theta^T \mathbf{x}^{(i)}),
+\end{equation}
+$$
+
+where $\hat{y}^{(i)}$ is the predicted probability that observation $i$ belongs to class $1$, and $f_{\theta}(\mathbf{x}^{(i)})$ is the hypothesis function of logistic regression, defined as:
+
+$$
+\begin{equation} \label{eq:logistic-hypothesis}
+f_{\theta}(\mathbf{x}^{(i)}) = \sigma(\theta^T \mathbf{x}^{(i)}) = \frac{1}{1 + e^{-\theta^T \mathbf{x}^{(i)}}}, \quad \text{where } \sigma(z) = \frac{1}{1 + e^{-z}}.
+\end{equation}
+$$
+
+The logistic function $\sigma(z)$ is also known as the **sigmoid function**, which maps any real value to the range $(0, 1)$. The sigmoid function is used to model the probability that the dependent variable belongs to a particular category.
+
+<blockquote class="equation">
+
+**Sigmoid Function**:
+
+$$
+\begin{equation} \label{eq:sigmoid}
+\sigma(z) = \frac{1}{1 + e^{-z}}.
+\end{equation}
+$$
+
+</blockquote>
+
+```tikz
+
+\begin{document}
+
+\begin{tikzpicture}[scale=1.5]
+
+    % Draw axes
+    \draw[->] (0,-0.2) -- (0,1.2) node[above] {$\sigma(z)$};
+
+    % Plot the sigmoid function
+    \draw[domain=-4:4, smooth, variable=\z, blue, thick] plot ({\z}, {1/(1 + exp(-\z))});
+
+    % Labels at key points
+    \node[below right] at (4, 0) {$z \to \infty$};
+    \node[left] at (0, 1) {1};
+    \node[right] at (0, 0) {0};
+    \node[below left] at (-4, 0) {$-\infty \leftarrow z$};
+    \node[below] at (0, 0.5) {$0.5$};
+    
+    % Dashed lines for asymptotes
+    \draw[dashed] (-4,1) -- (4,1); % y = 1 asymptote
+    \draw[dashed] (-4,0) -- (4,0); % y = 0 asymptote
+
+    % Dashed line showing midpoint
+    \draw[dashed] (0,0.5) -- (4,0.5);
+    \draw[dashed] (0,0.5) -- (-4,0.5);
+    \fill[blue] (0,0.5) circle (1pt); % point (0, 0.5)
+
+\end{tikzpicture}
+
+\end{document}
+
+```
+
+<div class="caption">
+
+The sigmoid function $\sigma(z) = \frac{1}{1 + e^{-z}}$ maps any real value $z$ to the range $(0, 1)$.
+
+</div>
+
+We can also represent the model in matrix form as:
+
+$$
+\begin{equation} \label{eq:logistic-matrix}
+\hat{\mathbf{y}} = \sigma(\mathbf{X} \mathbf{\theta}) = \begin{bmatrix}
+\sigma(\mathbf{\theta}^T \mathbf{x}^{(1)}) \\
+\sigma(\mathbf{\theta}^T \mathbf{x}^{(2)}) \\
+\vdots \\
+\sigma(\mathbf{\theta}^T \mathbf{x}^{(m)})
+\end{bmatrix},
+\end{equation}
+$$
+
+where $\hat{\mathbf{y}}$ is the predicted _probability vector_ for all observations. The predicted class labels are obtained by applying a threshold of $0.5$ to the predicted probabilities.
+
+**Loss Function**
+
+We expand on the general supervised learning loss function $\eqref{eq:loss-supervised}$ to derive the **log loss** for logistic regression:
+
+<blockquote class="equation">
+
+**Log Loss Function**:
+
+$$
+\begin{equation} \label{eq:log-loss}
+L_{\text{log}} = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = \frac{1}{m} \sum_{i=1}^{m} \left[ -y^{(i)} \log(\hat{y}^{(i)}) - (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right].
+\end{equation}
+$$
+
+</blockquote>
+
+where $y^{(i)}$ is the actual class label for observation $i$, and $\hat{y}^{(i)}$ is the predicted probability that the observation belongs to class $1$.
+
+<blockquote class="note">
+
+In most ML equations, we use $\log$ to denote the natural logarithm (base $e$).
+
+</blockquote>
+
+We can visualize the log loss function for binary classification problems using the following plot:
+
+```desmos
+f(x) = -\ln(x)
+g(x) = -\ln(1 - x)
+x = 0.8
+```
+
+We further analyze $\eqref{eq:log-loss}$ by breaking down the components:
+
+- $y^{(i)}$: The true label of the data point. This acts as the "weight" for the negative log term. If $y^{(i)} = 1$, the negative log term is weighted, and if $y^{(i)} = 0$, the positive log term is weighted.
+- $-\log(\hat{y}^{(i)})$: The negative log term. This term is small when the predicted probability $\hat{y}^{(i)}$ is close to $1$, which means the prediction is confident and crrect. As $\hat{y}^{(i)}$ approaches $0$, the negative log term increases rapidly, penalizing the model for incorrect predictions.
+- $(1 - y^{(i)})$: This represents the "weight" for the positive log term. If $y^{(i)} = 0$, the positive log term is weighted, and if $y^{(i)} = 1$, the negative log term is weighted.
+- $\log(1 - \hat{y}^{(i)})$: The positive log term. This term is small when the predicted probability $\hat{y}^{(i)}$ is close to $0$, reflecting a confident and correct prediction for class $0$. However, as $\hat{y}^{(i)}$ approaches $1$, the positive log term increases rapidly, penalizing the model for incorrect predictions.
+
+For example, if we have $y^{(i)} = 1$ and $\hat{y}^{(i)} = 0.8$, we have:
+
+$$
+\begin{align*}
+L_{\text{log}} &= -1 \log(0.8) - (1 - 1) \log(1 - 0.8) = -1 \log(0.8) - 0 \log(0.2) \approx 0.2231.
+\end{align*}
+$$
+
+On the other hand, if the true label is $y^{(i)} = 0$, and we predict $\hat{y}^{(i)} = 0.8$, we have:
+
+$$
+\begin{align*}
+L_{\text{log}} &= -0 \log(0.8) - (1 - 0) \log(1 - 0.8) = 0 \log(0.8) - 1 \log(0.2) \approx 1.6094.
+\end{align*}
+$$
+
+**Optimization**
+
+To optimize the logistic regression model, we perform gradient descent on the log loss function $\eqref{eq:log-loss}$.
+
+### Support Vector Machines (SVM)
+
+## Unsupervised Learning
+
+### Clustering
+
+## Reinforcement Learning
