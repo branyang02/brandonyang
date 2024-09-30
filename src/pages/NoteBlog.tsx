@@ -13,6 +13,7 @@ import LinearRegression from "../components/notie-components/LinearRegression";
 import LogisticRegression from "../components/notie-components/LogisticRegression";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Helmet } from "react-helmet";
+import Giscus from "@giscus/react";
 
 const darkTheme = createTheme({
     palette: {
@@ -166,6 +167,21 @@ const NotesBlogs = ({ type }: { type: string }) => {
                             customComponents={customComponents}
                         />
                     )}
+                    <Giscus
+                        id="comments"
+                        repo="branyang02/brandonyang"
+                        repoId="R_kgDOMct0sA"
+                        category="General"
+                        categoryId="DIC_kwDOMct0sM4Ci70X"
+                        mapping="pathname"
+                        strict="0"
+                        reactionsEnabled="1"
+                        emitMetadata="0"
+                        inputPosition="bottom"
+                        theme={darkMode ? "noborder_gray" : "light"}
+                        lang="en"
+                        loading="lazy"
+                    />
                 </Pane>
             </ThemeProvider>
         </div>
