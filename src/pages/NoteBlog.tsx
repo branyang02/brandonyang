@@ -10,6 +10,7 @@ import {
 } from "react";
 import { majorScale, Pane, Spinner } from "evergreen-ui";
 import LinearRegression from "../components/notie-components/LinearRegression";
+import LogisticRegression from "../components/notie-components/LogisticRegression";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Helmet } from "react-helmet";
 
@@ -81,6 +82,7 @@ const NotesBlogs = ({ type }: { type: string }) => {
     const customComponents = useMemo(
         () => ({
             linearRegression: () => <LinearRegression />,
+            logisticRegression: () => <LogisticRegression />,
         }),
         []
     );

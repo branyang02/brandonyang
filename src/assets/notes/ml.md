@@ -1410,7 +1410,285 @@ $$
 
 **Optimization**
 
-To optimize the logistic regression model, we perform gradient descent on the log loss function $\eqref{eq:log-loss}$.
+To optimize the logistic regression model, we perform gradient descent on the log loss function $\eqref{eq:log-loss}$. Unlike linear regression, logistic regression does not have a closed-form solution.
+
+We expand $\eqref{eq:gd}$ to derive the gradient descent update rule for logistic regression:
+
+$$
+\begin{equation} \label{eq:gd-logistic}
+\mathbf{\theta}^{(t+1)} = \mathbf{\theta}^{(t)} - \alpha \nabla_{\mathbf{\theta}} L_{\text{log}}.
+\end{equation}
+$$
+
+The gradient of the log loss function with respect to the parameter vector $\mathbf{\theta}$ is given by:
+
+<blockquote class="equation">
+
+**Gradient of Log Loss**:
+
+$$
+\begin{equation} \label{eq:log-loss-gradient}
+\nabla_{\mathbf{\theta}} L_{\text{log}} = \frac{1}{m} \mathbf{X}^T (\sigma(\mathbf{X} \mathbf{\theta}) - \mathbf{y}).
+\end{equation}
+$$
+
+</blockquote>
+
+<details><summary>Derivation of Log Loss Gradient</summary>
+
+To derive $\eqref{eq:log-loss-gradient}$, we start by computing the gradient of the log loss with respect to a single parameter $\theta_j$:
+
+$$
+\begin{align}
+    \frac{\partial L_{\text{log}}}{\partial \theta_j} =  \frac{\partial}{\partial \theta_j} \left( \frac{1}{m} \sum_{i=1}^{m} \left[ -y^{(i)} \log(\hat{y}^{(i)}) - (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right] \right).
+\end{align}
+$$
+
+Note that $\frac{\partial}{\partial x} \left( \sum_{i=1}^{n} f(x) \right) = \sum_{i=1}^{n} \frac{\partial f(x)}{\partial x}$. Therefore, we first compute the derivative of the log loss with respect to a single observation $i$:
+
+$$
+\begin{align}
+    \frac{\partial L^{(i)}_{\text{log}}}{\partial \theta_j} &= \frac{\partial}{\partial \theta_j} \left(-y^{(i)} \log(\hat{y}^{(i)}) - (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right) \\
+    &= \frac{\partial}{\partial \theta_j} \left(-y^{(i)} \log(\sigma(\theta^T \mathbf{x}^{(i)})) - (1 - y^{(i)}) \log(1 - \sigma(\theta^T \mathbf{x}^{(i)})) \right) \\
+    &= -y^{(i)} \frac{\partial}{\partial \theta_j} \log(\sigma(\theta^T \mathbf{x}^{(i)})) - (1 - y^{(i)}) \frac{\partial}{\partial \theta_j} \log(1 - \sigma(\theta^T \mathbf{x}^{(i)})) \\
+    &= -y^{(i)} \frac{1}{\sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) - (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} (1 - \sigma(\theta^T \mathbf{x}^{(i)})) \label{eq:log-loss-gradient-step1}.
+\end{align}
+$$
+
+To continue, we recognize that:
+
+$$
+\frac{\partial}{\partial \theta_j}\left(1 - \sigma(\theta^T \mathbf{x}^{(i)})  \right) = -\frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}).
+$$
+
+Therefore, the second term in $\eqref{eq:log-loss-gradient-step1}$ becomes:
+
+$$
+- (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} (1 - \sigma(\theta^T \mathbf{x}^{(i)})) = (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}).
+$$
+
+Now, we can combine both terms in $\eqref{eq:log-loss-gradient-step1}$:
+
+$$
+\begin{align}
+    \frac{\partial L^{(i)}_{\text{log}}}{\partial \theta_j} &= -y^{(i)} \frac{1}{\sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) + (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) \\
+    &= \left(  \frac{-y^{(i)}}{\sigma(\theta^T \mathbf{x}^{(i)})}  + \frac{(1 - y^{(i)})}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \right)\frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) \label{eq:log-loss-gradient-step2}.
+\end{align}
+$$
+
+Next, we compute the derivative of the sigmoid function $\sigma(z)$ with respect to $z$:
+
+$$
+\begin{align}
+    \frac{\partial}{\partial z} \sigma(z) &= \frac{\partial}{\partial z} \frac{1}{1 + e^{-z}} = \frac{e^{-z}}{(1 + e^{-z})^2} = \frac{1}{1 + e^{-z}} \left(1 - \frac{1}{1 + e^{-z}}\right) \\
+    &= \sigma(z) (1 - \sigma(z)) \label{eq:sigmoid-derivative}.
+\end{align}
+$$
+
+Finally, we substitute $\eqref{eq:sigmoid-derivative}$ into the gradient multiplication term in $\eqref{eq:log-loss-gradient-step2}$:
+
+$$
+\begin{align*}
+    \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) = \sigma(\theta^T \mathbf{x}^{(i)}) (1 - \sigma(\theta^T \mathbf{x}^{(i)})) \frac{\partial}{\partial \theta_j} (\theta^T \mathbf{x}^{(i)}) = \sigma(\theta^T \mathbf{x}^{(i)}) (1 - \sigma(\theta^T \mathbf{x}^{(i)})) x_j^{(i)}.
+\end{align*}
+$$
+
+Let $\hat{y}^{(i)} = \sigma(\theta^T \mathbf{x}^{(i)})$ for simplicity, we have:
+
+$$
+\begin{align*}
+\frac{\partial L^{(i)}_{\text{log}}}{\partial \theta_j} &=  \left(  \frac{-y^{(i)}}{\sigma(\theta^T \mathbf{x}^{(i)})}  + \frac{(1 - y^{(i)})}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \right)\frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}) \\
+&= \left(  \frac{-y^{(i)}}{\hat{y}^{(i)}}  + \frac{(1 - y^{(i)})}{1 - \hat{y}^{(i)}} \right) \hat{y}^{(i)} (1 -\hat{y}^{(i)}) x_j^{(i)} \\
+&= \left(  -y^{(i)}(1 - \hat{y}^{(i)}) + (1 - y^{(i)})\hat{y}^{(i)} \right) x_j^{(i)} \\
+&= \left(  -y^{(i)} + y^{(i)}\hat{y}^{(i)} + \hat{y}^{(i)} - y^{(i)}\hat{y}^{(i)} \right) x_j^{(i)} \\
+&= \left(  \hat{y}^{(i)} - y^{(i)} \right) x_j^{(i)}.
+\end{align*}
+$$
+
+Next, we add back the summation over all observations $i$ to obtain the gradient of the log loss function with respect to the parameter vector $\theta_j$:
+
+$$
+\begin{align}
+    \frac{\partial L_{\text{log}}}{\partial \theta_j} &= \frac{1}{m} \sum_{i=1}^{m} \left(  \hat{y}^{(i)} - y^{(i)} \right) x_j^{(i)} \label{eq:log-loss-gradient-final}.
+\end{align}
+$$
+
+Finally, to compute the gradient of the log loss function with respect to the parameter vector $\mathbf{\theta}$, we stack the gradients with respect to each parameter $j$ into a vector:
+
+$$
+\nabla_{\mathbf{\theta}} L_{\text{log}} = \begin{bmatrix}
+\frac{\partial L_{\text{log}}}{\partial \theta_0} \\
+\frac{\partial L_{\text{log}}}{\partial \theta_1} \\
+\vdots \\
+\frac{\partial L_{\text{log}}}{\partial \theta_n}
+\end{bmatrix} = \begin{bmatrix}
+\frac{1}{m} \sum_{i=1}^{m} \left(  \hat{y}^{(i)} - y^{(i)} \right) x_0^{(i)}\\
+\frac{1}{m} \sum_{i=1}^{m} \left(  \hat{y}^{(i)} - y^{(i)} \right) x_1^{(i)} \\
+\vdots \\
+\frac{1}{m} \sum_{i=1}^{m} \left(  \hat{y}^{(i)} - y^{(i)} \right) x_n^{(i)}
+\end{bmatrix} = \frac{1}{m} \mathbf{X}^T (\hat{\mathbf{y}} - \mathbf{y}),
+$$
+
+where $\hat{\mathbf{y}} = \sigma(\mathbf{X} \mathbf{\theta})$ is the predicted probability vector for all observations.
+
+</details>
+
+The GD algorithm for logistic regression is as follows:
+
+1. Initialize the parameter vector $\mathbf{\theta}$.
+2. Compute the predicted probabilities $\hat{\mathbf{y}} = \sigma(\mathbf{X} \mathbf{\theta})$.
+3. Compute the gradient of the log loss function $\eqref{eq:log-loss-gradient}$.
+4. Update the parameter vector using the GD update rule $\eqref{eq:gd-logistic}$.
+5. Repeat steps 2-4 until convergence.
+
+<details><summary>Logistic Regression Example</summary>
+
+In this example, we randomly generate $\mathbf{X}$ in a 2D plane and assign binary class labels based on a linear boundary with some noise. We also add a bias term to $\mathbf{X}$ to account for the intercept term in logistic regression. We then apply gradient descent to find the optimal parameter vector $\mathbf{\theta}$ that minimizes the log loss function.
+
+To compute the decision boundary in 2D space, we simply need to find the line where the predicted probability $\hat{y} = 0.5$. Using the sigmoid function $\eqref{eq:sigmoid}$, we have:
+
+$$
+\begin{align*}
+\sigma(\mathbf{X} \mathbf{\theta}) &= 0.5 \\
+\frac{1}{1 + e^{-\mathbf{X} \mathbf{\theta}}} &= 0.5 \\
+1 &= 0.5 + 0.5 e^{-\mathbf{X} \mathbf{\theta}} \\
+0.5 &= 0.5 e^{-\mathbf{X} \mathbf{\theta}} \\
+1 &= e^{-\mathbf{X} \mathbf{\theta}} \\
+\ln(1) &= \ln(e^{-\mathbf{X} \mathbf{\theta}}) \\
+0 &= -\mathbf{X} \mathbf{\theta} \\
+\mathbf{X} \mathbf{\theta} &= 0.
+\end{align*}
+$$
+
+Therefore, the decision boundary is the line where $\mathbf{X} \mathbf{\theta} = 0$. In this example, we have $\mathbf{\theta} = \begin{bmatrix}
+\theta_0 & \theta_1 & \theta_2
+\end{bmatrix}$, where $\theta_0$ is the intercept term and $\theta_1$ and $\theta_2$ are the coefficients for the features $x_1$ and $x_2$. The decision boundary is the line where $\theta_0 + \theta_1 x_1 + \theta_2 x_2 = 0$. Therefore, we can solve for $x_2$ to get the equation of the decision boundary:
+
+$$
+\begin{align*}
+\theta_0 + \theta_1 x_1 + \theta_2 x_2 &= 0 \\
+\theta_2 x_2 &= -\theta_0 - \theta_1 x_1 \\
+x_2 &= \frac{-\theta_0 - \theta_1 x_1}{\theta_2}.
+\end{align*}
+$$
+
+```execute-python
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Generate labels based on a linear boundary (randomly chosen)
+def generate_labels(X, noise_fraction=0.2):
+    y = (X[:, 0] + X[:, 1] > 0).astype(int).reshape(m, 1)
+    num_noisy_points = int(noise_fraction * m)
+    flip_indices = np.random.choice(
+        m, num_noisy_points, replace=False
+    )  # Randomly select points
+    y[flip_indices] = 1 - y[flip_indices]  # Flip the labels (0 -> 1, 1 -> 0)
+    return y
+
+
+# Sigmoid function
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+
+# Log loss (cross-entropy loss) function
+def compute_log_loss(X_b, y, theta):
+    m = len(y)
+    predictions = sigmoid(X_b.dot(theta))
+    log_loss = (1 / m) * np.sum(
+        -y * np.log(predictions) - (1 - y) * np.log(1 - predictions)
+    )
+    return log_loss
+
+
+# Generate random data for binary classification on a 2D plane
+np.random.seed(42)
+m = 100  # Number of examples
+X = 2 * np.random.rand(m, 2) - 1  # Random features in 2D plane (-1 to 1 range)
+y = generate_labels(X, noise_fraction=0.2)
+
+# Add bias term (column of 1s) to X
+X_b = np.c_[np.ones((m, 1)), X]
+
+# Initialize parameters (theta) randomly
+theta = np.random.randn(3, 1)
+
+# Learning rate and iteration parameters
+alpha = 0.1
+n_iterations = 1000
+tolerance = 1e-10
+
+# Gradient Descent with termination condition
+loss_values = []
+
+for iteration in range(n_iterations):
+    # Predictions (probabilities)
+    y_hat = sigmoid(X_b.dot(theta))
+    # Log loss
+    loss = compute_log_loss(X_b, y, theta)
+    # Gradients for log loss
+    error = y_hat - y
+    gradients = (1 / m) * X_b.T.dot(error)
+    # Update parameters
+    theta -= alpha * gradients
+    # Save loss value
+    loss_values.append(loss)
+
+    # Termination condition
+    if iteration > 0 and np.abs(loss_values[-1] - loss_values[-2]) < tolerance:
+        break
+
+# Final loss
+print("Final Loss (Log Loss):", loss_values[-1])
+
+plt.figure(figsize=(10, 5))
+
+# Plotting the data points and decision boundary
+plt.subplot(1, 2, 1)
+plt.scatter(X[y.flatten() == 0, 0], X[y.flatten() == 0, 1], color="b", label="Class 0")
+plt.scatter(X[y.flatten() == 1, 0], X[y.flatten() == 1, 1], color="r", label="Class 1")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("2D Classification")
+plt.legend()
+
+# Decision boundary
+x_values = np.array([-1, 1])
+y_values = -(theta[0] + theta[1] * x_values) / theta[2]
+plt.plot(x_values, y_values, color="g", label="Decision Boundary")
+plt.legend()
+
+# Plotting the loss curve
+plt.subplot(1, 2, 2)
+plt.plot(loss_values)
+plt.xlabel("Iteration")
+plt.ylabel("Log Loss")
+plt.title("Log Loss Curve")
+
+plt.tight_layout()
+
+get_image(plt)
+
+```
+
+</details>
+
+<blockquote class="note">
+
+Similar to linear regression, we should always add a bias term (intercept term) to the input features in logistic regression.
+
+</blockquote>
+
+```component
+
+{
+    componentName: "logisticRegression"
+}
+
+```
 
 ### Support Vector Machines (SVM)
 
