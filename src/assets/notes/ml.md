@@ -121,7 +121,9 @@ $$
 We aim to find the optimal value of $\theta$ that minimizes the loss function following $\eqref{eq:optimization}$. We can graph this simple function:
 
 ```desmos
+
 (x-5)^2
+
 ```
 
 We can clearly see that the minimum value of the function $\mathcal{L}(\theta)$ is attained at $\theta = 5$. We can also compute this value through simple calculus, given that we know $\mathcal{L}(\theta)$ is a convex function (we can also compute the second derivative to confirm this):
@@ -1380,9 +1382,11 @@ In most ML equations, we use $\log$ to denote the natural logarithm (base $e$).
 We can visualize the log loss function for binary classification problems using the following plot:
 
 ```desmos
+
 f(x) = -\ln(x)
 g(x) = -\ln(1 - x)
 x = 0.8
+
 ```
 
 We further analyze $\eqref{eq:log-loss}$ by breaking down the components:
@@ -1811,18 +1815,7 @@ and $\hat{y}^{(i)}_j$ is the predicted probability that observation $i$ belongs 
 
 We can derive $\eqref{eq:cross-entropy-loss}$ from the general form of log loss $\eqref{eq:log-loss}$ by extending it to multi-class classification problems.
 
-Starting with the **Log Loss Function** for binary classification:
-
-$$
-\begin{equation} \label{eq:log-loss}
-L_{\text{log}} = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right],
-\end{equation}
-$$
-
-where:
-
-- $y^{(i)} \in \{0, 1\}$ is the true label for observation $i$.
-- $\hat{y}^{(i)}$ is the predicted probability that $y^{(i)} = 1$.
+Starting with the $\eqref{eq:log-loss}$ for binary classification, where $y^{(i)} \in \{0, 1\}$ is the true label for observation $i$, and $\hat{y}^{(i)}$ is the predicted probability that $y^{(i)} = 1$.
 
 In binary classification, we can represent the true labels using one-hot encoding:
 
@@ -1867,7 +1860,7 @@ $$
 The cross-entropy loss function is then defined as:
 
 $$
-\begin{equation} \label{eq:cross-entropy-loss}
+\begin{equation}
 L_{\text{CE}} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{K} y^{(i)}_j \log(\hat{y}^{(i)}_j).
 \end{equation}
 $$
