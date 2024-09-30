@@ -1690,6 +1690,246 @@ Similar to linear regression, we should always add a bias term (intercept term) 
 
 ```
 
+#### Softmax Regression (Multinomial Logistic Regression)
+
+Softmax regression is a **classification** algorithm that generalizes logistic regression to **multi-class classification** problems. In softmax regression, the model predicts the probability that an observation belongs to each class, and the class with the highest probability is selected as the predicted class label.
+
+**Data Representation**
+
+In softmax regression, we have a set of _observations_ $\mathbf{X} = \begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & \cdots & x_n^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & \cdots & x_n^{(2)} \\
+\vdots & \vdots & \vdots & \vdots \\
+x_1^{(m)} & x_2^{(m)} & \cdots & x_n^{(m)}
+\end{bmatrix}$, where each row represents an observation and each column represents a feature. We have target values $\mathbf{y} = \begin{bmatrix}
+y^{(1)} \\
+y^{(2)} \\
+\vdots \\
+y^{(m)}
+\end{bmatrix}$, where $y^{(i)} \in \{1, 2, \dots, K\}$ is the class label for observation $i$, and $K$ is the number of classes.
+
+In addition, we can also define the one-hot encoded target matrix $\mathbf{Y} \in \mathbb{R}^{m \times K}$, where each row represents the one-hot encoded class label for an observation. The one-hot encoded matrix $\mathbf{Y}$ has the following properties:
+
+$$
+\begin{align*}
+\mathbf{Y}_{ij} &=
+\begin{cases}
+1, & \text{if observation } i \text{ belongs to class } j, \\
+0, & \text{otherwise}.
+\end{cases}
+\end{align*}
+$$
+
+**Model**
+
+Following the general form of supervised learning models in $\eqref{eq:model-supervised}$, the softmax regression model is defined as:
+
+$$
+\begin{equation} \label{eq:softmax-regression}
+\hat{\mathbf{y}}^{(i)} = f_{\Theta}(\mathbf{x}^{(i)}) = \text{softmax}(\Theta^T \mathbf{x}^{(i)}),
+\end{equation}
+$$
+
+where $\hat{\mathbf{y}}^{(i)}$ is a $K$-dimensional vector representing the predicted probabilities for each class for observation $i$, $\Theta \in \mathbb{R}^{n \times K}$ is the parameter matrix, and $f_{\Theta}(\mathbf{x}^{(i)})$ is the hypothesis function of softmax regression, defined as:
+
+$$
+\begin{equation} \label{eq:softmax-hypothesis}
+f_{\Theta}(\mathbf{x}^{(i)})_j = P(y^{(i)} = j \mid \mathbf{x}^{(i)}; \Theta) = \frac{e^{\theta_j^T \mathbf{x}^{(i)}}}{\sum_{k=1}^K e^{\theta_k^T \mathbf{x}^{(i)}}}, \quad \text{for } j = 1, 2, \dots, K,
+\end{equation}
+$$
+
+where $\theta_j$ is the parameter vector corresponding to class $j$, and $P(y^{(i)} = j \mid \mathbf{x}^{(i)}; \Theta)$ is the probability that observation $i$ belongs to class $j$.
+
+<blockquote class="equation">
+
+**Softmax Function**:
+
+$$
+\begin{equation} \label{eq:softmax}
+\text{softmax}(\mathbf{z})_j = \frac{e^{z_j}}{\sum_{k=1}^K e^{z_k}}, \quad \text{for } j = 1, 2, \dots, K.
+\end{equation}
+$$
+
+</blockquote>
+
+The softmax function maps a real-valued $K$-dimensional vector $\mathbf{z}$ to a probability distribution over $K$ classes.
+
+We can also represent the model in matrix form as:
+
+$$
+\begin{equation} \label{eq:softmax-matrix}
+\hat{\mathbf{Y}} = \text{softmax}(\mathbf{X} \Theta) = \begin{bmatrix}
+\text{softmax}(\Theta^T \mathbf{x}^{(1)}) \\
+\text{softmax}(\Theta^T \mathbf{x}^{(2)}) \\
+\vdots \\
+\text{softmax}(\Theta^T \mathbf{x}^{(m)})
+\end{bmatrix},
+\end{equation}
+$$
+
+where $\hat{\mathbf{Y}} \in \mathbb{R}^{m \times K}$ is the matrix of predicted probabilities for all observations.
+
+The predicted class labels are obtained by selecting the class with the highest predicted probability:
+
+$$
+\begin{equation} \label{eq:softmax-prediction}
+\hat{y}^{(i)} = \arg\max_{j} \hat{\mathbf{y}}^{(i)}_j, \quad \text{for } i = 1, 2, \dots, m,
+\end{equation}
+$$
+
+where $\hat{\mathbf{y}}^{(i)}_j$ is the predicted probability that observation $i$ belongs to class $j$.
+
+**Loss Function**
+
+We extend the general supervised learning loss function $\eqref{eq:loss-supervised}$ to derive the **cross-entropy loss** for softmax regression:
+
+<blockquote class="equation">
+
+**Cross-Entropy Loss Function**:
+
+$$
+\begin{equation} \label{eq:cross-entropy-loss}
+L_{\text{CE}} = \mathcal{L}(\hat{\mathbf{Y}}, \mathbf{Y}) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{K} y^{(i)}_j \log(\hat{y}^{(i)}_j),
+\end{equation}
+$$
+
+</blockquote>
+
+where $y^{(i)}_j$ is the actual label indicator for observation $i$ and class $j$, defined as:
+
+$$
+y^{(i)}_j =
+\begin{cases}
+1, & \text{if observation } i \text{ belongs to class } j, \\
+0, & \text{otherwise},
+\end{cases}
+$$
+
+and $\hat{y}^{(i)}_j$ is the predicted probability that observation $i$ belongs to class $j$. The cross-entropy loss function measures the difference between the predicted probabilities and the actual labels. The loss is minimized when the predicted probabilities are close to the actual labels.
+
+<details><summary>Derivation of Cross-Entropy Loss</summary>
+
+We can derive $\eqref{eq:cross-entropy-loss}$ from the general form of log loss $\eqref{eq:log-loss}$ by extending it to multi-class classification problems.
+
+Starting with the **Log Loss Function** for binary classification:
+
+$$
+\begin{equation} \label{eq:log-loss}
+L_{\text{log}} = \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)}) \right],
+\end{equation}
+$$
+
+where:
+
+- $y^{(i)} \in \{0, 1\}$ is the true label for observation $i$.
+- $\hat{y}^{(i)}$ is the predicted probability that $y^{(i)} = 1$.
+
+In binary classification, we can represent the true labels using one-hot encoding:
+
+- Let $y^{(i)}_0 = 1$ if $y^{(i)} = 0$, else $y^{(i)}_0 = 0$.
+- Let $y^{(i)}_1 = 1$ if $y^{(i)} = 1$, else $y^{(i)}_1 = 0$.
+
+Since $y^{(i)}$ is binary, we have:
+
+$$
+y^{(i)}_0 = 1 - y^{(i)}, \quad y^{(i)}_1 = y^{(i)}.
+$$
+
+Similarly, we define the predicted probabilities for each class:
+
+- $\hat{y}^{(i)}_0 = 1 - \hat{y}^{(i)}$, the predicted probability that $y^{(i)} = 0$.
+- $\hat{y}^{(i)}_1 = \hat{y}^{(i)}$, the predicted probability that $y^{(i)} = 1$.
+
+Substituting these into the log loss function:
+
+$$
+\begin{align*}
+L_{\text{log}} &= -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)}_1 \log(\hat{y}^{(i)}_1) + y^{(i)}_0 \log(\hat{y}^{(i)}_0) \right] \\
+&= -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=0}^{1} y^{(i)}_j \log(\hat{y}^{(i)}_j).
+\end{align*}
+$$
+
+For multi-class classification with $K$ classes, where $y^{(i)} \in \{1, 2, \dots, K\}$:
+
+- We use one-hot encoding for the true labels:
+
+$$
+y^{(i)}_j =
+\begin{cases}
+1, & \text{if } y^{(i)} = j, \\
+0, & \text{otherwise},
+\end{cases}
+\quad \text{for } j = 1, 2, \dots, K.
+$$
+
+- $\hat{y}^{(i)}_j$ is the predicted probability that $y^{(i)} = j$.
+
+The cross-entropy loss function is then defined as:
+
+$$
+\begin{equation} \label{eq:cross-entropy-loss}
+L_{\text{CE}} = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{K} y^{(i)}_j \log(\hat{y}^{(i)}_j).
+\end{equation}
+$$
+
+We can also clearly see how the binary log loss function $\eqref{eq:log-loss}$ generalizes to the cross-entropy loss function $\eqref{eq:cross-entropy-loss}$ for multi-class classification problems. When $K = 2$, the cross-entropy loss function reduces to the binary log loss function:
+
+$$
+\begin{align*}
+L_{\text{CE}} &= -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)}_1 \log(\hat{y}^{(i)}_1) + y^{(i)}_0 \log(\hat{y}^{(i)}_0) \right] \\
+&= L_{\text{log}}.
+\end{align*}
+$$
+
+Thus, the cross-entropy loss is a generalization of the binary log loss to $K$ classes.
+
+</details>
+
+**Optimization**
+
+To optimize the softmax regression model, we perform gradient descent on the cross-entropy loss function $\eqref{eq:cross-entropy-loss}$. Similar to logistic regression, softmax regression does not have a closed-form solution.
+
+We extend $\eqref{eq:gd-logistic}$ to derive the gradient descent update rule for softmax regression:
+
+$$
+\begin{equation} \label{eq:gd-softmax}
+\Theta^{(t+1)} = \Theta^{(t)} - \alpha \nabla_{\Theta} L_{\text{CE}}.
+\end{equation}
+$$
+
+The gradient of the cross-entropy loss function with respect to the parameter matrix $\Theta$ is given by:
+
+<blockquote class="equation">
+
+**Gradient of Cross-Entropy Loss**:
+
+$$
+\begin{equation} \label{eq:cross-entropy-gradient}
+\nabla_{\Theta} L_{\text{CE}} = \frac{1}{m} \mathbf{X}^T (\hat{\mathbf{Y}} - \mathbf{Y}),
+\end{equation}
+$$
+
+</blockquote>
+
+where:
+
+- $\mathbf{X} \in \mathbb{R}^{m \times n}$ is the input data matrix.
+- $\hat{\mathbf{Y}} \in \mathbb{R}^{m \times K}$ is the matrix of predicted probabilities.
+- $\mathbf{Y} \in \mathbb{R}^{m \times K}$ is the matrix of true labels in one-hot encoding.
+
+The GD algorithm for softmax regression is as follows:
+
+1. Initialize the parameter matrix $\Theta = \begin{bmatrix}
+\theta_1^{(1)} & \theta_1^{(2)} & \cdots & \theta_1^{(K)} \\
+\theta_2^{(1)} & \theta_2^{(2)} & \cdots & \theta_2^{(K)} \\
+\vdots & \vdots & \vdots & \vdots \\
+\theta_n^{(1)} & \theta_n^{(2)} & \cdots & \theta_n^{(K)}
+\end{bmatrix}$.
+2. Compute the predicted probabilities $\hat{\mathbf{Y}} = \text{softmax}(\mathbf{X} \Theta)$.
+3. Compute the gradient of the cross-entropy loss function $\eqref{eq:cross-entropy-gradient}$.
+4. Update the parameter matrix using the GD update rule $\eqref{eq:gd-softmax}$.
+5. Repeat steps 2-4 until convergence.
+
 ### Support Vector Machines (SVM)
 
 ## Unsupervised Learning
