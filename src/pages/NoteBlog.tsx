@@ -1,13 +1,7 @@
 import { Notie, NotieConfig, Theme as NotieTheme } from "notie-markdown";
 import { useParams } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
-import {
-    useEffect,
-    useState,
-    useMemo,
-    useCallback,
-    useLayoutEffect,
-} from "react";
+import { useEffect, useState, useMemo } from "react";
 import { majorScale, Pane, Spinner } from "evergreen-ui";
 import LinearRegression from "../components/notie-components/LinearRegression";
 import LogisticRegression from "../components/notie-components/LogisticRegression";
@@ -25,15 +19,6 @@ const lightTheme = createTheme({
     palette: {
         mode: "light",
     },
-});
-
-const NoteModules = import.meta.glob("../assets/notes/*.md", {
-    query: "?raw",
-    import: "default",
-});
-const BlogModules = import.meta.glob("../assets/blog/*.md", {
-    query: "?raw",
-    import: "default",
 });
 
 function getConfig(contentId: string, darkMode: boolean): NotieConfig {
@@ -63,12 +48,33 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     };
 }
 
+const modules = import.meta.glob("../assets/*/*.md", {
+    query: "?raw",
+    import: "default",
+});
+
 const NotesBlogs = ({ type }: { type: string }) => {
     const [markdown, setMarkdown] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const params = useParams();
     const { darkMode } = useDarkMode();
     const contentId = type === "notes" ? params.noteId : params.blogId;
+
+    const path = `../assets/${type}/${contentId}.md`;
+    const matchedModule = Object.keys(modules).find((key) =>
+        key.includes(path)
+    );
+
+    useEffect(() => {
+        async function fetchNotes() {
+            const markdown = await modules[matchedModule as string]();
+            const rawMDString = markdown as string;
+            setMarkdown(rawMDString);
+            setIsLoading(false);
+        }
+
+        fetchNotes();
+    }, [matchedModule]);
 
     const theme = useMemo(
         () => (darkMode ? "default dark" : "default"),
@@ -87,57 +93,6 @@ const NotesBlogs = ({ type }: { type: string }) => {
         }),
         []
     );
-
-    const scrollPositionKey = `scrollPosition-${contentId}`;
-
-    const restoreScrollPosition = useCallback(() => {
-        const savedPosition = localStorage.getItem(scrollPositionKey);
-        if (savedPosition) {
-            const originalBehavior =
-                document.documentElement.style.scrollBehavior;
-            document.documentElement.style.scrollBehavior = "auto";
-            window.scrollTo(0, parseInt(savedPosition, 10));
-            document.documentElement.style.scrollBehavior = originalBehavior;
-        }
-    }, [scrollPositionKey]);
-
-    const saveScrollPosition = useCallback(() => {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY !== 0) {
-            localStorage.setItem(scrollPositionKey, currentScrollY.toString());
-        } else {
-            restoreScrollPosition();
-        }
-    }, [restoreScrollPosition, scrollPositionKey]);
-
-    useEffect(() => {
-        async function fetchNotes() {
-            setIsLoading(true);
-            const modules = type === "notes" ? NoteModules : BlogModules;
-            for (const path in modules) {
-                if (path.includes(contentId as string)) {
-                    const markdown = await modules[path]();
-                    const rawMDString = markdown as string;
-                    setMarkdown(rawMDString);
-                    setIsLoading(false);
-                    break;
-                }
-            }
-        }
-
-        fetchNotes();
-    }, [contentId, type]);
-
-    useLayoutEffect(() => {
-        // Restore scroll position after content has been rendered
-        restoreScrollPosition();
-    }, [markdown, restoreScrollPosition]);
-
-    useEffect(() => {
-        // Save scroll position on scroll
-        window.addEventListener("scroll", saveScrollPosition);
-        return () => window.removeEventListener("scroll", saveScrollPosition);
-    }, [saveScrollPosition]);
 
     return (
         <div>

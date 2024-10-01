@@ -1318,7 +1318,7 @@ $$
     \node[right] at (0, 0) {0};
     \node[below left] at (-4, 0) {$-\infty \leftarrow z$};
     \node[below] at (0, 0.5) {$0.5$};
-    
+
     % Dashed lines for asymptotes
     \draw[dashed] (-4,1) -- (4,1); % y = 1 asymptote
     \draw[dashed] (-4,0) -- (4,0); % y = 0 asymptote
@@ -1468,7 +1468,9 @@ $$
 Therefore, the second term in $\eqref{eq:log-loss-gradient-step1}$ becomes:
 
 $$
+
 - (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} (1 - \sigma(\theta^T \mathbf{x}^{(i)})) = (1 - y^{(i)}) \frac{1}{1 - \sigma(\theta^T \mathbf{x}^{(i)})} \frac{\partial}{\partial \theta_j} \sigma(\theta^T \mathbf{x}^{(i)}).
+
 $$
 
 Now, we can combine both terms in $\eqref{eq:log-loss-gradient-step1}$:
@@ -1581,7 +1583,6 @@ $$
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 # Generate labels based on a linear boundary (randomly chosen)
 def generate_labels(X, noise_fraction=0.2):
     y = (X[:, 0] + X[:, 1] > 0).astype(int).reshape(m, 1)
@@ -1592,11 +1593,9 @@ def generate_labels(X, noise_fraction=0.2):
     y[flip_indices] = 1 - y[flip_indices]  # Flip the labels (0 -> 1, 1 -> 0)
     return y
 
-
 # Sigmoid function
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))
-
 
 # Log loss (cross-entropy loss) function
 def compute_log_loss(X_b, y, theta):
@@ -1606,7 +1605,6 @@ def compute_log_loss(X_b, y, theta):
         -y * np.log(predictions) - (1 - y) * np.log(1 - predictions)
     )
     return log_loss
-
 
 # Generate random data for binary classification on a 2D plane
 np.random.seed(42)
