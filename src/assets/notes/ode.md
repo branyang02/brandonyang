@@ -662,7 +662,7 @@ Any _differentiable function_ $y = \phi(t)$ that satisfies this equation for all
 The following are methods for solving first-order ODEs:
 
 1. **Separable ODEs**
-2. **Integrating Factors**
+2. **The Method of Integrating Factors**
 3. **Exact ODEs**
 
 ### Separable ODEs
@@ -673,13 +673,36 @@ Section 2.2 in BOYCE, DIPRIMA.
 
 </span>
 
-We solved a [simple ODE](#simple-ode) initially by using direct integration, but we can also solve ODEs by separating variables. For example, let's solve the same ODE:
+We solved a [simple ODE](#simple-ode) initially by using direct integration, but we can also solve ODEs by separating variables.
+
+First, we need to identify the ODE as a **separable ODE**. Expanding on the definition of a first-order ODE in $\eqref{eq:first-order-ode}$, we have the following definition:
+
+<blockquote class="definition">
+
+A **separable ODE** is of the form:
+
+$$
+\begin{equation} \label{eq:separable-ode}
+\frac{dy}{dt} = g(t)h(y),
+\end{equation}
+$$
+
+where $g(t)$ is a function of $t$ and $h(y)$ is a function of $y$.
+
+</blockquote>
+
+To solve a separable ODE, we follow these steps:
+
+1. **Separate variables** by moving all terms with $y$ to one side and all terms with $t$ to the other side.
+2. **Integrate both sides** to solve for $y$.
+
+For example, consider the following ODE:
 
 $$
 \frac{dy}{dx} = y' = y.
 $$
 
-We first separate variables:
+We observe that in the from of $\eqref{eq:separable-ode}$, $g(t) = 1$ and $h(y) = y$. We can separate the variables by dividing both sides by $y$:
 
 $$
 \begin{align}
@@ -693,14 +716,6 @@ $$
 \begin{align}
 \int \frac{1}{y} \; dy &= \int dx \\
 \ln|y| + C_1 &= x + C_2 \\
-\ln|y| &= x + C.
-\end{align}
-$$
-
-The general solution should be in the form of $y = f(x)$, so we solve for $y$:
-
-$$
-\begin{align}
 \ln|y| &= x + C \\
 e^{\ln|y|} &= e^{x + C} \\
 y &= e^{x + C} \\
@@ -1054,7 +1069,7 @@ $$
 
 </details>
 
-### Integrating Factors
+### Method of Integrating Factors
 
 <span class="subtitle">
 
@@ -1062,179 +1077,91 @@ Section 2.1 in BOYCE, DIPRIMA.
 
 </span>
 
-We can rewrite a first-order ODE in the form:
+Expanding on the definition of a first-order ODE in $\eqref{eq:first-order-ode}$, we have the following definition:
+
+<blockquote class="definition">
+
+A **first-order linear ODE** is of the form:
 
 $$
-\begin{equation} \label{eq:integrating-factor}
-P(t)\frac{dy}{dt} + Q(t)y = G(t),
+\begin{equation} \label{eq:first-order-linear-ode}
+\frac{dy}{dt} + p(t)y  = g(t),
 \end{equation}
 $$
 
-where $P(t)$, $Q(t)$, and $G(t)$ are given arbitrary functions of $t$. We can first look at an example problem in this form:
+where $p(t)$ and $g(t)$ are given functions of $t$.
+
+</blockquote>
+
+To solve a first-order linear ODE, we follow these steps:
+
+1. **Rewrite the ODE** in the form of $\eqref{eq:first-order-linear-ode}$.
+2. **Find the integrating factor** $\mu(t) = e^{\int p(t) \, dt}$.
+3. **Multiply both sides** of the ODE by $\mu(t)$.
+4. **Integrate both sides** to solve for $y$.
+
+We follow the steps and solve for the ODE in the general form of $\eqref{eq:first-order-linear-ode}$:
 
 $$
-\begin{equation} \label{eq:example}
+\begin{align}
+\mu(t) \frac{dy}{dt} + \mu(t)p(t)y &= \mu(t)g(t) \\
+\frac{d}{dt} \left( \mu(t)y \right) &= \mu(t)g(t) \\
+\int \frac{d}{dt} \left( \mu(t)y \right) \, dt &= \int \mu(t)g(t) \, dt \\
+\mu(t)y &= \int \mu(t)g(t) \, dt + C \\
+y &= \frac{\int \mu(t)g(t) \, dt + C}{\mu(t)}.
+\end{align}
+$$
+
+For example, consider the following first-order linear ODE:
+
+$$
+\begin{equation} \label{eq:linear-ode-example}
 (4 + t^2) \frac{dy}{dt} + 2ty = 4t.
 \end{equation}
 $$
 
-We can notice that the left side of $\eqref{eq:example}$ is in the form of $\eqref{eq:integrating-factor}$, where $P(t) = 4 + t^2$, $Q(t) = 2t$, and $G(t) = 4t$. Moreover, we observe that the left side of $\eqref{eq:example}$ is the derivative of a product following the product rule in $\eqref{eq:product_rule}$:
+We first rewrite the ODE in the form of $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
-(4 + t^2) \frac{dy}{dt} + 2ty = \frac{d}{dt} \left( (4 + t^2)y \right).
+\frac{dy}{dt} + \frac{2t}{4 + t^2}y &= \frac{4t}{4 + t^2},
 \end{align}
 $$
 
-We can then rewrite $\eqref{eq:example}$ as:
+where we observe that $p(t) = \frac{2t}{4 + t^2}$ and $g(t) = \frac{4t}{4 + t^2}$. We then find the integrating factor $\mu(t)$:
 
 $$
 \begin{align}
+\mu(t) &= e^{\int \frac{2t}{4 + t^2} \, dt} \\
+&= e^{\ln|4 + t^2|} \\
+&= 4 + t^2.
+\end{align}
+$$
+
+<blockquote class="note">
+
+We ignore absolute value and the constant of integration $C$ in the integrating factor, since we only need the most general integrating factor.
+
+</blockquote>
+
+We then multiply both sides of the ODE by $\mu(t)$:
+
+$$
+\begin{align}
+(4 + t^2) \frac{dy}{dt} + 2ty &= 4t \\
 \frac{d}{dt} \left( (4 + t^2)y \right) &= 4t.
 \end{align}
 $$
 
-We can then integrate both sides with respect to $t$:
+Finally, we integrate both sides to solve for $y$:
 
 $$
 \begin{align}
 \int \frac{d}{dt} \left( (4 + t^2)y \right) \, dt &= \int 4t \, dt \\
-(4 + t^2)y &= 2t^2 + C.
-\end{align}
-$$
-
-Finally, we solve for $y$:
-
-$$
-\begin{align}
+(4 + t^2)y &= 2t^2 + C \\
 y &= \frac{2t^2 + C}{4 + t^2}.
 \end{align}
 $$
-
-However, in most cases, the left side of $\eqref{eq:integrating-factor}$ is not the derivative of a product. We can then multiply both sides of $\eqref{eq:integrating-factor}$ by an **integrating factor** $\mu(t)$:
-
-$$
-\begin{align}
-\mu(t)P(t)\frac{dy}{dt} + \mu(t)Q(t)y &= \mu(t)G(t). \label{eq:mu-factor}
-\end{align}
-$$
-
-For any differentiable function $\mu(t)$, we can use the product rule in $\eqref{eq:product_rule}$:
-
-$$
-\begin{align}
-\frac{d}{dt} \left( \mu(t)y \right) &= \mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y. \label{eq:product_rule_2}
-\end{align}
-$$
-
-Our goal is to choose $\mu(t)$ such that $\eqref{eq:product_rule_2}$ is equal to the left side of $\eqref{eq:mu-factor}$:
-
-$$
-\begin{align}
-\mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y = \mu(t)P(t)\frac{dy}{dt} + \mu(t)Q(t)y. \label{eq:mu-factor-2}
-\end{align}
-$$
-
-Then, we simply solve for $\mu(t)$, and plug it back into $\eqref{eq:mu-factor}$ to solve for $y$.
-
-Let's consider the following first-order ODE:
-
-$$
-\begin{equation} \label{eq:ode-example}
-\frac{dy}{dt} + \frac{1}{2}y = \frac{1}{2}e^{t/3}
-\end{equation}
-$$
-
-Following $\eqref{eq:mu-factor}$, we multiply both sides by $\mu(t)$:
-
-$$
-\begin{align}
-\mu(t) \frac{dy}{dt} + \frac{1}{2}\mu(t)y &= \frac{1}{2}\mu(t)e^{t/3}. \label{eq:mu-factor-example}
-\end{align}
-$$
-
-Following $\eqref{eq:mu-factor-2}$, we can solve for $\mu(t)$:
-
-$$
-\begin{align}
-\mu(t)\frac{dy}{dt} + \frac{d\mu(t)}{dt}y &= \mu(t) \frac{dy}{dt} + \frac{1}{2}\mu(t)y \\
-\frac{d\mu(t)}{dt} &= \frac{1}{2}\mu(t) \\
-\end{align}
-$$
-
-This is a first-order linear ODE, and we can solve it by separating variables:
-
-$$
-\begin{align}
-\frac{1}{\mu(t)} d \mu(t) &= \frac{1}{2} dt \\
-\end{align}
-$$
-
-We then integrate both sides:
-
-$$
-\begin{align}
-\int \frac{1}{\mu(t)} d \mu(t) &= \int \frac{1}{2} dt \\
-\ln|\mu(t)| &= \frac{1}{2}t + C \\
-\mu(t) &= e^{\frac{1}{2}t + C} \\
-\mu(t) &= e^{\frac{1}{2}t}e^C \\
-\mu(t) &= Ce^{\frac{1}{2}t}.
-\end{align}
-$$
-
-Therefore, $Ce^{\frac{1}{2}t}$ is an integrating factor for $\eqref{eq:ode-example}$, but since we do not need the most general integrating factor, we will choose $C$ to be $1$ and use $\mu(t) = e^{\frac{1}{2}t}$.
-
-Now we return to $\eqref{eq:mu-factor-example}$ with $\mu(t) = e^{\frac{1}{2}t}$:
-
-$$
-\begin{align}
-e^{\frac{1}{2}t} \frac{dy}{dt} + \frac{1}{2}e^{\frac{1}{2}t}y &= \frac{1}{2}e^{\frac{1}{2}t}e^{t/3} \label{eq:mu-factor-example-2}
-\end{align}
-$$
-
-We rewrite the left side as the derivative of a product:
-
-$$
-\begin{align}
-e^{\frac{1}{2}t} \frac{dy}{dt} + \frac{1}{2}e^{\frac{1}{2}t}y = \frac{d}{dt} \left( e^{\frac{1}{2}t}y \right)
-\end{align}
-$$
-
-We then rewrite $\eqref{eq:mu-factor-example-2}$ as:
-
-$$
-\begin{align}
-\frac{d}{dt} \left( e^{\frac{1}{2}t}y \right) &= \frac{1}{2}e^{\frac{1}{2}t}e^{t/3} = \frac{1}{2}e^{\frac{5}{6}t}
-\end{align}
-$$
-
-Integrating both sides:
-
-$$
-\begin{align}
-\int \frac{d}{dt} \left( e^{\frac{1}{2}t}y \right) \, dt &= \int \frac{1}{2}e^{\frac{5}{6}t} \, dt \\
-e^{\frac{1}{2}t}y &= \frac{3}{5}e^{\frac{5}{6}t} + C \\
-y &= \frac{3}{5}e^{\frac{1}{3}t} + Ce^{-\frac{1}{2}t}
-\end{align}
-$$
-
-Additionally, we can now extend the method of integrating factors to equations of the form:
-
-$$
-\begin{equation} \label{eq:shortcut-1}
-\frac{dy}{dt} + p(t)y = g(t),
-\end{equation}
-$$
-
-where $p(t)$ and $g(t)$ are continuous functions of $t$. We can take a shortcut and find the integrating factor $\mu(t)$ by:
-
-$$
-\begin{equation} \label{eq:shortcut-2}
-\mu(t) = e^{\int p(t) \, dt}.
-\end{equation}
-$$
-
-Next, we can simply multiply both sides of $\eqref{eq:shortcut-1}$ by $\mu(t)$ and solve for $y$.
 
 <details><summary>Integrating Factors Problems</summary>
 
@@ -1583,9 +1510,54 @@ $$
 
 </details>
 
-### Non-Linear ODEs
+### Non-Linear 1st ODEs
 
-Suppose we have a non-linear first-order ODE:
+Suppose we have a non-linear first-order ODE in following general form:
+
+$$
+\begin{equation} \label{eq:non-linear-ode}
+y' + p(x)y = g(x)y^n,
+\end{equation}
+$$
+
+where $n$ is a positive integer, and $g(x)y^n$ is the non-linear term. We can solve this ODE by rewriting it into a linear ODE in the following form:
+
+$$
+\begin{equation} \label{eq:non-linear-u-sub}
+u' + p(x)u = g(x),
+\end{equation}
+$$
+
+where $u$ is some function of $y$: $u = f(y)$. We divide both sizes of $\eqref{eq:non-linear-ode}$ by $y^n$ to match the form in $\eqref{eq:non-linear-u-sub}$.
+
+$$
+\begin{align}
+\frac{y'}{y^n} + p(x)\frac{y}{y^n} &= g(x) \\
+y^{-n}y' + p(x)y^{1-n} &= g(x) \label{eq:non-linear-ode-2}.
+\end{align}
+$$
+
+Therefore, we find that $u = y^{1-n}$. Next, we solve for $u'$ and $y'$:
+
+$$
+\begin{align}
+u &= y^{1-n} \implies u' = (1-n)y^{-n}y' \implies y' = \frac{u'}{(1-n)y^{-n}}.
+\end{align}
+$$
+
+Next, we substitute $y'$ and $u = y^{1-n}$ into $\eqref{eq:non-linear-ode-2}$:
+
+$$
+\begin{align}
+y^{-n} \frac{u'}{(1-n)y^{-n}} + p(x)u &= g(x) \\
+\frac{u'}{1-n} + p(x)u &= g(x) \\
+u' + (1-n)p(x)u &= (1-n)g(x).
+\end{align}
+$$
+
+We can then solve for $u$ using either separable ODE or integrating factor methods. Once we find $u$, we can solve for $y$ by substituting $u = y^{1-n}$.
+
+For example, consider the following non-linear ODE:
 
 $$
 \begin{equation} \label{eq:non-linear}
@@ -1593,7 +1565,7 @@ y' + \sin(x)y = y^4.
 \end{equation}
 $$
 
-We can see from $\eqref{eq:linear-ode}$ that this is a non-linear ODE because of the $y^4$ term. The idea is to rewrite the ODE into a linear ODE. We start by dividing both sides by $y^4$:
+where $y^4$ is the non-linear term, we first divide both sides by $y^4$ to match the form in $\eqref{eq:non-linear-u-sub}$:
 
 $$
 \begin{align}
@@ -1601,7 +1573,7 @@ $$
 \end{align}
 $$
 
-Next, we introduce a new variable $u$, and we want to rewrite $\eqref{eq:non-linear}$ in the form of $u' + p(x) u = g(x)$. We can see from $\eqref{eq:non-linear-2}$ that $u = \frac{1}{y^3}$, and we can solve for $u'$ and $y'$:
+We see that $u = \frac{1}{y^3}$, and we can solve for $u'$ and $y'$:
 
 $$
 \begin{align}
@@ -1720,7 +1692,7 @@ $$
 
 </details>
 
-## Applications to ODEs
+### Modeling with 1st ODEs
 
 <span class="subtitle">
 
@@ -1728,7 +1700,107 @@ Section 2.3 in BOYCE, DIPRIMA.
 
 </span>
 
-### Interest Problems
+#### Mixing Problems
+
+The mixing problem usually involves a tank with a certain amount of solution and a rate of flow of a different solution into the tank. The rate of flow of the solution into the tank is proportional to the difference between the concentration of the solution in the tank and the concentration of the solution flowing in. We follow the general form of the mixing problem:
+
+$$
+\begin{equation} \label{eq:mixing-problem}
+\frac{dQ}{dt} = \text{rate in} - \text{rate out},
+\end{equation}
+$$
+
+where $Q$ is the amount of solution in the tank.
+
+<details><summary>Mixing Problems Problems</summary>
+
+<blockquote class="problem">
+
+At time $t = 0$ a tank contains $Q_0$ lb of salt dissolved in $100$ gal of water. Assume that water containing $\frac{1}{4}$ lb of salt per gallon is entering the tank at a rate of $r$ gal/min and that the well-stirred mixture is draining from the tank at the same rate. Set up the initial value problem that describes this flow process. Find the amount of salt $Q(t)$ in the tank at any time, and also find the limiting amount $Q_L$ that is present after a very long time. If $r = 3$ and $Q_0 = 2Q_L$, find the time $T$ after which the salt level is within $2$% of $Q_L$. Also find the flow rate that is required if the value of $T$ is not to exceed $45$ min.
+
+</blockquote>
+
+First, we are given the initial condition $Q(0) = Q_0$. We then set up the I.V.P., which is the rate of change of the amount of salt in the tank with respect to time. First, we find the rate of flow of the solution into the tank:
+
+$$
+\frac{1}{4} \frac{\text{lb}}{\text{gal}} \cdot r \frac{\text{gal}}{\text{min}} = \frac{r}{4} \frac{\text{lb}}{\text{min}}.
+$$
+
+Next, we find the rate of flow of the solution out of the tank:
+
+$$
+\frac{Q}{100} \frac{\text{lb}}{\text{gal}} \cdot r \frac{\text{gal}}{\text{min}} = \frac{rQ}{100} \frac{\text{lb}}{\text{min}}.
+$$
+
+Therefore, the rate of change of the amount of salt in the tank is:
+
+$$
+\begin{align*}
+\frac{dQ}{dt} &= \frac{r}{4} - \frac{rQ}{100} \\
+\end{align*}
+$$
+
+We solve for the I.V.P.
+
+$$
+\begin{align*}
+\frac{dQ}{dt} + \frac{rQ}{100} &= \frac{r}{4}  \\
+\mu(t) &= e^{\int \frac{r}{100} \, dt} = e^{\frac{rt}{100}} \\
+\frac{d}{dt}\left(e^{\frac{rt}{100}}Q\right) &= e^{\frac{rt}{100}}\frac{r}{4} \\
+e^{\frac{rt}{100}}Q &= \int e^{\frac{rt}{100}}\frac{r}{4} \, dt \\
+Q &= \frac{1}{e^{\frac{rt}{100}}} \left(25e^{\frac{rt}{100}}+C\right) \\
+Q &= 25 + Ce^{-\frac{rt}{100}}.
+\end{align*}
+$$
+
+We then solve for $C$ using the initial condition $Q(0) = Q_0$:
+
+$$
+\begin{align*}
+Q_0 &= 25 + Ce^{-\frac{r(0)}{100}} \\
+Q_0 &= 25 + C \\
+C &= Q_0 - 25.
+\end{align*}
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+\begin{align*}
+Q &= 25 + (Q_0 - 25)e^{-\frac{rt}{100}}.
+\end{align*}
+$$
+
+We find the limiting amount $Q_L$ that is present after a very long time by taking the limit as $t \to \infty$:
+
+$$
+\begin{align*}
+Q_L &= 25 + (Q_0 - 25)e^{-\frac{r\infty}{100}} \\
+Q_L &= 25.
+\end{align*}
+$$
+
+Next, given $r=3$ and $Q_0 = 2Q_L$, we find the time $T$ after which the salt level is within $2$% of $Q_L$:
+
+$$
+\begin{align*}
+25 + 0.02 Q_L &= 25 + (2Q_L - 25)e^{-\frac{3T}{100}} \\
+T &= -\frac{\ln \left(0.02\right)}{0.03} \approx 130.4.
+\end{align*}
+$$
+
+Next we find the flow rate that is required if the value of $T$ is not to exceed $45$ min:
+
+$$
+\begin{align*}
+25 + 0.02 Q_L &= 25 + (2Q_L - 25)e^{-\frac{r(45)}{100}} \\
+r &= -\frac{20\ln \left(0.02\right)}{9} \approx 8.69338.
+\end{align*}
+$$
+
+</details>
+
+#### Interest Problems
 
 <blockquote class="problem">
 
