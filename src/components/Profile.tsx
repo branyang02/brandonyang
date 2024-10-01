@@ -15,7 +15,7 @@ const Profile = () => {
             >
                 <img
                     src="Brandon_Yang.jpg"
-                    alt="Brandon Yifan Yang"
+                    alt="Brandon Y. Yang"
                     style={{
                         width: "100%",
                         height: "100%",
@@ -29,7 +29,7 @@ const Profile = () => {
                 marginTop={10}
                 color={darkMode ? "white" : "default"}
             >
-                Brandon Yifan Yang
+                Brandon Y. Yang
             </Heading>
             <Text
                 size={500}

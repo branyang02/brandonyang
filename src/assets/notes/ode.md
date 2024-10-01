@@ -1,7 +1,7 @@
 # **Ordinary Differential Equations**
 
 <span class="subtitle">
-Fall 2024 | Author: Brandon Yang
+Fall 2024 | Author: Brandon Y. Yang
 </span>
 
 ---

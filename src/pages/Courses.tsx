@@ -16,10 +16,10 @@ const Courses = () => {
     return (
         <div className="full-padding">
             <Helmet>
-                <title>coursework | Brandon Yifan Yang</title>
+                <title>coursework | Brandon Y. Yang</title>
                 <meta
                     name="description"
-                    content="Relevant coursework taken by Brandon Yifan Yang"
+                    content="Relevant coursework taken by Brandon Y. Yang"
                 />
             </Helmet>
             <OrgChartTree />

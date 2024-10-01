@@ -2,7 +2,7 @@
 
 <div class="subtitle">
 
-Date: 3/5/2024 | Author: Brandon Yang
+Date: 3/5/2024 | Author: Brandon Y. Yang
 
 </div>
 

@@ -1,7 +1,7 @@
 # **Computer Systems and Organization: Part 2**
 
 <span class="subtitle">
-Date: 5/1/2024 | Author: Brandon Yang
+Date: 5/1/2024 | Author: Brandon Y. Yang
 </span>
 
 ## **Introduction**
@@ -3398,7 +3398,7 @@ The notes taken from the course _CS 3130 Spring 2024_ by Charles Reiss are licen
 
 <div class="caption">
 
-Brandon Yifan Yang, Released under the CC BY-NC-SA 4.0 License.
+Brandon Y. Yang, Released under the CC BY-NC-SA 4.0 License.
 
 </div>
 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">

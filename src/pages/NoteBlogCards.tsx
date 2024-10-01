@@ -101,10 +101,10 @@ const NoteBlogCards = ({ type }: { type: string }) => {
     return (
         <div>
             <Helmet>
-                <title>{type} | Brandon Yifan Yang</title>
+                <title>{type} | Brandon Y. Yang</title>
                 <meta
                     name="description"
-                    content={`All ${type} written by Brandon Yifan Yang`}
+                    content={`All ${type} written by Brandon Y. Yang`}
                 />
             </Helmet>
             <Pane

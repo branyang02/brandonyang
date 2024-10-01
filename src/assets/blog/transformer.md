@@ -1,7 +1,7 @@
 # **Transformers: A Mathematical Explanation and Implementation in PyTorch**
 
 <span class="subtitle">
-Date: 2/20/2024 | Author: Brandon Yang
+Date: 2/20/2024 | Author: Brandon Y. Yang
 </span>
 
 ## **Introduction**

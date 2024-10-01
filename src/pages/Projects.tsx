@@ -67,8 +67,8 @@ const Projects = () => {
             title: "GLOMA: Grounded Location for Object Manipulation",
             authors: [
                 {
-                    name: "Brandon Yifan Yang",
-                    link: "https://www.brandon-yifan-yang.com",
+                    name: "Brandon Y. Yang",
+                    link: "https://www.brandonyifanyang.com",
                 },
                 {
                     name: "Mohammad Samin Yasar",
@@ -132,8 +132,8 @@ const Projects = () => {
                     link: "https://edwardwei.com/",
                 },
                 {
-                    name: "Brandon Yang",
-                    link: "https://www.brandon-yifan-yang.com",
+                    name: "Brandon Y. Yang",
+                    link: "https://www.brandonyifanyang.com",
                 },
                 {
                     name: "Ravi Jayaraman",
@@ -207,10 +207,10 @@ const Projects = () => {
     return (
         <div>
             <Helmet>
-                <title>projects | Brandon Yifan Yang</title>
+                <title>projects | Brandon Y. Yang</title>
                 <meta
                     name="description"
-                    content="Projects by Brandon Yifan Yang."
+                    content="Projects by Brandon Y. Yang."
                 />
             </Helmet>
             <Pane className="project-page">

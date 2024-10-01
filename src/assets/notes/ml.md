@@ -1,7 +1,7 @@
 # **Machine Learning**
 
 <span class="subtitle">
-Fall 2024 | Author: Brandon Yang
+Fall 2024 | Author: Brandon Y. Yang
 </span>
 
 ## Introduction
@@ -1938,14 +1938,14 @@ Thank you for reading my notes! If you find them useful or reference them in you
 **Text Citation:**
 
 ```txt
-Yang, Brandon Yifan. (October 2024). Machine Learning. Brandon's Notes. Retrieved from https://www.brandonyifanyang.com/notes/ml
+Yang, Brandon Y. (October 2024). Machine Learning. Brandon's Notes. Retrieved from https://www.brandonyifanyang.com/notes/ml
 ```
 
 **BibTeX Entry:**
 
 ```bibtex
 @misc{yang2024ml,
-    author = {Yang, Brandon Yifan},
+    author = {Yang, Brandon Y.},
     title = {Machine Learning},
     howpublished = {\url{https://www.brandonyifanyang.com/notes/ml}},
     year = {2024},
