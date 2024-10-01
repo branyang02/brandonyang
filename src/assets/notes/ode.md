@@ -1179,7 +1179,7 @@ $$
 
 <blockquote class="proof">
 
-We write the ODE in the form of $\eqref{eq:integrating-factor}$, and add the integrating factor $\mu(t)$:
+We write the ODE in the form of $\eqref{eq:first-order-linear-ode}$, and add the integrating factor $\mu(t)$:
 
 $$
 \begin{align}
@@ -1332,7 +1332,7 @@ $$
 
 <blockquote class="proof">
 
-We first rewrite the ODE in the standard form of $\eqref{eq:shortcut-1}$:
+We first rewrite the ODE in the standard form of $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
@@ -1375,7 +1375,7 @@ $$
 
 <blockqoute class="proof">
 
-We first rewrite the equation in standard format $\eqref{eq:shortcut-1}$:
+We first rewrite the equation in standard format $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
@@ -1384,7 +1384,7 @@ $$
 \end{align}
 $$
 
-We find that $p(t) = \frac{1}{t\ln(t)}$ and we solve for the integrating factor $\mu$(t) using the formula $\eqref{eq:shortcut-2}$:
+We find that $p(t) = \frac{1}{t\ln(t)}$ and we solve for the integrating factor $\mu$(t) using the formula $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
@@ -1429,7 +1429,7 @@ $$
 
 <blockquote class="proof">
 
-We first rewrite the equation in the form $\eqref{eq:shortcut-1}$:
+We first rewrite the equation in the form $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
@@ -1439,7 +1439,7 @@ x^4\frac{dy}{dx}  + 4x^3y  &= \sin^3(x) \\
 \end{align}
 $$
 
-We see find that $p(t) = \frac{4}{x}$, and we solve for the integrating factor $\mu$ using the formula $\eqref{eq:shortcut-2}$:
+We see find that $p(t) = \frac{4}{x}$, and we solve for the integrating factor $\mu$ using the formula $\eqref{eq:first-order-linear-ode}$:
 
 $$
 \begin{align}
@@ -1510,7 +1510,7 @@ $$
 
 </details>
 
-### Non-Linear 1st ODEs
+### Non-Linear 1st Order ODEs
 
 Suppose we have a non-linear first-order ODE in following general form:
 
@@ -1710,7 +1710,7 @@ $$
 \end{equation}
 $$
 
-where $Q$ is the amount of solution in the tank.
+where $Q(t)$ is the amount of solution in the tank at time $t$.
 
 <details><summary>Mixing Problems Problems</summary>
 
@@ -1802,6 +1802,34 @@ $$
 
 #### Interest Problems
 
+We can also model **continuously compounded interest** problems using first-order ODEs. Suppose $S(t)$ is the amount of money in an account at time $t$, and $r$ is the interest rate (could be weekly, monthly, or yearly). The rate of change of the value of the investment is $\frac{dS}{dt}$, and this quantity is equal to the rate $r$ times the amount of money in the account at time $t$:
+
+$$
+\begin{equation} \label{eq:interest-problem}
+\frac{dS}{dt} = rS.
+\end{equation}
+$$
+
+Suppose we let $S(0) = S_0$, then the solution to the I.V.P. is:
+
+$$
+\begin{align}
+S(t) &= S_0e^{rt}.
+\end{align}
+$$
+
+This also means that a bank account with continuously compounding interest grows exponentially.
+
+We can also add in the rate of withdrawal or deposit to the account. In this case, it will look very similar to the mixing problem:
+
+$$
+\begin{equation} \label{eq:interest-problem-2}
+\frac{dS}{dt} = \text{rate in} - \text{rate out}.
+\end{equation}
+$$
+
+<details><summary>Interest Problems Problems</summary>
+
 <blockquote class="problem">
 
 A recent college graduate borrows 150K at an interest 6% to puchase a condo. The buyer expects to make payments at a rate $800 + 10t$ per month.
@@ -1829,7 +1857,9 @@ And the initial condition is $y(0) = 150000$. We can then solve the I.V.P.
 
 **Part 2**: We find the solution to the I.V.P. and then find $y(240)$.
 
-### Newton's Law of Cooling
+</details>
+
+#### Newton's Law of Cooling
 
 Newton's Law of Cooling states that the temperature of an object changes at a rate proportional to the difference between its temperature and the surrounding temperature.
 
@@ -1913,17 +1943,29 @@ $$
 
 </details>
 
-### Population Problems
+### Autonomous Differential Equations and Population Dynamics
 
 <span class="subtitle">
 
-Section 2.3 in BOYCE, DIPRIMA.
+Section 2.5 in BOYCE, DIPRIMA.
 
 </span>
 
-Logistic growth is a model of population growth where the rate of growth is proportional to the population size and the difference between the population size and the carrying capacity.
+An **autonomous differential equation** is a differential equation where the independent variable does not appear explicitly.
 
-Suppose $P(t)$ is the population size at time $t$, we can model the logistic growth as:
+<blockquote class="definition">
+
+An **autonomous differential equation** is a differential equation of the form:
+
+$$
+\begin{equation} \label{eq:autonomous-ode}
+\frac{dy}{dt} = f(y).
+\end{equation}
+$$
+
+</blockquote>
+
+One example is the **logistic growth model**, modeled by the following ODE:
 
 $$
 \begin{equation}
@@ -1931,15 +1973,15 @@ $$
 \end{equation}
 $$
 
-where $r$ is the **growth rate** and $k$ is the **carrying capacity**.
+where $P(t)$ is the population at time $t$, $r$ is the **growth rate** and $k$ is the **carrying capacity**.
 
-We can find the critical points of the ODE by setting $\frac{dP}{dt} = 0$, where we find that $P = 0$ and $P = k$. These are also known as the **equilibrium points**. We can plot $\frac{dP}{dt}$ below:
+We can find the critical points of the ODE by setting $\frac{dP}{dt} = 0$, where we find that $P = 0$ and $P = k$. These are also known as the **equilibrium points (solutions)**.
 
-```desmos
+<blockquote class="definition">
 
-rx\left(1 - \frac{x}{k}\right)
+An **equilibrium solution** of an autonomous differential equation in the form of $\eqref{eq:autonomous-ode}$ is a solution $y = y_0$ such that $f(y_0) = 0$.
 
-```
+</blockquote>
 
 Suppose we define the ODE as a function:
 
@@ -1949,7 +1991,51 @@ f(P) = rP\left(1 - \frac{P}{k}\right) \label{eq:logistic-ode},
 \end{equation}
 $$
 
-we can see that $f(P) = 0$ at $P = 0$ and $P = k$. We can then use the first derivative test to determine the stability of the equilibrium points. We can also see from the graph that $\frac{dP}{dt}$ is positive when $0 < P < k$ and negative when $P > k$, meaning that the population grows when $0 < P < k$ and decreases when $P > k$.
+we can see that $f(P) = 0$ at $P = 0$ and $P = k$. This means that the population function $P(t)$ grows in the interval $0 < P < k$. Similarly, the population function $P(t)$ decreases in the interval $k < P < \infty$. We can represent this using the red arrows in the graph below:
+
+```tikz
+
+\begin{document}
+
+\begin{tikzpicture}[scale=1.0]
+    % Define the parabolic curve based on the formula: f(y) = r y (1 - y/K)
+    \draw[domain=0:5.8, smooth, variable=\y, thick, blue] 
+        plot ({\y}, {2*\y*(1-\y/5)});
+    
+    % Draw the axes
+    \draw[->] (-0.5,0) -- (5.8,0) node[right] {$P$};
+    \draw[->] (0,-0.5) -- (0,3) node[above] {$f(P)$};
+
+    % Points on the curve
+    \filldraw[black] (0,0) circle (1pt);  % Point at (0,0)
+    \filldraw[black] (5,0) circle (1pt);  % Point at (K,0)
+    
+    % Mark the top point (K/2, rK/4)
+    \filldraw[white, draw=black, thick] (2.5,2.5) circle (2pt) node[above] {$(K/2, rK/4)$};
+    
+    % Labels for K/2 and K
+    \draw[dashed] (2.5,2.5) -- (2.5,0) node[below] {$K/2$};
+    \draw[dashed] (5,0) -- (5,0) node[below] {$K$};
+    
+    % rK/4 on the y-axis
+    \draw[dashed] (0,2.5) -- (2.5,2.5) node[above] {$rK/4$};
+
+    % Red arrows indicating movement
+    \draw[->, thick, red] (0.1,0.2) -- (2.0,0.2);
+    \draw[->, thick, red] (3.0,0.2) -- (4.8,0.2);
+    \draw[<-, thick, red] (5.2,0.2) -- (5.8,0.2);
+\end{tikzpicture}
+
+\end{document}
+
+
+```
+
+<div class="caption" id="fig:logistic-ode">
+
+Graph of the logistic growth model $f(P) = rP\left(1 - \frac{P}{k}\right)$.
+
+</div>
 
 We can solve the ODE by the method of integrating factors (or separation of variables and using partial fractions):
 
@@ -1982,7 +2068,7 @@ P(t) &= \frac{rk}{1 + \left(\frac{rk}{P_0} - 1\right)e^{-rt}} = \frac{P_{0}k}{P_
 \end{align}
 $$
 
-Therefore, we can plot the graph of $P(t)$ below, as well as the equilibrium points at $0$ and $k$. We can adjust $P_0$ to see how the population changes with different initial conditions.
+Therefore, we can plot the graph of $P(t)$ below, where the $x$-axis is $t$ and the $y$-axis is $P(t)$:
 
 ```desmos
 
@@ -1992,7 +2078,7 @@ y = k
 
 ```
 
-We can see that all initial conditions will converge to the carrying capacity $k$. We can also take the limit as $t \to \infty$:
+We can see that all initial conditions will converge to the carrying capacity $k$, which is our equilibrium solution. We can also take the limit as $t \to \infty$:
 
 $$
 \begin{align}
@@ -2000,19 +2086,7 @@ $$
 \end{align}
 $$
 
-The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**.
-
-<blockquote class="definition">
-
-Given an ODE that models population in the form:
-
-$$
-\frac{dy}{dt} = f(y),
-$$
-
-where $f(y)$ is a continuous function of $y$, we say that $y = y_0$ is an **equilibrium solution** if $f(y_0) = 0$. We say that $y = y_0$ is an **asymptotically stable solution** if $f'(y_0) < 0$ and $y = y_0$ is an **unstable equilibrium solution** if $f'(y_0) > 0$.
-
-</blockquote>
+The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**. We can verify this by looking at the red arrows and their directions in the graph of the [logistic growth model](#fig:logistic-ode) above.
 
 ## Linear and Non-Linear ODEs Theory
 
