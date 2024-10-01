@@ -534,9 +534,13 @@ where $a_0(x), \ldots, a_n(x)$, and $F(x)$ are arbitrary differentiable function
 
 #### ODE Verification
 
-<blockquote class="problem">
+To verify an ODE, we are usually given a solution of the ODE in the form of $y = f(x)$. We follow the following steps to verify the solution:
 
-Suppose we have the following problem:
+1. Solve for $y'$, or whatever derivative is present in the ODE.
+2. Substitute the derivative back into the ODE.
+3. Simplify the equation to verify that the solution satisfies the ODE.
+
+<blockquote class="problem">
 
 Verify $y = x$ satisfies the ODE $y'=1$.
 
@@ -544,17 +548,11 @@ Verify $y = x$ satisfies the ODE $y'=1$.
 
 <blockquote class="proof">
 
-We solve this by taking the derivative of $y$:
-
-$$
-
-y' = 1.
-
-$$
-
-Since $y' = 1$, we have verified that $y = x$ satisfies the ODE.
+We solve this by finding $y' = 1$, which satisfies the ODE.
 
 </blockquote>
+
+<details><summary>ODE Verification Examples</summary>
 
 <blockquote class="problem">
 
@@ -639,6 +637,8 @@ Therefore, the function $y$ satisfies the ODE.
 
 </blockquote>
 
+</details>
+
 ## First Order Differential Equations
 
 Following the definitions of order and linearity in $\eqref{eq:ode}, \eqref{eq:linear-ode}$, we focus on solving **first-order** ODEs in this section.
@@ -663,6 +663,7 @@ The following are methods for solving first-order ODEs:
 
 1. **Separable ODEs**
 2. **Integrating Factors**
+3. **Exact ODEs**
 
 ### Separable ODEs
 
@@ -1940,3 +1941,186 @@ $$
 where $f(y)$ is a continuous function of $y$, we say that $y = y_0$ is an **equilibrium solution** if $f(y_0) = 0$. We say that $y = y_0$ is an **asymptotically stable solution** if $f'(y_0) < 0$ and $y = y_0$ is an **unstable equilibrium solution** if $f'(y_0) > 0$.
 
 </blockquote>
+
+## Linear and Non-Linear ODEs Theory
+
+### Existence and Uniqueness of 1st Order Non-Linear ODEs
+
+Consider the I.V.P.:
+
+$$
+\begin{cases}
+y' = f(t, y) \\
+y(t_0) = y_0
+\end{cases}
+$$
+
+where $f(t, y)$ is a continuous function of $t$ and $y$. We can see that the solution to the I.V.P. is a function $y = \phi(t)$ that satisfies the ODE and the initial condition.
+
+<blockquote class="theorem">
+
+If $f(t, y)$ is continuous in a rectangle $R = \{(t, y) | |t - t_0| \leq a, |y - y_0| \leq b\}$ and $f(t, y)$ is Lipschitz continuous in $y$ in $R$, then the I.V.P. has a unique solution in some interval $|t - t_0| \leq h$.
+
+</blockquote>
+
+<blockquote class="problem">
+
+Without solving, find the domain where the solution is certain to exist:
+
+$$
+y^{-1}y = t^2+8, \quad y(0) = 1
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We rewrite the ODE in the form $y' + p(t)y = g(t)$:
+
+$$
+\begin{align}
+y^{-1}y &= t^2+8 \\
+y' - (t^2+8)y &= 0.
+\end{align}
+$$
+
+We find that $p(t) = -(t^2+8)$ and $g(t) = 0$. We can see that $p(t)$ is continuous in $t$ and $y$ in the domain $R = \{(t, y) | |t - 0| \leq a, |y - 1| \leq b\}$. We can also see that $p(t)$ is Lipschitz continuous in $y$ in $R$. Therefore, the solution is certain to exist in some interval $|t - 0| \leq h$.
+
+</blockquote>
+
+<details><summary>Existence and Uniqueness Problems</summary>
+
+<blockquote class="problem">
+
+Check if the solution of the given I.V.P. is certain to exist:
+
+$$
+y' = y^2 + 1, \quad y(-1) = 8.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We first observe that the ODE is **non-linear**. We rewrite the ODE in the form $y' = f(t, y)$, and find $\frac{\partial f}{\partial y}$
+
+$$
+y' = f(t, y) = y^2 + 1, \quad \frac{\partial f}{\partial y} = 2y.
+$$
+
+Since $f(t, y)$ is continuous in $t$ and $y$, and $\frac{\partial f}{\partial y}$ is continuous in $t$ and $y$. Therefore, the domain of continuity is the entire $t-y$ plane, and the solution is certain to exist.
+
+We can further look at the initial condition $y(-1) = 8$. We can see that the initial condition is within the domain of continuity, and the solution is certain to exist.
+
+We can solve the ODE and find the domain of existence.
+
+$$
+\begin{align*}
+\frac{dy}{y^2 + 1} &= dt \\
+\int \frac{dy}{y^2 + 1} &= \int dt \\
+\tan^{-1}(y) &= t + C \\
+y &= \tan(t + C) \\
+y(-1) &= \tan(-1 + C) = 8 \\
+-1 + C &= \tan^{-1}(8) \\
+C &= \tan^{-1}(8) + 1 \\
+y &= \tan(t + \tan^{-1}(8) + 1).
+\end{align*}
+$$
+
+We can graph the solution below:
+
+```desmos
+
+y = \tan(x + \tan^{-1}(8) + 1)
+
+```
+
+The domain for this function is $t \in \left(-\frac{\pi}{2}-1.45, \frac{\pi}{2}-1.45\right)$
+
+</blockquote>
+
+<blockquote class="problem">
+
+State where in the $t-y$ plane the hypothesis of the existence and uniqueness theorem is satisfied for the I.V.P.:
+
+$$
+(3y - y^2)y' + (1+t^2) = 0
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+First, we observe that the ODE is **non-linear**. We rewrite the ODE in the form $y' = f(t, y)$, and find $\frac{\partial f}{\partial y}$:
+
+$$
+y' = -\frac{1+t^2}{3y - y^2}, \quad \frac{\partial f}{\partial y} = \frac{\left(1+t^2\right)\left(3-2y\right)}{\left(3y-y^2\right)^2}.
+$$
+
+First we analyze $f(t, y) = -\frac{1+t^2}{3y - y^2}$:
+
+- Continuous everywhere in $t$: $t \in (\infty, \infty)$.
+- Not continuous at $y=0, 3$: $y \in (-\infty, 0) \cup (0, 3) \cup (3, \infty)$.
+
+Next, we analyze $\frac{\partial f}{\partial y} = \frac{\left(1+t^2\right)\left(3-2y\right)}{\left(3y-y^2\right)^2}$:
+
+- Continuous everywhere in $t$: $t \in (\infty, \infty)$.
+- Not continuous at $y=0, 3$: $y \in (-\infty, 0) \cup (0, 3) \cup (3, \infty)$.
+
+We take the intersection of the domains of continuity of $f(t, y)$ and $\frac{\partial f}{\partial y}$, and find the domain of continuity in the $t-y$ plane:
+
+$$
+t \in (\infty, \infty), y \in (-\infty, 0) \cup (0, 3) \cup (3, \infty).
+$$
+
+Therefore, we have 3 regions in the $t-y$ plane where the hypothesis of the existence and uniqueness theorem is satisfied.
+
+</blockquote>
+
+</details>
+
+## Exact Differential Equations
+
+<span class="subtitle">
+
+Section 2.6 in BOYCE, DIPRIMA.
+
+</span>
+
+Given ODE: $y' = f(t, y)$, another way to solve the ODE is to rewrite the ODE in the form:
+
+$$
+\begin{equation} \label{eq:exact-ode-form}
+\frac{d}{dt} \psi(t, y) = 0,
+\end{equation}
+$$
+
+where $\psi(t, y)$ is a function of $t$ and $y$.
+
+We start from an arbitrary ODE in the following form:
+
+$$
+\begin{equation} \label{eq:exact-ode}
+M(t, y) + N(t, y)y' = 0,
+\end{equation}
+$$
+
+where $M(t, y)$ and $N(t, y)$ are continuous functions of $t$ and $y$. We can rewrite the ODE in the form $\eqref{eq:exact-ode-form}$ by first checking the condition where it is possible. We can expand $\eqref{eq:exact-ode-form}$:
+
+$$
+\begin{align}
+\frac{d}{dt} \psi(t, y) &= 0 \\
+\frac{\partial \psi}{\partial t} + \frac{\partial \psi}{\partial y}y' &= 0 \label{eq:exact-ode-form-2}.
+\end{align}
+$$
+
+We can then match $\eqref{eq:exact-ode-form-2}$ with $\eqref{eq:exact-ode}$:
+
+$$
+\begin{align*}
+\frac{\partial \psi}{\partial t} + \frac{\partial \psi}{\partial y}y' &= 0 \\
+M(t, y) + N(t, y)y' &= 0.
+\end{align*}
+$$
+
+We can clearly see that $M(t, y) = \frac{\partial \psi}{\partial t}$ and $N(t, y) = \frac{\partial \psi}{\partial y}$. Therefore, our goal is now to find $\psi(t, y)$ such that $M(t, y) = \frac{\partial \psi}{\partial t}$ and $N(t, y) = \frac{\partial \psi}{\partial y}$.
