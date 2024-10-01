@@ -1930,3 +1930,26 @@ The GD algorithm for softmax regression is as follows:
 ### Clustering
 
 ## Reinforcement Learning
+
+## Citation
+
+Thank you for reading my notes! If you find them useful or reference them in your work, please consider citing them as follows:
+
+**Text Citation:**
+
+```txt
+Yang, Brandon Yifan. (October 2024). Machine Learning. Brandon's Notes. Retrieved from https://www.brandonyifanyang.com/notes/ml
+```
+
+**BibTeX Entry:**
+
+```bibtex
+@misc{yang2024ml,
+    author = {Yang, Brandon Yifan},
+    title = {Machine Learning},
+    howpublished = {\url{https://www.brandonyifanyang.com/notes/ml}},
+    year = {2024},
+    month = {October},
+    note = {Brandon's Notes}
+}
+```
