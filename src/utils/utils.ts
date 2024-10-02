@@ -8,14 +8,26 @@ export async function countWordsAndEquations(): Promise<{
     equationCount: number;
 }> {
     const markdown = await getMarkdown();
+
     const inlineEquationRegex = /\$(.+?)\$/g;
     const blockEquationRegex = /\$\$(.+?)\$\$/g;
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const htmlTagRegex = /<\/?[^>]+(>|$)/g;
 
-    const equations = markdown.match(inlineEquationRegex)?.length ?? 0;
-    const blockEquations = markdown.match(blockEquationRegex)?.length ?? 0;
+    let markdownWithoutCodeBlocks = markdown.replace(codeBlockRegex, "");
+
+    markdownWithoutCodeBlocks = markdownWithoutCodeBlocks.replace(
+        htmlTagRegex,
+        ""
+    );
+
+    const equations =
+        markdownWithoutCodeBlocks.match(inlineEquationRegex)?.length ?? 0;
+    const blockEquations =
+        markdownWithoutCodeBlocks.match(blockEquationRegex)?.length ?? 0;
     const totalEquations = equations + blockEquations;
 
-    const markdownWithoutEquations = markdown
+    const markdownWithoutEquations = markdownWithoutCodeBlocks
         .replace(inlineEquationRegex, "")
         .replace(blockEquationRegex, "");
 
