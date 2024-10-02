@@ -8,6 +8,7 @@ import LogisticRegression from "../components/notie-components/LogisticRegressio
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Helmet } from "react-helmet";
 import Giscus from "@giscus/react";
+import LastUpdated from "../components/LastUpdated";
 
 const darkTheme = createTheme({
     palette: {
@@ -90,6 +91,7 @@ const NotesBlogs = ({ type }: { type: string }) => {
         () => ({
             linearRegression: () => <LinearRegression />,
             logisticRegression: () => <LogisticRegression />,
+            LastUpdated: () => <LastUpdated />,
         }),
         []
     );
