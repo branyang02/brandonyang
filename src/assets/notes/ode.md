@@ -2088,9 +2088,9 @@ $$
 
 The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**. We can verify this by looking at the red arrows and their directions in the graph of the [logistic growth model](#fig:logistic-ode) above.
 
-## 1st Order ODEs Theory
+### 1st Order ODEs Theory
 
-### Existence and Uniqueness of 1st Order Linear ODEs
+#### Existence and Uniqueness of 1st Order Linear ODEs
 
 <blockquote class="theorem" id="theorem-existence-1st-order-linear-odes">
 
@@ -2156,7 +2156,7 @@ Without solving, find the interval in $t$ where the I.V.P. has a unique solution
 
 <blockquote class="proof">
 
-We apply [Theorem 4.1](#theorem-existence-1st-order-linear-odes) to the I.V.P., and rearrange into the form $\eqref{eq:linear-ode-theorem}$:
+We apply [Theorem 3.1](#theorem-existence-1st-order-linear-odes) to the I.V.P., and rearrange into the form $\eqref{eq:linear-ode-theorem}$:
 
 $$
 y' + \frac{1}{t}y = e^t.
@@ -2206,7 +2206,7 @@ We observe that $p(t) = \frac{1}{\ln (t+1)}$ and $g(t) =  \frac{1}{t\ln(t+1)}$. 
 
 </details>
 
-### Existence and Uniqueness of 1st Order Non-Linear ODEs
+#### Existence and Uniqueness of 1st Order Non-Linear ODEs
 
 <blockquote class="theorem" id="theorem-existence-1st-order-non-linear-odes">
 
@@ -2220,9 +2220,9 @@ $$
 
 </blockquote>
 
-Note that [Theorem 4.2](#theorem-existence-1st-order-non-linear-odes) reduces to [Theorem 4.1](#theorem-existence-1st-order-linear-odes) when $ f(t, y) $ is linear in $ y $.
+Note that [Theorem 3.2](#theorem-existence-1st-order-non-linear-odes) reduces to [Theorem 3.1](#theorem-existence-1st-order-linear-odes) when $ f(t, y) $ is linear in $ y $.
 
-To demonstrate [Theorem 4.2](#theorem-existence-1st-order-non-linear-odes), consider the I.V.P.:
+To demonstrate [Theorem 3.2](#theorem-existence-1st-order-non-linear-odes), consider the I.V.P.:
 
 $$
 \frac{dy}{dx} = \frac{3x^2 + 4x + 2}{2(y - 1)}, \quad y(0) = -1.
@@ -2238,13 +2238,28 @@ $$
 
 We analyze the domain of $f$ and $ \frac{\partial f}{\partial y} $ in both $ x $ and $ y $:
 
-<!-- TODO: Analyze -->
+- $f(x,y)$
+  - $x \in (-\infty, \infty)$.
+  - $y \in (-\infty, 1) \cup (1, \infty)$.
+- $ \frac{\partial f}{\partial y} $
+  - $x \in (-\infty, \infty)$.
+  - $y \in (-\infty, 1) \cup (1, \infty)$.
 
-<blockquote class="theorem">
+We take the intersection of the two domains and find that the solution is certain to exist in the interval:
 
-If $f(t, y)$ is continuous in a rectangle $R = \{(t, y) | |t - t_0| \leq a, |y - y_0| \leq b\}$ and $f(t, y)$ is Lipschitz continuous in $y$ in $R$, then the I.V.P. has a unique solution in some interval $|t - t_0| \leq h$.
+$$
+x \in (-\infty, \infty), \quad y \in (-\infty, 1) \cup (1, \infty).
+$$
 
-</blockquote>
+We call this domain the **domain of existence**. Given that the initial point $(0, -1)$ is in the domain of existence, and the I.V.P. has a unique solution in some interval about $x = 0$.
+
+Alternatively, suppose we have the initial condition $y(0) = 1$, the initial point now lies at the point $(0, 1)$, which is not in the domain of existence, and therefore we cannot apply [Theorem 3.2](#theorem-existence-1st-order-non-linear-odes) to find the solution. However, this does not mean whether the solution exists or not, but rather that we cannot apply the theorem to find the solution. When we solve for the I.V.P. with initial condition $y(0) = 1$, we find _two_ solutions:
+
+$$
+y=1+\sqrt{x\left(x^2+2x+2\right)},\:y=1-\sqrt{x\left(x^2+2x+2\right)}.
+$$
+
+<details><summary>Existence and Uniqueness Problems</summary>
 
 <blockquote class="problem">
 
@@ -2270,8 +2285,6 @@ $$
 We find that $p(t) = -(t^2+8)$ and $g(t) = 0$. We can see that $p(t)$ is continuous in $t$ and $y$ in the domain $R = \{(t, y) | |t - 0| \leq a, |y - 1| \leq b\}$. We can also see that $p(t)$ is Lipschitz continuous in $y$ in $R$. Therefore, the solution is certain to exist in some interval $|t - 0| \leq h$.
 
 </blockquote>
-
-<details><summary>Existence and Uniqueness Problems</summary>
 
 <blockquote class="problem">
 
@@ -2362,7 +2375,7 @@ Therefore, we have 3 regions in the $t-y$ plane where the hypothesis of the exis
 
 </details>
 
-## Exact Differential Equations
+### Exact Differential Equations
 
 <span class="subtitle">
 
