@@ -2088,20 +2088,157 @@ $$
 
 The solution $P(t) = k$ is known as the **asymptotically stable solution** of the ODE. On the other hand, the solution $P(t) = 0$ is known as the **unstable equilibrium solution**. We can verify this by looking at the red arrows and their directions in the graph of the [logistic growth model](#fig:logistic-ode) above.
 
-## Linear and Non-Linear ODEs Theory
+## 1st Order ODEs Theory
 
-### Existence and Uniqueness of 1st Order Non-Linear ODEs
+### Existence and Uniqueness of 1st Order Linear ODEs
+
+<blockquote class="theorem" id="theorem-existence-1st-order-linear-odes">
+
+If the functions $p$ and $g$ are continuous on an open interval $I: \alpha < t < \beta$ containing the point $t = t_0$, then there exists a unique solution $y = \phi(t)$ that satisfies the differential equation:
+
+$$
+\begin{equation} \label{eq:linear-ode-theorem}
+y' + p(t)y = g(t)
+\end{equation}
+$$
+
+for each $t$ in the interval $I$, and that also satisfies the initial condition
+
+$$
+\begin{equation} \label{eq:linear-ode-theorem-ic}
+y(t_0) = y_0,
+\end{equation}
+$$
+
+where $y_0$ is an arbitrary prescribed initial value.
+
+</blockquote>
+
+For example, consider the I.V.P.:
+
+$$
+ty' + 2y = 4t^2, \quad y(1) = 2.
+$$
+
+We can find the interval in which the I.V.P. has an unique solution.
+
+We first rewrite the ODE in the standard from in $\eqref{eq:linear-ode-theorem}$:
+
+$$
+y' + \frac{2}{t}y = 4t,
+$$
+
+where we find $p(t) = \frac{2}{t}$ and $g(t) = 4t$. We can see that $p(t)$ is continuous in $t \in (-\infty, 0) \cup (0, \infty)$ and $y$ in $y \in (-\infty, \infty)$. We can also see that $g(t)$ is continuous in $t \in (-\infty, \infty)$. Therefore, we have two intervals $(-\infty, 0) \cup (0, \infty)$ where the solution is certain to exist. Given the initial condition $y(1) = 2$ is in the domain of the positive interval, we are certain that the solution exists in the interval $t \in (0, \infty)$.
+
+After solve for the ODE, we find the solution to be:
+
+$$
+\begin{align}
+y &= t^2 + \frac{1}{t^2}, \quad t > 0.
+\end{align}
+$$
+
+which confirms that the solution exists in the interval $t \in (0, \infty)$.
+
+<details><summary>Existence and Uniqueness of 1st Order Linear ODEs Problems</summary>
+
+<blockquote class="problem">
 
 Consider the I.V.P.:
 
 $$
-\begin{cases}
-y' = f(t, y) \\
-y(t_0) = y_0
-\end{cases}
+ty' + y = te^t, \quad y(5) = 0.
 $$
 
-where $f(t, y)$ is a continuous function of $t$ and $y$. We can see that the solution to the I.V.P. is a function $y = \phi(t)$ that satisfies the ODE and the initial condition.
+Without solving, find the interval in $t$ where the I.V.P. has a unique solution.
+
+</blockquote>
+
+<blockquote class="proof">
+
+We apply [Theorem 4.1](#theorem-existence-1st-order-linear-odes) to the I.V.P., and rearrange into the form $\eqref{eq:linear-ode-theorem}$:
+
+$$
+y' + \frac{1}{t}y = e^t.
+$$
+
+We find that $p(t) = \frac{1}{t}$ and $g(t) = e^t$. We observe that $p(t)$ is continuous in the domain $t \in (-\infty, 0) \cup (0, \infty)$ and $g(t)$ is continuous in the domain $t \in (-\infty, \infty)$. Given that the initial condiiton $t = 5$ is in the domain $t \in (0, \infty)$, we can conclude that the solution is certain to exist in the interval $t \in (0, \infty)$.
+
+We can then solve the ODE and find the domain of the solution.
+
+$$
+\begin{align*}
+y' + \frac{1}{t}y &= e^t \\
+\mu(t) &= e^{\int \frac{1}{t} \, dt} = e^{\ln t} = t \\
+t\frac{dy}{dt} + y &= te^t \implies \frac{d}{dt}\left(ty\right) = te^t \\
+\int \frac{d}{dt}\left(ty\right) \, dt &= \int te^t \, dt \implies ty = te^t - e^t + C \\
+y &= e^t - \frac{1}{t}e^t + \frac{C}{t} \implies 0 = e^5 - \frac{1}{5}e^5 + \frac{C}{5} \implies C=-4e^5 \\
+y &= e^t - \frac{1}{t}e^t - \frac{4e^5}{t}.
+\end{align*}
+$$
+
+The domain of the solution is $t \neq 0$, which is consistent with the domain of existence.
+
+</blockquote>
+
+<blockquote class="problem">
+
+Consider the I.V.P.:
+
+$$
+y' + \frac{1}{\ln (t+1)}y = \frac{1}{t\ln(t+1)}, \quad y(10) = 5.
+$$
+
+</blockquote>
+
+<blockqoute class="proof">
+
+```desmos
+
+\frac{1}{\ln (x+1)}
+\frac{1}{x\ln(x+1)}
+
+```
+
+We observe that $p(t) = \frac{1}{\ln (t+1)}$ and $g(t) =  \frac{1}{t\ln(t+1)}$. We can see that $p(t)$ is continuous in the domain $t \in (-1, \infty)$ and $g(t)$ is continuous in the domain $t \in (-1, 0) \cup (0, \infty)$. We take the intersection of the two domains and find that the solution is certain to exist in the interval $t \in (-1, 0) \cup (0, \infty)$. Given that the initial condition $t = 10$ is in the domain $t \in (0, \infty)$, we can conclude that the solution is certain to exist in the interval $t \in (0, \infty)$.
+
+</blockquote>
+
+</details>
+
+### Existence and Uniqueness of 1st Order Non-Linear ODEs
+
+<blockquote class="theorem" id="theorem-existence-1st-order-non-linear-odes">
+
+Let the functions $ f $ and $ \frac{\partial f}{\partial y} $ be continuous in some rectangle $ \alpha < t < \beta, \gamma < y < \delta $ containing the point $ (t_0, y_0) $. Then, in some interval $ t_0 - h < t < t_0 + h $ contained in $ \alpha < t < \beta $, there is a unique solution $ y = \phi(t) $ of the initial value problem
+
+$$
+\begin{equation} \label{eq:non-linear-ode-theorem-form}
+y' = f(t, y), \quad y(t_0) = y_0.
+\end{equation}
+$$
+
+</blockquote>
+
+Note that [Theorem 4.2](#theorem-existence-1st-order-non-linear-odes) reduces to [Theorem 4.1](#theorem-existence-1st-order-linear-odes) when $ f(t, y) $ is linear in $ y $.
+
+To demonstrate [Theorem 4.2](#theorem-existence-1st-order-non-linear-odes), consider the I.V.P.:
+
+$$
+\frac{dy}{dx} = \frac{3x^2 + 4x + 2}{2(y - 1)}, \quad y(0) = -1.
+$$
+
+We first observe that the $y$ term is in the denominator, which makes the ODE non-linear. Given that the ODE is already in the form $\eqref{eq:non-linear-ode-theorem-form}$, where $f(x, y) = \frac{3x^2 + 4x + 2}{2(y - 1)}$, we can solve for $ \frac{\partial f}{\partial y} $:
+
+$$
+\begin{align}
+\frac{\partial f}{\partial y} &= \frac{\partial}{\partial y}\left(\frac{3x^2 + 4x + 2}{2(y - 1)}\right) = \frac{-3x^2 - 4x - 2}{2(y - 1)^2}.
+\end{align}
+$$
+
+We analyze the domain of $f$ and $ \frac{\partial f}{\partial y} $ in both $ x $ and $ y $:
+
+<!-- TODO: Analyze -->
 
 <blockquote class="theorem">
 
