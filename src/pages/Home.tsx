@@ -5,9 +5,24 @@ import { useDarkMode } from "../context/DarkModeContext";
 import "../styles/Home.css";
 import Experience from "../components/Experience";
 import { Helmet } from "react-helmet";
+import { countWordsAndEquations } from "../utils/utils";
+import { useEffect, useState } from "react";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
+    const [wordCount, setWordCount] = useState(0);
+    const [equationCount, setEquationCount] = useState(0);
+
+    useEffect(() => {
+        const fetchCounts = async () => {
+            const { wordCount, equationCount } = await countWordsAndEquations();
+            setWordCount(wordCount);
+            setEquationCount(equationCount);
+        };
+
+        fetchCounts();
+    }, []);
+
     const paragraphText = `
         I am a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/).
         I am interested in the intersection of Machine Learning (ML), Computer Vision, and Robotics. My current research focuses on
@@ -16,6 +31,8 @@ const Home = () => {
         I am advised by [Yen-Ling Kuo](https://engineering.virginia.edu/faculty/yen-ling-kuo) for my undergraduate thesis. 
         I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park. 
         I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
+
+        I have written [color:#ec4899]${wordCount}[/color] words and [color:#ec4899]${equationCount}[/color] equations on this website in my [notes](/notes) and [blog](/blog).
     `;
 
     const newsParagraphText = `
