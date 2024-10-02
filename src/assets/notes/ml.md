@@ -1,7 +1,9 @@
 # **Machine Learning**
 
 <span class="subtitle">
-Fall 2024 | Author: Brandon Y. Yang
+
+This comprehensive guide to Machine Learning is based on notes I took as a Teaching Assistant for [CS 4774](https://www.cs.virginia.edu/~nn4pj/teaching), taught by [Prof. Rich Nguyen](https://www.cs.virginia.edu/~nn4pj/) at the [University of Virginia](https://engineering.virginia.edu/department/computer-science) during the Fall 2024 semester.
+
 </span>
 
 ## Introduction
