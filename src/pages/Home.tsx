@@ -32,7 +32,11 @@ const Home = () => {
         I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park. 
         I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
 
-        I have written [color:#ec4899]${wordCount}[/color] words and [color:#ec4899]${equationCount}[/color] equations on this website in my [notes](/notes) and [blog](/blog).
+        ${
+            wordCount > 0 && equationCount > 0
+                ? `I have written [color:#ec4899]${wordCount}[/color] words and [color:#ec4899]${equationCount}[/color] equations on this website in my [blog](/blog) and [notes](/notes).`
+                : `I have written [color:#ec4899]a lot of[/color] words and [color:#ec4899]some[/color] equations on this website in my [blog](/blog) and [notes](/notes).`
+        }
     `;
 
     const newsParagraphText = `
