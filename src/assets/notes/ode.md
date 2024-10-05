@@ -2011,14 +2011,15 @@ we can see that $f(P) = 0$ at $P = 0$ and $P = k$. This means that the populatio
     \filldraw[black] (5,0) circle (1pt);  % Point at (K,0)
     
     % Mark the top point (K/2, rK/4)
-    \filldraw[white, draw=black, thick] (2.5,2.5) circle (2pt) node[above] {$(K/2, rK/4)$};
+    \filldraw[black] (0, 2.5) node[left] {$rK/4$} circle (1pt);
+    \filldraw[black] (2.5, 2.5) circle (1pt);
     
     % Labels for K/2 and K
     \draw[dashed] (2.5,2.5) -- (2.5,0) node[below] {$K/2$};
     \draw[dashed] (5,0) -- (5,0) node[below] {$K$};
     
     % rK/4 on the y-axis
-    \draw[dashed] (0,2.5) -- (2.5,2.5) node[above] {$rK/4$};
+    \draw[dashed] (0,2.5) -- (2.5,2.5);
 
     % Red arrows indicating movement
     \draw[->, thick, red] (0.1,0.2) -- (2.0,0.2);
