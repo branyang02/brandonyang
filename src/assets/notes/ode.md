@@ -2383,40 +2383,217 @@ Section 2.6 in BOYCE, DIPRIMA.
 
 </span>
 
-Given ODE: $y' = f(t, y)$, another way to solve the ODE is to rewrite the ODE in the form:
+<blockquote class="theorem">
+
+  Let the functions $M, N, M_y, N_x$, where subscripts denote partial derivatives, be continuous in the rectangular region $R: \alpha < x < \beta, \gamma < y < \delta$. Then:
+
+  $$
+  \begin{equation} \label{eq:exact-ode-1}
+  M(x, y) + N(x, y)y' = 0
+  \end{equation}
+  $$
+
+  is an **exact differential equation** if and only if:
+
+  $$
+  \begin{equation} \label{eq:exact-ode-2}
+  M_y(x,y) = N_x(x,y)
+  \end{equation}
+  $$
+
+  at each point of $R$. That is, there exists a function $\psi(x, y)$ such that:
+
+  $$
+  \begin{equation} \label{eq:exact-ode-3}
+  \psi_x(x, y) = M(x, y) \quad \text{and} \quad \psi_y(x, y) = N(x, y),
+  \end{equation}
+  $$
+
+  if and only if $M$ and $N$ satisfy $\eqref{eq:exact-ode-2}$.
+
+</blockquote>
+
+To solve an ODE using exact differential equations, we follow the following steps:
+
+1. Identify $M(x, y)$ and $N(x, y)$.
+2. Verify if the ODE is exact by computing $M_y$ and $N_x$.
+3. Solve for $\psi(x, y)$ by integrating $\psi_x$ and $\psi_y$.
+4. Conclude that the solution to the ODE is $\psi(x, y) = c$, where $c$ is the constant of integration.
+
+For example, suppose we have the following ODE:
 
 $$
-\begin{equation} \label{eq:exact-ode-form}
-\frac{d}{dt} \psi(t, y) = 0,
+\begin{equation} \label{eq:exact-ode-example}
+(y\cos x + 2xe^y) + (\sin x + x^2 e^y - 1)y' = 0.
 \end{equation}
 $$
 
-where $\psi(t, y)$ is a function of $t$ and $y$.
-
-We start from an arbitrary ODE in the following form:
-
-$$
-\begin{equation} \label{eq:exact-ode}
-M(t, y) + N(t, y)y' = 0,
-\end{equation}
-$$
-
-where $M(t, y)$ and $N(t, y)$ are continuous functions of $t$ and $y$. We can rewrite the ODE in the form $\eqref{eq:exact-ode-form}$ by first checking the condition where it is possible. We can expand $\eqref{eq:exact-ode-form}$:
+We can see that $\eqref{eq:exact-ode-example}$ is already in the form of $\eqref{eq:exact-ode-1}$. And we identify:
 
 $$
 \begin{align}
-\frac{d}{dt} \psi(t, y) &= 0 \\
-\frac{\partial \psi}{\partial t} + \frac{\partial \psi}{\partial y}y' &= 0 \label{eq:exact-ode-form-2}.
+M(x, y) = y\cos x + 2xe^y, \quad N(x, y) = \sin x + x^2 e^y - 1.
 \end{align}
 $$
 
-We can then match $\eqref{eq:exact-ode-form-2}$ with $\eqref{eq:exact-ode}$:
+We then find $M_y$ and $N_x$ to verify if $\eqref{eq:exact-ode-example}$ is an exact differential equation:
 
 $$
-\begin{align*}
-\frac{\partial \psi}{\partial t} + \frac{\partial \psi}{\partial y}y' &= 0 \\
-M(t, y) + N(t, y)y' &= 0.
-\end{align*}
+\begin{align}
+M_y(x, y) &= \frac{\partial M}{\partial y} = \cos x + 2xe^y, \\
+N_x(x, y) &= \frac{\partial N}{\partial x} = \cos x + 2x e^y.
+\end{align}
 $$
 
-We can clearly see that $M(t, y) = \frac{\partial \psi}{\partial t}$ and $N(t, y) = \frac{\partial \psi}{\partial y}$. Therefore, our goal is now to find $\psi(t, y)$ such that $M(t, y) = \frac{\partial \psi}{\partial t}$ and $N(t, y) = \frac{\partial \psi}{\partial y}$.
+Therefore, we have shown that $\eqref{eq:exact-ode-example}$ is an exact differential equation. Next, we solve for $\psi(x, y)$:
+
+$$
+\begin{align}
+\psi_x(x, y) &= \frac{\partial \psi}{\partial x} = y\cos x + 2xe^y, \\
+\psi_y(x, y) &= \frac{\partial \psi}{\partial y} = \sin x + x^2 e^y - 1. \label{eq:exact-ode-psi-original}
+\end{align}
+$$
+
+To solve for $\psi(x, y)$, we first integrate $\psi_x(x, y)$ with respect to $x$:
+
+$$
+\begin{align}
+\psi(x, y) &= \int y\cos x + 2xe^y \, dx = y\sin x + x^2 e^y + h(y). \label{eq:exact-ode-psi}
+\end{align}
+$$
+
+Next, we compute $\psi_y$ from $\eqref{eq:exact-ode-psi}$ and setting $\psi_y = N$:
+
+$$
+\begin{align}
+\psi_y(x, y) = \underbrace{y\cos x + 2xe^y + h'(y)}_{\text{computed from }\eqref{eq:exact-ode-psi}} = \underbrace{\sin x + x^2 e^y - 1}_{\eqref{eq:exact-ode-psi-original}}.
+\end{align}
+$$
+
+We then solve for $h'(y) = -1$ and find $h(y) = -y$. The constant of integration can be omitted since any solution of the preceding differential equation is satisfactory. Therefore, substituting $h(y) = -y$ back into $\eqref{eq:exact-ode-psi}$, we find the solution to the exact differential equation:
+
+$$
+\begin{align}
+\psi(x, y) &= y\sin x + x^2 e^y - y.
+\end{align}
+$$
+
+Finally, we can write the solution to the exact differential equation as:
+
+$$
+\begin{align}
+y\sin x + x^2 e^y - y &= c,
+\end{align}
+$$
+
+where $c$ is the constant of integration.
+
+<details><summary>Unsolvable Exact Differential Equations</summary>
+
+<blockquote class="problem">
+
+Solve the differential equation:
+
+$$
+(3xy + y^2) + (x^2 + xy)y' = 0.
+$$
+
+</blockquote>
+
+<blockquote class="proof" id="unsolvable_exact">
+
+We have $M(x, y) = 3xy + y^2$ and $N(x, y) = x^2 + xy$. We then find $M_y$ and $N_x$:
+
+$$
+\begin{align}
+M_y(x, y) &= 3x + 2y, \\
+N_x(x, y) &= 2x + y.
+\end{align}
+$$
+
+Since $M_y \neq N_x$, the ODE is not exact. Therefore, we cannot solve the ODE using the method of exact differential equations.
+
+</blockquote>
+
+</details>
+
+#### Integrating Factors in Exact Differential Equations
+
+It is sometimes possible to convert a differential equation that is not exact into an exact differential equation by multiplying by an **integrating factor**. We aim to find an integrating factor $\mu(x, y)$ such that:
+
+$$
+\begin{equation} \label{eq:exact-integrating-factor}
+\mu(x, y)M(x, y) + \mu(x, y)N(x, y)y' = 0
+\end{equation}
+$$
+
+is an exact ODE, where $(\mu M)_y = (\mu N)_x$. Since $M$ and $N$ are given functions, the integrating factor $\mu$ must satisfy the first-order partial differential equation:
+
+$$
+\begin{equation} \label{eq:exact-integrating-factor-pde}
+M\mu_y - N\mu_x + (M_y -N_x)\mu = 0.
+\end{equation}
+$$
+
+If a function $\mu$ satisfying $\eqref{eq:exact-integrating-factor-pde}$ can be found, then $\eqref{eq:exact-integrating-factor}$ will be exact. If we assume $\mu$ is a function of $x$ only, then $\eqref{eq:exact-integrating-factor-pde}$ simplifies to:
+
+$$
+\begin{equation} \label{eq:exact-integrating-factor-pde-x}
+\frac{d\mu}{dx} = \frac{M_y - N_x}{N}\mu,
+\end{equation}
+$$
+
+where $\mu(x)$ can be solved by solving the ODE $\eqref{eq:exact-integrating-factor-pde-x}$ using either separation of variables or integrating factors.
+
+Suppose we have the following ODE:
+
+$$
+\begin{equation} \label{eq:exact-integrating-factor-example}
+(3xy + y^2) + (x^2 + xy)y' = 0.
+\end{equation}
+$$
+
+We have already [shown](#unsolvable_exact) that $\eqref{eq:exact-integrating-factor-example}$ is not exact. We can determine whether it has an integrating factor that depends on $x$ only. We compute $(M_y - N_x) / N$ following $\eqref{eq:exact-integrating-factor-pde-x}$:
+
+$$
+\begin{align}
+\frac{M_y(x, y) - N_x(x, y)}{N(x, y)} &= \frac{3x + 2y - \left(2x + y \right)}{x^2 +xy} = \frac{1}{x}.
+\end{align}
+$$
+
+Thus there is an integrating factor $\mu(x)$ that depends on $x$ only. We can solve for $\mu(x)$ by solving the ODE $\eqref{eq:exact-integrating-factor-pde-x}$:
+
+$$
+\begin{align}
+\frac{d\mu}{dx} &= \frac{1}{x}\mu \implies \mu(x) = x.
+\end{align}
+$$
+
+We can now multiple both sides with $\mu(x) = x$ in $\eqref{eq:exact-integrating-factor-example}$:
+
+$$
+\begin{align}
+3x^2y + xy^2 + (x^3 + x^2y) y' = 0 \label{eq:exact-integrating-factor-example-2}.
+\end{align}
+$$
+
+Now, $\eqref{eq:exact-integrating-factor-example-2}$ is exact, because:
+
+$$
+\begin{align}
+M(x, y) &= 3x^2y + xy^2, \implies M_y = 3x^2 + 2xy, \\
+N(x, y) &= x^3 + x^2y, \implies N_x = 3x^2 + 2xy.
+\end{align}
+$$
+
+We can now solve for $\psi(x, y)$ by integrating $\psi_x$ and $\psi_y$:
+
+$$
+\begin{align}
+\psi_x(x, y) &= 3x^2y + xy^2, \\
+\psi(x, y) &= \int 3x^2y + xy^2 \, dx = x^3y + \frac{1}{2}x^2y^2 + h(y) \\
+\psi_y(x, y) &= \frac{d}{dy} \left(x^3y + \frac{1}{2}x^2y^2 + h(y) \right) = x^3 + x^2y \\
+&= x^3 + 2x^2y + h'(y) = x^3 + x^2y, \implies h'(y) = 0 \\
+\psi(x, y) &= x^3y + \frac{1}{2}x^2y^2 \implies x^3y + \frac{1}{2}x^2y^2 = c.
+\end{align}
+$$
