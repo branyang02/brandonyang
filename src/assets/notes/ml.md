@@ -639,7 +639,7 @@ where $\hat{\mathbf{y}} = \begin{bmatrix}
 \hat{y}^{(m)}
 \end{bmatrix}$ is the predicted target vector.
 
-**Loss Function**
+**Objective**
 
 Recall that a loss function is used to _evaluate_ the model's performance. Expanding on $\eqref{eq:loss-supervised}$, we define **mean squared error (MSE)**, a common loss function used in linear regression:
 
@@ -1079,7 +1079,7 @@ Overall, we can compare the normal equation, gradient descent, stochastic gradie
 | Stochastic Gradient Descent (SGD) | $O(kn)$            | Sublinear convergence rate | Can approach optimal solution, but may oscillate around it                    |
 | Mini-Batch Gradient Descent       | $O(kn)$            | Sublinear convergence rate | Balance between SGD and batch GD, suitable for large datasets                 |
 
-##### Interactive Example
+**Interactive Example**
 
 Below we present an interactive example of linear regression using gradient descent. Suppose we have a dataset with one feature and one target value, which are represented as:
 
@@ -1371,7 +1371,7 @@ $$
 
 where $\hat{\mathbf{y}}$ is the predicted _probability vector_ for all observations. The predicted class labels are obtained by applying a threshold of $0.5$ to the predicted probabilities.
 
-**Loss Function**
+**Objective**
 
 We expand on the general supervised learning loss function $\eqref{eq:loss-supervised}$ to derive the **log loss** for logistic regression:
 
@@ -1797,7 +1797,7 @@ $$
 
 where $\hat{\mathbf{y}}^{(i)}_j$ is the predicted probability that observation $i$ belongs to class $j$.
 
-**Loss Function**
+**Objective**
 
 We extend the general supervised learning loss function $\eqref{eq:loss-supervised}$ to derive the **cross-entropy loss** for softmax regression:
 
@@ -1937,7 +1937,158 @@ The GD algorithm for softmax regression is as follows:
 4. Update the parameter matrix using the GD update rule $\eqref{eq:gd-softmax}$.
 5. Repeat steps 2-4 until convergence.
 
-### Support Vector Machines (SVM)
+#### Support Vector Machines (SVM)
+
+Support Vector Machines (SVM) are a class of supervised learning models used for **classification** and **regression** tasks. In classification, SVMs find the optimal hyperplane that separates the data into different classes. The hyperplane is chosen to maximize the margin between the classes, making SVMs effective for binary classification tasks. SVMs can also be extended to multi-class classification problems using techniques such as **one-vs-all** (OvA) or **one-vs-one** (OvO) strategies. In regression, SVMs find the optimal hyperplane that best fits the data. SVMs are effective for high-dimensional data and can handle non-linear relationships using the **kernel trick**.
+
+**Data Representation**
+
+In SVM, we have a set of _observations_ $\mathbf{X} = \begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & \cdots & x_n^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & \cdots & x_n^{(2)} \\
+\vdots & \vdots & \vdots & \vdots \\
+x_1^{(m)} & x_2^{(m)} & \cdots & x_n^{(m)}
+\end{bmatrix}$, where each row represents an observation and each column represents a feature. We have target values $\mathbf{y} = \begin{bmatrix}
+y^{(1)} \\
+y^{(2)} \\
+\vdots \\
+y^{(m)}
+\end{bmatrix}$, where $y^{(i)} \in \{-1, 1\}$ represents the binary class label for observation $i$.
+
+<blockquote class="note>
+
+In SVM, we use class labels $y^{(i)} \in \{-1, 1\}$ instead of $y^{(i)} \in \{0, 1\}$ to represent the two classes. The class labels are chosen to simplify the optimization problem.
+
+</blockquote>
+
+We call the class label $1$ the **positive class** and the class label $-1$ the **negative class**. In SVM, we aim to find two parallel hyperplanes, the **positive hyperplane** and the **negative hyperplane**, that separate the data into different classes. In addition, we can also derive the **maximum margin hyperplane** that lies halfway between the positive and negative hyperplanes. We first introduce the following terms:
+
+- **Positive Hyperplane**: The hyperplane that defines the boundary for the positive class.
+- **Negative Hyperplane**: The hyperplane that defines the boundary for the negative class.
+- **Maximum Margin Hyperplane (Decision Boundary)**: The hyperplane that lies equidistant between the positive and negative hyperplanes, separating the two classes with the maximum margin.
+- **Support Vectors**: Data points that lie _on_ on the positive/negative hyperplanes, or _closest_ to the marximum margin hyperplane.
+- **Margin**: The distance between the support vectors and the decision boundary. SVM aims to maximize the margin.
+
+![](https://miro.medium.com/v2/resize:fit:1400/1*7LlsbDTwektZJvER5tWyHA.png)
+
+<div class="caption">
+
+Source: [Simplifying Support Vector Machines — A Concise Introduction to Binary Classification](https://towardsdatascience.com/support-vector-machines-svm-ml-basics-machine-learning-data-science-getting-started-1683fc99cd45)
+
+</div>
+
+##### Linear SVM
+
+Linear SVM is used for linearly separable data, where the classes can be separated by a straight line (in 2D) or a hyperplane (in higher dimensions).
+
+**Model**
+
+Following the general form of supervised learning models in $\eqref{eq:model-supervised}$, the decision function of a linear SVM is defined as:
+
+$$
+\begin{equation} \label{eq:svm-decision-function}
+f_{\mathbf{w}, b}(\mathbf{x}^{(i)}) = \mathbf{w}^T \mathbf{x}^{(i)} + b,
+\end{equation}
+$$
+
+where $\mathbf{w} \in \mathbb{R}^n$ is the weight vector, $\mathbf{x}^{(i)} \in \mathbb{R}^n$ is the feature vector for observation $i$, and $b \in \mathbb{R}$ is the bias term. The predicted class label $\hat{y}^{(i)}$ for observation $i$ is determined by the sign of the decision function:
+
+$$
+\begin{equation} \label{eq:svm-prediction-label}
+\hat{y}^{(i)} = \text{sign}(f_{\mathbf{w}, b}(\mathbf{x}^{(i)})) = \begin{cases}
+1, & \text{if } f_{\mathbf{w}, b}(\mathbf{x}^{(i)}) \geq 0, \\
+-1, & \text{otherwise}.
+\end{cases}
+\end{equation}
+$$
+
+**Objective**
+
+We have two different objectives(loss functions) depeneding on whether the data is linearly separable or not. **Hard-margin SVM** is used when the data is linearly separable, while **Soft-margin SVM** is used when the data is not linearly separable.
+
+**Hard-Margin SVM (Linearly Separable Data)**
+
+Hard-Margin SVM assumes that the data is _linearly separable_, meaning that there exists a hyperplane that perfectly separates the two classes. We first aim to find the _positive hyperplane_ and the _negative hyperplane_, which are defined by the equations:
+
+$$
+\begin{align*}
+\text{positive hyperplane: } \mathbf{w}^T \mathbf{x}^{(i)} + b &= 1 \label{eq:svm-positive-hyperplane}, \\
+\text{negative hyperplane: } \mathbf{w}^T \mathbf{x}^{(i)} + b &= -1. \label{eq:svm-negative-hyperplane}
+\end{align*}
+$$
+
+Since we assumed that the data is linearly separable, we are _guaranteed_ that the positive and negative hyperplanes exist, and:
+
+$$
+\begin{align}
+\hat{y}^{(i)} = \begin{cases}
+1, & \text{if } \mathbf{w}^T \mathbf{x}^{(i)} + b \geq 1, \\
+-1, & \text{if } \mathbf{w}^T \mathbf{x}^{(i)} + b \leq -1 \\
+\text{undefined}, & \text{o.w.}
+\end{cases} \label{eq:svm-hard-margin-prediction}.
+\end{align}
+$$
+
+Therefore, the objective becomes to maximize the margin $M$ between the positive and negative hyperplanes. To find $M$, we first denote $\mathbf{x}^+$ and $\mathbf{x}^-$ as the some points on the positive and negative hyperplanes, and they are the **support vectors** for their respective classes, which means that:
+
+$$
+\begin{align}
+\mathbf{w}^T \mathbf{x}^+ + b &= 1, \label{eq:svm-support-vector-plus} \\
+\mathbf{w}^T \mathbf{x}^- + b &= -1 \label{eq:svm-support-vector-minus}.
+\end{align}
+$$
+
+Additionally, we also assume that if we draw a line between $\mathbf{x}^+$ and $\mathbf{x}^-$, it will be perpendicular to the hyperplanes. Therefore, the distance between $\mathbf{x}^+$ and $\mathbf{x}^-$ is $M$, and we have the following formulation:
+
+$$
+\begin{align}
+\mathbf{x}^+ &= \lambda \mathbf{w} + \mathbf{x}^- \label{eq:svm-support-vector-plus-lambda}, \\
+M &= \left\| \mathbf{x}^+ - \mathbf{x}^- \right\| \label{eq:svm-margin},
+\end{align}
+$$
+
+where $\lambda$ is a scalar value. To continue, we first find $\lambda$ by substituting $\eqref{eq:svm-support-vector-plus-lambda}$ into $\eqref{eq:svm-support-vector-plus}$:
+
+$$
+\begin{align*}
+\mathbf{w}^T \left(\lambda \mathbf{w} + \mathbf{x}^-\right) + b &= 1 \\
+\lambda \mathbf{w}^T \mathbf{w} + \mathbf{w}^T \mathbf{x}^- + b &= 1 \\
+\lambda  \mathbf{w}^T \mathbf{w} + (-1) &= 1 \tag{\eqref{eq:svm-support-vector-minus}} \\
+\lambda  \mathbf{w}^T \mathbf{w} &= 2 \\
+\lambda &= \frac{2}{\mathbf{w}^T \mathbf{w}} = \frac{2}{\left\| \mathbf{w} \right\|^2}.
+\end{align*}
+$$
+
+Next, we substitute $\lambda$ back into $\eqref{eq:svm-support-vector-plus-lambda}$ and $\eqref{eq:svm-margin}$ to find $M$:
+
+$$
+\begin{align*}
+M &= \left\| \left(\frac{2}{\left\| \mathbf{w} \right\|^2} \mathbf{w} + \mathbf{x}^- \right) - \mathbf{x}^- \right\| = \frac{2}{\left\| \mathbf{w} \right\|}.
+\end{align*}
+$$
+
+Therefore, we can compute margin $M$ as a function of the weight vector $\mathbf{w}$, and we aim to maximize $M$ by minimizing $\left\| \mathbf{w} \right\|$. In order to make the optimization problem easier, we can minimize $\frac{1}{2} \left\| \mathbf{w} \right\|^2$ instead, which is equivalent to maximizing the margin $M$.
+
+Additionally, we have a set of constraints that we defined earlier in $\eqref{eq:svm-hard-margin-prediction}$, which states that the positive and negative hyperplanes must correctly classify the data. We can combine these constraints into a single constraint, which states that for every observation $i$, $y^{(i)} (\mathbf{w}^T \mathbf{x}^{(i)} + b) \geq 1$, since each label $y^{(i)}$ is either $1$ or $-1$.
+
+Finally, we can combine the optimization objective and the constraints to formulate the **Hard-Margin SVM Objective**:
+
+<blockquote class="equation">
+
+**Hard-Margin SVM Objective**:
+
+$$
+\begin{equation} \label{eq:svm-hard-margin}
+\begin{aligned}
+& \underset{\mathbf{w}, b}{\text{minimize}}
+& & \frac{1}{2} \left\| \mathbf{w} \right\|^2 \\
+& \text{subject to}
+& & y^{(i)} (\mathbf{w}^T \mathbf{x}^{(i)} + b) \geq 1, \quad \text{for } i = 1, 2, \dots, m.
+\end{aligned}
+\end{equation}
+$$
+
+</blockquote>
 
 ## Unsupervised Learning
 
