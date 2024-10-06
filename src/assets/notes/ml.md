@@ -641,7 +641,7 @@ where $\hat{\mathbf{y}} = \begin{bmatrix}
 
 **Objective**
 
-Recall that a loss function is used to _evaluate_ the model's performance. Expanding on $\eqref{eq:loss-supervised}$, we define **mean squared error (MSE)**, a common loss function used in linear regression:
+The objective of linear regression is to find the optimal parameter vector $\theta$ that minimizes the loss function. Recall that a loss function is used to _evaluate_ the model's performance. Expanding on $\eqref{eq:loss-supervised}$, we define **mean squared error (MSE)**, a common loss function used in linear regression:
 
 <blockquote class="equation">
 
@@ -662,7 +662,7 @@ Note that we use the general matrix form $\eqref{eq:linear-regression-matrix}$ i
 
 **Optimization**
 
-Recall that the goal of opimization is to find the _optimal_ parameter vector $\theta$ that minimizes the loss function. There are a few ways to minimize $L_{\text{MSE}}$ in linear regression. The most common methods are:
+Recall that the optimization step aims to find the optimal parameter vector $\theta$ that minimizes the loss function $L_{\text{MSE}}$ in linear regression. There are a few ways to minimize $L_{\text{MSE}}$ in linear regression. The most common methods are:
 
 1. **Normal Equation**: An analytical solution to the linear regression problem.
 2. **Gradient Descent**: An iterative optimization algorithm to minimize the loss function.
