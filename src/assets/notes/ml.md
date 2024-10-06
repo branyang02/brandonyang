@@ -1969,7 +1969,7 @@ We call the class label $1$ the **positive class** and the class label $-1$ the 
 - **Support Vectors**: Data points that lie _on_ on the positive/negative hyperplanes, or _closest_ to the marximum margin hyperplane.
 - **Margin**: The distance between the support vectors and the decision boundary. SVM aims to maximize the margin.
 
-![](https://miro.medium.com/v2/resize:fit:1400/1*7LlsbDTwektZJvER5tWyHA.png)
+<img src="https://miro.medium.com/v2/resize:fit:1400/1*7LlsbDTwektZJvER5tWyHA.png" alt="Image" style="max-height: 400px;">
 
 <div class="caption">
 
