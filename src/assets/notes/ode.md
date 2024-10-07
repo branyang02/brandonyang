@@ -2546,6 +2546,16 @@ $$
 
 where $\mu(x)$ can be solved by solving the ODE $\eqref{eq:exact-integrating-factor-pde-x}$ using either separation of variables or integrating factors.
 
+Similarly, we can also assume $\mu$ is a function of $y$ only, then $\eqref{eq:exact-integrating-factor-pde}$ simplifies to:
+
+$$
+\begin{equation} \label{eq:exact-integrating-factor-pde-y}
+\frac{d\mu}{dy} = \frac{N_x - M_y}{M}\mu,
+\end{equation}
+$$
+
+where $\mu(y)$ can be solved by solving the ODE $\eqref{eq:exact-integrating-factor-pde-y}$ using either separation of variables or integrating factors.
+
 Suppose we have the following ODE:
 
 $$
