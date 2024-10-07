@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import NoteBlogCards from "./pages/NoteBlogCards";
 import NotesBlogs from "./pages/NoteBlog";
 import Courses from "./pages/Courses";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const App = () => {
     const routes = [
@@ -40,19 +41,26 @@ const App = () => {
     ];
 
     return (
-        <Routes>
-            {routes.map(({ path, Layout, Component, props }) => (
-                <Route
-                    key={path}
-                    path={path}
-                    element={
-                        <Layout>
-                            {props ? <Component {...props} /> : <Component />}
-                        </Layout>
-                    }
-                />
-            ))}
-        </Routes>
+        <>
+            <Routes>
+                {routes.map(({ path, Layout, Component, props }) => (
+                    <Route
+                        key={path}
+                        path={path}
+                        element={
+                            <Layout>
+                                {props ? (
+                                    <Component {...props} />
+                                ) : (
+                                    <Component />
+                                )}
+                            </Layout>
+                        }
+                    />
+                ))}
+            </Routes>
+            <SpeedInsights />
+        </>
     );
 };
 
