@@ -5,21 +5,24 @@ import { useDarkMode } from "../context/DarkModeContext";
 import "../styles/Home.css";
 import Experience from "../components/Experience";
 import { Helmet } from "react-helmet";
-import { countWordsAndEquations } from "../utils/utils";
+import { countWordsAndEquations, getMarkdown } from "../utils/utils";
 import { useEffect, useState } from "react";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
     const [wordCount, setWordCount] = useState(0);
     const [equationCount, setEquationCount] = useState(0);
+    const [codeLineCount, setCodeLineCount] = useState(0);
 
     useEffect(() => {
         const fetchCounts = async () => {
-            const { wordCount, equationCount } = await countWordsAndEquations();
+            const markdown = await getMarkdown();
+            const { wordCount, equationCount, codeLineCount } =
+                countWordsAndEquations(markdown);
             setWordCount(wordCount);
             setEquationCount(equationCount);
+            setCodeLineCount(codeLineCount);
         };
-
         fetchCounts();
     }, []);
 
@@ -34,8 +37,8 @@ const Home = () => {
 
         ${
             wordCount > 0 && equationCount > 0
-                ? `I have written [color:#ec4899]${wordCount}[/color] words and [color:#ec4899]${equationCount}[/color] equations on this website in my [blog](/blog) and [notes](/notes).`
-                : `I have written [color:#ec4899]a lot of[/color] words and [color:#ec4899]some[/color] equations on this website in my [blog](/blog) and [notes](/notes).`
+                ? `I have written [color:#ec4899]${wordCount}[/color] words, [color:#ec4899]${equationCount}[/color] equations, and [color:#ec4899]${codeLineCount}[/color] lines of code on this website in my [blog](/blog) and [notes](/notes).`
+                : `I have written [color:#ec4899]a lot of[/color] words, [color:#ec4899]some[/color] equations, and [color:#ec4899]some[/color] lines of code on this website in my [blog](/blog) and [notes](/notes).`
         }
     `;
 
