@@ -2821,7 +2821,7 @@ k = 0.1
 omega = 3
 T0 = 10
 T1 = -20
-h = 0.01
+h = 0.1
 t_final = 20  # Last t value to be approximated
 
 # Initial condition
