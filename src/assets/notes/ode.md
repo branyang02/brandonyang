@@ -2862,6 +2862,8 @@ plt.grid(True)
 get_image(plt)
 ```
 
+<details><summary>Euler's Method Problems</summary>
+
 <blockquote class="problem">
 
 Use Euler's method to approximate $y(2)$ given:
@@ -2903,3 +2905,7 @@ y(1) &= 0 = 1 - 1 + C \implies C = 0 \\
 y &= t - 1.
 \end{align*}
 $$
+
+Therefore, we have $y(2) = 2 - 1 = 1$.
+
+</details>
