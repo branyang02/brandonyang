@@ -24,6 +24,14 @@ $$
 
 ### Differentiation
 
+**Taylor Series**:
+
+$$
+\begin{equation} \label{eq:taylor_series}
+f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \ldots + \frac{f^{(n)}(a)}{n!}(x-a)^n + \ldots.
+\end{equation}
+$$
+
 **Product Rule for derivatives**:
 
 $$
@@ -59,6 +67,8 @@ $$
 \frac{d}{dx} \int_{h(x)}^{g(x)} f(x) \, dx = f(g(x)) g'(x) - f(h(x)) h'(x).
 \end{equation}
 $$
+
+<details><summary>Differentiation Problems</summary>
 
 <blockquote class="problem">
 
@@ -176,9 +186,9 @@ $$
 \end{aligned}
 $$
 
-</details>
+</blockquote>
 
-<details><summary>Integration</summary>
+</details>
 
 ### Integration
 
@@ -203,55 +213,6 @@ $$
 $$
 
 where $u = g(x)$ and $du = g'(x) dx$.
-
-<blockquote class="problem">
-
-For example, suppose we want to solve the following integral:
-
-$$
-\int \left(2x^3 + 1\right)^7 (x^2) \, dx.
-$$
-
-</blockquote>
-
-<blockquote class="proof">
-
-Let $u = 2x^3 + 1$, thus $du = 6x^2 \, dx$, and $dx = \frac{1}{6x^2}du$. We can 'rewrite using $u$:
-
-$$
-\begin{aligned}
-\int \left(u\right)^7 (x^2) \, \frac{1}{6x^2} du &= \frac{1}{6}\int u^7 \, du \\
-&= \frac{1}{6}\left(\frac{1}{8}u^8\right) + C \\
-&= \frac{1}{48} \left(2x^3+1\right)^8 + C.
-\end{aligned}
-$$
-
-</blockquote>
-
-<blockquote class="problem">
-
-Suppose we have the same integral but we assign bounds:
-
-$$
-\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx.
-$$
-
-</blockquote>
-
-<blockquote class="proof">
-
-We follow the same $u$-substitution with $u = 2x^3 + 1$, but we assign new bounds for $u$
-
-$$
-\begin{aligned}
-\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx &= \frac{1}{6}\int_{2(1)^3 + 1}^{2(2)^3 + 1} u^7 \, du \\
-&= \frac{1}{6}\int_{3}^{17} u^7 \, du \\
-&= \frac{1}{48} [u]_3^17 \\
-&= \frac{1}{48} (17^8 - 3^8)
-\end{aligned}
-$$
-
-</blockquote>
 
 **Integration by parts**:
 
@@ -327,6 +288,59 @@ $$
 \int (x^2 + 1) e^{-x} \, dx &= -(x^2 + 1) e^{-x} - 2xe^{-x} - 2e^{-x} + C.
 \end{aligned}
 $$
+
+<details><summary>Integration Problems</summary>
+
+<blockquote class="problem">
+
+For example, suppose we want to solve the following integral:
+
+$$
+\int \left(2x^3 + 1\right)^7 (x^2) \, dx.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+Let $u = 2x^3 + 1$, thus $du = 6x^2 \, dx$, and $dx = \frac{1}{6x^2}du$. We can 'rewrite using $u$:
+
+$$
+\begin{aligned}
+\int \left(u\right)^7 (x^2) \, \frac{1}{6x^2} du &= \frac{1}{6}\int u^7 \, du \\
+&= \frac{1}{6}\left(\frac{1}{8}u^8\right) + C \\
+&= \frac{1}{48} \left(2x^3+1\right)^8 + C.
+\end{aligned}
+$$
+
+</blockquote>
+
+<blockquote class="problem">
+
+Suppose we have the same integral but we assign bounds:
+
+$$
+\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx.
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We follow the same $u$-substitution with $u = 2x^3 + 1$, but we assign new bounds for $u$
+
+$$
+\begin{aligned}
+\int_1^2 \left(2x^3 + 1\right)^7 (x^2) \, dx &= \frac{1}{6}\int_{2(1)^3 + 1}^{2(2)^3 + 1} u^7 \, du \\
+&= \frac{1}{6}\int_{3}^{17} u^7 \, du \\
+&= \frac{1}{48} [u]_3^17 \\
+&= \frac{1}{48} (17^8 - 3^8)
+\end{aligned}
+$$
+
+</blockquote>
+
+</details>
 
 </details>
 
@@ -2607,4 +2621,285 @@ $$
 &= x^3 + 2x^2y + h'(y) = x^3 + x^2y, \implies h'(y) = 0 \\
 \psi(x, y) &= x^3y + \frac{1}{2}x^2y^2 \implies x^3y + \frac{1}{2}x^2y^2 = c.
 \end{align}
+$$
+
+<details><summary>
+
+Choosing $\frac{d\mu}{dx}$ or $\frac{d\mu}{dy}$ to find the integrating factor
+
+</summary>
+
+<blockquote class="problem">
+
+Find an integrating factor and solve the ODE:
+
+$$
+1 + \left(\frac{x}{y} - \sin y \right)y' = 0.
+$$
+
+</blockquote>
+
+We check if the ODE is exact by computing $M_y$ and $N_x$:
+
+$$
+\begin{align*}
+M(x, y) &= 1, \quad M_y = 0, \\
+N(x, y) &= \frac{x}{y} - \sin y, \quad N_x = \frac{1}{y}.
+\end{align*}
+$$
+
+Since $M_y \neq N_x$, the ODE is not exact. We find an integrating factor $\mu(x)$. We first compute $\frac{d\mu}{dx}$:
+
+$$
+\frac{d\mu}{dx} = \frac{M_y - N_x}{N}\mu = \frac{0 - \frac{1}{y}}{\frac{x}{y} - \sin y}\mu.
+$$
+
+If we solve for $\mu(x)$, we find that it also depends on $y$, since $y$ is in the denominator. We then check for $\frac{d\mu}{dy}$:
+
+$$
+\frac{d\mu}{dy} = \frac{N_x - M_y}{M}\mu = \frac{\frac{1}{y} - 0}{1}\mu = \frac{1}{y}\mu.
+$$
+
+We can confirm that $\mu(y)$ is a function of $y$ only. After solving with separation of variables, we find that $\mu(y) = y$. We can then multiply the ODE by $\mu(y) = y$:
+
+$$
+y \cdot 1 + y\left(\frac{x}{y} - \sin y \right)y' = 0.
+$$
+
+We now have an exact equation, since we have:
+
+$$
+\begin{align*}
+M(x, y) &= y, \quad M_y = 1, \\
+N(x, y) &= x - y\sin y, \quad N_x = 1.
+\end{align*}
+$$
+
+We next solve for $\psi(x, y)$:
+
+$$
+\begin{align*}
+\psi(x, y) &= \int \psi_x(x, y) \, dx = \int y \, dx = xy + h(y) \\
+\psi_y(x, y) &= \frac{d}{dy} \left(xy + h(y) \right) = x - y\sin y \\
+\psi_y(x, y) &= x + h'(y) = x - y\sin y \implies h'(y) = -y\sin y \implies h(y) = y\cos \left(y\right)-\sin \left(y\right) \\
+\psi(x, y) &= xy + y\cos \left(y\right)-\sin \left(y\right).
+\end{align*}
+$$
+
+Therefore, the solution to the ODE is:
+
+$$
+y + y\cos \left(y\right)-\sin \left(y\right) = c,
+$$
+
+where $c$ is the constant of integration.
+
+</details>
+
+### Numerical Approximations: Euler’s Method
+
+<span class="subtitle">
+
+Section 2.7 in BOYCE, DIPRIMA.
+
+</span>
+
+Given an ODE in the form $y' = f(t, y)$, suppose that $f(t,y)$ is very complicated and we cannot solve it analytically. We can use **numerical methods** to approximate the solution to the ODE. One such method is **Euler's method**.
+
+<blockquote class="theorem">
+
+Given an initial condition $y(t_0) = y_0$, we can approximate the solution to the ODE $y' = f(t, y)$ using Euler's method:
+
+$$
+\begin{equation} \label{eq:euler-method}
+y(t_{k+1}) \approx y(t_k) + f(t_k, y(t_k)) (t_{k+1} - t_k).
+\end{equation}
+$$
+
+</blockquote>
+
+Suppose we use a fixed step size $h = t_{k+1} - t_k$, we can rewrite $\eqref{eq:euler-method}$ as:
+
+$$
+\begin{equation} \label{eq:euler-method-fixed}
+y_{k+1} \approx y_k + h f(t_k, y_k).
+\end{equation}
+$$
+
+<blockquote class="note">
+
+We can use the notation $y_k$ to denote the approximation of $y(t_k)$.
+
+</blockquote>
+
+Suppose we have:
+
+$$
+\begin{equation} \label{eq:euler-method-example}
+\frac{du}{dt} = -k(u - T(t)), \quad T(t) = T_0 + T_1\cos(\omega t), \quad u(0) = 0,
+\end{equation}
+$$
+
+where $k=0.1, \omega = 3, T_0 = 10, T_1 = -20$. We can first find the analytical solution.
+
+<details><summary>Analytical Solution</summary>
+
+We first write $\eqref{eq:euler-method-example}$ in standard format:
+
+$$
+    \frac{du}{dt} = -k (u - T(t)) \implies \frac{du}{dt} = -ku + kT(t) \implies \frac{du}{dt} + ku = kT(t).
+$$
+
+We solve this ODE by the method of integrating factors:
+
+$$
+\begin{align*}
+    \frac{du}{dt} + ku             & = kT(t)                                                                                                                                                                                                                                           \\
+    \mu(t)                         & = e^{\int k dt} = e^{kt}                                                                                                                                                                                                                         \\
+    e^{kt}\frac{du}{dt} + ke^{kt}u & = kT(t)e^{kt} \implies \frac{d}{dt}\left(e^{kt}u\right) = kT(t)e^{kt}                                                                                                                                                                              \\
+    e^{kt}u                        & = k\int T(t)e^{kt} \, dt                                             =k\int \left(T_0 + T_1 \cos(\omega t)\right)e^{kt} \, dt                                                                                                                      \\
+    e^{kt}u                        & = k\int T_0e^{kt} + T_1e^{kt} \cos(\omega t) \, dt = k\left(T_0\int e^{kt} \, dt + T_1\int e^{kt} \cos(\omega t) \, dt                                                                                                                                   \right)\\
+    e^{kt}u                        & = k\left[\frac{T_0}{k}e^{kt} + T_1\left(e^{kt} \frac{1}{\omega}\sin(\omega t) - \int \frac{1}{\omega}\sin(\omega t) ke^{kt} \, dt \right) \right]                                        \\
+    e^{kt}u                        & = k\left[\frac{T_0}{k}e^{kt} + T_1\left(e^{kt} \frac{1}{\omega}\sin(\omega t) - \frac{k}{\omega} \int \sin(\omega t)e^{kt} \, dt \right)   \right]                                                                               \\
+    e^{kt}u                        & = k\left[\frac{T_0}{k}e^{kt} + T_1\left(e^{kt} \frac{1}{\omega}\sin(\omega t) - \frac{k}{\omega} \left( -e^{kt}\frac{1}{\omega}\cos(\omega t) - \int -ke^{kt}\frac{1}{\omega}\cos(\omega t)    \, dt\right) \right)\right]      \\
+    e^{kt}u                        & = k\left[\frac{T_0}{k}e^{kt} + T_1\left(e^{kt} \frac{1}{\omega}\sin(\omega t) - \frac{k}{\omega} \left( -e^{kt}\frac{1}{\omega}\cos(\omega t) - \left(-\frac{k}{\omega}\int e^{kt}\cos(\omega t)    \, dt\right)\right) \right)\right].
+\end{align*}
+$$
+
+To continue solve for the integral, we isolate $\int e^{kt}\cos(\omega t)\, dt$:
+
+$$
+\begin{align*}
+    \int e^{kt}\cos(\omega t)    \, dt                                       & = e^{kt} \frac{1}{\omega}\sin(\omega t) - \frac{k}{\omega} \left( -e^{kt}\frac{1}{\omega}\cos(\omega t) - \left(-\frac{k}{\omega}\int e^{kt}\cos(\omega t)    \, dt\right)\right) \\
+    \int e^{kt}\cos(\omega t)    \, dt                                       & = e^{kt} \frac{1}{\omega}\sin(\omega t) - \frac{k}{\omega} \left( -e^{kt}\frac{1}{\omega}\cos(\omega t) +\frac{k}{\omega}\int e^{kt}\cos(\omega t)    \, dt\right)                \\
+    \int e^{kt}\cos(\omega t)    \, dt                                       & =e^{kt} \frac{1}{\omega}\sin(\omega t) + \frac{k}{\omega^2} e^{kt}\cos(\omega t) -\frac{k^2}{\omega^2}\int e^{kt}\cos(\omega t)    \, dt                                          \\
+    \int e^{kt}\cos(\omega t)\, dt\left( 1 + \frac{k^2}{\omega^2}\right)     & =e^{kt} \frac{1}{\omega}\sin(\omega t) + \frac{k}{\omega^2} e^{kt}\cos(\omega t)                                                                                                  \\
+    \int e^{kt}\cos(\omega t)\, dt\left(\frac{\omega^2+k^2}{\omega^2}\right) & =e^{kt} \frac{1}{\omega}\sin(\omega t) + \frac{k}{\omega^2} e^{kt}\cos(\omega t)                                                                                                  \\
+    \int e^{kt}\cos(\omega t)\, dt                                           & = \left(e^{kt} \frac{1}{\omega}\sin(\omega t) + \frac{k}{\omega^2} e^{kt}\cos(\omega t)\right) \left(\frac{\omega^2}{\omega^2+k^2}\right)                                         \\
+    \int e^{kt}\cos(\omega t)\, dt                                           & = \frac{e^{kt}\omega\sin(\omega t)}{\omega^2+k^2}+ \frac{ke^{kt}\cos(\omega t)}{\omega^2+k^2} + C
+\end{align*}
+$$
+
+Therefore, plugging in this result, we get:
+
+$$
+\begin{align*}
+    e^{kt}u   & = k\left(\frac{T_0}{k}e^{kt} + T_1\left(\frac{e^{kt}\omega\sin(\omega t)}{\omega^2+k^2}+ \frac{ke^{kt}\cos(\omega t)}{\omega^2+k^2} \right)\right) + C \\
+    e^{kt}u &= T_0e^{kt} + \frac{T_1k\omega e^{kt}\sin(\omega t) + T_1k^2 e^{kt}\cos(\omega t)}{\omega^2 + k^2} + C\\
+    u &= Ce^{-kt} + T_0 + \frac{kT_{1}\left(k\cos\left(\omega t\right)+\omega\sin\left(\omega t\right)\right)}{k^{2}+\omega^{2}}.
+\end{align*}
+$$
+
+Solving for the initial condition $u(0) = 0$, we find $C = -\frac{89.9}{9.01} \approx -9.98$, which gives us the solution:
+
+$$
+\begin{equation} \label{eq:analytical-solution-example}
+u = -\frac{89.9}{9.01}e^{-kt} + T_0 + \frac{kT_{1}\left(k\cos\left(\omega t\right)+\omega\sin\left(\omega t\right)\right)}{k^{2}+\omega^{2}}.
+\end{equation}
+$$
+
+```desmos
+
+-\frac{89.9}{9.01}e^{-kx}+T_{0}+\frac{kT_{1}\left(k\cos\left(\omega x\right)+\omega\sin\left(\omega x\right)\right)}{k^{2}+\omega^{2}}
+k=0.1
+\omega=3
+T_{0}=10
+T_{1}=-20
+
+```
+
+</details>
+
+We can then use Euler's method to approximate the solution to the ODE $\eqref{eq:euler-method-example}$. We do this by computing the values of $u$ at each time step $t_k$ with a fixed step size $h = 0.01$ until $t = 20$.
+
+```execute-python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+k = 0.1
+omega = 3
+T0 = 10
+T1 = -20
+h = 0.01
+t_final = 20  # Last t value to be approximated
+
+# Initial condition
+u = 0
+
+# Time steps until t = t_final
+t = np.arange(0, t_final, h)
+
+# List to store u values
+u_values = [u]
+
+# Euler's method loop
+for t_k in t[1:]:
+    u = u + h * (-k * (u - (T0 + T1 * np.cos(omega * t_k))))
+    u_values.append(u)
+
+# Ground truth function
+def ground_truth(t, k, omega, T0, T1):
+    term1 = -(89.9 / 9.01) * np.exp(-k * t)
+    term2 = T0
+    term3 = (k * T1 * (k * np.cos(omega * t) + omega * np.sin(omega * t))) / (k**2 + omega**2)
+    return term1 + term2 + term3
+
+# Calculate ground truth values
+t_fine = np.linspace(0, t_final, 1000)
+ground_truth_values = ground_truth(t_fine, k, omega, T0, T1)
+
+# Plotting the results
+plt.figure(figsize=(8, 6))
+plt.plot(t, u_values, label='Approximate solution (Euler)', color='b', marker='o', markersize=3, linestyle='-')
+plt.plot(t_fine, ground_truth_values, label='Ground truth', color='r', linestyle='--')
+plt.xlabel('Time (t)')
+plt.ylabel('u(t)')
+plt.title('Solution of the ODE using Euler\'s Method and Ground Truth')
+plt.legend()
+plt.grid(True)
+
+get_image(plt)
+```
+
+<blockquote class="problem">
+
+Use Euler's method to approximate $y(2)$ given:
+
+$$
+y' = t - y, \quad y(1) = 0,
+$$
+
+and suppose we have $t_{k+1} = t_k + 0.25$, $h = 0.25$.
+
+</blockquote>
+
+Given that we have $h = 0.25$, we have $T = [t_0, t_1, t_2, t_3, t_4] = [1, 1.25, 1.5, 1.75, 2]$. We have $f(t, y) = t - y$, and we can use $\eqref{eq:euler-method-fixed}$ to approximate $y(2)$:
+
+$$
+\begin{align*}
+\text{Step 1: } & y_1 = y_0 + h f(t_0, y_0) = 0 + 0.25(1 - 0) = 0.25, \\
+\text{Step 2: } & y_2 = y_1 + h f(t_1, y_1) = 0.25 + 0.25(1.25 - 0.25) = 0.5, \\
+\text{Step 3: } & y_3 = y_2 + h f(t_2, y_2) = 0.5 + 0.25(1.5 - 0.5) = 0.75, \\
+\text{Step 4: } & y_4 = y_3 + h f(t_3, y_3) = 0.75 + 0.25(1.75 - 0.75) = 1, \\
+\end{align*}
+$$
+
+Therefore, we have $y_4 = y(t_4) = y(2) \approx 1$.
+
+Since $f(t, y) = t - y$ is a linear ODE, we can solve it analytically to find the exact solution:
+
+$$
+\begin{align*}
+y' &= t - y \\
+y' + y &= t \\
+\mu(t) &= e^{\int 1 \, dt} = e^t \\
+e^ty' + e^ty &= e^tt \\
+\frac{d}{dt}\left(e^ty\right) &= e^tt \\
+\int \frac{d}{dt}\left(e^ty\right) \, dt &= \int e^tt \, dt \\
+e^ty &= e^t(t - 1) + C \\
+y &= t - 1 + Ce^{-t} \\
+y(1) &= 0 = 1 - 1 + C \implies C = 0 \\
+y &= t - 1.
+\end{align*}
 $$

@@ -1,11 +1,11 @@
 # Brandon Yang's Personal Website
 
-This is the source code to Brandon Yang's public academic website: https://brandonyifanyang.com/. Feel free to clone this code for your own personal use.
+This is the source code to Brandon Yang's public academic website: <https://brandonyifanyang.com/>. Feel free to clone this code for your own personal use.
 
 ## Prerequisites
 
--   npm
--   Latex Workshop (optional)
+- npm
+- Latex Workshop (optional)
 
 ## Installation
 
