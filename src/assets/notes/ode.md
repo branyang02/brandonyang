@@ -2057,12 +2057,13 @@ We can solve the ODE by the method of integrating factors (or separation of vari
 $$
 \begin{align}
 \frac{dP}{dt} &= rP\left(1 - \frac{P}{k}\right) = rP - \frac{rP^2}{k} \\
-\frac{1}{P^2}\frac{dP}{dt} &= \frac{1}{P}r - \frac{1}{k} \implies \frac{1}{P^2}\frac{dP}{dt} - \frac{1}{P}r =  - \frac{1}{k} \\
+\frac{1}{P^2}\frac{dP}{dt} &= \frac{1}{P}r - \frac{r}{k} \implies \frac{1}{P^2}\frac{dP}{dt} - \frac{1}{P}r =  - \frac{r}{k} \\
 u &= \frac{1}{P} \implies u' = -\frac{1}{P^2}P'\implies P' = -P^2u' \\
-\frac{1}{P^2}\left(-P^2u'\right) -ur &= -\frac{1}{k}  \implies -u' -ur = -\frac{1}{k} \implies u' + ur = \frac{1}{k} \\
-\mu(t) &= e^{\int r \, dt} = e^{rt} \implies \frac{d}{dt}\left(e^{rt}u\right) = \frac{1}{k}e^{rt} \\
-\int \frac{d}{dt}\left(e^{rt}u\right) \, dt &= \int \frac{1}{k}e^{rt} \, dt \implies e^{rt}u = \frac{1}{rk}e^{rt} + C \\
-u &= \frac{1}{rk} + Ce^{-rt} \implies P = \frac{1}{u} = \frac{rk}{1 + Ce^{-rt}}.
+\frac{1}{P^2}\left(-P^2u'\right) -ur &= -\frac{r}{k}  \implies -u' -ur = -\frac{r}{k} \implies u' + ur = \frac{r}{k} \\
+\mu(t) &= e^{\int r \, dt} = e^{rt} \implies \frac{d}{dt}\left(e^{rt}u\right) = \frac{r}{k}e^{rt} \\
+\int \frac{d}{dt}\left(e^{rt}u\right) \, dt &= \int \frac{r}{k}e^{rt} \, dt \implies e^{rt}u = \frac{r}{k} \int e^{rt} \, dt = \frac{e^{rt}}{k} + C \\
+e^{rt}u &= \frac{e^{rt}}{k} + C \implies u = \frac{1}{k} + Ce^{-rt} \\
+u &= \frac{1}{P} = \frac{1}{k} + Ce^{-rt} \implies P = \frac{1}{\frac{1}{k} + Ce^{-rt}} = \frac{k}{1 + kCe^{-rt}}.
 \end{align}
 $$
 
@@ -2070,8 +2071,7 @@ Suppose we have initial condition $P(0) = P_0$, we can solve for $C$:
 
 $$
 \begin{align}
-P_0 &= \frac{rk}{1 + Ce^{-r(0)}} = \frac{rk}{1 + C} \\
-P_0(1 + C) &= rk \implies C = \frac{rk}{P_0} - 1.
+P_0 &= \frac{1}{\frac{1}{k} + Ce^{-r(0)}} \implies \frac{1}{P_0} = \frac{1}{k} + C \implies C = \frac{1}{P_0} - \frac{1}{k} = \frac{k - P_0}{kP_0}.
 \end{align}
 $$
 
@@ -2079,7 +2079,7 @@ Therefore, the solution to the I.V.P. is:
 
 $$
 \begin{align}
-P(t) &= \frac{rk}{1 + \left(\frac{rk}{P_0} - 1\right)e^{-rt}} = \frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)e^{-rt}}.
+P(t) = \frac{k}{1 + \frac{k - P_0}{P_0}e^{-rt}} = \frac{P_{0}k}{P_{0}+\left(k-P_{0}\right)e^{-rt}}.
 \end{align}
 $$
 
