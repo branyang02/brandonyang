@@ -2092,6 +2092,56 @@ $$
 
 </blockquote>
 
+This can be solved using optimization techniques such as the **Lagrange duality** and the **Sequential Minimal Optimization (SMO)** algorithm.
+
+<details><summary>Hard-Margin SVM Optimization</summary>
+
+To solve the Hard-Margin SVM optimization problem $\eqref{eq:svm-hard-margin}$, we can use the **Lagrange duality** to convert the constrained optimization problem into an unconstrained optimization problem. The Lagrangian function for the Hard-Margin SVM problem is defined as:
+
+$$
+\begin{equation} \label{eq:svm-lagrangian}
+\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) = \frac{1}{2} \left\| \mathbf{w} \right\|^2 - \sum_{i=1}^{m} \alpha^{(i)} \left[ y^{(i)} (\mathbf{w}^T \mathbf{x}^{(i)} + b) - 1 \right],
+\end{equation}
+$$
+
+where $\boldsymbol{\alpha} = \begin{bmatrix}
+\alpha^{(1)} \\
+\alpha^{(2)} \\
+\vdots \\
+\alpha^{(m)}
+\end{bmatrix}$ is the vector of Lagrange multipliers. The Lagrange dual function is then defined as:
+
+$$
+\begin{equation} \label{eq:svm-lagrange-dual}
+\mathcal{D}(\boldsymbol{\alpha}) = \underset{\mathbf{w}, b}{\text{min}} \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}).
+\end{equation}
+$$
+
+The dual optimization problem is then:
+
+$$
+\begin{equation} \label{eq:svm-hard-margin-dual}
+\begin{aligned}
+& \underset{\boldsymbol{\alpha}}{\text{maximize}}
+& & \mathcal{D}(\boldsymbol{\alpha}) = \underset{\mathbf{w}, b}{\text{min}} \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) \\
+& \text{subject to}
+& & \alpha^{(i)} \geq 0, \quad \text{for } i = 1, 2, \dots, m.
+\end{aligned}
+\end{equation}
+$$
+
+The dual optimization problem $\eqref{eq:svm-hard-margin-dual}$ can be solved using optimization techniques such as the **Sequential Minimal Optimization (SMO)** algorithm.
+
+</details>
+
+**Soft-Margin SVM (Non-Linearly Separable Data)**
+
+Coming soon...
+
+##### Non-Linear SVM
+
+Coming soon...
+
 ## Unsupervised Learning
 
 <blockquote class="definition">
@@ -2306,6 +2356,8 @@ get_image(plt)
 ```
 
 ## Reinforcement Learning
+
+Coming soon...
 
 ## Citation
 
