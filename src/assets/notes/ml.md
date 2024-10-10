@@ -2094,7 +2094,216 @@ $$
 
 ## Unsupervised Learning
 
+<blockquote class="definition">
+
+Unsupervised learning is a category of machine learning that uses **unlabeled** data to discover patterns or relationships within the data without explicit supervision.
+
+</blockquote>
+
+In contrast to supervised learning, where the model predicts a target feature, unsupervised learning focuses on identifying hidden structures in the data. We can narrow down the components of unsupervised learning:
+
+- **Model**: In unsupervised learning, the model does not predict a target value but instead aims to find patterns or groupings within the input features. There are two main types of models:
+  - **Clustering**: Models that group data points into clusters based on similarity.
+  - **Dimensionality Reduction**: Models that reduce the number of input features while preserving the essential structure of the data.
+
+  In general, the model can be represented as:
+
+  $$
+  \begin{equation} \label{eq:model-unsupervised}
+  \mathbf{z} = f_{\theta}(\mathbf{x}),
+  \end{equation}
+  $$
+
+  where $\mathbf{z}$ is the _learned representation_ or _cluster assignment_, $\mathbf{x}$ is the input feature vector, and $\theta$ is the parameter vector of the model.
+
+- **Objective**: In unsupervised learning, the objective is to identify a structure or representation of the data that captures the underlying patterns. Since there is no true label $\mathbf{y}$, the objective is to minimize a different type of _loss function_:
+
+  $$
+  \begin{equation} \label{eq:loss-unsupervised}
+  L = \mathcal{L}(\mathbf{z}, \mathbf{x}),
+  \end{equation}
+  $$
+
+  where $\mathbf{z}$ represents the model's output (e.g., cluster assignments or reduced features) and $\mathbf{x}$ is the original input data.
+
+- **Optimization**: Similar to supervised learning, the optimization step aims to find the parameter vector $\theta$ that minimizes the unsupervised loss function described in $\eqref{eq:loss-unsupervised}$.
+
 ### Clustering
+
+Clustering is a type of unsupervised learning that groups data points into clusters based on their similarity. The goal of clustering is to identify natural groupings in the data without any prior knowledge of the true labels. Clustering algorithms can help discover patterns, structure, or relationships within the data.
+
+#### K-Means Clustering
+
+K-Means clustering is an unsupervised learning algorithm that partitions the data into **K clusters**, where each data point belongs to the cluster with the nearest centroid. It is commonly used for clustering tasks to find patterns or groupings in data without labeled outcomes.
+
+**Data Representation**
+
+In K-Means clustering, we have a set of _observations_ $\mathbf{X} = \begin{bmatrix}
+x_1^{(1)} & x_2^{(1)} & \cdots & x_n^{(1)} \\
+x_1^{(2)} & x_2^{(2)} & \cdots & x_n^{(2)} \\
+\vdots & \vdots & \vdots & \vdots \\
+x_1^{(m)} & x_2^{(m)} & \cdots & x_n^{(m)}
+\end{bmatrix}$, where each row represents an observation and each column represents a feature. Unlike supervised learning, there are no target labels $\mathbf{y}$. The goal is to partition the observations into $K$ clusters based on their feature values.
+
+**Model**
+
+The K-Means model assigns each observation to one of $K$ clusters. Each cluster is defined by a **centroid** $\mu_k \in \mathbb{R}^n$, which is the mean feature vector of all observations assigned to that cluster. To assign an observation $\mathbf{x}^{(i)}$ to a cluster, we find the nearest centroid based on some distance metric:
+
+$$
+\begin{equation} \label{eq:kmeans-model}
+c^{(i)} = \arg\min_k D(\mathbf{x}^{(i)}, \mu_k),
+\end{equation}
+$$
+
+where $c^{(i)}$ is the cluster assignment for observation $i$, $\mathbf{x}^{(i)}$ is the feature vector of the observation, $\mu_k$ is the centroid of cluster $k$, and $D(\cdot, \cdot)$ is the distance metric.
+
+**Distance Metric**
+
+We represent the distance function as $D: \mathbb{R}^n \times \mathbb{R}^n \rightarrow \mathbb{R}$, which measures the _distance_ between two vectors. There are multiple ways to formulate the distance metrid.
+
+**Euclidean Distance**:
+
+$$
+\begin{equation} \label{eq:euclidean-distance}
+D(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|_2 = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}.
+\end{equation}
+$$
+
+**Manhattan Distance**:
+
+$$
+\begin{equation} \label{eq:manhattan-distance}
+D(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|_1 = \sum_{i=1}^{n} |x_i - y_i|.
+\end{equation}
+$$
+
+**Minkowski Distance**:
+
+$$
+\begin{equation} \label{eq:minkowski-distance}
+D(\mathbf{x}, \mathbf{y}) = \left( \sum_{i=1}^{n} |x_i - y_i|^p \right)^{1/p}.
+\end{equation}
+$$
+
+Note that the Euclidean distance is the $L_2$ norm, the Manhattan distance is the $L_1$ norm, and the Minkowski distance is a generalization of both metrics.
+
+**Cosine Similarity**:
+
+$$
+\begin{equation} \label{eq:cosine-similarity}
+D(\mathbf{x}, \mathbf{y}) = 1 - \frac{\mathbf{x} \cdot \mathbf{y}}{\|\mathbf{x}\|_2 \|\mathbf{y}\|_2} = 1 - \frac{\sum_{i=1}^{n} x_i y_i}{\sqrt{\sum_{i=1}^{n} x_i^2} \sqrt{\sum_{i=1}^{n} y_i^2}}.
+\end{equation}
+$$
+
+The choice of distance metric can affect the clustering results, as different metrics capture different notions of similarity between data points.
+
+**Objective**
+
+The objective of K-Means clustering is to minimize the _within-cluster sum of squares_ (WCSS), also known as the **inertia**. The WCSS measures the distance between each data point and its assigned cluster centroid:
+
+<blockquote class="equation">
+
+**K-Means Loss Function (Within-Cluster Sum of Squares)**:
+
+$$
+\begin{equation} \label{eq:kmeans-loss}
+L_{\text{WCSS}} = \mathcal{L}(C, \mu) = \sum_{k=1}^{K} \sum_{\mathbf{x}^{(i)} \in C_k} D(\mathbf{x}^{(i)}, \mu_k)^2,
+\end{equation}
+$$
+
+</blockquote>
+
+where:
+
+- $C = \{C_1, C_2, \dots, C_K\}$ is the set of clusters, and $C_k = \{\mathbf{x}^{(i)} \mid c^{(i)} = k\}$ is the set of data points assigned to cluster $k$.
+- $\mu = \{\mu_1, \mu_2, \dots, \mu_K\}$ is the set of cluster centroids.
+- $D(\mathbf{x}^{(i)}, \mu_k)$ is the distance between observation $\mathbf{x}^{(i)}$ and centroid $\mu_k$.
+
+**Optimization**
+
+The K-Means algorithm iteratively optimizes the cluster assignments and centroids using the following steps:
+
+1. **Initialization**: Randomly initialize the cluster centroids $\mu = \{\mu_1, \mu_2, \dots, \mu_K\}$ by selecting $K$ points from the dataset or using a method like [K-Means++](https://en.wikipedia.org/wiki/K-means%2B%2B).
+
+2. **Cluster Assignment**: For each observation $\mathbf{x}^{(i)}$, assign it to the cluster with the nearest centroid using $\eqref{eq:kmeans-model}$.
+
+3. **Centroid Update**: After all data points are assigned to clusters, update each cluster centroid $\mu_k$ by taking the mean of all data points assigned to that cluster:
+
+   $$
+   \begin{equation} \label{eq:kmeans-update}
+   \mu_k = \frac{1}{|C_k|} \sum_{\mathbf{x}^{(i)} \in C_k} \mathbf{x}^{(i)},
+    \end{equation}
+   $$
+
+    where $|C_k|$ is the number of data points in cluster $k$.
+
+4. **Convergence Check**: Repeat steps 2 and 3 until the centroids no longer change (or change by less than a small threshold) or a maximum number of iterations is reached.
+
+The K-Means optimization can be summarized as:
+
+- The **cluster assignment** step minimizes the distance between data points and their nearest centroids.
+- The **centroid update** step recalculates the centroids as the mean of the assigned points.
+- The algorithm converges when the cluster assignments stabilize or the centroids no longer move significantly.
+
+<details><summary>K-Means Clustering Example</summary>
+
+In this example, we generate random data points in a 2D plane and apply K-Means clustering to group them into 3 clusters. We initialize the centroids randomly and use the algorithm to iteratively update the cluster assignments and centroids.
+
+```execute-python
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate random data points in 2D (manually)
+np.random.seed(42)
+m = 300  # Number of examples
+X = np.random.randn(m, 2) * 0.6  # Adjust cluster spread
+X[:100] += [2, 2]  # Shift cluster 1
+X[100:200] += [-2, -2]  # Shift cluster 2
+X[200:] += [2, -2]  # Shift cluster 3
+
+# Number of clusters
+K = 3
+
+# Initialize centroids randomly from the data points
+centroids = X[np.random.choice(X.shape[0], K, replace=False)]
+
+# Function to compute the distance between points and centroids
+def compute_distances(X, centroids):
+    return np.linalg.norm(X[:, np.newaxis] - centroids, axis=2)
+
+# Function to assign clusters
+def assign_clusters(X, centroids):
+    distances = compute_distances(X, centroids)
+    return np.argmin(distances, axis=1)
+
+# Function to update centroids
+def update_centroids(X, labels, K):
+    return np.array([X[labels == k].mean(axis=0) for k in range(K)])
+
+# Run K-Means algorithm
+max_iterations = 100
+for i in range(max_iterations):
+    labels = assign_clusters(X, centroids)
+    new_centroids = update_centroids(X, labels, K)
+    
+    # If centroids do not change, stop the algorithm
+    if np.all(centroids == new_centroids):
+        break
+    
+    centroids = new_centroids
+
+# Plotting the results
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='viridis')
+plt.scatter(centroids[:, 0], centroids[:, 1], s=200, c='red', label='Centroids')
+plt.title("K-Means Clustering")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+
+get_image(plt)
+
+```
 
 ## Reinforcement Learning
 
