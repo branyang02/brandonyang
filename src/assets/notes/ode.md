@@ -2159,6 +2159,31 @@ which confirms that the solution exists in the interval $t \in (0, \infty)$.
 
 <blockquote class="problem">
 
+Without solving, find the domain where the solution is certain to exist:
+
+$$
+y'=(t^2+8)y, \quad y(0) = 1
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We rewrite the ODE in the form $y' + p(t)y = g(t)$:
+
+$$
+\begin{align}
+y'&=(t^2+8)y \\
+y' - (t^2+8)y &= 0.
+\end{align}
+$$
+
+We find that $p(t) = -(t^2+8)$ and $g(t) = 0$. We can see that $p(t)$ is continuous in $t$ and $y$ in the domain $R = \{(t, y) | |t - 0| \leq a, |y - 1| \leq b\}$. We can also see that $p(t)$ is Lipschitz continuous in $y$ in $R$. Therefore, the solution is certain to exist in some interval $|t - 0| \leq h$.
+
+</blockquote>
+
+<blockquote class="problem">
+
 Consider the I.V.P.:
 
 $$
@@ -2275,31 +2300,6 @@ y=1+\sqrt{x\left(x^2+2x+2\right)},\:y=1-\sqrt{x\left(x^2+2x+2\right)}.
 $$
 
 <details><summary>Existence and Uniqueness Problems</summary>
-
-<blockquote class="problem">
-
-Without solving, find the domain where the solution is certain to exist:
-
-$$
-y^{-1}y = t^2+8, \quad y(0) = 1
-$$
-
-</blockquote>
-
-<blockquote class="proof">
-
-We rewrite the ODE in the form $y' + p(t)y = g(t)$:
-
-$$
-\begin{align}
-y^{-1}y &= t^2+8 \\
-y' - (t^2+8)y &= 0.
-\end{align}
-$$
-
-We find that $p(t) = -(t^2+8)$ and $g(t) = 0$. We can see that $p(t)$ is continuous in $t$ and $y$ in the domain $R = \{(t, y) | |t - 0| \leq a, |y - 1| \leq b\}$. We can also see that $p(t)$ is Lipschitz continuous in $y$ in $R$. Therefore, the solution is certain to exist in some interval $|t - 0| \leq h$.
-
-</blockquote>
 
 <blockquote class="problem">
 
@@ -2460,12 +2460,12 @@ N_x(x, y) &= \frac{\partial N}{\partial x} = \cos x + 2x e^y.
 \end{align}
 $$
 
-Therefore, we have shown that $\eqref{eq:exact-ode-example}$ is an exact differential equation. Next, we solve for $\psi(x, y)$:
+Therefore, we have shown that $\eqref{eq:exact-ode-example}$ is an exact differential equation. Next, we solve for $\psi(x, y)$. First, we know that:
 
 $$
 \begin{align}
-\psi_x(x, y) &= \frac{\partial \psi}{\partial x} = y\cos x + 2xe^y, \\
-\psi_y(x, y) &= \frac{\partial \psi}{\partial y} = \sin x + x^2 e^y - 1. \label{eq:exact-ode-psi-original}
+\psi_x(x, y) &= M(x, y) = y\cos x + 2xe^y, \\
+\psi_y(x, y) &= N(x, y) = \sin x + x^2 e^y - 1. \label{eq:exact-ode-psi-original}
 \end{align}
 $$
 
@@ -2477,11 +2477,12 @@ $$
 \end{align}
 $$
 
-Next, we compute $\psi_y$ from $\eqref{eq:exact-ode-psi}$ and setting $\psi_y = N$:
+Next, we compute $\psi_y$ from $\eqref{eq:exact-ode-psi}$ and compare it with $\psi_y = N$:
 
 $$
 \begin{align}
-\psi_y(x, y) = \underbrace{y\cos x + 2xe^y + h'(y)}_{\text{computed from }\eqref{eq:exact-ode-psi}} = \underbrace{\sin x + x^2 e^y - 1}_{\eqref{eq:exact-ode-psi-original}}.
+\psi_y(x, y) &= \frac{\partial}{\partial y} \underbrace{\left(  y\sin x + x^2 e^y + h(y) \right)}_{\eqref{eq:exact-ode-psi}}  =  \underbrace{\sin x + x^2 e^y - 1}_{\eqref{eq:exact-ode-psi-original}}\\
+&= \sin(x) + x^2 e^y + h'(y) = \sin x + x^2 e^y - 1.
 \end{align}
 $$
 
@@ -2689,7 +2690,7 @@ $$
 Therefore, the solution to the ODE is:
 
 $$
-y + y\cos \left(y\right)-\sin \left(y\right) = c,
+xy + y\cos \left(y\right)-\sin \left(y\right) = c,
 $$
 
 where $c$ is the constant of integration.
