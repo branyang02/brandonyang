@@ -1846,7 +1846,7 @@ $$
 
 <blockquote class="problem">
 
-A recent college graduate borrows 150K at an interest 6% to puchase a condo. The buyer expects to make payments at a rate $800 + 10t$ per month.
+A recent college graduate borrows 150K at an interest 6% to purchase a condo. The buyer expects to make payments at a rate $800 + 10t$ per month.
 
 - When will the load be paid off?
 - How large a load could be paid off in exactly 20 years?
@@ -2202,7 +2202,7 @@ $$
 y' + \frac{1}{t}y = e^t.
 $$
 
-We find that $p(t) = \frac{1}{t}$ and $g(t) = e^t$. We observe that $p(t)$ is continuous in the domain $t \in (-\infty, 0) \cup (0, \infty)$ and $g(t)$ is continuous in the domain $t \in (-\infty, \infty)$. Given that the initial condiiton $t = 5$ is in the domain $t \in (0, \infty)$, we can conclude that the solution is certain to exist in the interval $t \in (0, \infty)$.
+We find that $p(t) = \frac{1}{t}$ and $g(t) = e^t$. We observe that $p(t)$ is continuous in the domain $t \in (-\infty, 0) \cup (0, \infty)$ and $g(t)$ is continuous in the domain $t \in (-\infty, \infty)$. Given that the initial condition $t = 5$ is in the domain $t \in (0, \infty)$, we can conclude that the solution is certain to exist in the interval $t \in (0, \infty)$.
 
 We can then solve the ODE and find the domain of the solution.
 
