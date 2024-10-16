@@ -2697,7 +2697,7 @@ where $c$ is the constant of integration.
 
 </details>
 
-### Numerical Approximations: Euler’s Method
+### Numerical Approximations: Euler's Method
 
 <span class="subtitle">
 
