@@ -2910,3 +2910,32 @@ $$
 Therefore, we have $y(2) = 2 - 1 = 1$.
 
 </details>
+
+## Second-Order Differential Equations
+
+<blockquote class="problem">
+
+Is there a solution to the differential equation $y'' + 6y' = 32$ in which $y'$ is a constant function $k$?
+
+</blockquote>
+
+Let $v = y'$, then $v' = y''$. We can rewrite the ODE as:
+
+$$
+v' + 6v = 32.
+$$
+
+We can solve this ODE by integrating factors:
+
+$$
+\begin{align*}
+\mu(t) &= e^{\int 6 \, dt} = e^{6t} \\
+e^{6t}v' + 6e^{6t}v &= 32e^{6t} \\
+\frac{d}{dt}\left(e^{6t}v\right) &= 32e^{6t} \\
+\int \frac{d}{dt}\left(e^{6t}v\right) \, dt &= \int 32e^{6t} \, dt \\
+e^{6t}v &= 32\int e^{6t} \, dt = 32\left(\frac{e^{6t}}{6} + C\right) \\
+v &= \frac{32}{6} + \frac{32C}{e^{6t}} = \frac{16}{3} + \frac{C}{e^{6t}}. \tag{\text{reduced to $C$}}
+\end{align*}
+$$
+
+At $C = 0$, we have $v = \frac{16}{3}$. Therefore, $y' = \frac{16}{3}$ is a constant function $k$.
