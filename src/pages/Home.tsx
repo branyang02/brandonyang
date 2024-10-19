@@ -43,6 +43,8 @@ const Home = () => {
     `;
 
     const newsParagraphText = `
+    10/2024: Presented my latest work on [SkillVLA](/skillvla.pdf) at [UVA LLM Workshop 2024](https://uvanlp.org/llm-workshop-2024/)!
+
     05/2024: Started working with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park!
 
     01/2024: Started working as a TA for CS 3120: Theory of Computation at UVA!

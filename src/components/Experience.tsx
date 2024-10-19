@@ -24,10 +24,6 @@ const Experience = () => {
             title: "[Theory of Computation](https://markfloryan.github.io/dmt2/readme.html) (CS 3120) Teaching Assistant",
         },
         {
-            date: "Oct 2023 - Present",
-            title: "Co-founder at Voy",
-        },
-        {
             date: "May 2020 - Present",
             title: "Research Assistant at UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/)",
         },
