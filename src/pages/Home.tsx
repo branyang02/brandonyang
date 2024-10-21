@@ -43,7 +43,7 @@ const Home = () => {
     `;
 
     const newsParagraphText = `
-    10/2024: Presented my latest work on [SkillVLA](/skillvla.pdf) at [UVA LLM Workshop 2024](https://uvanlp.org/llm-workshop-2024/)!
+    10/2024: Presented my latest work on [SkillVLA](/skillvla.pdf) at [UVA LLM Workshop 2024](https://uvanlp.org/llm-workshop-2024/) (Received Audience's Choice Award)!
 
     05/2024: Started working with [Jia-Bin Huang](https://jbhuang0604.github.io/) at University of Maryland, College Park!
 
