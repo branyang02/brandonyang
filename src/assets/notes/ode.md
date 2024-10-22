@@ -2913,29 +2913,254 @@ Therefore, we have $y(2) = 2 - 1 = 1$.
 
 ## Second-Order Differential Equations
 
-<blockquote class="problem">
+<div class="subtitle">
 
-Is there a solution to the differential equation $y'' + 6y' = 32$ in which $y'$ is a constant function $k$?
+Chapter 3 in BOYCE, DIPRIMA.
+
+</div>
+
+Second order differential equations are ODEs of the form:
+
+<blockquote class="definition">
+
+**Second Order ODEs General Form**:
+
+$$
+\begin{equation} \label{eq:second-order-ode}
+\frac{d^2}{dt^2} = f \left(t, y, \frac{dy}{dt} \right)
+\end{equation}
+$$
 
 </blockquote>
 
-Let $v = y'$, then $v' = y''$. We can rewrite the ODE as:
+where $f$ is some given function.
+
+### Homogeneous Differential Equations with Constant Coefficients
+
+<div class="subtitle">
+
+Section 3.1 in BOYCE, DIPRIMA.
+
+</div>
+
+We only deal with _linear_ second-order ODEs with constant coefficients, where we have
 
 $$
-v' + 6v = 32.
+f\left(t, y, \frac{d y}{d t}\right)=g(t)-p(t) \frac{d y}{d t}-q(t) y,
 $$
 
-We can solve this ODE by integrating factors:
+where $f$ is linear in $y$ and $\frac{d y}{d t}$.
+
+Expanding on $\eqref{eq:second-order-ode}$, a second-order linear differential equation is said to be **homogeneous** if it has the form
+
+$$
+P(t) y^{\prime \prime}+Q(t) y^{\prime}+R(t) y=0,
+$$
+
+where $P(t), Q(t), R(t)$ are continuous functions of $t$. Otherwise, the ODE is **non-homogeneous**.
+
+In this chapter, we assume $P(t), Q(t), R(t)$ are constants. Therefore, we can rewrite the homogeneous second order ODE as:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous}
+a y^{\prime \prime}+b y^{\prime}+c y=0,
+\end{equation}
+$$
+
+where $a, b, c$ are constants. As we are dealing with second order ODEs, we are often given a pair of initial conditions $y\left(t_0\right)=y_0, \, y^{\prime}\left(t_0\right)=y_0^{\prime}$ for the I.V.P.
+
+To solve $\eqref{eq:second-order-ode-homogeneous}$, we assume the solution is in the form $y(t) = e^{rt}$, where $r$ is the _parameter to be determined_, then it follows that $y^{\prime} = re^{rt}$ and $y^{\prime \prime} = r^2 e^{rt}$. Substituting these into $\eqref{eq:second-order-ode-homogeneous}$, we get
+
+$$
+\left(a r^2+b r+c\right) e^{r t}=0.
+$$
+
+Since $e^{r t} \neq 0$, we arrive at the **characteristic equation**:
+
+$$
+\begin{equation} \label{eq:characteristic-equation}
+a r^2+b r+c=0.
+\end{equation}
+$$
+
+If $r$ is a root of the polynomial equation $\eqref{eq:characteristic-equation}$, then $y = e^{rt}$ is a solution to $\eqref{eq:second-order-ode-homogeneous}$. We can have three cases for the roots of $\eqref{eq:characteristic-equation}$:
+
+1. **Distinct Real Roots**: If $b^2 - 4ac > 0$, then the roots are real and distinct, $r_1, r_2$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous-solution-distinct}
+y(t) = c_1 e^{r_1 t} + c_2 e^{r_2 t},
+\end{equation}
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+2. **Repeated Real Roots**: If $b^2 - 4ac = 0$, then the roots are real and repeated, $r_1 = r_2 = r$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous-solution-repeated}
+y(t) = c_1 e^{rt} + c_2 t e^{rt},
+\end{equation}
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+3. **Complex Roots**: If $b^2 - 4ac < 0$, then the roots are complex, $r = \alpha \pm \beta i$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous-solution-complex}
+y(t) = e^{\alpha t} \left( c_1 \cos(\beta t) + c_2 \sin(\beta t) \right),
+\end{equation}
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+Case 2 and 3 are further explained in [Repeated Roots](#repeated-roots) and [Complex Roots](#complex-roots), respectively.
+
+In Case 1 with distinct real roots, expanding on $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we can derive $y'$ and $y''$:
+
+$$
+\begin{align}
+y(t) &= c_1 e^{r_1 t} + c_2 e^{r_2 t}, \\
+y^{\prime}(t) &= c_1 r_1 e^{r_1 t} + c_2 r_2 e^{r_2 t}, \label{eq:second-order-ode-homogeneous-solution-distinct-derivative} \\
+y^{\prime \prime}(t) &= c_1 r_1^2 e^{r_1 t} + c_2 r_2^2 e^{r_2 t} \label{eq:second-order-ode-homogeneous-solution-distinct-second-derivative}.
+\end{align}
+$$
+
+Suppose we want to find a solution that satisfy the initial condition $y\left(t_0\right)=y_0, \, y^{\prime}\left(t_0\right)=y_0^{\prime}$, we can substitute $t = t_0, y = y_0$ in $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$ to obtain
+
+$$
+\begin{align}
+y(t_0) &= c_1 e^{r_1 t_0} + c_2 e^{r_2 t_0} = y_0 \label{eq:second-order-ode-homogeneous-solution-distinct-initial}, \\
+\end{align}
+$$
+
+We can then substitute $t = t_0, y' = y_0'$ in $\eqref{eq:second-order-ode-homogeneous-solution-distinct-derivative}$ to obtain
+
+$$
+\begin{align}
+y^{\prime}(t_0) &= c_1 r_1 e^{r_1 t_0} + c_2 r_2 e^{r_2 t_0} = y_0' \label{eq:second-order-ode-homogeneous-solution-distinct-initial-derivative}.
+\end{align}
+$$
+
+On solving $\eqref{eq:second-order-ode-homogeneous-solution-distinct-initial}$ and $\eqref{eq:second-order-ode-homogeneous-solution-distinct-initial-derivative}$, we can find $c_1, c_2$:
+
+$$
+c_1=\frac{y_0^{\prime}-y_0 r_2}{r_1-r_2} e^{-r_1 t_0}, \quad c_2=\frac{y_0 r_1-y_0^{\prime}}{r_1-r_2} e^{-r_2 t_0}.
+$$
+
+In the case of distinct real roots, we have $r_1 \neq r_2$, therefore we always have real values for $c_1, c_2$.
+
+Substituting $c_1, c_2$ back into $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we find the solution to the I.V.P:
+
+$$
+\begin{align}
+y(t) = \frac{y_0^{\prime}-y_0 r_2}{r_1-r_2} e^{r_1(t-t_0)} + \frac{y_0 r_1-y_0^{\prime}}{r_1-r_2} e^{r_2(t-t_0)}. \label{eq:second-order-ode-homogeneous-solution-distinct-ivp}
+\end{align}
+$$
+
+<details><summary>Distinct Real Roots Examples</summary>
+
+<blockquote class="problem">
+
+Find the general solution of
+
+$$
+y^{\prime \prime}+5 y^{\prime}+6 y=0.
+$$
+
+</blockquote>
+
+Following the form of $\eqref{eq:second-order-ode-homogeneous}$, we have $a = 1, b = 5, c = 6$. We assume solution $y(t) = e^{rt}$, then we have the characteristic equation following $\eqref{eq:characteristic-equation}$:
+
+$$
+r^2 + 5r + 6 = 0 \implies (r + 2)(r + 3) = 0 \implies r_1 = -2, r_2 = -3.
+$$
+
+Therefore, following the general solution of Case 1 in $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we have the solution:
+
+$$
+y(t) = c_1 e^{-2t} + c_2 e^{-3t}.
+$$
+
+<blockquote class="problem">
+
+Find the solution to the I.V.P.:
+
+$$
+y^{\prime \prime}+5 y^{\prime}+6 y=0, \quad y(0)=2, \quad y^{\prime}(0)=3 .
+$$
+
+</blockquote>
+
+From the previous problem, we can derive the derivative of $y(t)$:
 
 $$
 \begin{align*}
-\mu(t) &= e^{\int 6 \, dt} = e^{6t} \\
-e^{6t}v' + 6e^{6t}v &= 32e^{6t} \\
-\frac{d}{dt}\left(e^{6t}v\right) &= 32e^{6t} \\
-\int \frac{d}{dt}\left(e^{6t}v\right) \, dt &= \int 32e^{6t} \, dt \\
-e^{6t}v &= 32\int e^{6t} \, dt = 32\left(\frac{e^{6t}}{6} + C\right) \\
-v &= \frac{32}{6} + \frac{32C}{e^{6t}} = \frac{16}{3} + \frac{C}{e^{6t}}. \tag{\text{reduced to $C$}}
+y(t) &= c_1 e^{-2t} + c_2 e^{-3t} \\
+y'(t) &= -2c_1 e^{-2t} - 3c_2 e^{-3t}.
 \end{align*}
 $$
 
-At $C = 0$, we have $v = \frac{16}{3}$. Therefore, $y' = \frac{16}{3}$ is a constant function $k$.
+We can then substitute $t = 0, y = 2$ in $y(t)$ and $t = 0, y' = 3$ in $y'(t)$:
+
+$$
+\begin{cases}
+2 &= c_1 + c_2, \\
+3 &= -2c_1 - 3c_2.
+\end{cases} \implies c_1 = 9, c_2 = -7.
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+y(t) = 9e^{-2t} - 7e^{-3t}.
+$$
+
+<blockquote class="problem">
+
+Find the solution of the initial value problem:
+
+$$
+4 y^{\prime \prime}-8 y^{\prime}+3 y=0, \quad y(0)=2, \quad y^{\prime}(0)=\frac{1}{2}
+$$
+
+</blockquote>
+
+Following the form of $\eqref{eq:second-order-ode-homogeneous}$, we have $a = 4, b = -8, c = 3$. We assume solution $y(t) = e^{rt}$, then we have the characteristic equation following $\eqref{eq:characteristic-equation}$:
+
+$$
+4r^2 - 8r + 3 = 0 \implies (2r - 1)(2r - 3) = 0 \implies r_1 = \frac{1}{2}, r_2 = \frac{3}{2}.
+$$
+
+Therefore, following the general solution of Case 1 in $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we have the solution:
+
+$$
+y(t) = c_1 e^{\frac{1}{2}t} + c_2 e^{\frac{3}{2}t}.
+$$
+
+We can then derive the derivative of $y(t)$:
+
+$$
+\begin{align*}
+y(t) &= c_1 e^{\frac{1}{2}t} + c_2 e^{\frac{3}{2}t}, \\
+y'(t) &= \frac{1}{2}c_1 e^{\frac{1}{2}t} + \frac{3}{2}c_2 e^{\frac{3}{2}t}.
+\end{align*}
+$$
+
+We can then substitute $t = 0, y = 2$ in $y(t)$ and $t = 0, y' = \frac{1}{2}$ in $y'(t)$:
+
+$$
+\begin{cases}
+2 &= c_1 + c_2, \\
+\frac{1}{2} &= \frac{1}{2}c_1 + \frac{3}{2}c_2.
+\end{cases} \implies c_1 = \frac{5}{2}, c_2 = -\frac{1}{2}.
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+y(t) = \frac{5}{2}e^{\frac{1}{2}t} - \frac{1}{2}e^{\frac{3}{2}t}.
+$$
+
+</details>
