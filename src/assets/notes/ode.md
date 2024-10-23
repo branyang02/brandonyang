@@ -3432,4 +3432,6 @@ y_2(t) &= e^{-\frac{1}{2} t} \cos(3 t) - i e^{-\frac{1}{2} t} \sin(3 t).
 \end{align*}
 $$
 
+<!-- TODO Continue to solve given initial conditions. -->
+
 </details>
