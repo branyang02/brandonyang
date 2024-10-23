@@ -8,14 +8,58 @@ Fall 2024 | Author: Brandon Y. Yang
 
 ## Background
 
-<details><summary>Trig. Identities</summary>
+<details><summary>Common Formulas</summary>
 
-### Trigonometric Identities
+### Formulas
+
+#### Common Integrals
+
+$$
+\begin{align}
+    \int a \, dx &= ax + C \label{eq:constant}\\
+    \int x^n \, dx &= \frac{x^{n+1}}{n+1} + C, \quad n \neq -1 \label{eq:power}\\
+    \int \frac{1}{x} \, dx &= \ln |x| + C \label{eq:logarithm}\\
+    \int e^x \, dx &= e^x + C \label{eq:exponential}\\
+    \int a^x \, dx &= \frac{a^x}{\ln a} + C, \quad a > 0, a \neq 1 \label{eq:general_exponential}\\
+    \int \sin x \, dx &= -\cos x + C \label{eq:sine}\\
+    \int \cos x \, dx &= \sin x + C \label{eq:cosine}\\
+    \int \tan x \, dx &= -\ln |\cos x| + C \label{eq:tangent}\\
+    \int \cot x \, dx &= \ln |\sin x| + C \label{eq:cotangent}\\
+    \int \sec x \, dx &= \ln |\sec x + \tan x| + C \label{eq:secant}\\
+    \int \csc x \, dx &= -\ln |\csc x + \cot x| + C \label{eq:cosecant}\\
+    \int \sec^2 x \, dx &= \tan x + C \label{eq:secant_squared}\\
+    \int \csc^2 x \, dx &= -\cot x + C \label{eq:cosecant_squared}\\
+    \int \sec x \tan x \, dx &= \sec x + C \label{eq:secant_tangent}\\
+    \int \csc x \cot x \, dx &= -\csc x + C \label{eq:cosecant_cotangent}\\
+    \int \sinh x \, dx &= \cosh x + C \label{eq:hyperbolic_sine}\\
+    \int \cosh x \, dx &= \sinh x + C \label{eq:hyperbolic_cosine}\\
+    \int \tanh x \, dx &= \ln |\cosh x| + C \label{eq:hyperbolic_tangent}\\
+    \int \text{coth} \, x \, dx &= \ln |\sinh x| + C \label{eq:hyperbolic_cotangent}\\
+    \int \text{sech}^2 x \, dx &= \tanh x + C \label{eq:hyperbolic_secant_squared}\\
+    \int \text{csch}^2 x \, dx &= -\text{coth} \, x + C \label{eq:hyperbolic_cosecant_squared}\\
+    \int \frac{1}{\sqrt{1 - x^2}} \, dx &= \arcsin x + C \label{eq:arc_sine}\\
+    \int \frac{-1}{\sqrt{1 - x^2}} \, dx &= \arccos x + C \label{eq:arc_cosine}\\
+    \int \frac{1}{1 + x^2} \, dx &= \arctan x + C \label{eq:arc_tangent}\\
+    \int \frac{-1}{1 + x^2} \, dx &= \text{arccot} \, x + C \label{eq:arc_cotangent}\\
+    \int \frac{1}{x \sqrt{x^2 - 1}} \, dx &= \text{arcsec} \, x + C \label{eq:arc_secant}\\
+    \int \frac{-1}{x \sqrt{x^2 - 1}} \, dx &= \text{arccsc} \, x + C \label{eq:arc_cosecant}
+\end{align}
+$$
+
+#### Trigonometric Identities
 
 $$
 \begin{equation} \label{eq:trig_identities}
 \sin^2(x) + \cos^2(x) = 1.
 \end{equation}
+$$
+
+#### Common Formulas
+
+$$
+\begin{align}
+\text{Quadratic Formula: } x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \label{eq:quadratic-formula}
+\end{align}
 $$
 
 </details>
@@ -1048,7 +1092,7 @@ y^2 - 4y - x^3 - 2x^2 + 4x -C &= 0 \\
 \end{align}
 $$
 
-We finally use quadratic formula $y = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ with the form $ay^2 + by + c = 0$ to solve for $y$:
+We finally use quadratic formula $\eqref{eq:quadratic-formula}$ with the form $ay^2 + by + c = 0$ to solve for $y$:
 
 $$
 \begin{align}
@@ -3005,17 +3049,19 @@ $$
 
 where $c_1, c_2$ are constants determined by the initial conditions.
 
-3. **Complex Roots**: If $b^2 - 4ac < 0$, then the roots are complex, $r = \alpha \pm \beta i$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
+3. **Complex Roots**: If $b^2 - 4ac < 0$, then the roots are complex,
+with $r_1 = \lambda + i\mu, r_2 = \lambda - i\mu$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
 
 $$
-\begin{equation} \label{eq:second-order-ode-homogeneous-solution-complex}
-y(t) = e^{\alpha t} \left( c_1 \cos(\beta t) + c_2 \sin(\beta t) \right),
-\end{equation}
+\begin{align}
+y_1(t) &= e^{\lambda t} \cos(\mu t) + i e^{\lambda t} \sin(\mu t),\\
+y_2(t) &= e^{\lambda t} \cos(\mu t) - i e^{\lambda t} \sin(\mu t),
+\end{align}
 $$
 
-where $c_1, c_2$ are constants determined by the initial conditions.
+where $y_1, y_2$ are linearly independent solutions.
 
-Case 2 and 3 are further explained in [Repeated Roots](#repeated-roots) and [Complex Roots](#complex-roots), respectively.
+Case 2 and 3 are further explained in [Repeated Roots](#repeated-roots) and [Complex Roots of the Characteristic Equation](#42complex-roots-of-the-characteristic-equation), respectively.
 
 In Case 1 with distinct real roots, expanding on $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we can derive $y'$ and $y''$:
 
@@ -3161,6 +3207,229 @@ Therefore, the solution to the I.V.P. is:
 
 $$
 y(t) = \frac{5}{2}e^{\frac{1}{2}t} - \frac{1}{2}e^{\frac{3}{2}t}.
+$$
+
+</details>
+
+### Linear Homogeneous Equation Theorems
+
+Let $p$ and $q$ be continuous functions on an open interval $I$-that is, for $\alpha<t<\beta$. The cases for $\alpha=-\infty$, or $\beta=\infty$, or both, are included. Then, for any function $\phi$ that is twice differentiable on $I$, we define the differential operator $L$ by the equation
+
+$$
+\begin{equation} \label{eq:linear-homogeneous-operator}
+L[\phi]=\phi^{\prime \prime}+p \phi^{\prime}+q \phi .
+\end{equation}
+$$
+
+In this section we study the second-order linear homogeneous differential equation $L[\phi](t)=0$. Since it is customary to use the symbol $y$ to denote $\phi(t)$, we will usually write this equation in the form
+
+$$
+\begin{equation} \label{eq:linear-homogeneous-equation}
+L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0.
+\end{equation}
+$$
+
+With $\eqref{eq:linear-homogeneous-equation}$ we associate a set of initial conditions
+
+$$
+y\left(t_0\right)=y_0, \quad y^{\prime}\left(t_0\right)=y_0^{\prime},
+$$
+
+where $t_0$ is any point in the interval $I$, and $y_0$ and $y_0^{\prime}$ are given real numbers.
+
+<blockquote class="theorem">
+
+**Principle of Superposition**:
+
+If $y_1$ and $y_2$ are two solutions of the differential equation $\eqref{eq:linear-homogeneous-equation}$,
+
+$$
+L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0,
+$$
+
+then the linear combination $c_1 y_1+c_2 y_2$ is also a solution for any values of the constants $c_1$ and $c_2$.
+
+</blockquote>
+
+<blockquote class="theorem">
+
+Suppose that $y_1$ and $y_2$ are two solutions of the second-order linear differential equation $\eqref{eq:linear-homogeneous-equation}$,
+
+$$
+L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0 .
+$$
+
+Then the two-parameter family of solutions
+
+$$
+y=c_1 y_1(t)+c_2 y_2(t)
+$$
+
+with arbitrary coefficients $c_1$ and $c_2$ includes every solution of equation $\eqref{eq:linear-homogeneous-equation}$ if and only if there is a point $t_0$ where the Wronskian of $y_1$ and $y_2$ is not zero.
+
+</blockquote>
+
+### Complex Roots of the Characteristic Equation
+
+<div class="subtitle">
+
+Section 3.3 in BOYCE, DIPRIMA.
+
+</div>
+
+<blockquote class="definition">
+
+A **complex number** is a number of the form $ z = a + bi $, where $ a $ and $ b $ are real numbers, and $ i $ is the imaginary unit, defined by $ i^2 = -1 $. Here, $ a $ is the **real part**, and $ b $ is the **imaginary part** of the complex number.
+
+</blockquote>
+
+<blockquote class="definition">
+
+The **conjugate** of a complex number $ z = a + bi $ is denoted by $ \overline{z} $ and is defined as $ \overline{z} = a - bi $.
+
+</blockquote>
+
+In this section, we discuss Case 3 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where we have complex roots, or $b^2 - 4ac < 0$. In this case, the roots are **conjugate complex numbers**, denoted by
+
+$$
+r_1=\lambda+i \mu, \quad r_2=\lambda-i \mu,
+$$
+
+where $\lambda, \mu$ are real. The corresponding expression for $y$ are:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous-solution-complex}
+y_1(t)=\exp ((\lambda+i \mu) t), \quad y_2(t)=\exp ((\lambda-i \mu) t) .
+\end{equation}
+$$
+
+Next, we use Euler's formula to rewrite the expressions for $y_1(t)$ and $y_2(t)$.
+
+<blockquote class="definition">
+
+**Euler's Formula**:
+
+$$
+\begin{equation} \label{eq:euler-formula}
+e^{i \theta}=\cos \theta+i \sin \theta.
+\end{equation}
+$$
+
+</blockquote>
+
+<details><summary>Euler's Formula Derivation</summary>
+
+Euler's formula can be derived using the Taylor series expansions for the exponential function, sine, and cosine functions.
+
+1. **Taylor Series for $e^x$**:
+   The Taylor series expansion for the exponential function $e^x$ is given by:
+   $$
+   e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!} = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots
+   $$
+
+2. **Taylor Series for $\cos \theta$**:
+   The Taylor series for the cosine function is:
+   $$
+   \cos \theta = \sum_{n=0}^{\infty} (-1)^n \frac{\theta^{2n}}{(2n)!} = 1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} - \cdots
+   $$
+
+3. **Taylor Series for $\sin \theta$**:
+   The Taylor series for the sine function is:
+   $$
+   \sin \theta = \sum_{n=0}^{\infty} (-1)^n \frac{\theta^{2n+1}}{(2n+1)!} = \theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \cdots
+   $$
+
+4. **Substitute $x = i\theta$ in the Taylor series for $e^x$**:
+   We replace $x$ with $i\theta$ in the Taylor series for $e^x$, where $i$ is the imaginary unit ($i^2 = -1$):
+   $$
+   e^{i \theta} = 1 + \frac{i\theta}{1!} + \frac{(i\theta)^2}{2!} + \frac{(i\theta)^3}{3!} + \frac{(i\theta)^4}{4!} + \cdots
+   $$
+
+5. **Simplify the powers of $i$**:
+   Using $i^2 = -1$, $i^3 = -i$, and $i^4 = 1$, we get:
+   $$
+   e^{i \theta} = 1 + i\theta - \frac{\theta^2}{2!} - \frac{i\theta^3}{3!} + \frac{\theta^4}{4!} + \cdots
+   $$
+
+6. **Group the real and imaginary parts**:
+   Notice that the real terms are the even powers of $\theta$ and the imaginary terms are the odd powers of $\theta$:
+   $$
+   e^{i \theta} = \left(1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} - \cdots \right) + i\left(\theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \cdots \right)
+   $$
+
+7. **Identify the real and imaginary parts as $\cos \theta$ and $\sin \theta$**:
+   The expression for $e^{i \theta}$ can now be written as:
+   $$
+   e^{i \theta} = \cos \theta + i \sin \theta
+   $$
+
+Thus, we have derived Euler's formula:
+$$
+e^{i \theta} = \cos \theta + i \sin \theta.
+$$
+
+</details>
+
+Following $\eqref{eq:euler-formula}$, we can rewrite $y_1(t)$ and $y_2(t)$ as:
+
+$$
+\begin{align}
+y_1(t) &= e^{(\lambda+i \mu) t} = e^{\lambda t} e^{i \mu t} = e^{\lambda t} \left( \cos(\mu t) + i \sin(\mu t) \right), \label{eq:complex-roots-y1} \\
+y_2(t) &= e^{(\lambda-i \mu) t} = e^{\lambda t} e^{-i \mu t} = e^{\lambda t} \left( \cos(\mu t) - i \sin(\mu t) \right). \label{eq:complex-roots-y2}
+\end{align}
+$$
+
+We can rearrange the RHS of $\eqref{eq:complex-roots-y1}$ and $\eqref{eq:complex-roots-y2}$ to obtain the real and imaginary parts of $y_1(t)$ and $y_2(t)$:
+
+$$
+\begin{align}
+y_1(t) &= e^{\lambda t} \cos(\mu t) + i e^{\lambda t} \sin(\mu t), \label{eq:complex-roots-y1-real-imaginary} \\
+y_2(t) &= e^{\lambda t} \cos(\mu t) - i e^{\lambda t} \sin(\mu t). \label{eq:complex-roots-y2-real-imaginary}
+\end{align}
+$$
+
+<details open><summary>Example Problems of Complex Roots of the Characteristic Equation</summary>
+
+<blockquote class="problem">
+
+Find the general solution of the differential equation
+
+$$
+y^{\prime \prime}+y^{\prime}+9.25 y=0 \text {. }
+$$
+
+Also find the solution that satisfies the initial conditions
+
+$$
+y(0)=2, \quad y^{\prime}(0)=8,
+$$
+
+and draw its graph for $0 < t < 10$.
+
+</blockquote>
+
+The given ODE is a homogeneous second-order ODE in the form of $\eqref{eq:second-order-ode-homogeneous}$, where $a = 1, b = 1, c = 9.25$. We assume the solution is in the form $y(t) = e^{rt}$, then we have the characteristic equation following $\eqref{eq:characteristic-equation}$:
+
+$$
+r^2 + r + 9.25 = 0.
+$$
+
+Using the $\eqref{eq:quadratic-formula}$, we observe that $b^2 - 4ac = 1^2 - 4 \cdot 1 \cdot 9.25 < 0$. This means we have Case 3 with complex roots. Solving for the roots of the characteristic equation, we have:
+
+$$
+\begin{align*}
+r_1 &= \frac{-1 + \sqrt{1 - 4 \cdot 1 \cdot 9.25}}{2} = -\frac{1}{2} + \frac{\sqrt{36}}{2}i = -\frac{1}{2} + 3i, \\
+r_2 &= \frac{-1 - \sqrt{1 - 4 \cdot 1 \cdot 9.25}}{2} = -\frac{1}{2} - \frac{\sqrt{36}}{2}i = -\frac{1}{2} - 3i,
+\end{align*}
+$$
+
+where $\lambda = -\frac{1}{2}$ and $\mu = 3$. Therefore, using the general form in $\eqref{eq:second-order-ode-homogeneous-solution-complex}$, and the corresponding derived form in $\eqref{eq:complex-roots-y1-real-imaginary}$ and $\eqref{eq:complex-roots-y2-real-imaginary}$ we have the solution:
+
+$$
+\begin{align*}
+y_1(t) &= e^{-\frac{1}{2} t} \cos(3 t) + i e^{-\frac{1}{2} t} \sin(3 t) \\
+y_2(t) &= e^{-\frac{1}{2} t} \cos(3 t) - i e^{-\frac{1}{2} t} \sin(3 t).
+\end{align*}
 $$
 
 </details>
