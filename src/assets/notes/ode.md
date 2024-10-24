@@ -54,6 +54,18 @@ $$
 \end{equation}
 $$
 
+$$
+\begin{equation} \label{eq:trig_identities2}
+\cos(\alpha \pm \beta) = \cos(\alpha) \cos(\beta) \mp \sin(\alpha) \sin(\beta).
+\end{equation}
+$$
+
+$$
+\begin{equation} \label{eq:trig_identities3}
+\sin(\alpha \pm \beta) = \sin(\alpha) \cos(\beta) \pm \cos(\alpha) \sin(\beta).
+\end{equation}
+$$
+
 #### Common Formulas
 
 $$
@@ -1646,14 +1658,17 @@ We can then substitute $y'$ into $\eqref{eq:non-linear-2}$:
 $$
 \begin{align}
 \frac{- \frac{1}{3} y^4 u'}{y^4} + \sin(x) u &= 1 \\
+
 - \frac{1}{3} u' + \sin(x) u &= 1.
 \end{align}
+
 $$
 
 Now this becomes a linear ODE, and we can solve for $u$ and then $y$.
 
 $$
 \begin{aligned}
+
 - \frac{1}{3} u' + \sin(x) u &= 1 \implies u' + -3\sin(x)u = -3 \\
 \mu(x) = e^{\int -3\sin(x) \, dx} &= e^{3\cos(x)} \\
 \frac{d}{dx}\left(e^{3\cos(x)}u\right) &= -3e^{3\cos(x)} \\
@@ -1662,6 +1677,7 @@ e^{3\cos(x)}u &= \int -3e^{3\cos(x)}dx \\
 u &= \frac{1}{e^{3\cos(x)}}\int -3e^{3\cos(x)}dx \\
 u &= -3e^{-3\cos(x)} \int e^{3\cos(x)}dx.
 \end{aligned}
+
 $$
 
 Since $u = \frac{1}{y^3}$, we get $y = \sqrt[3]{1/u}$. Therefore, we get the general solution for $y$ as:
@@ -2057,9 +2073,9 @@ we can see that $f(P) = 0$ at $P = 0$ and $P = k$. This means that the populatio
 
 \begin{tikzpicture}[scale=1.0]
     % Define the parabolic curve based on the formula: f(y) = r y (1 - y/K)
-    \draw[domain=0:5.8, smooth, variable=\y, thick, blue] 
+    \draw[domain=0:5.8, smooth, variable=\y, thick, blue]
         plot ({\y}, {2*\y*(1-\y/5)});
-    
+
     % Draw the axes
     \draw[->] (-0.5,0) -- (5.8,0) node[right] {$P$};
     \draw[->] (0,-0.5) -- (0,3) node[above] {$f(P)$};
@@ -2067,15 +2083,15 @@ we can see that $f(P) = 0$ at $P = 0$ and $P = k$. This means that the populatio
     % Points on the curve
     \filldraw[black] (0,0) circle (1pt);  % Point at (0,0)
     \filldraw[black] (5,0) circle (1pt);  % Point at (K,0)
-    
+
     % Mark the top point (K/2, rK/4)
     \filldraw[black] (0, 2.5) node[left] {$rK/4$} circle (1pt);
     \filldraw[black] (2.5, 2.5) circle (1pt);
-    
+
     % Labels for K/2 and K
     \draw[dashed] (2.5,2.5) -- (2.5,0) node[below] {$K/2$};
     \draw[dashed] (5,0) -- (5,0) node[below] {$K$};
-    
+
     % rK/4 on the y-axis
     \draw[dashed] (0,2.5) -- (2.5,2.5);
 
@@ -2086,7 +2102,6 @@ we can see that $f(P) = 0$ at $P = 0$ and $P = k$. This means that the populatio
 \end{tikzpicture}
 
 \end{document}
-
 
 ```
 
@@ -3031,37 +3046,34 @@ If $r$ is a root of the polynomial equation $\eqref{eq:characteristic-equation}$
 
 1. **Distinct Real Roots**: If $b^2 - 4ac > 0$, then the roots are real and distinct, $r_1, r_2$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
 
-$$
-\begin{equation} \label{eq:second-order-ode-homogeneous-solution-distinct}
-y(t) = c_1 e^{r_1 t} + c_2 e^{r_2 t},
-\end{equation}
-$$
+    $$
+    \begin{equation} \label{eq:second-order-ode-homogeneous-solution-distinct}
+    y(t) = c_1 e^{r_1 t} + c_2 e^{r_2 t},
+    \end{equation}
+    $$
 
-where $c_1, c_2$ are constants determined by the initial conditions.
+    where $c_1, c_2$ are constants determined by the initial conditions.
 
 2. **Repeated Real Roots**: If $b^2 - 4ac = 0$, then the roots are real and repeated, $r_1 = r_2 = r$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
 
-$$
-\begin{equation} \label{eq:second-order-ode-homogeneous-solution-repeated}
-y(t) = c_1 e^{rt} + c_2 t e^{rt},
-\end{equation}
-$$
+    $$
+    \begin{equation} \label{eq:second-order-ode-homogeneous-solution-repeated}
+    y(t) = c_1 e^{rt} + c_2 t e^{rt},
+    \end{equation}
+    $$
 
-where $c_1, c_2$ are constants determined by the initial conditions.
+    where $c_1, c_2$ are constants determined by the initial conditions.
 
 3. **Complex Roots**: If $b^2 - 4ac < 0$, then the roots are complex,
-with $r_1 = \lambda + i\mu, r_2 = \lambda - i\mu$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
+with $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$. The general solution to $\eqref{eq:second-order-ode-homogeneous}$ is:
 
-$$
-\begin{align}
-y_1(t) &= e^{\lambda t} \cos(\mu t) + i e^{\lambda t} \sin(\mu t),\\
-y_2(t) &= e^{\lambda t} \cos(\mu t) - i e^{\lambda t} \sin(\mu t),
-\end{align}
-$$
+    $$
+    \begin{align}
+    y(t) &= c_1 e^{\mu t} \cos(\epsilon t) + c_2 e^{\mu t} \sin(\epsilon t), \label{eq:second-order-ode-homogeneous-solution-complex} \\
+    \end{align}
+    $$
 
-where $y_1, y_2$ are linearly independent solutions.
-
-Case 2 and 3 are further explained in [Repeated Roots](#repeated-roots) and [Complex Roots of the Characteristic Equation](#42complex-roots-of-the-characteristic-equation), respectively.
+    where $c_1, c_2$ are constants determined by the initial conditions.
 
 In Case 1 with distinct real roots, expanding on $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we can derive $y'$ and $y''$:
 
@@ -3211,64 +3223,6 @@ $$
 
 </details>
 
-### Linear Homogeneous Equation Theorems
-
-Let $p$ and $q$ be continuous functions on an open interval $I$-that is, for $\alpha<t<\beta$. The cases for $\alpha=-\infty$, or $\beta=\infty$, or both, are included. Then, for any function $\phi$ that is twice differentiable on $I$, we define the differential operator $L$ by the equation
-
-$$
-\begin{equation} \label{eq:linear-homogeneous-operator}
-L[\phi]=\phi^{\prime \prime}+p \phi^{\prime}+q \phi .
-\end{equation}
-$$
-
-In this section we study the second-order linear homogeneous differential equation $L[\phi](t)=0$. Since it is customary to use the symbol $y$ to denote $\phi(t)$, we will usually write this equation in the form
-
-$$
-\begin{equation} \label{eq:linear-homogeneous-equation}
-L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0.
-\end{equation}
-$$
-
-With $\eqref{eq:linear-homogeneous-equation}$ we associate a set of initial conditions
-
-$$
-y\left(t_0\right)=y_0, \quad y^{\prime}\left(t_0\right)=y_0^{\prime},
-$$
-
-where $t_0$ is any point in the interval $I$, and $y_0$ and $y_0^{\prime}$ are given real numbers.
-
-<blockquote class="theorem">
-
-**Principle of Superposition**:
-
-If $y_1$ and $y_2$ are two solutions of the differential equation $\eqref{eq:linear-homogeneous-equation}$,
-
-$$
-L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0,
-$$
-
-then the linear combination $c_1 y_1+c_2 y_2$ is also a solution for any values of the constants $c_1$ and $c_2$.
-
-</blockquote>
-
-<blockquote class="theorem">
-
-Suppose that $y_1$ and $y_2$ are two solutions of the second-order linear differential equation $\eqref{eq:linear-homogeneous-equation}$,
-
-$$
-L[y]=y^{\prime \prime}+p(t) y^{\prime}+q(t) y=0 .
-$$
-
-Then the two-parameter family of solutions
-
-$$
-y=c_1 y_1(t)+c_2 y_2(t)
-$$
-
-with arbitrary coefficients $c_1$ and $c_2$ includes every solution of equation $\eqref{eq:linear-homogeneous-equation}$ if and only if there is a point $t_0$ where the Wronskian of $y_1$ and $y_2$ is not zero.
-
-</blockquote>
-
 ### Complex Roots of the Characteristic Equation
 
 <div class="subtitle">
@@ -3283,27 +3237,21 @@ A **complex number** is a number of the form $ z = a + bi $, where $ a $ and $ b
 
 </blockquote>
 
-<blockquote class="definition">
+In this section, we discuss Case 3 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where the general solution is given by $\eqref{eq:second-order-ode-homogeneous-solution-complex}$.
 
-The **conjugate** of a complex number $ z = a + bi $ is denoted by $ \overline{z} $ and is defined as $ \overline{z} = a - bi $.
-
-</blockquote>
-
-In this section, we discuss Case 3 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where we have complex roots, or $b^2 - 4ac < 0$. In this case, the roots are **conjugate complex numbers**, denoted by
+We have $b^2 - 4ac < 0$, and the roots are **complex numbers**, denoted by:
 
 $$
-r_1=\lambda+i \mu, \quad r_2=\lambda-i \mu,
+r_1 = \mu + \epsilon i, \quad r_2 = \mu - \epsilon i,
 $$
 
-where $\lambda, \mu$ are real. The corresponding expression for $y$ are:
+where $ \mu, \epsilon $ are real. Therefore, the general solution is:
 
 $$
-\begin{equation} \label{eq:second-order-ode-homogeneous-solution-complex}
-y_1(t)=\exp ((\lambda+i \mu) t), \quad y_2(t)=\exp ((\lambda-i \mu) t) .
-\end{equation}
+y(t) = c_1 e^{\mu t} \cos(\epsilon t) + c_2 e^{\mu t} \sin(\epsilon t),
 $$
 
-Next, we use Euler's formula to rewrite the expressions for $y_1(t)$ and $y_2(t)$.
+where we use the **Euler's Formula** to derive our solution.
 
 <blockquote class="definition">
 
@@ -3370,24 +3318,6 @@ $$
 
 </details>
 
-Following $\eqref{eq:euler-formula}$, we can rewrite $y_1(t)$ and $y_2(t)$ as:
-
-$$
-\begin{align}
-y_1(t) &= e^{(\lambda+i \mu) t} = e^{\lambda t} e^{i \mu t} = e^{\lambda t} \left( \cos(\mu t) + i \sin(\mu t) \right), \label{eq:complex-roots-y1} \\
-y_2(t) &= e^{(\lambda-i \mu) t} = e^{\lambda t} e^{-i \mu t} = e^{\lambda t} \left( \cos(\mu t) - i \sin(\mu t) \right). \label{eq:complex-roots-y2}
-\end{align}
-$$
-
-We can rearrange the RHS of $\eqref{eq:complex-roots-y1}$ and $\eqref{eq:complex-roots-y2}$ to obtain the real and imaginary parts of $y_1(t)$ and $y_2(t)$:
-
-$$
-\begin{align}
-y_1(t) &= e^{\lambda t} \cos(\mu t) + i e^{\lambda t} \sin(\mu t), \label{eq:complex-roots-y1-real-imaginary} \\
-y_2(t) &= e^{\lambda t} \cos(\mu t) - i e^{\lambda t} \sin(\mu t). \label{eq:complex-roots-y2-real-imaginary}
-\end{align}
-$$
-
 <details open><summary>Example Problems of Complex Roots of the Characteristic Equation</summary>
 
 <blockquote class="problem">
@@ -3414,24 +3344,50 @@ $$
 r^2 + r + 9.25 = 0.
 $$
 
-Using the $\eqref{eq:quadratic-formula}$, we observe that $b^2 - 4ac = 1^2 - 4 \cdot 1 \cdot 9.25 < 0$. This means we have Case 3 with complex roots. Solving for the roots of the characteristic equation, we have:
+We can solve this quadratic equation using $\eqref{eq:quadratic-formula}$:
+
+$$
+r = \frac{-1 \pm \sqrt{1 - 4 \cdot 9.25}}{2} = -\frac{1}{2} \pm 3i,
+$$
+
+where we have
+
+$$
+r_1 = -\frac{1}{2} + 3i, \quad r_2 = -\frac{1}{2} - 3i, \quad \mu = -\frac{1}{2}, \quad \epsilon = 3.
+$$
+
+Next we use the general solution for complex roots in $\eqref{eq:second-order-ode-homogeneous-solution-complex}$:
+
+$$
+y(t) = c_1 e^{-\frac{1}{2}t} \cos(3t) + c_2 e^{-\frac{1}{2}t} \sin(3t).
+$$
+
+Next, given the initial condition $y(0) = 2$, we can solve for $c_1$:
 
 $$
 \begin{align*}
-r_1 &= \frac{-1 + \sqrt{1 - 4 \cdot 1 \cdot 9.25}}{2} = -\frac{1}{2} + \frac{\sqrt{36}}{2}i = -\frac{1}{2} + 3i, \\
-r_2 &= \frac{-1 - \sqrt{1 - 4 \cdot 1 \cdot 9.25}}{2} = -\frac{1}{2} - \frac{\sqrt{36}}{2}i = -\frac{1}{2} - 3i,
+y(0) &= c_1 e^{-\frac{1}{2} \cdot 0} \cos(3 \cdot 0) + c_2 e^{-\frac{1}{2} \cdot 0} \sin(3 \cdot 0) \implies c_1 = 2.
 \end{align*}
 $$
 
-where $\lambda = -\frac{1}{2}$ and $\mu = 3$. Therefore, using the general form in $\eqref{eq:second-order-ode-homogeneous-solution-complex}$, and the corresponding derived form in $\eqref{eq:complex-roots-y1-real-imaginary}$ and $\eqref{eq:complex-roots-y2-real-imaginary}$ we have the solution:
+Next, we take the derivative of $y(t)$ to find $y'(t)$:
 
 $$
 \begin{align*}
-y_1(t) &= e^{-\frac{1}{2} t} \cos(3 t) + i e^{-\frac{1}{2} t} \sin(3 t) \\
-y_2(t) &= e^{-\frac{1}{2} t} \cos(3 t) - i e^{-\frac{1}{2} t} \sin(3 t).
+y'(t) &= \frac{-c_1e^{-\frac{t}{2}}\cos \left(3t\right)-c_2e^{-\frac{t}{2}}\sin \left(3t\right)}{2}-3c_1e^{-\frac{t}{2}}\sin \left(3t\right)+3c_2e^{-\frac{t}{2}}\cos \left(3t\right).
 \end{align*}
 $$
 
-<!-- TODO Continue to solve given initial conditions. -->
+Using the initial condition $y'(0) = 8$, we can solve for $c_2$:
+
+$$
+y'(0) = \frac{-c_1}{2}+3c_2 = 8 \implies c_2 = 3.
+$$
+
+Therefore, the solution to the I.V.P. is:
+
+$$
+y(t) = 2e^{-\frac{1}{2}t} \cos(3t) + 3e^{-\frac{1}{2}t} \sin(3t).
+$$
 
 </details>
