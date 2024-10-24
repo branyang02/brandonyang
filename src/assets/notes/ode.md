@@ -3318,7 +3318,7 @@ $$
 
 </details>
 
-<details open><summary>Example Problems of Complex Roots of the Characteristic Equation</summary>
+<details><summary>Example Problems of Complex Roots of the Characteristic Equation</summary>
 
 <blockquote class="problem">
 
