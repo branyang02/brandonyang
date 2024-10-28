@@ -3075,6 +3075,8 @@ with $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$. The general solution to $
 
     where $c_1, c_2$ are constants determined by the initial conditions.
 
+#### Distinct Real Roots of the Characteristic Equation
+
 In Case 1 with distinct real roots, expanding on $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we can derive $y'$ and $y''$:
 
 $$
@@ -3223,7 +3225,7 @@ $$
 
 </details>
 
-### Complex Roots of the Characteristic Equation
+#### Complex Roots of the Characteristic Equation
 
 <div class="subtitle">
 
@@ -3388,6 +3390,194 @@ Therefore, the solution to the I.V.P. is:
 
 $$
 y(t) = 2e^{-\frac{1}{2}t} \cos(3t) + 3e^{-\frac{1}{2}t} \sin(3t).
+$$
+
+The graph of the solution is shown below:
+
+```desmos
+y(t) = 2e^{-\frac{1}{2}t} \cos(3t) + 3e^{-\frac{1}{2}t} \sin(3t)
+```
+
+</details>
+
+#### Repeated Real Roots of the Characteristic Equation
+
+<div class="subtitle">
+
+Section 3.4 in BOYCE, DIPRIMA.
+
+</div>
+
+In this section, we discuss Case 2 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where the general solution is given by $\eqref{eq:second-order-ode-homogeneous-solution-repeated}$.
+
+<blockquote class="theorem">
+
+Given the second-order ODE $ay'' + by' + cy = 0$, if the characteristic equation $ar^2 + br + c = 0$ has repeated roots $r_1 = r_2 = r$, then the general solution is:
+
+$$
+y(t) = c_1 e^{rt} + c_2 t e^{rt},
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+</blockquote>
+
+<blockquote class="proof">
+
+We use the **reduction of order** method to solve the ODE. Given the quadratic nature of the characteristic equation, we have two unique solutions $y_1, y_2$. Therefore, we expect the general solution to the I.V.P. to have the form:
+
+$$
+\begin{equation} \label{eq:second-order-ode-homogeneous-solution-repeated-proof-general-form}
+y = c_1 y_1 + c_2 y_2.
+\end{equation}
+$$
+
+To solve for $y_1, y_2$, we first assume $y_2 = u(t) y_1(t)$, where $u(t)$ is a function of $t$. We let $y_1(t) = e^{rt}$, then we have $y_2(t) = u(t) e^{rt}$. Since $y_2$ is a solution of the ODE $ay'' + by' + cy = 0$, we can substitute $y_2$ into the ODE. First, we solve for $y_2'$ and $y_2''$:
+
+$$
+\begin{align*}
+y_2 = u e^{rt}, \quad y_2' = u' e^{rt} + ru e^{rt}, \quad y_2'' = u'' e^{rt} + 2ru' e^{rt} + r^2u e^{rt}.
+\end{align*}
+$$
+
+Then, we substitute $y_2, y_2', y_2''$ into the ODE:
+
+$$
+\begin{align*}
+a\left( u'' e^{rt} + 2ru' e^{rt} + r^2u e^{rt}\right) + b\left( u' e^{rt} + ru e^{rt}\right) + c\left( u e^{rt} \right) &= 0 \\
+a u'' e^{rt} + 2aru' e^{rt} + ar^2u e^{rt} + bu' e^{rt} + bru e^{rt} + cu e^{rt} &= 0 \\
+e^{rt}\left(au'' + 2aru' + ar^2u +  bu' + bru + cu \right) &= 0 \tag{\text{Factor $e^{rt}$}} \\
+e^{rt}\left(au'' + (2ar + b)u' + (ar^2 + br + c)u \right) &= 0 \tag{\text{Group $u'', u', u'$}}.
+\end{align*}
+$$
+
+In this case, we have repeated roots $r_1 = r_2 = r$, where $r = -\frac{b}{2a}$, we can substitute $r$ into the equation:
+
+$$
+\begin{align*}
+e^{\left(-\frac{b}{2a} \right)t}\left(au'' + \left(2a\left( -\frac{b}{2a}\right) + b\right)u' + \left(a\left( -\frac{b}{2a}\right)^2 + b\left(-\frac{b}{2a} \right) + c\right)u \right) &= 0 \\
+e^{\left(-\frac{b}{2a} \right)t}\left(au'' + \left(-b+b\right)u' + \left(\frac{b^2}{4a}  -\frac{b^2}{2a} + c\right)u \right) &= 0 \\
+e^{\left(-\frac{b}{2a} \right)t}\left(au'' + 0u' + \left(-\frac{b^2}{4a} + c\right)u \right) &= 0 \\
+e^{\left(-\frac{b}{2a} \right)t}\left(au'' + 0u' + \left(-\frac{1}{4a} \right)\underbrace{\left(b^2 - 4ac\right)}_{b^2 - 4ac = 0}u \right) &= 0 \\
+\underbrace{e^{\left(-\frac{b}{2a} \right)t}}_{e^x \neq 0}\left(au'' + 0u' + 0u \right) &= 0 \\
+au'' = 0 \quad \text{OR} \quad u'' &= 0.
+\end{align*}
+$$
+
+Therefore, we we know that $y_2 = u e^{rt}$ is a solution to the ODE if $u'' = 0$. We can then solve for $u$:
+
+$$
+u'' = 0 \implies u = c_1 + c_2t,
+$$
+
+where $c_1, c_2$ are constants. Therefore, we have $y_2 = (c_1 + c_2t)e^{rt}$. We can then substitute $y_1, y_2$ into $\eqref{eq:second-order-ode-homogeneous-solution-repeated-proof-general-form}$, replacing $c_1, c_2$ with $c_3, c_4$ as they are simply constants:
+
+$$
+\begin{align*}
+y &= c_1 e^{rt} + c_2 (c_3 + c_4t)e^{rt} \\
+&= c_1 e^{rt} + c_2 c_3 e^{rt} + c_2 c_4 t e^{rt} \\
+&= c_1 e^{rt} + c_{23} e^{rt} + c_{24} t e^{rt} \\
+&= c_{123} e^{rt} + c_{24} t e^{rt}.
+\end{align*}
+$$
+
+Since $c_{123}, c_{24}$ are constants, we have the general solution to the I.V.P. as $y(t) = c_1 e^{rt} + c_2 t e^{rt}$.
+
+</blockquote>
+
+</blockquote>
+
+<details><summary>Example Problems of Repeated Real Roots of the Characteristic Equation</summary>
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' - 4y' + 4y = 0.
+$$
+
+</blockquote>
+
+Given the ODE, we have $a = 1, b = -4, c = 4$. We assume the solution is in the form $y(t) = e^{rt}$, then we have the characteristic equation following $\eqref{eq:characteristic-equation}$:
+
+$$
+r^2 - 4r + 4 = 0 \implies (r - 2)^2 = 0 \implies r = 2.
+$$
+
+Therefore, following the general solution of Case 2 in $\eqref{eq:second-order-ode-homogeneous-solution-repeated}$, we have the solution:
+
+$$
+y(t) = c_1 e^{2t} + c_2 t e^{2t}.
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+2t^2 y'' + 3ty' - y = 0,
+$$
+
+given that $y_1 = \frac{1}{t}$ is a solution.
+
+</blockquote>
+
+We assume $y_2 = u y_1 = \frac{1}{t}u$. We compute $y_2'$ and $y_2''$:
+
+$$
+\begin{align*}
+y_2 &= \frac{1}{t}u, \\
+y_2' &= -\frac{1}{t^2}u + \frac{1}{t}u', \\
+y_2'' &= \frac{2}{t^3}u - \frac{2}{t^2}u' + \frac{1}{t}u''.
+\end{align*}
+$$
+
+We substitute $y_2, y_2', y_2''$ into the ODE:
+
+$$
+\begin{align*}
+2t^2 \left( \frac{2}{t^3}u - \frac{2}{t^2}u' + \frac{1}{t}u'' \right) + 3t \left( -\frac{1}{t^2}u + \frac{1}{t}u' \right) - \frac{1}{t}u &= 0 \\
+\frac{4u}{t} - 4u' + 2tu'' - \frac{3u}{t} +  3u' - \frac{u}{t} &= 0 \\
+2tu'' - u' &= 0.
+\end{align*}
+$$
+
+Next, we solve for $u$ given $2tu'' - u' = 0$. We first let $w := u'$, then we have $2tw' - w = 0 \implies w = 2tw'$. We can then solve for $w$:
+
+$$
+\begin{align*}
+2t \frac{dw}{dt} - w &= 0 \\
+2t dw &= w dt \\
+\int \frac{dw}{w} &= \int \frac{dt}{2t} \\
+\ln |w| &= \frac{1}{2} \ln |t| + C \\
+w &= Ct^{\frac{1}{2}}.
+\end{align*}
+$$
+
+Therefore, we have $u' = w(t) = c_1t^{\frac{1}{2}}$. We can then solve for $u$:
+
+$$
+\begin{align*}
+u &= \int c_1t^{\frac{1}{2}} dt = \frac{2}{3}c_1t^{\frac{3}{2}} + c_2 = c_1t^{\frac{3}{2}} + c_2.
+\end{align*}
+$$
+
+Finally, substituting $u$ back into $y_2 = \frac{1}{t}u$, we have:
+
+$$
+y_2 = \frac{1}{t}\left(c_1t^{\frac{3}{2}} + c_2 \right) = c_1 t^{\frac{1}{2}} + \frac{c_2}{t}.
+$$
+
+Therefore, the general solution is:
+
+$$
+\begin{align*}
+y(t) &= c_1 \frac{1}{t} + c_2 \left( c_3 t^{\frac{1}{2}} + \frac{c_4}{t}\right) \\
+&= c_1 \frac{1}{t} + c_2 c_3 t^{\frac{1}{2}} + c_2 \frac{c_4}{t} \\
+&= c_{124} \frac{1}{t} + c_{23} t^{\frac{1}{2}} \\
+&= c_1 \frac{1}{t} + c_2 t^{\frac{1}{2}}.
+\end{align*}
 $$
 
 </details>
