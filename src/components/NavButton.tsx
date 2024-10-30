@@ -24,7 +24,7 @@ const handleSelect = (tab: string, navigate: NavigateFunction) => {
             navigate(path);
             break;
         case "CV":
-            path = "/brandonyang_cv.pdf";
+            path = "/brandon_yifan_yang_cv.pdf";
             window.open(path, "_blank");
             break;
         default:
