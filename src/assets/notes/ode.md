@@ -3077,6 +3077,36 @@ with $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$. The general solution to $
 
 #### Distinct Real Roots of the Characteristic Equation
 
+In this section, we discuss Case 1 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where the solution is given by $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$.
+
+<blockquote class="theorem">
+
+Given the second-order ODE $ay'' + by' + cy = 0$, if the characteristic equation $ar^2 + br + c = 0$ has distinct real roots $r_1, r_2$, then the general solution to the ODE is:
+
+$$
+y(t) = c_1 e^{r_1 t} + c_2 e^{r_2 t},
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+</blockquote>
+
+<blockquote class="proof">
+
+We have assumed that the solution is in the form $y(t) = e^{rt}$, and we have two distinct solutions $r_1, r_2$ from $\eqref{eq:characteristic-equation}$ following $\eqref{eq:quadratic-formula}$:
+
+$$
+r_1 = \frac{-b + \sqrt{b^2 - 4ac}}{2a}, \quad r_2 = \frac{-b - \sqrt{b^2 - 4ac}}{2a}.
+$$
+
+Since $r_1, r_2$ are real and distinct, we have two solutions $y_1 = e^{r_1 t}, y_2 = e^{r_2 t}$. Therefore, the general solution is the linear combination of the two independent solutions:
+
+$$
+y(t) = c_1 e^{r_1 t} + c_2 e^{r_2 t}.
+$$
+
+</blockquote>
+
 In Case 1 with distinct real roots, expanding on $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, we can derive $y'$ and $y''$:
 
 $$
@@ -3239,22 +3269,6 @@ A **complex number** is a number of the form $ z = a + bi $, where $ a $ and $ b
 
 </blockquote>
 
-In this section, we discuss Case 3 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where the general solution is given by $\eqref{eq:second-order-ode-homogeneous-solution-complex}$.
-
-We have $b^2 - 4ac < 0$, and the roots are **complex numbers**, denoted by:
-
-$$
-r_1 = \mu + \epsilon i, \quad r_2 = \mu - \epsilon i,
-$$
-
-where $ \mu, \epsilon $ are real. Therefore, the general solution is:
-
-$$
-y(t) = c_1 e^{\mu t} \cos(\epsilon t) + c_2 e^{\mu t} \sin(\epsilon t),
-$$
-
-where we use the **Euler's Formula** to derive our solution.
-
 <blockquote class="definition">
 
 **Euler's Formula**:
@@ -3319,6 +3333,54 @@ e^{i \theta} = \cos \theta + i \sin \theta.
 $$
 
 </details>
+
+In this section, we discuss Case 3 of the roots of the characteristic equation $\eqref{eq:characteristic-equation}$, where the general solution is given by $\eqref{eq:second-order-ode-homogeneous-solution-complex}$.
+
+<blockquote class="theorem">
+
+Given the second-order ODE $ay'' + by' + cy = 0$, if the characteristic equation $ar^2 + br + c = 0$ has complex roots $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$, then the general solution to the ODE is:
+
+$$
+y(t) = c_1 e^{\mu t} \cos(\epsilon t) + c_2 e^{\mu t} \sin(\epsilon t),
+$$
+
+where $c_1, c_2$ are constants determined by the initial conditions.
+
+</blockquote>
+
+<blockquote class="proof">
+
+We expand imaginary solutions $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$ to $\eqref{eq:characteristic-equation}$ by using the quadratic formula $\eqref{eq:quadratic-formula}$, where we have:
+
+$$
+\mu = \frac{-b}{2a}, \quad \epsilon = \frac{\sqrt{b^2 - 4ac}}{2a}.
+$$
+
+We then follow the general solution from Case 1 $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, and substitute $r_1 = \mu + \epsilon i, r_2 = \mu - \epsilon i$:
+
+$$
+y(t) = c_1 e^{(\mu + \epsilon i)t} + c_2 e^{(\mu - \epsilon i)t}.
+$$
+
+We then use $\eqref{eq:euler-formula}$ to simplify the expression:
+
+$$
+\begin{align*}
+y(t) &= c_1 e^{(\mu + \epsilon i)t} + c_2 e^{(\mu - \epsilon i)t} \\
+&= c_1 e^{\mu t} e^{\epsilon i t} + c_2 e^{\mu t} e^{-\epsilon i t} \\
+&= c_1 e^{\mu t} \left(\cos(\epsilon t) + i \sin(\epsilon t)\right) + c_2 e^{\mu t} \left(\cos(-\epsilon t) + i \sin(-\epsilon t)\right) \\
+&= c_1 e^{\mu t} \cos(\epsilon t) + c_1 e^{\mu t} i \sin(\epsilon t) + c_2 e^{\mu t} \cos(\epsilon t) - c_2 e^{\mu t} i \sin(\epsilon t) \\
+&= (c_1 + c_2) e^{\mu t} \cos(\epsilon t) + (c_1 - c_2) e^{\mu t} i \sin(\epsilon t).
+\end{align*}
+$$
+
+We can then define $c_1 + c_2 = A$ and $c_1 - c_2 = B$ to simplify the expression:
+
+$$
+y(t) = A e^{\mu t} \cos(\epsilon t) + B e^{\mu t} \sin(\epsilon t).
+$$
+
+</blockquote>
 
 <details><summary>Example Problems of Complex Roots of the Characteristic Equation</summary>
 
