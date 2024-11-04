@@ -8,11 +8,18 @@
 \usepackage{verbatim}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{fontawesome}
 \usepackage{enumitem}
-\setlist[itemize]{itemsep=5pt, topsep=0pt, leftmargin=*} % Globally define gaps between items in itemize environment
 \usepackage{array}
+\usepackage{setspace}
+
+\singlespacing
+% \setstretch{1.1}
+% \onehalfspacing
+
+\setlist[itemize]{itemsep=0em, topsep=0em, leftmargin=*}
 
 \definecolor{linkblue}{rgb}{0, 0, 1}
 
@@ -35,10 +42,10 @@
 \raggedright
 \setlength{\tabcolsep}{0in}
 
-% Sections formatting, 4pt vspace before each section.
+% Sections formatting, 5pt vspace before each section.
 \titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\Large 
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+  \scshape\raggedright\Large 
+}{}{0em}{}[\color{black}\titlerule]
 
 %-------------------------Custom commands-------------------------
 
@@ -48,17 +55,14 @@
 % Date in small italics
 \newcommand{\Date}[1]{\textit{\small #1}}
 
-% resumeSubheading is an `item` that has two arguments for left and right text
-\newcommand{\resumeSubheading}[4]{
-  \item
-    \begin{tabular*}{0.9798\textwidth}{l@{\extracolsep{\fill}}r} % 0.9798 to prevent overfull hbox (largest value that doesn't cause overfull hbox)
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \Date{#4} \\
-    \end{tabular*}\
+% Heading with 4 arguments: #1: Title, #2: Location, #3: Subtitle, #4: Date
+\newcommand{\heading}[4]{
+  \textbf{#1} \hfill #2 \\
+  \textit{\small#3} \hfill \Date{#4}
 }
 
-% Modify 2nd level itemize environment to use circled bullet points
-\renewcommand{\labelitemii}{$\circ$} 
+\renewcommand{\labelitemi}{$\circ$} % First-level bullet points as circles
+\renewcommand{\labelitemii}{$\circ$} % Second-level bullet points as circles
 
 \begin{document}
 
@@ -71,81 +75,82 @@
    &
   \begin{tabular}{@{}c l@{}}
     \centering \faGithub    & \, \linkhref{https://github.com/branyang02}{branyang02} \\
-    \centering \faPhone     & \, \textcolor{linkblue}{(434) 221-8789}                 \\
+    \centering \faPhone     & \, \textcolor{linkblue}{+1 (434) 221-8789}              \\
     \centering \faMapMarker & \, Charlottesville, VA
   \end{tabular}
 \end{tabular}
 
 \section{Education}
 \begin{itemize}
-  \resumeSubheading{\href{https://engineering.virginia.edu/department/computer-science}{University of Virginia}}{Charlottesville, VA}
-  {B.S. in Computer Science;  Major GPA: 3.98/4.00; Cumulative GPA: 3.91/4.00}{August 2021 - May 2025}
+  \item \heading{University of Virginia}{Charlottesville, VA}{B.S. in Computer Science;  Major GPA: 3.98/4.00; Cumulative GPA: 3.91/4.00}{August 2021 - May 2025}
   \item \textbf{Relevant Coursework}: Machine Learning (ML), Reinforcement Learning (RL)$^*$, Natural Language Processing (NLP)$^*$, Probabilistic ML$^*$, Human-Robot Interaction$^*$, Optimization, Data Structures
         \& Algorithms, Theory of Computation, Computer Systems Organization, Software Engineering \\
         {\footnotesize *Graduate-level courses.}
 \end{itemize}
 
 \section{Research Experience}
-\begin{itemize}
-  \resumeSubheading{Research Assistant, Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
-  {Advisor: \href{https://yenlingkuo.com/}{Prof. Yen-Ling Kuo}}{Aug 2024 - Present}
-  \begin{itemize}
-    \item \textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}
-          \begin{itemize}
-            \item Researching Vision-Language-Action (VLA) models with a focus on action interpretability for robotic manipulation tasks.
-            \item Developing \textit{SkillVLA}, a novel VLA model that aims to improve long-horizon language-conditioned
-                  robotic policies and interpretability by grounding action outputs with synthesized subgoal instructions and a learned skill library.
-          \end{itemize}
-  \end{itemize}
-
-  \resumeSubheading{Research Assistant, University of Maryland}{College Park, MD}
-  {Advisor: \href{https://jbhuang0604.github.io/}{Prof. Jia-Bin Huang}}{May 2024 - September 2024}
-  \begin{itemize}
-    \item \textbf{Semantically Aware 3D Gaussian Splatting}
-          \begin{itemize}
-            \item Researched methods to enhance general robotic scene understanding through 3D Gaussian Splatting (3DGS) by injecting semantically aware language embeddings into 3DGS scenes. This approach aims to improve language-conditioned robotic interaction with objects by enabling more accurate and stable 3D representations.
-            \item Investigated video segmentation techniques, including SAMv2, to ensure temporal consistency in the integration of 2D training data into 3D scenes, facilitating reliable 3D embeddings for robotic perception and interaction tasks.
-          \end{itemize}
-  \end{itemize}
-
-  \resumeSubheading{Research Assistant, \href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
-  {Advisor: \href{https://www.tiqbal.com/}{Prof. Tariq Iqbal}}{May 2022 - May 2024}
-  \begin{itemize}
-    \item \href{https://github.com/branyang02/GLOMA}{\textbf{Grounded Location for Object Manipulation (GLOMA)}}
-          \begin{itemize}
-            \item Developed zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and Behavioral Cloning (BC).
-            \item Integrated language grounding with visual perception by using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision and improving baseline performance by 65\%.
-            \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
-          \end{itemize}
-    \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized multi-agent RL for Collaborative Tasks}}
-          \begin{itemize}
-            \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks.
-            \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration, improving task success rate by 20\%.
-            \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
-          \end{itemize}
-  \end{itemize}
+\begin{itemize}[label={}, leftmargin=0pt]
+  \item \heading{Research Assistant, Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
+        {Advisor: \href{https://yenlingkuo.com/}{Prof. Yen-Ling Kuo}}{Aug 2024 - Present}
+        \begin{itemize}
+          \item \textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}
+                \begin{itemize}
+                  \item Leading project on Vision-Language-Action (VLA) models with focus on action interpretability for robotic manipulation tasks by integrating skill-conditioned action priors.
+                  \item Developing \textit{SkillVLA}, a novel VLA model aiming to improve long-horizon language-conditioned
+                        robotic policies and interpretability by grounding action outputs with synthesized subgoal instructions and learned skill library.
+                  \item Delivered Oral Lightning Talk at 2024 UVA LLM Workshop, earning Audience Choice Award (top 3 out of 28 presentations).
+                  \item Participating in weekly reading groups with 10+ members to discuss recent advancements in robotics, ML, and NLP.
+                \end{itemize}
+        \end{itemize}
+  \item \heading{Research Assistant, University of Maryland}{College Park, MD}
+        {Advisor: \href{https://jbhuang0604.github.io/}{Prof. Jia-Bin Huang}}{May 2024 - September 2024}
+        \begin{itemize}
+          \item \textbf{Semantically Aware 3D Gaussian Splatting}
+                \begin{itemize}
+                  \item Researched methods to enhance robotic scene understanding using 3D Gaussian Splatting (3DGS) in collaboration with MIT, injecting semantically aware language embeddings to improve accuracy and stability in 3D representations.
+                  \item Developed approaches enabling downstream language-conditioned robotic interaction with objects, leveraging enriched 3DGS scenes for more precise and stable robotic behaviors.
+                  \item Investigated video segmentation techniques (SAMv2) to maintain temporal consistency when integrating 2D training data into 3D scenes, ensuring reliable 3D embeddings for robotic perception and interaction.
+                \end{itemize}
+        \end{itemize}
+  \item \heading{Research Assistant, \href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
+        {Advisor: \href{https://www.tiqbal.com/}{Prof. Tariq Iqbal}}{May 2022 - May 2024}
+        \begin{itemize}
+          \item \href{https://github.com/branyang02/GLOMA}{\textbf{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]
+                \begin{itemize}
+                  \item Led team of 3 to develope zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and Behavioral Cloning (BC).
+                  \item Integrated language grounding with visual perception by using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision and improving baseline performance by 65\%.
+                  \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
+                  \item Presented poster at 3 conferences and symposiums.
+                \end{itemize}
+          \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized multi-agent RL for Collaborative Tasks}} [\linkhref{https://github.com/branyang02/PandaFactory}{code}]
+                \begin{itemize}
+                  \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks with team of 4 (1 grad + 3 undergrads).
+                  \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration, improving task success rate by 20\%.
+                  \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
+                \end{itemize}
+        \end{itemize}
 \end{itemize}
 
 \section{Honors}
-\begin{itemize}
-  \resumeSubheading{Audience's Choice Award \textnormal{(Top 3 of 28)}}{\Date{October 2024}}{University of Virginia Large Language Model (LLM) Workshop}{} \\
-  \resumeSubheading{University of Virginia Research Computing Exhibition Finalist \textnormal{(Top 5 of 25)}}{\Date{April 2024}}{University of Virginia Research Computing}{} \\
-  \resumeSubheading{Dean's Engineering Research Scholarship \textnormal{(\$5000 stipend)}}{\Date{May 2023}}{University of Virginia School of Engineering and Applied Science}{} \\
-  \resumeSubheading{Entrepreneurship Cup Winner \textnormal{(Received \$1000 in funding)}}{\Date{November 2023}}{University of Virginia Darden School of Business}{} \\
-  \resumeSubheading{Dean's List}{}{University of Virginia}{}
+\begin{itemize}[label={}, leftmargin=0pt]
+  \item \heading{Audience's Choice Award \textnormal{(Top 3 of 28)}}{\Date{October 2024}}{University of Virginia Large Language Model (LLM) Workshop}{}
+  \item \heading{University of Virginia Research Computing Exhibition Finalist \textnormal{(Top 5 of 25)}}{\Date{April 2024}}{University of Virginia Research Computing}{}
+  \item \heading{Dean's Engineering Research Scholarship \textnormal{(\$5000 stipend)}}{\Date{May 2023}}{University of Virginia School of Engineering and Applied Science}{}
+  \item \heading{Entrepreneurship Cup Winner \textnormal{(Received \$1000 in funding)}}{\Date{November 2023}}{University of Virginia Darden School of Business}{}
+  \item \heading{Dean's List}{}{University of Virginia}{}
 \end{itemize}
 
 \section{Talks \& Presentations}
-\begin{itemize}
-  \item {\href{https://www.brandonyifanyang.com/skillvla.pdf}{\textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}}}
+\begin{itemize}[label={}, leftmargin=0pt]
+  \item {\href{https://www.brandonyifanyang.com/skillvla.pdf}{\textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}} [\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}]}
         \begin{itemize}
           \item University of Virginia Large Language Model (LLM) Workshop, Charlottesville, VA \hfill \Date{October 2024}
         \end{itemize}
-  \item {\href{https://www.brandonyifanyang.com/MI.pdf}{\textbf{Using Synthetic Data and Sparse Autoencoders To Interpret Large Language Models}}}
+  \item {\href{https://www.brandonyifanyang.com/MI.pdf}{\textbf{Using Synthetic Data and Sparse Autoencoders To Interpret Large Language Models}} [\linkhref{https://www.brandonyifanyang.com/MI.pdf}{poster}]}
         \begin{itemize}
           \item University of Virginia Research Computing Exhibition, Charlottesville, VA \hfill \Date{April 2024}
         \end{itemize}
-  \item \href{https://www.brandonyifanyang.com/gloma.pdf}{\textbf{GLOMA: Grounded Location for Object Manipulation}}
+  \item \href{https://www.brandonyifanyang.com/gloma.pdf}{\textbf{GLOMA: Grounded Location for Object Manipulation} [\linkhref{https://www.brandonyifanyang.com/gloma.pdf}{poster}]}
         \begin{itemize}
           \item University of Virginia Fall Engineering Research Expo, Charlottesville, VA \hfill \Date{October 2023}
           \item University of Virginia Spring Thornton Society Dinner, Charlottesville, VA \hfill \Date{September 2023}
@@ -159,37 +164,37 @@
 \end{itemize}
 
 \section{Teaching Experience}
-\begin{itemize}
-  \resumeSubheading{Teaching Assistant}{University of Virginia}
-  {Machine Learning}{August 2024 - Present}
-  \begin{itemize}
-    \item Authored comprehensive and interactive \linkhref{https://www.brandonyifanyang.com/notes/ml}{course notes} to support student learning and understanding.
-    \item Collaborated with course staff to develop and grade assignments, exams, and projects.
-    \item Mentor 20 students throughout semester-long ML projects, providing guidance on research methodology and implementation.
-  \end{itemize}
-  \resumeSubheading{Teaching Assistant}{University of Virginia}
-  {Theory of Computation}{Jan 2024 - May 2024}
-  \begin{itemize}
-    \item Held weekly office hours, one-on-one tutoring, and review sessions to assist students with course material.
-  \end{itemize}
-  \resumeSubheading{Lab Lead Teaching Assistant}{University of Virginia}
-  {Computer Systems Organization}{Jan 2023 - May 2023}
-  \begin{itemize}
-    \item Led and co-lectured weekly lab sections on computer systems topics with interactive activities for 70+ students.
-    \item Supervised and coordinated a team of 6 TAs to facilitate effective learning and lab management.
-    \item Held office hours and whiteboard sessions to provide additional support for students.
-  \end{itemize}
+\begin{itemize}[label={}, leftmargin=0pt]
+  \item \heading{Teaching Assistant}{University of Virginia}
+        {Machine Learning}{August 2024 - Present}
+        \begin{itemize}
+          \item Authored comprehensive \href{https://www.brandonyifanyang.com/notes/ml}{course notes} with interactive visualizations to support student learning and understanding. [\linkhref{https://www.brandonyifanyang.com/notes/ml}{link}]
+          \item Collaborated with course staff to develop and grade assignments, exams, and projects.
+          \item Mentored 20+ students throughout semester-long ML projects, providing guidance on research methodology and implementation.
+        \end{itemize}
+  \item \heading{Teaching Assistant}{University of Virginia}
+        {Theory of Computation}{Jan 2024 - May 2024}
+        \begin{itemize}
+          \item Held weekly office hours, one-on-one tutoring, and review sessions to assist students with course material.
+        \end{itemize}
+  \item \heading{Lab Lead Teaching Assistant}{University of Virginia}
+        {Computer Systems Organization}{Jan 2023 - May 2023}
+        \begin{itemize}
+          \item Led and co-lectured weekly lab sections on computer systems topics with interactive activities for 70+ students.
+          \item Supervised and coordinated team of 6 TAs to facilitate effective learning and lab management.
+          \item Held office hours and whiteboard sessions to provide additional support for students.
+        \end{itemize}
 \end{itemize}
 
 \section{Software Projects}
-\begin{itemize}
-  \item \textbf{\linkhref{https://notie-markdown.vercel.app/}{notie-markdown}}: Developed open-source React component for Markdown rendering using TypeScript. Used notie-markdown to create \linkhref{https://www.brandonyifanyang.com/notes}{course notes} and \linkhref{https://www.brandonyifanyang.com/blog}{blog posts} on computer science and ML topics.
-  \item \textbf{\linkhref{https://github.com/ewei2406/SmartOH}{SmartOH}}: Developed AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd overall at VTHacks11 (Hackathon held at Virginia Tech) (3/393).
+\begin{itemize}[label={}, leftmargin=0pt]
+  \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{link}, \linkhref{https://www.brandonyifanyang.com/notes}{course notes}, \linkhref{https://www.brandonyifanyang.com/blog}{blog posts}]: Developed open-source React component for Markdown rendering using TypeScript. Used notie-markdown to create \href{https://www.brandonyifanyang.com/notes}{course notes} and \href{https://www.brandonyifanyang.com/blog}{blog posts} on computer science and ML topics.
+  \item \textbf{\href{https://github.com/ewei2406/SmartOH}{SmartOH}} [\linkhref{https://github.com/ewei2406/SmartOH}{link}]: Developed AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd overall at VTHacks11 (Hackathon held at Virginia Tech) (3/393).
   \item \textbf{Voy}: Collaborated with 7 non-profits to develop Voy, a volunteer and driver management platform using Python and TypeScript; received \$1000 in funding from UVA's Entrepreneurship Cup.
 \end{itemize}
 
 \section{Programming Skills}
-\begin{itemize}
+\begin{itemize}[label={}, leftmargin=0pt]
   \item \textbf{Languages}: Python, C/C++, CUDA, Java, JavaScript, TypeScript, HTML/CSS
   \item \textbf{ML + Robotics}: PyTorch, TensorFlow, OpenCV, MuJoCo, ROS, IsaacGym, Habitat, RLBench, Maniskill
   \item \textbf{Other Tools \& Frameworks}: Git, Docker, Slurm, Linux, \LaTeX, React, Node.js, Express, Django
