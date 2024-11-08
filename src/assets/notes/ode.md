@@ -2970,7 +2970,7 @@ Therefore, we have $y(2) = 2 - 1 = 1$.
 
 </details>
 
-## Second-Order Differential Equations
+## Second-Order Linear Differential Equations
 
 <div class="subtitle">
 
@@ -3643,3 +3643,90 @@ y(t) &= c_1 \frac{1}{t} + c_2 \left( c_3 t^{\frac{1}{2}} + \frac{c_4}{t}\right) 
 $$
 
 </details>
+
+### Theory of 2nd Order Linear ODEs
+
+Expanding on the general form of the second-order linear ODE $\eqref{eq:second-order-ode}$, we can rewrite the equation, and create a general I.V.P.:
+
+$$
+\begin{align}
+y'' + p(t)y' + q(t)y &= g(t), \quad y(t_0) = y_0, \quad y'(t_0) = y_0'. \label{eq:second-order-ode-general} \\
+\end{align}
+$$
+
+<blockquote class="theorem">
+
+**Existence and Uniqueness Theorem of 2nd Order Linear ODEs**:
+
+Given the second-order linear ODE $\eqref{eq:second-order-ode-general}$, if $p(t), q(t), g(t)$ are continuous on an interval $I$ containing $t_0$, then there exists a unique solution $y(t)$ to the I.V.P. on $I$.
+
+</blockquote>
+
+<blockquote class="definition">
+
+Given $f$ and $g$ are two functions, the **Wronskian** of $f$ and $g$ is defined as:
+
+$$
+\begin{equation}
+W(f, g)=\left|\begin{array}{cc}
+f & g \\
+f^{\prime} & g^{\prime}
+\end{array}\right|=f g^{\prime}-f^{\prime} g. \label{eq:wronskian}
+\end{equation}
+$$
+
+We say that $f$ and $g$ are **linearly independent** if $W(f, g) \neq 0$.
+
+</blockquote>
+
+For example, the generation solution to 2nd order linear ODEs with distinct real roots in the characteristic equation $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$ is linearly independent. We can show this by using the Wronskian:
+
+$$
+W(e^{r_1t}, e^{r_2t}) = \left|\begin{array}{cc}
+e^{r_1t} & e^{r_2t} \\
+r_1e^{r_1t} & r_2e^{r_2t}
+\end{array}\right| = e^{r_1t}r_2e^{r_2t} - e^{r_2t}r_1e^{r_1t} = e^{(r_1 + r_2)t}(r_2 - r_1) \neq 0.
+$$
+
+### Nonhomogeneous Equations with Constant Coefficients
+
+<div class="subtitle">
+
+Section 3.5 in BOYCE, DIPRIMA.
+
+</div>
+
+A nonhomogeneous second-order linear ODE with constant coefficients is in the form:
+
+$$
+\begin{equation} \label{eq:second-order-ode-nonhomogeneous}
+ay'' + by' + cy = g(t),
+\end{equation}
+$$
+
+where $a, b, c$ are constants, and $g(t)$ is a continuous function. We can solve this ODE using the method of **undetermined coefficients**:
+
+1. Find the general solution of the corresponding homogeneous equation $ay'' + by' + cy = 0$.
+2. Make sure that the function $g(t)$ in $\eqref{eq:second-order-ode-nonhomogeneous}$ belongs to the following class of functions:
+
+    - Exponential functions $e^{rt}$,
+    - Sines and cosines $\sin(\omega t), \cos(\omega t)$,
+    - Polynomials $p(t)$,
+
+    or any sum _or_ product of these functions. If this is not the case, we need to use the method of **variation of parameters**.
+3. If $g(t)=g_1(t)+\cdots+g_n(t)$, when we form $n$ subproblems, where each subproblem has $g_i(t)$ as the nonhomogeneous term.
+4. For the $i^{\text{th}}$ subproblem, assume a **particular solution** $Y_i(t)$ consisting of the appropriate exponential function, sine, cosine, polynomial, or combination thereof. If there is any duplication in the assumed form of $Y_i(t)$ with the solutions of the homogeneous equation ($\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, $\eqref{eq:second-order-ode-homogeneous-solution-complex}$, or $\eqref{eq:second-order-ode-homogeneous-solution-repeated}$), then multiply $Y_i(t)$ by $t$ or (if necessary) by $t^2$ to remove the duplication. We use this table below to determine the form of $Y_i(t)$:
+
+    | $g_i(t)$ | $Y_i(t)$ |
+    | --- | --- |
+    | $P_n(t)=a_0 t^n+a_1 t^{n-1}+\cdots+a_n$ | $t^s\left(A_0 t^n+A_1 t^{n-1}+\cdots+A_n\right)$ |
+    |$P_n(t) e^{\alpha t}$ | $t^s\left(A_0 t^n+A_1 t^{n-1}+\cdots+A_n\right) e^{\alpha t}$ |
+    |$P_n(t) e^{\alpha t}\begin{cases}\sin \beta t\\ \cos \beta t \end{cases}$ | $\begin{aligned} & t^s\left(\left(A_0 t^n+A_1 t^{n-1}+\cdots+A_n\right) e^{\alpha t} \cos (\beta t)\right. \\ & \left.+\left(B_0 t^n+B_1 t^{n-1}+\cdots+B_n\right) e^{\alpha t} \sin (\beta t)\right)\end{aligned}$ |
+
+    where $s$ is the smallest integer such that $Y_i(t)$ does not duplicate any solution of the homogeneous equation.
+
+5. Find a particular solution $Y_i(t)$ for each of the subproblems. Then $Y_1(t)+\cdots+Y_n(t)$ is a particular solution of the full nonhomogeneous equation $\eqref{eq:second-order-ode-nonhomogeneous}$.
+
+6. Form the sum of the general solution of the homogeneous equation (step 1) and the particular solution of the nonhomogeneous equation (step 5). This is the general solution of the nonhomogeneous equation.
+
+7. When initial conditions are provided, use them to determine the values of the arbitrary constants remaining in the general solution.
