@@ -8,6 +8,7 @@ import NoteBlogCards from "./pages/NoteBlogCards";
 import NotesBlogs from "./pages/NoteBlog";
 import Courses from "./pages/Courses";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import ClustrMapsWidget from "./components/ClustrMapsWidget";
 
 const App = () => {
     const routes = [
@@ -59,6 +60,7 @@ const App = () => {
                     />
                 ))}
             </Routes>
+            <ClustrMapsWidget />
             <SpeedInsights />
         </>
     );
