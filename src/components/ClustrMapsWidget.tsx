@@ -22,10 +22,7 @@ const ClustrMapsWidget: React.FC = () => {
             ref={iframeRef}
             title="ClustrMaps Tracking"
             style={{
-                width: "0",
-                height: "0",
-                border: "none",
-                overflow: "hidden",
+                display: "none",
             }}
             aria-hidden="true"
         />
