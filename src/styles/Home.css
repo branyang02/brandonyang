@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding: var(--major-scale-2);
 }
 
 .profile-container {
@@ -15,8 +14,11 @@
         align-items: center;
     }
 
+    .home-text {
+        max-width: 80%;
+    }
+
     .profile-container {
-        margin-bottom: var(--major-scale-2);
         order: -1;
     }
 }

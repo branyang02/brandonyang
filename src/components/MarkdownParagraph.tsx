@@ -48,6 +48,8 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
     const parseText = (input: string) => {
         const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
         const colorRegex = /\[color:([^\]]+)\](.*?)\[\/color\]/g;
+        const boldRegex = /\*\*(.*?)\*\*/g;
+        const italicRegex = /(?:\*|_)(.*?)(?:\*|_)/g;
 
         const parts = [];
         let lastIndex = 0;
@@ -55,18 +57,29 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
         while (lastIndex < input.length) {
             linkRegex.lastIndex = lastIndex;
             colorRegex.lastIndex = lastIndex;
+            boldRegex.lastIndex = lastIndex;
+            italicRegex.lastIndex = lastIndex;
 
             const linkMatch = linkRegex.exec(input);
             const colorMatch = colorRegex.exec(input);
+            const boldMatch = boldRegex.exec(input);
+            const italicMatch = italicRegex.exec(input);
 
             let nextMatch = null;
-            if (
-                linkMatch &&
-                (!colorMatch || linkMatch.index <= colorMatch.index)
-            ) {
-                nextMatch = { type: "link", match: linkMatch };
-            } else if (colorMatch) {
-                nextMatch = { type: "color", match: colorMatch };
+            const matches = [
+                linkMatch,
+                colorMatch,
+                boldMatch,
+                italicMatch,
+            ].filter(Boolean);
+            if (matches.length > 0) {
+                nextMatch = matches.reduce(
+                    (closest, match) =>
+                        !closest || (match && match.index < closest.index)
+                            ? match
+                            : closest,
+                    null
+                );
             }
 
             if (!nextMatch) {
@@ -74,15 +87,15 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
                 break;
             }
 
-            if (nextMatch.match.index > lastIndex) {
-                parts.push(input.slice(lastIndex, nextMatch.match.index));
+            if (nextMatch.index > lastIndex) {
+                parts.push(input.slice(lastIndex, nextMatch.index));
             }
 
-            if (nextMatch.type === "link") {
-                const [, text, href] = nextMatch.match;
+            if (nextMatch === linkMatch) {
+                const [, text, href] = nextMatch;
                 parts.push(
                     <TextLink
-                        key={href + nextMatch.match.index}
+                        key={href + nextMatch.index}
                         href={href}
                         darkMode={darkMode}
                     >
@@ -90,11 +103,11 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
                     </TextLink>
                 );
                 lastIndex = linkRegex.lastIndex;
-            } else if (nextMatch.type === "color") {
-                const [, colorCode, text] = nextMatch.match;
+            } else if (nextMatch === colorMatch) {
+                const [, colorCode, text] = nextMatch;
                 parts.push(
                     <Strong
-                        key={colorCode + nextMatch.match.index}
+                        key={colorCode + nextMatch.index}
                         style={{ color: colorCode }}
                         size={TEXT_SIZE}
                     >
@@ -102,6 +115,30 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
                     </Strong>
                 );
                 lastIndex = colorRegex.lastIndex;
+            } else if (nextMatch === boldMatch) {
+                const [, text] = nextMatch;
+                parts.push(
+                    <Strong
+                        key={text + nextMatch.index}
+                        size={TEXT_SIZE}
+                        color={darkMode ? "tint2" : "default"}
+                    >
+                        {text}
+                    </Strong>
+                );
+                lastIndex = boldRegex.lastIndex;
+            } else if (nextMatch === italicMatch) {
+                const [, text] = nextMatch;
+                parts.push(
+                    <Text
+                        key={text + nextMatch.index}
+                        style={{ fontStyle: "italic" }}
+                        size={TEXT_SIZE}
+                    >
+                        {text}
+                    </Text>
+                );
+                lastIndex = italicRegex.lastIndex;
             }
         }
 
