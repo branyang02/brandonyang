@@ -3646,6 +3646,12 @@ $$
 
 ### Theory of 2nd Order Linear ODEs
 
+<div class="subtitle">
+
+Section 3.2 in BOYCE, DIPRIMA.
+
+</div>
+
 Expanding on the general form of the second-order linear ODE $\eqref{eq:second-order-ode}$, we can rewrite the equation, and create a general I.V.P.:
 
 $$
@@ -3668,27 +3674,27 @@ Given $f$ and $g$ are two functions, the **Wronskian** of $f$ and $g$ is defined
 
 $$
 \begin{equation}
-W(f, g)=\left|\begin{array}{cc}
+W[f, g]=\left|\begin{array}{cc}
 f & g \\
 f^{\prime} & g^{\prime}
 \end{array}\right|=f g^{\prime}-f^{\prime} g. \label{eq:wronskian}
 \end{equation}
 $$
 
-We say that $f$ and $g$ are **linearly independent** if $W(f, g) \neq 0$.
+We say that $f$ and $g$ are **linearly independent** if $W[f, g] \neq 0$.
 
 </blockquote>
 
 For example, the generation solution to 2nd order linear ODEs with distinct real roots in the characteristic equation $\eqref{eq:second-order-ode-homogeneous-solution-distinct}$ is linearly independent. We can show this by using the Wronskian:
 
 $$
-W(e^{r_1t}, e^{r_2t}) = \left|\begin{array}{cc}
+W[e^{r_1t}, e^{r_2t}] = \left|\begin{array}{cc}
 e^{r_1t} & e^{r_2t} \\
 r_1e^{r_1t} & r_2e^{r_2t}
 \end{array}\right| = e^{r_1t}r_2e^{r_2t} - e^{r_2t}r_1e^{r_1t} = e^{(r_1 + r_2)t}(r_2 - r_1) \neq 0.
 $$
 
-### Nonhomogeneous Equations with Constant Coefficients
+### Nonhomogeneous Equations; Method of Undetermined Coefficients
 
 <div class="subtitle">
 
@@ -3715,7 +3721,7 @@ where $a, b, c$ are constants, and $g(t)$ is a continuous function. We can solve
 
     or any sum _or_ product of these functions. If this is not the case, we need to use the method of **variation of parameters**.
 3. If $g(t)=g_1(t)+\cdots+g_n(t)$, when we form $n$ subproblems, where each subproblem has $g_i(t)$ as the nonhomogeneous term.
-4. For the $i^{\text{th}}$ subproblem, assume a **particular solution** $Y_i(t)$ consisting of the appropriate exponential function, sine, cosine, polynomial, or combination thereof. If there is any duplication in the assumed form of $Y_i(t)$ with the solutions of the homogeneous equation ($\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, $\eqref{eq:second-order-ode-homogeneous-solution-complex}$, or $\eqref{eq:second-order-ode-homogeneous-solution-repeated}$), then multiply $Y_i(t)$ by $t$ or (if necessary) by $t^2$ to remove the duplication. We use this table below to determine the form of $Y_i(t)$:
+4. For the $i^{\text{th}}$ subproblem, assume a **particular solution** $Y_i(t)$ consisting of the appropriate exponential function, sine, cosine, polynomial, or combination thereof. If there is any duplication in the assumed form of $Y_i(t)$ with the solutions of the homogeneous equation ($\eqref{eq:second-order-ode-homogeneous-solution-distinct}$, $\eqref{eq:second-order-ode-homogeneous-solution-repeated}$, $\eqref{eq:second-order-ode-homogeneous-solution-complex}$), then multiply $Y_i(t)$ by $t$ or (if necessary) by $t^2$ to remove the duplication. We use this table below to determine the form of $Y_i(t)$:
 
     | $g_i(t)$ | $Y_i(t)$ |
     | --- | --- |
@@ -3730,3 +3736,308 @@ where $a, b, c$ are constants, and $g(t)$ is a continuous function. We can solve
 6. Form the sum of the general solution of the homogeneous equation (step 1) and the particular solution of the nonhomogeneous equation (step 5). This is the general solution of the nonhomogeneous equation.
 
 7. When initial conditions are provided, use them to determine the values of the arbitrary constants remaining in the general solution.
+
+For example, suppose we have polynomial $g(t) = 3t^2 + 2t + 1$ in the nonhomogeneous equation, we can assume the particular solution $Y(t) = A t^2 + B t + C$, where $A, B, C$ are constants. We then substitute $Y(t)$ into the ODE, and solve for $A, B, C$. Similarly, if we have $g(t) = e^{3t}$, we can assume $Y(t) = A e^{3t}$, and solve for $A$. If we have $g(t) = 2 \cos(3t)$, we can assume $Y(t) = A \cos(3t) + B \sin(3t)$, and solve for $A, B$.
+
+<blockquote class="important">
+
+Always check if there is any duplication between the assumed form of $Y_i(t)$ and the solutions of the homogeneous equation. If there is, multiply $Y_i(t)$ by $t$ or $t^2$ to remove the duplication.
+
+</blockquote>
+
+<details><summary>Example Problems of Nonhomogeneous Equations; Method of Undetermined Coefficients</summary>
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' + 2y' + y = e^{5t}
+$$
+
+</blockquote>
+
+We first find the homogeneous solution of the ODE, where we have $r^2 + 2r + 1 = 0$, and $r_1 = r_2 = -1$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 e^{-t} + c_2 t e^{-t}.
+$$
+
+We then use the method of undetermined coefficients to find the particular solution. We assume $y_p(t) = A e^{5t}$ based on the table in this section, and we find the derivatives of $y_p(t)$:
+
+$$
+\begin{align*}
+    y_p(t) &= A e^{5t}, \\
+    y_p'(t) &= 5A e^{5t}, \\
+    y_p''(t) &= 25A e^{5t}.
+\end{align*}
+$$
+
+We then substitute $y_p(t), y_p'(t), y_p''(t)$ into the ODE:
+
+$$
+\begin{align*}
+    25A e^{5t} + 2 \cdot 5A e^{5t} + A e^{5t} &= e^{5t} \\
+    25A e^{5t} + 10A e^{5t} + A e^{5t} &= e^{5t} \\
+    36A e^{5t} &= e^{5t} \\
+    36A &= 1 \implies A = \frac{1}{36}.
+\end{align*}
+$$
+
+Therefore, we have the particular solution $y_p(t) = \frac{1}{36} e^{5t}$. We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1 e^{-t} + c_2 t e^{-t} + \frac{1}{36} e^{5t}.
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' - 4y' = 2 \cos (3t)
+$$
+
+</blockquote>
+
+We first find the homogeneous solution of the ODE, where we have $r^2 - 4r = 0$, and $r_1 = 0, r_2 = 4$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 + c_2 e^{4t}.
+$$
+
+Next, we find the particular solution. First, we observe $g(t) = 2 \cos (3t)$, which is a sum of sines and cosines. We assume $y_p(t) = A \cos (3t) + B \sin (3t)$ based on the table in this section, and we find the derivatives of $y_p(t)$:
+
+$$
+\begin{align*}
+    y_p(t) &= A \cos (3t) + B \sin (3t), \\
+    y_p'(t) &= -3A \sin (3t) + 3B \cos (3t), \\
+    y_p''(t) &= -9A \cos (3t) - 9B \sin (3t).
+\end{align*}
+$$
+
+We then substitute $y_p(t), y_p'(t), y_p''(t)$ into the ODE:
+
+$$
+\begin{align*}
+    -9A \cos (3t) - 9B \sin (3t) - 4(-3A \sin (3t) + 3B \cos (3t)) &= 2 \cos (3t) \\
+    -9A \cos (3t) - 9B \sin (3t) + 12A \sin (3t) - 12B \cos (3t) &= 2 \cos (3t) \\
+    (-9A - 12B) \cos (3t) + (-9B + 12A) \sin (3t) &= 2 \cos (3t) \\
+    -9A - 12B &= 2, \\
+    -9B + 12A &= 0.
+\end{align*}
+$$
+
+We then solve the system of equations using linear algebra to find $A$ and $B$:
+
+Write the system in matrix form:
+
+$$
+\begin{bmatrix}
+-9 & -12 \\
+12 & -9
+\end{bmatrix}
+\begin{bmatrix}
+A \\
+B
+\end{bmatrix}
+=
+
+\begin{bmatrix}
+2 \\
+0
+\end{bmatrix}
+$$
+
+Solving for the matrix equation, we get $A=-\frac{2}{25},\:B=-\frac{8}{75}$. Therefore, the particular solution is:
+
+$$
+y_p(t) = -\frac{2}{25} \cos (3t) - \frac{8}{75} \sin (3t).
+$$
+
+We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1 + c_2 e^{4t} - \frac{2}{25} \cos (3t) - \frac{8}{75} \sin (3t).
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' - 4y' = 5e^{4t}
+$$
+
+</blockquote>
+
+We first solve for the homogeneous solution of the ODE, where we have $r^2 - 4r = 0$, and $r_1 = 0, r_2 = 4$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 + c_2 e^{4t}.
+$$
+
+Next, we find the particular solution. First, we observe $g(t) = 5e^{4t}$, which is an exponential function. Therefore, we assume $y_p(t) = A e^{4t}$ based on the table in this section. However, since $e^{4t}$ is a solution to the homogeneous equation, we multiply $y_p(t)$ by $t$ to remove the duplication (reduction of order), which transforms $y_p(t) = tA e^{4t}$. We find the derivatives of $y_p(t)$:
+
+$$
+\begin{align*}
+    y_p(t) &= tA e^{4t}, \\
+    y_p'(t) &= A\left(e^{4t}+4e^{4t}t\right), \\
+    y_p''(t) &= A\left(16e^{4t}t+8e^{4t}\right).
+\end{align*}
+$$
+
+We then substitute $y_p(t), y_p'(t), y_p''(t)$ into the ODE:
+
+$$
+\begin{align*}
+    A\left(16e^{4t}t+8e^{4t}\right) - 4A\left(e^{4t}+4e^{4t}t\right) &= 5e^{4t} \\
+    16Ae^{4t}t+8Ae^{4t} - 4Ae^{4t}-16Ae^{4t}t &= 5e^{4t} \\
+    4Ae^{4t} &= 5e^{4t} \\
+    4A &= 5 \implies A = \frac{5}{4}.
+\end{align*}
+$$
+
+Therefore, we have the particular solution $y_p(t) = \frac{5}{4} t e^{4t}$. We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1 + c_2 e^{4t} + \frac{5}{4} t e^{4t}.
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' - 4y' = t + 5.
+$$
+
+</blockquote>
+
+We have already found $y_h(t) = c_1 + c_2 e^{4t}$ in the previous example. Next, we find the particular solution. First, we observe $g(t) = t + 5$, which is a polynomial. It is a polynomial of degree 1, so we can assume $y_p(t) = A t + B$ (also degree 1) based on the table in this section. However, since $B$ is part of the particular solution, and it already exists in the homogeneous solution as the constant $c_1$, we multiply $y_p(t)$ by $t$ to remove the duplication (reduction of order), which transforms $y_p(t) = t(A t + B) = A t^2 + B t$. We find the derivatives of $y_p(t)$:
+
+$$
+\begin{align*}
+    y_p(t) &= A t^2 + B t, \\
+    y_p'(t) &= 2A t + B, \\
+    y_p''(t) &= 2A.
+\end{align*}
+$$
+
+We then substitute $y_p(t), y_p'(t), y_p''(t)$ into the ODE:
+
+$$
+\begin{align*}
+    2A - 4(2A t + B) &= t + 5 \\
+    2A - 8A t - 4B &= t + 5 \\
+    -8At = t \implies A = -\frac{1}{8}, \\
+    2A - 4B = 5 \implies 2(-\frac{1}{8}) - 4B = 5 \implies B = -\frac{21}{16}.
+\end{align*}
+$$
+
+Therefore, we have the particular solution:
+
+$$
+y_p(t) = -\frac{1}{8} t^2 - \frac{21}{16} t.
+$$
+
+We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1 + c_2 e^{4t} - \frac{1}{8} t^2 - \frac{21}{16} t.
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the ODE:
+
+$$
+y'' - 2y' - 3y = te^{-t} + \cos(2t).
+$$
+
+</blockquote>
+
+First, we find the homogenous solution:
+
+$$
+\begin{align*}
+r^2 - 2r - 3 &= 0 \\
+(r - 3)(r + 1) &= 0 \\
+r_1 = 3, \quad r_2 &= -1 \\
+y_h(t) &= c_1 e^{3t} + c_2 e^{-t}.
+\end{align*}
+$$
+
+We have $g(t) = te^{-t} + \cos(2t)$. We break down this step by step for each term:
+
+1. For $g_1(t) = te^{-t}$, we assume $y_{p1}(t) = (At + B)e^{-t}$. However, since Ce^{-t} is a solution to the homogeneous equation, we multiply $y_{p1}(t)$ by $t$ to remove the duplication (reduction of order), which transforms $y_{p1}(t) = t(At + B)e^{-t} = At^2 e^{-t} + Bt e^{-t}$.
+2. For $g_2(t) = \cos(2t)$, we assume $y_{p2}(t) = A \cos(2t) + B \sin(2t)$.
+
+Next, we combine the particular solutions to get the general particular solution:
+
+$$
+y_p(t) = At^2 e^{-t} + Bt e^{-t} + C \cos(2t) + D \sin(2t),
+$$
+
+where $A, B, C, D$ are constants. We then compute the derivatives of $y_p(t)$, and solve for the constants using the ODE. Finally, we combine the homogeneous and particular solutions to get the general solution.
+
+<blockquote class="problem">
+
+Find the general form of the particular solution given the ODE:
+
+$$
+y'' + 2y' + y = 6e^{-t} + t.
+$$
+
+</blockquote>
+
+We first find the homogeneous solution of the ODE, where we have $r^2 + 2r + 1 = 0$, and $r_1 = r_2 = -1$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 e^{-t} + c_2 t e^{-t}.
+$$
+
+Next, we find the particular solution. First, we observe $g(t) = 6e^{-t} + t$, which is a sum of an exponential function and a polynomial. We proceed term by term:
+
+1. For $g_1(t) = 6e^{-t}$, we assume $y_{p1}(t) = A e^{-t}$. However, since $e^{-t}$ is a solution to the homogeneous equation, we multiply $y_{p1}(t)$ by $t$ to remove the duplication (reduction of order), which transforms $y_{p1}(t) = tA e^{-t}$. However, once again, $t e^{-t}$ is a solution to the homogeneous equation, so we multiply $y_{p1}(t)$ by $t$ again to remove the duplication, which transforms $y_{p1}(t) = t^2 A e^{-t}$.
+2. For $g_2(t) = t$, we assume $y_{p2}(t) = At + B$.
+
+Next, we combine the particular solutions to get the general particular solution:
+
+$$
+y_p(t) = A t^2 e^{-t} + B t + C,
+$$
+
+where $A, B, C$ are constants. We then compute the derivatives of $y_p(t)$, and solve for the constants using the ODE. Finally, we combine the homogeneous and particular solutions to get the general solution.
+
+<blockquote class="problem">
+
+Find the particular solution of the ODE:
+
+$$
+y'' + y = 3\cos(t) - t^3 - t.
+$$
+
+</blockquote>
+
+We first find the homogeneous solution of the ODE, where we have $r^2 + 1 = 0$, and $r_1 = i, r_2 = -i$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 \cos(t) + c_2 \sin(t).
+$$
+
+Next, we find the particular solution. We proceed term by term for $g(t) = 3\cos(t) - t^3 - t$:
+
+1. For $g_1(t) = 3\cos(t)$, we assume $y_{p1}(t) = A \cos(t) + B \sin(t)$. However, since both components already exist in the homogeneous solution, we multiply $y_{p1}(t)$ by $t$ to remove the duplication, which transforms $y_{p1}(t) = t(A \cos(t) + B \sin(t)) = At \cos(t) + Bt \sin(t)$.
+2. For $g_2(t) = -t^3$, we assume $y_{p2}(t) = At^3 + Bt^2 + Ct + D$.
+3. For $g_3(t) = -t$, we assume $y_{p3}(t) = At + B$.
+
+Next, we combine the particular solutions to get the general particular solution:
+
+$$
+y_p(t) = At \cos(t) + Bt \sin(t) + Ct^3 + Dt^2 + Et + F,
+$$
+
+where $A, B, C, D, E, F$ are constants. We then compute the derivatives of $y_p(t)$, and solve for the constants using the ODE. Finally, we combine the homogeneous and particular solutions to get the general solution.
+
+</details>
