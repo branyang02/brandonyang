@@ -4177,7 +4177,7 @@ The method of variation of parameters is used when the method of undetermined co
 
 </blockquote>
 
-<details open><summary>Example Problems of Nonhomogeneous Equations; Method of Variation of Parameters</summary>
+<details><summary>Example Problems of Nonhomogeneous Equations; Method of Variation of Parameters</summary>
 
 <blockquote class="problem">
 
@@ -4224,29 +4224,38 @@ $$
 Find the general solution of the given ODE:
 
 $$
-y'' + y' = \frac{e^t}{t^2+1}.
+y'' - 2y' + y = \frac{e^t}{t^2+1}.
 $$
 
 </blockquote>
 
-We first solve for the homogeneous solution, where we have $r^2 + r = 0$, and $r_1 = 0, r_2 = -1$. Therefore, the homogeneous solution is:
+We first solve for the homogeneous solution, where we have $r^2 - 2r + 1 = 0$, and $r_1 = r_2 = 1$, so the homogeneous solution is
 
 $$
-y_h(t) = c_1 + c_2 e^{-t}, \quad y_1 = 1, \quad y_2 = e^{-t}.
+y_h(t) = c1e^t + c2te^t, \quad y_1 = e^t, \quad y_2 = te^t.
 $$
 
-To solve for the particular solution, we first see that $g(t) = \frac{e^t}{t^2+1}$, then we compute the Wronskian:
+Next, we find the particular solution. We first observe $g(t) = \frac{e^t}{t^2+1}$, and then we compute the Wronskian:
 
 $$
-W[y_1, y_2] = \left| \begin{array}{cc} 1 & e^{-t} \\ 0 & -e^{-t} \end{array} \right| = -e^{-t}.
+W[y_1, y_2] = \left| \begin{array}{cc} e^t & te^t \\ e^t & (t+1)e^t \end{array} \right| = e^{2t}.
 $$
 
 We then find the particular solution using the formula:
 
 $$
 \begin{align*}
-y_p(t) &= -1 \int \frac{e^{-t} \frac{e^t}{t^2+1}}{-e^{-t}} dt + e^{-t} \int \frac{1 \frac{e^t}{t^2+1}}{-e^{-t}} dt \\
+y_p(t) &= -e^t \int \frac{te^t\frac{e^t}{t^2+1}}{e^{2t}} dt + te^t \int \frac{e^t\frac{e^t}{t^2+1}}{e^{2t}} dt \\
+&= -e^t \int \frac{t}{t^2+1} dt + te^t \int \frac{1}{t^2+1} dt \\
+&= -e^t \left( \frac{1}{2} \ln(t^2+1) \right) + te^t \left( \arctan(t) \right) \\
+&= -\frac{1}{2}e^t \ln(t^2+1) + te^t \arctan(t).
 \end{align*}
+$$
+
+We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1e^t + c_2te^t - \frac{1}{2}e^t \ln(t^2+1) + te^t \arctan(t).
 $$
 
 </details>
