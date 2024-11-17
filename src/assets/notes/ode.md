@@ -4041,3 +4041,212 @@ $$
 where $A, B, C, D, E, F$ are constants. We then compute the derivatives of $y_p(t)$, and solve for the constants using the ODE. Finally, we combine the homogeneous and particular solutions to get the general solution.
 
 </details>
+
+### Nonhomogeneous Equations; Method of Variation of Parameters
+
+<div class="subtitle">
+
+Section 3.6 in BOYCE, DIPRIMA.
+
+</div>
+
+<blockquote class="theorem">
+
+Consider the differential equation,
+
+$$
+y^{\prime \prime}+q(t) y^{\prime}+r(t) y=g(t)
+$$
+
+Assume that $y_1(t)$ and $y_2(t)$ are a fundamental set of solutions for the corresponding homogeneous equation
+
+$$
+y^{\prime \prime}+q(t) y^{\prime}+r(t) y=0
+$$
+
+Then a particular solution to the nonhomogeneous differential equation is,
+
+$$
+y_p(t)=-y_1 \int \frac{y_2 g(t)}{W\left(y_1, y_2\right)} d t+y_2 \int \frac{y_1 g(t)}{W\left(y_1, y_2\right)} d t
+$$
+
+</blockquote>
+
+<blockquote class="proof">
+
+We start with the second-order linear differential equation:
+$$
+y^{\prime \prime} + q(t) y^{\prime} + r(t) y = g(t)
+$$
+
+Assume $y_1(t)$ and $y_2(t)$ are a fundamental set of solutions to the corresponding homogeneous equation:
+$$
+y^{\prime \prime} + q(t) y^{\prime} + r(t) y = 0
+$$
+
+The general solution of the nonhomogeneous equation is the sum of the general solution of the homogeneous equation and a particular solution:
+$$
+y(t) = c_1 y_1(t) + c_2 y_2(t) + y_p(t)
+$$
+
+To find $y_p(t)$, we assume it takes the form:
+$$
+y_p(t) = u_1(t) y_1(t) + u_2(t) y_2(t),
+$$
+where $u_1(t)$ and $u_2(t)$ are functions to be determined.
+
+First, compute the derivatives of $y_p(t)$:
+$$
+y_p'(t) = u_1'(t) y_1(t) + u_1(t) y_1'(t) + u_2'(t) y_2(t) + u_2(t) y_2'(t),
+$$
+$$
+y_p''(t) = u_1''(t) y_1(t) + 2 u_1'(t) y_1'(t) + u_1(t) y_1''(t) + u_2''(t) y_2(t) + 2 u_2'(t) y_2'(t) + u_2(t) y_2''(t).
+$$
+
+Substitute $y_p(t)$, $y_p'(t)$, and $y_p''(t)$ into the nonhomogeneous equation:
+$$
+u_1'' y_1 + 2 u_1' y_1' + u_1 y_1'' + u_2'' y_2 + 2 u_2' y_2' + u_2 y_2''
++ q(t) \left( u_1' y_1 + u_1 y_1' + u_2' y_2 + u_2 y_2' \right)
++ r(t) \left( u_1 y_1 + u_2 y_2 \right) = g(t).
+$$
+
+Using the fact that $y_1$ and $y_2$ satisfy the homogeneous equation $y^{\prime \prime} + q(t) y^{\prime} + r(t) y = 0$, we simplify:
+$$
+u_1'' y_1 + 2 u_1' y_1' + u_2'' y_2 + 2 u_2' y_2' = g(t).
+$$
+
+To simplify the system, we impose the following condition:
+$$
+u_1'(t) y_1(t) + u_2'(t) y_2(t) = 0.
+$$
+
+This reduces the equation further:
+$$
+u_1' y_1' + u_2' y_2' = g(t).
+$$
+
+The system of equations for $u_1'(t)$ and $u_2'(t)$ becomes:
+$$
+\begin{aligned}
+& u_1'(t) y_1(t) + u_2'(t) y_2(t) = 0, \\
+& u_1'(t) y_1'(t) + u_2'(t) y_2'(t) = g(t).
+\end{aligned}
+$$
+
+We solve this system using determinants. Recall the definition of the Wronskian in $\eqref{eq:wronskian}$, and along with Cramer's Rule, we find:
+
+$$
+u_1'(t) = \frac{
+\begin{vmatrix}
+0 & y_2 \\
+g(t) & y_2'
+\end{vmatrix}
+}{W(y_1, y_2)}
+= \frac{-y_2 g(t)}{W(y_1, y_2)},
+$$
+$$
+u_2'(t) = \frac{
+\begin{vmatrix}
+y_1 & 0 \\
+y_1' & g(t)
+\end{vmatrix}
+}{W(y_1, y_2)}
+= \frac{y_1 g(t)}{W(y_1, y_2)}.
+$$
+
+Integrate $u_1'(t)$ and $u_2'(t)$:
+$$
+u_1(t) = -\int \frac{y_2 g(t)}{W(y_1, y_2)} \, dt,
+$$
+$$
+u_2(t) = \int \frac{y_1 g(t)}{W(y_1, y_2)} \, dt.
+$$
+
+Substitute $u_1(t)$ and $u_2(t)$ into $y_p(t)$:
+$$
+y_p(t) = -y_1(t) \int \frac{y_2 g(t)}{W(y_1, y_2)} \, dt + y_2(t) \int \frac{y_1 g(t)}{W(y_1, y_2)} \, dt.
+$$
+
+Thus, the particular solution to the nonhomogeneous differential equation is proven.
+
+</blockquote>
+
+<blockquote class="important">
+
+The method of variation of parameters is used when the method of undetermined coefficients fails to find a particular solution. The method of variation of parameters is more general and can be used to find a particular solution for any nonhomogeneous linear ODE.
+
+</blockquote>
+
+<details open><summary>Example Problems of Nonhomogeneous Equations; Method of Variation of Parameters</summary>
+
+<blockquote class="problem">
+
+Find the general solution of the given ODE:
+
+$$
+y'' + y' = e^{2t}
+$$
+
+</blockquote>
+
+We first find the homogeneous solution of the ODE, where we have $r^2 + r = 0$, and $r_1 = 0, r_2 = -1$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 + c_2 e^{-t}, \quad y_1 = 1, \quad y_2 = e^{-t}.
+$$
+
+To solve for the particular solution, we first see that $g(t) = e^{2t}$, then we compute the Wronskian:
+
+$$
+W[y_1, y_2] = \left| \begin{array}{cc} 1 & e^{-t} \\ 0 & -e^{-t} \end{array} \right| = -e^{-t}.
+$$
+
+We then find the particular solution using the formula:
+
+$$
+\begin{align*}
+y_p(t) &= -1 \int \frac{e^{-t}e^{2t}}{-e^{-t}} dt + e^{-t} \int \frac{1e^{2t}}{-e^{-t}} dt \\
+&= -\int -e^{2t} dt + e^{-t} \int -e^{3t} dt \\
+&= - \left( -\frac{1}{2}e^{2t} \right) + e^{-t} \left( -\frac{1}{3}e^{3t} \right) \\
+&= \frac{1}{2}e^{2t} - \frac{1}{3}e^{2t} \\
+&= \frac{1}{6}e^{2t}.
+\end{align*}
+$$
+
+We combine the homogeneous and particular solutions to get the general solution:
+
+$$
+y(t) = c_1 + c_2 e^{-t} + \frac{1}{6}e^{2t}.
+$$
+
+<blockquote class="problem">
+
+Find the general solution of the given ODE:
+
+$$
+y'' + y' = \frac{e^t}{t^2+1}.
+$$
+
+</blockquote>
+
+We first solve for the homogeneous solution, where we have $r^2 + r = 0$, and $r_1 = 0, r_2 = -1$. Therefore, the homogeneous solution is:
+
+$$
+y_h(t) = c_1 + c_2 e^{-t}, \quad y_1 = 1, \quad y_2 = e^{-t}.
+$$
+
+To solve for the particular solution, we first see that $g(t) = \frac{e^t}{t^2+1}$, then we compute the Wronskian:
+
+$$
+W[y_1, y_2] = \left| \begin{array}{cc} 1 & e^{-t} \\ 0 & -e^{-t} \end{array} \right| = -e^{-t}.
+$$
+
+We then find the particular solution using the formula:
+
+$$
+\begin{align*}
+y_p(t) &= -1 \int \frac{e^{-t} \frac{e^t}{t^2+1}}{-e^{-t}} dt + e^{-t} \int \frac{1 \frac{e^t}{t^2+1}}{-e^{-t}} dt \\
+\end{align*}
+$$
+
+</details>
