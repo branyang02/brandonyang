@@ -9,6 +9,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Helmet } from "react-helmet";
 import Giscus from "@giscus/react";
 import LastUpdated from "../components/LastUpdated";
+import { loadMarkdownModules } from "../utils/utils";
 
 const darkTheme = createTheme({
     palette: {
@@ -49,11 +50,6 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     };
 }
 
-const modules = import.meta.glob("../assets/*/*.md", {
-    query: "?raw",
-    import: "default",
-});
-
 const NotesBlogs = ({ type }: { type: string }) => {
     const [markdown, setMarkdown] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
@@ -61,21 +57,22 @@ const NotesBlogs = ({ type }: { type: string }) => {
     const { darkMode } = useDarkMode();
     const contentId = type === "notes" ? params.noteId : params.blogId;
 
-    const path = `../assets/${type}/${contentId}.md`;
-    const matchedModule = Object.keys(modules).find((key) =>
-        key.includes(path)
-    );
+    const modules = useMemo(() => loadMarkdownModules(), []);
 
     useEffect(() => {
+        const path = `../assets/${type}/${contentId}.md`;
+        const matchedModule = Object.keys(modules).find((key) =>
+            key.includes(path)
+        );
         async function fetchNotes() {
-            const markdown = await modules[matchedModule as string]();
-            const rawMDString = markdown as string;
-            setMarkdown(rawMDString);
+            if (!matchedModule) return;
+            const markdown = await modules[matchedModule]();
+            setMarkdown(markdown as string);
             setIsLoading(false);
         }
 
         fetchNotes();
-    }, [matchedModule]);
+    }, [contentId, modules, type]);
 
     const theme = useMemo(
         () => (darkMode ? "default dark" : "default"),

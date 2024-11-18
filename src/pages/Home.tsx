@@ -5,7 +5,7 @@ import { useDarkMode } from "../context/DarkModeContext";
 import "../styles/Home.css";
 import Experience from "../components/Experience";
 import { Helmet } from "react-helmet";
-import { countWordsAndEquations, getMarkdown } from "../utils/utils";
+import { countWordsAndEquations, getAllMarkdownString } from "../utils/utils";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -16,7 +16,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchCounts = async () => {
-            const markdown = await getMarkdown();
+            const markdown = await getAllMarkdownString();
             const { wordCount, equationCount, codeLineCount } =
                 countWordsAndEquations(markdown);
             setWordCount(wordCount);

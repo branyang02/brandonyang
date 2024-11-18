@@ -1,8 +1,3 @@
-const modules = import.meta.glob("../assets/*/*.md", {
-    query: "?raw",
-    import: "default",
-});
-
 export function countWordsAndEquations(markdown: string) {
     let wordCount = 0;
     let equationCount = 0;
@@ -83,11 +78,37 @@ export function countWordsAndEquations(markdown: string) {
     };
 }
 
-export async function getMarkdown() {
+export async function getAllMarkdownString() {
+    const modules = import.meta.glob("../assets/*/*.md", {
+        query: "?raw",
+        import: "default",
+    });
+
     let markdownString = "";
     for (const path in modules) {
         const rawMDString = await modules[path]();
         markdownString += `\n${rawMDString}`;
     }
     return markdownString;
+}
+
+export function loadNoteModules() {
+    return import.meta.glob("../assets/notes/*.md", {
+        query: "?raw",
+        import: "default",
+    });
+}
+
+export function loadBlogModules() {
+    return import.meta.glob("../assets/blog/*.md", {
+        query: "?raw",
+        import: "default",
+    });
+}
+
+export function loadMarkdownModules() {
+    return import.meta.glob("../assets/*/*.md", {
+        query: "?raw",
+        import: "default",
+    });
 }

@@ -1,17 +1,9 @@
 import { Card, Heading, majorScale, Pane, Text } from "evergreen-ui";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext";
 import { Helmet } from "react-helmet";
-
-const NoteModules = import.meta.glob("../assets/notes/*.md", {
-    query: "?raw",
-    import: "default",
-});
-const BlogModules = import.meta.glob("../assets/blog/*.md", {
-    query: "?raw",
-    import: "default",
-});
+import { loadBlogModules, loadNoteModules } from "../utils/utils";
 
 interface NotesMetaData {
     title?: string;
@@ -24,6 +16,8 @@ const NoteBlogCards = ({ type }: { type: string }) => {
     const [notesMetaData, setNotesMetaData] = useState<NotesMetaData[]>([]);
     const navigate = useNavigate();
     const { darkMode } = useDarkMode();
+    const NoteModules = useMemo(() => loadNoteModules(), []);
+    const BlogModules = useMemo(() => loadBlogModules(), []);
 
     useEffect(() => {
         async function fetchNotes() {
@@ -55,7 +49,7 @@ const NoteBlogCards = ({ type }: { type: string }) => {
         }
 
         fetchNotes();
-    }, [type]);
+    }, [BlogModules, NoteModules, type]);
 
     const handleCardClick = (path: string) => {
         navigate(path);
