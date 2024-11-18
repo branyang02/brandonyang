@@ -4588,7 +4588,7 @@ if $g(t)$ is an exponential function, polynomial, sine, cosine, sum/difference o
 
 The only difference between this and the $2^{\text {nd }}$ order material is that we might need to perform order of reduction (multiplying by $t$) more than twice.
 
-<details open><summary>Method of Undetermined Coefficients Examples</summary>
+<details><summary>Method of Undetermined Coefficients Examples</summary>
 
 <blockquote class="problem">
 

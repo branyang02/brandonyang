@@ -1,14 +1,7 @@
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    Link,
-    ListItem,
-    majorScale,
-    Pane,
-    UnorderedList,
-    Text,
-} from "evergreen-ui";
+import { Link, majorScale, Pane, Text, minorScale } from "evergreen-ui";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const Contact = () => {
@@ -34,32 +27,28 @@ const Contact = () => {
 
     return (
         <Pane padding={majorScale(1)}>
-            <UnorderedList>
-                {contactItems.map(({ icon, href, text }) => (
-                    <ListItem
-                        key={href}
-                        icon={
-                            <FontAwesomeIcon
-                                icon={icon}
-                                size="lg"
-                                color={darkMode ? "#c1c4d6" : undefined}
-                            />
-                        }
-                    >
-                        <Link
-                            href={href}
-                            marginRight={12}
-                            color="neutral"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Text color={darkMode ? "gray500" : "muted"}>
-                                {text}
-                            </Text>
-                        </Link>
-                    </ListItem>
-                ))}
-            </UnorderedList>
+            {contactItems.map(({ icon, href, text }) => (
+                <Link
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color="neutral"
+                    style={{
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginBottom: minorScale(1),
+                    }}
+                >
+                    <FontAwesomeIcon
+                        icon={icon}
+                        size="lg"
+                        color={darkMode ? "#c1c4d6" : "inherit"}
+                    />
+                    <Text color={darkMode ? "gray500" : "muted"}>{text}</Text>
+                </Link>
+            ))}
         </Pane>
     );
 };

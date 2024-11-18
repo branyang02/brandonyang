@@ -27,15 +27,15 @@ const Home = () => {
     }, []);
 
     const paragraphText = `
-        Hi! I am **Brandon**, a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/). I am passionate about the intersection of Robotics and Natural Language Processing (NLP). My current research focuses on empowering robots with advanced language understanding and interaction capabilities by improving robotic reasoning and manipulation using foundational language and vision models.
+        Hi! I am **Brandon**, a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/). I am passionate about the intersection of **Robotics** and **Natural Language Processing (NLP)**. My current research focuses on empowering robots with advanced language understanding and interaction capabilities by improving robotic reasoning and manipulation using foundational language and vision models.
         
-        I have worked with [Tariq Iqbal](https://www.tiqbal.com/) at the [Collaborative Robotics Lab](https://www.collabrobotics.com/) and am advised by [Yen-Ling Kuo](https://yenlingkuo.com/) for my undergraduate thesis. I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at the University of Maryland, College Park. I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
+        I have worked with [Tariq Iqbal](https://www.tiqbal.com/) at the [Collaborative Robotics Lab](https://www.collabrobotics.com/) and I am currently advised by [Yen-Ling Kuo](https://yenlingkuo.com/) for my undergraduate thesis. I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at the University of Maryland, College Park. I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
         
-       Specifically, I aim to:
+        My research interests and focuses include:
 
-        (1) **Develop embodied agents that follow and interact with natural language collaboratively.**
+        (1) **Developing embodied agents that follow and interact with natural language collaboratively.**
 
-        (2) **Leverage natural language for reasoning and planning to enable robots to navigate complex environments and solve long-horizon tasks.**
+        (2) **Leveraging natural language for reasoning and planning to enable robots to navigate complex environments and solve long-horizon tasks.**
 
         ${
             wordCount > 0 && equationCount > 0
