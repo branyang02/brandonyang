@@ -15,35 +15,22 @@ Fall 2024 | Author: Brandon Y. Yang
 #### Common Integrals
 
 $$
-\begin{align}
-    \int a \, dx &= ax + C \label{eq:constant}\\
-    \int x^n \, dx &= \frac{x^{n+1}}{n+1} + C, \quad n \neq -1 \label{eq:power}\\
-    \int \frac{1}{x} \, dx &= \ln |x| + C \label{eq:logarithm}\\
-    \int e^x \, dx &= e^x + C \label{eq:exponential}\\
-    \int a^x \, dx &= \frac{a^x}{\ln a} + C, \quad a > 0, a \neq 1 \label{eq:general_exponential}\\
-    \int \sin x \, dx &= -\cos x + C \label{eq:sine}\\
-    \int \cos x \, dx &= \sin x + C \label{eq:cosine}\\
-    \int \tan x \, dx &= -\ln |\cos x| + C \label{eq:tangent}\\
-    \int \cot x \, dx &= \ln |\sin x| + C \label{eq:cotangent}\\
-    \int \sec x \, dx &= \ln |\sec x + \tan x| + C \label{eq:secant}\\
-    \int \csc x \, dx &= -\ln |\csc x + \cot x| + C \label{eq:cosecant}\\
-    \int \sec^2 x \, dx &= \tan x + C \label{eq:secant_squared}\\
-    \int \csc^2 x \, dx &= -\cot x + C \label{eq:cosecant_squared}\\
-    \int \sec x \tan x \, dx &= \sec x + C \label{eq:secant_tangent}\\
-    \int \csc x \cot x \, dx &= -\csc x + C \label{eq:cosecant_cotangent}\\
-    \int \sinh x \, dx &= \cosh x + C \label{eq:hyperbolic_sine}\\
-    \int \cosh x \, dx &= \sinh x + C \label{eq:hyperbolic_cosine}\\
-    \int \tanh x \, dx &= \ln |\cosh x| + C \label{eq:hyperbolic_tangent}\\
-    \int \text{coth} \, x \, dx &= \ln |\sinh x| + C \label{eq:hyperbolic_cotangent}\\
-    \int \text{sech}^2 x \, dx &= \tanh x + C \label{eq:hyperbolic_secant_squared}\\
-    \int \text{csch}^2 x \, dx &= -\text{coth} \, x + C \label{eq:hyperbolic_cosecant_squared}\\
-    \int \frac{1}{\sqrt{1 - x^2}} \, dx &= \arcsin x + C \label{eq:arc_sine}\\
-    \int \frac{-1}{\sqrt{1 - x^2}} \, dx &= \arccos x + C \label{eq:arc_cosine}\\
-    \int \frac{1}{1 + x^2} \, dx &= \arctan x + C \label{eq:arc_tangent}\\
-    \int \frac{-1}{1 + x^2} \, dx &= \text{arccot} \, x + C \label{eq:arc_cotangent}\\
-    \int \frac{1}{x \sqrt{x^2 - 1}} \, dx &= \text{arcsec} \, x + C \label{eq:arc_secant}\\
-    \int \frac{-1}{x \sqrt{x^2 - 1}} \, dx &= \text{arccsc} \, x + C \label{eq:arc_cosecant}
-\end{align}
+\begin{align*}
+    \int a \, dx &= ax + C & \int x^n \, dx &= \frac{x^{n+1}}{n+1} + C, \quad n \neq -1 \\
+    \int \frac{1}{x} \, dx &= \ln |x| + C & \int e^x \, dx &= e^x + C \\
+    \int a^x \, dx &= \frac{a^x}{\ln a} + C, \quad a > 0, a \neq 1 & \int \sin x \, dx &= -\cos x + C \\
+    \int \cos x \, dx &= \sin x + C & \int \tan x \, dx &= -\ln |\cos x| + C \\
+    \int \cot x \, dx &= \ln |\sin x| + C & \int \sec x \, dx &= \ln |\sec x + \tan x| + C \\
+    \int \csc x \, dx &= -\ln |\csc x + \cot x| + C & \int \sec^2 x \, dx &= \tan x + C \\
+    \int \csc^2 x \, dx &= -\cot x + C & \int \sec x \tan x \, dx &= \sec x + C \\
+    \int \csc x \cot x \, dx &= -\csc x + C & \int \sinh x \, dx &= \cosh x + C \\
+    \int \cosh x \, dx &= \sinh x + C & \int \tanh x \, dx &= \ln |\cosh x| + C \\
+    \int \text{coth} \, x \, dx &= \ln |\sinh x| + C & \int \text{sech}^2 x \, dx &= \tanh x + C \\
+    \int \text{csch}^2 x \, dx &= -\text{coth} \, x + C & \int \frac{1}{\sqrt{1 - x^2}} \, dx &= \arcsin x + C \\
+    \int \frac{-1}{\sqrt{1 - x^2}} \, dx &= \arccos x + C & \int \frac{1}{1 + x^2} \, dx &= \arctan x + C \\
+    \int \frac{-1}{1 + x^2} \, dx &= \text{arccot} \, x + C & \int \frac{1}{x \sqrt{x^2 - 1}} \, dx &= \text{arcsec} \, x + C \\
+    \int \frac{-1}{x \sqrt{x^2 - 1}} \, dx &= \text{arccsc} \, x + C
+\end{align*}
 $$
 
 #### Trigonometric Identities
@@ -65,6 +52,74 @@ $$
 \sin(\alpha \pm \beta) = \sin(\alpha) \cos(\beta) \pm \cos(\alpha) \sin(\beta).
 \end{equation}
 $$
+
+```tikz
+\begin{document}
+    \begin{tikzpicture}[scale=5.3,cap=round,>=latex]
+        % draw the coordinates
+        \draw[->] (-1.5cm,0cm) -- (1.5cm,0cm) node[right] {$x$};
+        \draw[->] (0cm,-1.5cm) -- (0cm,1.5cm) node[above] {$y$};
+
+        % draw the unit circle
+        \draw[thick] (0cm,0cm) circle(1cm);
+
+        \foreach \x in {0,30,...,360} {
+                % lines from center to point
+                \draw[gray] (0cm,0cm) -- (\x:1cm);
+                % dots at each point
+                \filldraw[black] (\x:1cm) circle(0.4pt);
+                % draw each angle in degrees
+                \draw (\x:0.6cm) node[] {$\x^\circ$};
+        }
+
+        % draw each angle in radians
+        \foreach \x/\xtext in {
+            30/\frac{\pi}{6},
+            45/\frac{\pi}{4},
+            60/\frac{\pi}{3},
+            90/\frac{\pi}{2},
+            120/\frac{2\pi}{3},
+            135/\frac{3\pi}{4},
+            150/\frac{5\pi}{6},
+            180/\pi,
+            210/\frac{7\pi}{6},
+            225/\frac{5\pi}{4},
+            240/\frac{4\pi}{3},
+            270/\frac{3\pi}{2},
+            300/\frac{5\pi}{3},
+            315/\frac{7\pi}{4},
+            330/\frac{11\pi}{6},
+            360/2\pi}
+                \draw (\x:0.85cm) node[] {$\xtext$};
+
+        \foreach \x/\xtext/\y in {
+            % the coordinates for the first quadrant
+            30/\frac{\sqrt{3}}{2}/\frac{1}{2},
+            45/\frac{\sqrt{2}}{2}/\frac{\sqrt{2}}{2},
+            60/\frac{1}{2}/\frac{\sqrt{3}}{2},
+            % the coordinates for the second quadrant
+            150/-\frac{\sqrt{3}}{2}/\frac{1}{2},
+            135/-\frac{\sqrt{2}}{2}/\frac{\sqrt{2}}{2},
+            120/-\frac{1}{2}/\frac{\sqrt{3}}{2},
+            % the coordinates for the third quadrant
+            210/-\frac{\sqrt{3}}{2}/-\frac{1}{2},
+            225/-\frac{\sqrt{2}}{2}/-\frac{\sqrt{2}}{2},
+            240/-\frac{1}{2}/-\frac{\sqrt{3}}{2},
+            % the coordinates for the fourth quadrant
+            330/\frac{\sqrt{3}}{2}/-\frac{1}{2},
+            315/\frac{\sqrt{2}}{2}/-\frac{\sqrt{2}}{2},
+            300/\frac{1}{2}/-\frac{\sqrt{3}}{2}}
+                \draw (\x:1.25cm) node[] {$\left(\xtext,\y\right)$};
+
+        % draw the horizontal and vertical coordinates
+        % the placement is better this way
+        \draw (-1.25cm,0cm) node[above=1pt] {$(-1,0)$}
+              (1.25cm,0cm)  node[above=1pt] {$(1,0)$}
+              (0cm,-1.25cm) node[] {$(0,-1)$}
+              (0cm,1.25cm)  node[] {$(0,1)$};
+    \end{tikzpicture}
+\end{document}
+```
 
 #### Common Formulas
 
@@ -4257,5 +4312,351 @@ We combine the homogeneous and particular solutions to get the general solution:
 $$
 y(t) = c_1e^t + c_2te^t - \frac{1}{2}e^t \ln(t^2+1) + te^t \arctan(t).
 $$
+
+</details>
+
+## Higher-Order Linear Differential Equations
+
+An $n^{\text {th }}$ order linear differential equation is an equation of the form
+
+$$
+\begin{equation} \label{eq:higher-order-ode}
+P_0(t) \frac{d^n y}{d t^n}+P_1(t) \frac{d^{n-1} y}{d t^{n-1}}+\cdots+P_{n-1}(t) \frac{d y}{d t}+P_n(t) y=G(t),
+\end{equation}
+$$
+
+where $P_0, \ldots, P_n$ and $G$ are given functions of $t$, and $P_0(t) \neq 0$ for all $t$ in some interval $I$.
+
+We assume that the functions $P_0, \ldots, P_n$, and $G$ are continuous real-valued functions on some interval $I: \alpha<t<\beta$, and that $P_0$ is nowhere zero in this interval. Then, dividing equation (1) by $P_0(t)$, we obtain the standard form of the $n^{\text {th }}$ order **linear** differential equation:
+
+$$
+\begin{equation} \label{eq:linear-higher-order-ode}
+L[y]=\frac{d^n y}{d t^n}+p_1(t) \frac{d^{n-1} y}{d t^{n-1}}+\cdots+p_{n-1}(t) \frac{d y}{d t}+p_n(t) y=g(t).
+\end{equation}
+$$
+
+### Higher-Order Linear Homogeneous Differential Equations with Constant Coefficients
+
+<div class="subtitle">
+
+Section 4.2 in BOYCE, DIPRIMA.
+
+</div>
+
+Consider the $n^{\text {th }}$ order linear homogeneous differential equation
+
+$$
+\begin{equation} \label{eq:higher-order-ode-homogeneous}
+L[y]=a_0 y^{(n)}+a_1 y^{(n-1)}+\cdots+a_{n-1} y^{\prime}+a_n y=0
+\end{equation}
+$$
+
+where $a_0, a_1, \ldots, a_n$ are real constants and $a_0 \neq 0$. Similar to the second-order linear homogeneous differential equation, we compute the characteristic equation:
+
+$$
+\begin{equation} \label{eq:higher-order-ode-characteristic}
+Z(r)=a_0 r^n+a_1 r^{n-1}+\cdots+a_{n-1} r+a_n = 0
+\end{equation}
+$$
+
+The characteristic equation has $n$ roots $r_1, r_2, \ldots, r_n$, which can be real and distinct, real and repeated, or complex. We discuss the solutions for each case below.
+
+1. **Real and Distinct Roots**: If the roots are real and distinct, then the corresponding solutions are:
+
+    $$
+    \begin{align*}
+    y_1(t) &= e^{r_1 t}, \\
+    y_2(t) &= e^{r_2 t}, \\
+    &\vdots \\
+    y_n(t) &= e^{r_n t}.
+    \end{align*}
+    $$
+
+2. **Real and Repeated Roots**: If a root of $Z(r)=0$, say $r=r_1$, has multiplicity $s$ (where $s \leq n$ ), then the corresponding solutions are:
+
+    $$
+    \begin{align*}
+    y_1(t) &= e^{r_1 t}, \\
+    y_2(t) &= t e^{r_1 t}, \\
+    &\vdots \\
+    y_s(t) &= t^{s-1} e^{r_1 t}.
+    \end{align*}
+    $$
+
+3. **Complex Roots**: If the roots are complex, they must come in pairs of the form $r = \mu \pm \epsilon i$. The corresponding solutions are:
+
+    $$
+    \begin{align*}
+    y_1(t) &= e^{\mu t} \cos(\epsilon t), \\
+    y_2(t) &= e^{\mu t} \sin(\epsilon t).
+    \end{align*}
+    $$
+
+4. **Complex and Repeated Roots**: Note that a complex root can be repeated only if the differential equation $\eqref{eq:higher-order-ode-homogeneous}$ is of order four or higher. If a complex root $r = \mu + \epsilon i$ is repeated $s$ times, the complex conjugate $\mu - \epsilon i$ is also repeated $s$ times. The corresponding solutions are:
+
+    $$
+    \begin{align*}
+    \text{1st pair:} &
+    \begin{cases}
+    y_1(t) &= e^{\mu t} \cos(\epsilon t), \\
+    y_2(t) &= e^{\mu t} \sin(\epsilon t), \\
+    \end{cases} \\
+    \text{2nd pair:} &
+    \begin{cases}
+    y_3(t) &= t e^{\mu t} \cos(\epsilon t), \\
+    y_4(t) &= t e^{\mu t} \sin(\epsilon t), \\
+    \end{cases} \\
+    &\vdots \\
+    \text{s-th pair:} &
+    \begin{cases}
+    y_{2s-1}(t) &= t^{s-1} e^{\mu t} \cos(\epsilon t), \\
+    y_{2s}(t) &= t^{s-1} e^{\mu t} \sin(\epsilon t).
+    \end{cases}
+    \end{align*}
+    $$
+
+<details><summary>Example Problems of Higher-Order Linear Homogeneous Differential Equations with Constant Coefficients</summary>
+
+<blockquote class="problem">
+
+Find the general solution of
+
+$$
+y^{(4)}+y^{\prime \prime \prime}-7 y^{\prime \prime}-y^{\prime}+6 y=0 .
+$$
+
+Also find the solution that satisfies the initial conditions
+
+$$
+y(0)=1, \quad y^{\prime}(0)=0, \quad y^{\prime \prime}(0)=-2, \quad y^{\prime \prime \prime}(0)=-1 .
+$$
+
+</blockquote>
+
+We first find the characteristic equation:
+
+$$
+r^4 + r^3 - 7r^2 - r + 6 = 0.
+$$
+
+We then find $r_1 = 1, r_2 = -1, r_3 = 2, r_4 = -3$. Therefore, the general solution is:
+
+$$
+y(t) = c_1 e^t + c_2 e^{-t} + c_3 e^{2t} + c_4 e^{-3t}.
+$$
+
+The initial conditions require that $c_1, \ldots, c_4$ satisfy the four equations
+
+$$
+\begin{align*}
+& c_1+c_2+c_3+c_4=1, \\
+& c_1-c_2+2 c_3-3 c_4=0, \\
+& c_1+c_2+4 c_3+9 c_4=-2, \\
+& c_1-c_2+8 c_3-27 c_4=-1 .
+\end{align*}
+$$
+
+By solving this system of four linear algebraic equations, we find that
+
+$$
+c_1=\frac{11}{8}, \quad c_2=\frac{5}{12}, \quad c_3=-\frac{2}{3}, \quad c_4=-\frac{1}{8} .
+$$
+
+Thus the solution of the initial value problem is
+
+$$
+y=\frac{11}{8} e^t+\frac{5}{12} e^{-t}-\frac{2}{3} e^{2 t}-\frac{1}{8} e^{-3 t} .
+$$
+
+<blockquote class="problem">
+
+Find the general solution of
+
+$$
+y^{(4)}-y=0 \text {. }
+$$
+
+</blockquote>
+
+We have the corresponding characteristic equation:
+
+$$
+r^4-1=\left(r^2-1\right)\left(r^2+1\right) = (r + 1)(r - 1)(r^2 + 1) = 0.
+$$
+
+We have roots $r = -1, 1, i, -i$, which corresponds to the solutions:
+
+$$
+\begin{align*}
+y_1(t) &= e^{-t}, \\
+y_2(t) &= e^t, \\
+y_3(t) &= \cos(t), \\
+y_4(t) &= \sin(t).
+\end{align*}
+$$
+
+Therefore, the general solution is:
+
+$$
+y(t) = c_1 e^{-t} + c_2 e^t + c_3 \cos(t) + c_4 \sin(t).
+$$
+
+<blockquote class="problem">
+
+Find the general solution of
+
+$$
+y^{(4)}+2 y^{\prime \prime}+y=0 .
+$$
+
+</blockquote>
+
+The characteristic equation is
+
+$$
+r^4+2 r^2+1=\left(r^2+1\right)\left(r^2+1\right)=0 .
+$$
+
+We have roots $r_1 = i, r_2 = -i, r_3 = i, r_4 = -i$, which corresponds to the solutions:
+
+$$
+\begin{align*}
+y_1(t) &= \cos t, \\
+y_2(t) &= \sin t, \\
+y_3(t) &= t \cos t, \\
+y_4(t) &= t \sin t.
+\end{align*}
+$$
+
+Therefore, the general solution is:
+
+$$
+y(t) = c_1 \cos t + c_2 \sin t + c_3 t \cos t + c_4 t \sin t.
+$$
+
+</details>
+
+#### Find Roots of the Characteristic Equation
+
+In determining the roots of the characteristic equation, it may be necessary to compute the cube roots, the fourth roots, or even higher roots of a (possibly complex) number. This can usually be done most conveniently by using Euler's formula $\eqref{eq:euler-formula}$.
+
+For example, suppose we have ODE $y^{(4)}+y=0$, with corresponding characteristic equation $r^4 + 1 = 0$. We need to solve the equation $r^4 = -1$. First, we rewrite $-1$ as a complex number:
+
+$$
+-1 = -1 + 0i.
+$$
+
+Then, we convert $-1$ to polar form using Euler's formula $\eqref{eq:euler-formula}$:
+
+$$
+-1 = -1 + 0i = \cos \pi + i \sin \pi = e^{i \pi}.
+$$
+
+Moreover, because $\sin (x)$ and $\cos (x)$ both have period $2 \pi$, the angle is determined only up to a multiple of $2 \pi$ :
+
+$$
+-1=\cos (\pi+2 m \pi)+i \sin (\pi+2 m \pi)=e^{i(\pi+2 m \pi)}
+$$
+
+where $m$ is zero or any positive or negative integer. Now, by the properties of exponents,
+
+$$
+(-1)^{1 / 4}=\left(e^{i(\pi+2 m \pi)}\right)^{1 / 4}=e^{i(\pi / 4+m \pi / 2)}=\cos \left(\frac{\pi}{4}+\frac{m \pi}{2}\right)+i \sin \left(\frac{\pi}{4}+\frac{m \pi}{2}\right) .
+$$
+
+The four fourth roots of -1 are obtained by setting $m=0,1,2$, and 3 ; they are
+
+$$
+\frac{1+i}{\sqrt{2}}, \quad \frac{-1+i}{\sqrt{2}}, \quad \frac{-1-i}{\sqrt{2}}, \quad \frac{1-i}{\sqrt{2}} .
+$$
+
+### Higher-Order Linear Nonhomogeneous Differential Equations: Method of Undetermined Coefficients
+
+<div class="subtitle">
+
+Section 4.3 in BOYCE, DIPRIMA.
+
+</div>
+
+Given the differential equation,
+
+$$
+y^{(n)}+p_{n-1}(t) y^{(n-1)}+\cdots+p_1(t) y^{\prime}+p_0(t) y=g(t)
+$$
+
+if $g(t)$ is an exponential function, polynomial, sine, cosine, sum/difference of one of these and/or a product of one of these then we guess the form of a particular solution using the same guidelines that we used in the $2^{\text {nd }}$ order material. We then plug the guess into the differential equation, simplify and set the coefficients equal to solve for the constants.
+
+The only difference between this and the $2^{\text {nd }}$ order material is that we might need to perform order of reduction (multiplying by $t$) more than twice.
+
+<details open><summary>Method of Undetermined Coefficients Examples</summary>
+
+<blockquote class="problem">
+
+Solve the following differential equation.
+
+$$
+y^{(3)}-12 y^{\prime \prime}+48 y^{\prime}-64 y=12-32 e^{-8 t}+2 e^{4 t}
+$$
+
+</blockquote>
+
+We first need the complementary solution so the characteristic equation is,
+
+$$
+r^3-12 r^2+48 r-64=(r-4)^3=0 \quad \Rightarrow \quad r_1=r_2=r_3=4
+$$
+
+We've got a single root of multiplicity 3 so the complementary solution is,
+
+$$
+y_c(t)=c_1 \mathbf{e}^{4 t}+c_2 t \mathbf{e}^{4 t}+c_3 t^2 \mathbf{e}^{4 t}
+$$
+
+Now, our first guess for a particular solution is,
+
+$$
+Y_P=A+B \mathrm{e}^{-8 t}+C \mathrm{e}^{4 t}
+$$
+
+Notice that the last term in our guess is in the complementary solution so we'll need to add one at least one $t$ to the third term in our guess. Also notice that multiplying the third term by either $t$ or $t^2$ will result in a new term that is still in the complementary solution and so we'll need to multiply the third term by $t^3$ in order to get a term that is not contained in the complementary solution.
+
+Our final guess is then,
+
+$$
+Y_P=A+B \mathrm{e}^{-8 t}+C t^3 \mathrm{e}^{4 t}
+$$
+
+Now all we need to do is take three derivatives of this, plug this into the differential equation and simplify to get (we'll leave it to you to verify the work here),
+
+$$
+-64 A-1728 B e^{-8 t}+6 C e^{4 t}=12-32 e^{-8 t}+2 e^{4 t}
+$$
+
+Setting coefficients equal and solving gives,
+
+$$
+\begin{aligned}
+t^0: & -64 A & =12 \\
+\mathrm{e}^{-8 t}: & -1728 B & =-32 \\
+\mathrm{e}^{4 t}: & 6 C & =2
+\end{aligned} \quad \Rightarrow \quad \begin{aligned}
+A & =-\frac{3}{16} \\
+&
+\end{aligned}
+$$
+
+A particular solution is then,
+
+$$
+Y_P=-\frac{3}{16}+\frac{1}{54} \mathbf{e}^{-8 t}+\frac{1}{3} t^3 \mathbf{e}^{4 t}
+$$
+
+The general solution to this differential equation is then,
+
+$$
+y(t)=c_1 \mathrm{e}^{4 t}+c_2 t \mathrm{e}^{4 t}+c_3 t^2 \mathrm{e}^{4 t}-\frac{3}{16}+\frac{1}{54} \mathbf{e}^{-8 t}+\frac{1}{3} t^3 \mathrm{e}^{4 t}
+$$
+
+Note: this problem is copied from [Paul's Online Notes: Section 7.3 : Undetermined Coefficients](https://tutorial.math.lamar.edu/classes/de/HOUndeterminedCoeff.aspx)
 
 </details>
