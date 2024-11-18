@@ -3749,7 +3749,7 @@ r_1e^{r_1t} & r_2e^{r_2t}
 \end{array}\right| = e^{r_1t}r_2e^{r_2t} - e^{r_2t}r_1e^{r_1t} = e^{(r_1 + r_2)t}(r_2 - r_1) \neq 0.
 $$
 
-### Nonhomogeneous Equations; Method of Undetermined Coefficients
+### Nonhomogeneous Equations: Method of Undetermined Coefficients
 
 <div class="subtitle">
 
@@ -4097,7 +4097,7 @@ where $A, B, C, D, E, F$ are constants. We then compute the derivatives of $y_p(
 
 </details>
 
-### Nonhomogeneous Equations; Method of Variation of Parameters
+### Nonhomogeneous Equations: Method of Variation of Parameters
 
 <div class="subtitle">
 
