@@ -23,6 +23,8 @@ const lightTheme = createTheme({
     },
 });
 
+const latexThemeContentIDs = ["ml", "ode", "flow-matching"];
+
 function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     const baseTheme: NotieTheme = darkMode
         ? { backgroundColor: "#333" }
@@ -38,14 +40,14 @@ function getConfig(contentId: string, darkMode: boolean): NotieConfig {
         tocMarker: false,
     };
 
-    const mergedTheme: NotieTheme =
-        contentId === "ml" || contentId === "ode"
-            ? { ...baseTheme, ...latexTheme }
-            : baseTheme;
+    const mergedTheme: NotieTheme = latexThemeContentIDs.includes(contentId)
+        ? { ...baseTheme, ...latexTheme }
+        : baseTheme;
 
     return {
-        fontSize:
-            contentId === "ml" || contentId === "ode" ? "1.05em" : undefined,
+        fontSize: latexThemeContentIDs.includes(contentId)
+            ? "1.05em"
+            : undefined,
         theme: mergedTheme,
     };
 }
