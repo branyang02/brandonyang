@@ -58,7 +58,7 @@ X_t = tX_1 + (1-t)X_0 \sim p_t.
 \end{equation}
 $$
 
-### FM training
+### Flow Matching training
 
 We can now continue with the second step in the FM recipe: regression our velocity field $u_t^\theta$ to a target velocity field $u_t$ known to generate the desired probability path $p_t$. We define the **Flow Matching loss**:
 
