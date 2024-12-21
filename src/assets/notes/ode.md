@@ -3749,7 +3749,7 @@ r_1e^{r_1t} & r_2e^{r_2t}
 \end{array}\right| = e^{r_1t}r_2e^{r_2t} - e^{r_2t}r_1e^{r_1t} = e^{(r_1 + r_2)t}(r_2 - r_1) \neq 0.
 $$
 
-### Nonhomogeneous Equations: Method of Undetermined Coefficients
+### Method of Undetermined Coefficients
 
 <div class="subtitle">
 
@@ -4097,7 +4097,7 @@ where $A, B, C, D, E, F$ are constants. We then compute the derivatives of $y_p(
 
 </details>
 
-### Nonhomogeneous Equations: Method of Variation of Parameters
+### Method of Variation of Parameters
 
 <div class="subtitle">
 
@@ -4335,7 +4335,7 @@ L[y]=\frac{d^n y}{d t^n}+p_1(t) \frac{d^{n-1} y}{d t^{n-1}}+\cdots+p_{n-1}(t) \f
 \end{equation}
 $$
 
-### Higher-Order Linear Homogeneous Differential Equations with Constant Coefficients
+### Homogeneous Differential Equations with Constant Coefficients
 
 <div class="subtitle">
 
@@ -4570,7 +4570,7 @@ $$
 \frac{1+i}{\sqrt{2}}, \quad \frac{-1+i}{\sqrt{2}}, \quad \frac{-1-i}{\sqrt{2}}, \quad \frac{1-i}{\sqrt{2}} .
 $$
 
-### Higher-Order Linear Nonhomogeneous Differential Equations: Method of Undetermined Coefficients
+### Method of Undetermined Coefficients
 
 <div class="subtitle">
 
@@ -4660,3 +4660,145 @@ $$
 Note: this problem is copied from [Paul's Online Notes: Section 7.3 : Undetermined Coefficients](https://tutorial.math.lamar.edu/classes/de/HOUndeterminedCoeff.aspx)
 
 </details>
+
+## Series Solutions to Differential Equations
+
+### Review of Power Series
+
+A power series is a series of the form
+
+$$
+\begin{equation} \label{eq:power-series}
+f(x) = \sum_{n=0}^{\infty} a_n (x - x_0)^n = a_0 + a_1 (x - x_0) + a_2 (x - x_0)^2 + \cdots
+\end{equation}
+$$
+
+where $a_n$ are constants and $x_0$ is a fixed number. We say that the power series $\eqref{eq:power-series}$ converges for $x = c$ if the series
+
+$$
+\begin{equation} \label{eq:power-series-convergence}
+\sum_{n=0}^{\infty} a_n (c - x_0)^n
+\end{equation}
+$$
+
+converges to a finite number.
+
+<blockquote class="lemma">
+
+Given a power series, $\eqref{eq:power-series}$, there will exist a number $0 \leq \rho \leq \infty$ so that the power series will converge for $\left|x-x_0\right|<\rho$ and diverge for $\left|x-x_0\right|>\rho$. This number is called the **radius of convergence**.
+
+</blockquote>
+
+We can use the **ratio test** to find the radius of convergence. Given a power series $\eqref{eq:power-series}$, we compute the limit
+
+$$
+L=\left|x-x_0\right| \lim _{n \rightarrow \infty}\left|\frac{a_{n+1}}{a_n}\right|
+$$
+
+then,
+
+$$
+\begin{align*}
+L<1 \quad & \Rightarrow \quad \text{the series converges} \\
+L>1 \quad & \Rightarrow \quad \text{the series diverges} \\
+L=1 \quad & \Rightarrow \quad \text{the series may converge or diverge}
+\end{align*}
+$$
+
+<details><summary>Radius of Convergence</summary>
+
+<blockquote class="problem">
+
+Find the radius of convergence of the power series
+
+$$
+\sum_{n=1}^{\infty} \frac{(-3)^n}{n 7^{n+1}}(x-5)^n
+$$
+
+_This problem is copied from [Paul's Online Notes: Series Solutions](https://tutorial.math.lamar.edu/Classes/DE/PowerSeries.aspx)_.
+
+</blockquote>
+
+We have:
+
+$$
+a_n = \frac{(-3)^n}{n 7^{n+1}}, \quad a_{n+1} = \frac{(-3)^{n+1}}{(n+1) 7^{n+2}}
+$$
+
+Then, we compute the limit:
+
+$$
+\begin{align*}
+L &= \left|x-5\right| \lim_{n \rightarrow \infty} \left| \frac{a_{n+1}}{a_n} \right| \\
+&= \left|x-5\right| \lim_{n \rightarrow \infty} \left| \frac{(-3)^{n+1}}{(n+1) 7^{n+2}} \cdot \frac{n 7^{n+1}}{(-3)^n} \right| \\
+&= \left|x-5\right| \lim_{n \rightarrow \infty} \left| \frac{-3}
+{(n+1)7} \cdot n \right| \\
+&= \left|x-5\right| \lim_{n \rightarrow \infty} \left| \frac{-3n}{(n+1)7} \right| \\
+&= \frac{3}{7} \left|x-5\right|.
+\end{align*}
+$$
+
+Now we know that the series will converge if,
+
+$$
+\frac{3}{7}|x-5|<1 \quad \Rightarrow \quad|x-5|<\frac{7}{3}
+$$
+
+and the series will diverge if,
+
+$$
+\frac{3}{7}|x-5|>1 \quad \Rightarrow \quad|x-5|>\frac{7}{3}
+$$
+
+In other words, the radius of the convergence for this series is,
+
+$$
+\rho=\frac{7}{3}
+$$
+
+</details>
+
+**Addition and Subtraction**
+
+$$
+\begin{equation} \label{eq:power-series-addition}
+\sum_{n=n_0}^{\infty} a_n\left(x-x_0\right)^n \pm \sum_{n=n_0}^{\infty} b_n\left(x-x_0\right)^n=\sum_{n=n_0}^{\infty}\left(a_n \pm b_n\right)\left(x-x_0\right)^n.
+\end{equation}
+$$
+
+**Multiplication**
+
+Given two power series,
+
+$$
+\left(x-x_0\right)^c \sum_{n=0}^{\infty} a_n\left(x-x_0\right)^n,
+$$
+
+where $c$ is a constant, we can rewrite the series as
+
+$$
+\begin{aligned}
+\left(x-x_0\right)^c \sum_{n=0}^{\infty} a_n\left(x-x_0\right)^n & =\left(x-x_0\right)^c\left(a_0+a_1\left(x-x_0\right)+a_2\left(x-x_0\right)^2+\cdots\right) \\
+& =a_0\left(x-x_0\right)^c+a_1\left(x-x_0\right)^{1+c}+a_2\left(x-x_0\right)^{2+c}+\cdots \\
+& \sum_{n=0}^{\infty} a_n\left(x-x_0\right)^{n+c}
+\end{aligned}
+$$
+
+We can differentiate $\eqref{eq:power-series}$ term by term to get
+
+$$
+\begin{align}
+f'(x) & =\sum_{n=1}^{\infty} n a_n\left(x-x_0\right)^{n-1} \label{eq:power-series-derivative_1} \\
+& =\sum_{n=0}^{\infty} n a_n\left(x-x_0\right)^{n-1} \label{eq:power-series-derivative_2}
+\end{align}
+$$
+
+where we have used the fact that the $n = 0$ term in the sum is zero. We can also find the second derivative of $\eqref{eq:power-series}$:
+
+$$
+\begin{align}
+f^{\prime \prime}(x) & =\sum_{n=2}^{\infty} n(n-1) a_n\left(x-x_0\right)^{n-2} \label{eq:power-series-second-derivative_1} \\
+& =\sum_{n=1}^{\infty} n(n-1) a_n\left(x-x_0\right)^{n-2} \label{eq:power-series-second-derivative_2} \\
+& =\sum_{n=0}^{\infty} n(n-1) a_n\left(x-x_0\right)^{n-2} \label{eq:power-series-second-derivative_3}
+\end{align}
+$$
