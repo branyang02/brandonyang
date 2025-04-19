@@ -6,7 +6,6 @@ import Projects from "./pages/Projects";
 import Home from "./pages/Home";
 import NoteBlogCards from "./pages/NoteBlogCards";
 import NotesBlogs from "./pages/NoteBlog";
-import Courses from "./pages/Courses";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import ClustrMapsWidget from "./components/ClustrMapsWidget";
 
@@ -14,7 +13,6 @@ const App = () => {
     const routes = [
         { path: "/", Layout: MainLayout, Component: Home },
         { path: "/projects", Layout: MainLayout, Component: Projects },
-        { path: "/coursework", Layout: MainLayout, Component: Courses },
         {
             path: "/blog",
             Layout: NotieLayout,

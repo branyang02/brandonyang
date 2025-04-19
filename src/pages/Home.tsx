@@ -7,6 +7,7 @@ import Experience from "../components/Experience";
 import { Helmet } from "react-helmet";
 import { countWordsAndEquations, getAllMarkdownString } from "../utils/utils";
 import { useEffect, useState } from "react";
+import Education from "../components/Education";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -27,15 +28,7 @@ const Home = () => {
     }, []);
 
     const paragraphText = `
-        Hi! I am **Brandon**, a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/). I am passionate about the intersection of **Robotics** and **Natural Language Processing (NLP)**. My current research focuses on empowering robots with advanced language understanding and interaction capabilities by improving robotic reasoning and manipulation using foundational language and vision models.
-        
-        I have worked with [Tariq Iqbal](https://www.tiqbal.com/) at the [Collaborative Robotics Lab](https://www.collabrobotics.com/) and I am currently advised by [Yen-Ling Kuo](https://yenlingkuo.com/) for my undergraduate thesis. I am also affiliated with [Jia-Bin Huang](https://jbhuang0604.github.io/) at the University of Maryland, College Park. I am applying to graduate programs in Computer Science and Robotics for Fall 2025.
-        
-        My research interests and focuses include:
-
-        (1) **Developing embodied agents that follow and interact with natural language collaboratively.**
-
-        (2) **Leveraging natural language for reasoning and planning to enable robots to navigate complex environments and solve long-horizon tasks.**
+        Hi! I am **Brandon**, a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/). I am an incoming [MSE in Robotics](https://www.cis.upenn.edu/graduate/program-offerings/mse-in-robotics/) and [MSE in CIS](https://www.cis.upenn.edu/graduate/program-offerings/mse-in-cis/) student at [University of Pennsylvania](https://www.upenn.edu/) for Fall 2025. 
 
         ${
             wordCount > 0 && equationCount > 0
@@ -105,6 +98,15 @@ const Home = () => {
                         Biography
                     </Heading>
                     <MarkdownParagraph text={paragraphText} />
+                    <Heading
+                        size={800}
+                        marginTop={majorScale(2)}
+                        marginBottom={majorScale(2)}
+                        color={darkMode ? "white" : "default"}
+                    >
+                        Education
+                    </Heading>
+                    <Education />
                     <Heading
                         size={800}
                         marginTop={majorScale(2)}
