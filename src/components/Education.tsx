@@ -60,7 +60,7 @@ const Education = () => {
                     />
 
                     <Pane marginLeft={majorScale(2)}>
-                        <MarkdownParagraph text="**MSE in Roboitcs**" />
+                        <MarkdownParagraph text="**MSE in Robotics**" />
                         <MarkdownParagraph text="**MSE in Computer and Information Science**" />
                     </Pane>
 
