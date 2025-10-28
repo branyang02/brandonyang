@@ -63,6 +63,24 @@ const Projects = () => {
 
     const projects = [
         {
+            image: "https://branyang02.github.io/images/notie.png",
+            title: "Notie",
+            description:
+                "A markdown renderer for the web that features live coding and running, TikZ, and LaTeX support. This is what I use to write my blogs and notes on this website! I actually love this project so much! Makes me appreciate the art of math equations and visualizations even more!",
+            link: "https://github.com/branyang02/Notie",
+            metaLinks: [
+                {
+                    name: "GitHub",
+                    link: "https://github.com/branyang02/Notie",
+                },
+                {
+                    name: "Live Demo",
+                    link: "https://notie-markdown.vercel.app/",
+                },
+            ],
+            techStack: ["TypeScript", "React", "Python", "Flask"],
+        },
+        {
             image: "https://branyang02.github.io/images/gloma_diagram.png",
             title: "GLOMA: Grounded Location for Object Manipulation",
             authors: [
@@ -103,24 +121,6 @@ const Projects = () => {
                 },
             ],
             techStack: ["Python", "PyTorch", "Nvidia IsaacGym"],
-        },
-        {
-            image: "https://branyang02.github.io/images/notie.png",
-            title: "Notie",
-            description:
-                "A markdown note taking app that features live coding, TikZ, and LaTeX support.",
-            link: "https://github.com/branyang02/Notie",
-            metaLinks: [
-                {
-                    name: "GitHub",
-                    link: "https://github.com/branyang02/Notie",
-                },
-                {
-                    name: "Live Demo",
-                    link: "https://notie-markdown.vercel.app/",
-                },
-            ],
-            techStack: ["TypeScript", "React", "Python", "Flask"],
         },
 
         {

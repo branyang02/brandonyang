@@ -19,14 +19,10 @@ const handleSelect = (tab: string, navigate: NavigateFunction) => {
             path = "/";
             navigate(path);
             break;
-        case "Relevant Coursework":
-            path = "/coursework";
-            navigate(path);
-            break;
-        case "CV":
-            path = "/brandon_yifan_yang_cv.pdf";
-            window.open(path, "_blank");
-            break;
+        // case "CV":
+        //     path = "/brandon_yifan_yang_cv.pdf";
+        //     window.open(path, "_blank");
+        //     break;
         default:
             path = `/${tab.toLowerCase().replace(/\s+/g, "")}`;
             navigate(path);

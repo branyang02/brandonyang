@@ -28,7 +28,7 @@ const Home = () => {
     }, []);
 
     const paragraphText = `
-        Hi! I am **Brandon**, a fourth-year B.S. Computer Science student at the [University of Virginia](https://engineering.virginia.edu/). I am an incoming [MSE in Robotics](https://www.cis.upenn.edu/graduate/program-offerings/mse-in-robotics/) and [MSE in CIS](https://www.cis.upenn.edu/graduate/program-offerings/mse-in-cis/) student at [University of Pennsylvania](https://www.upenn.edu/) for Fall 2025. 
+        Hi! I am **Brandon**, a Robotics Masters student at the [University of Pennsylvania](https://www.grasp.upenn.edu/). I work on **Robot Learning and Reasoning**, specifically using **V**ision-**L**anguage-**A**ction (VLA) Models to enable robots to perform complex tasks!
 
         ${
             wordCount > 0 && equationCount > 0
@@ -38,6 +38,8 @@ const Home = () => {
     `;
 
     const newsParagraphText = `
+    08/2025: Moved to Philadelphia to start my M.S.E. in Robotics at UPenn!
+    
     10/2024: Presented my latest work on [SkillVLA](/skillvla.pdf) at [UVA LLM Workshop 2024](https://uvanlp.org/llm-workshop-2024/) (Received Audience's Choice Award)!
 
     08/2024: Excited to start my Senior Capstone with [Yen-Ling Kuo](https://yenlingkuo.com/) at UVA!

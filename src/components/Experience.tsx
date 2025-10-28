@@ -12,16 +12,12 @@ import MarkdownParagraph from "./MarkdownParagraph";
 const Experience = () => {
     const experience = [
         {
-            date: `Aug 2024 - Present`,
-            title: "[Machine Learning](https://www.cs.virginia.edu/~nn4pj/teaching) (CS 4774) Teaching Assistant",
+            date: "Aug 2025 - Present",
+            title: "Graduate Research Assistant at UPenn's [GRASP Lab](https://www.grasp.upenn.edu/).",
         },
         {
-            date: `May 2024 - Present`,
-            title: "Research Assistant at [UMD](https://www.cs.umd.edu/) with [Jia-Bin Huang](https://jbhuang0604.github.io/)",
-        },
-        {
-            date: "Jan 2024 - May 2024",
-            title: "[Theory of Computation](https://markfloryan.github.io/dmt2/readme.html) (CS 3120) Teaching Assistant",
+            date: `May 2025 - Aug 2025`,
+            title: "Embodied Intelligence Research Intern at [Spirit AI](https://www.spirit-ai.com/en/).",
         },
         {
             date: "May 2020 - Present",
@@ -32,8 +28,8 @@ const Experience = () => {
             title: "AI/ML Research Intern at [UVA Link Lab](https://engineering.virginia.edu/link-lab)",
         },
         {
-            date: "Jan 2023 - May 2023",
-            title: "[Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/) (CS 2130) Lab Lead TA",
+            date: "Jan 2023 - May 2025",
+            title: "TA for [Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/), [Theory of Computation](https://markfloryan.github.io/dmt2/readme.html), and [Machine Learning](https://www.cs.virginia.edu/~nn4pj/teaching) at UVA.",
         },
     ];
 

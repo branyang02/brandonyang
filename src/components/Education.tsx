@@ -7,6 +7,36 @@ const Education = () => {
 
     return (
         <Pane>
+            <Pane marginBottom={majorScale(3)}>
+                <Pane display="flex" alignItems="center" width="100%">
+                    <Image
+                        src={
+                            darkMode
+                                ? "https://branyang02.github.io/images/penn-grasp-dark.svg"
+                                : "https://branyang02.github.io/images/penn-grasp.svg"
+                        }
+                        alt="GRASP Lab Logo"
+                        maxWidth={majorScale(30)}
+                        height="auto"
+                        onClick={() =>
+                            window.open(
+                                "https://www.grasp.upenn.edu/",
+                                "_blank"
+                            )
+                        }
+                        cursor="pointer"
+                    />
+
+                    <Pane marginLeft={majorScale(2)}>
+                        <MarkdownParagraph text="**M.S.E. in Robotics**" />
+                    </Pane>
+
+                    <Pane marginLeft="auto">
+                        <MarkdownParagraph text="2025 - 2027" />
+                    </Pane>
+                </Pane>
+            </Pane>
+
             <Pane
                 display="flex"
                 alignItems="center"
@@ -31,42 +61,11 @@ const Education = () => {
                 />
 
                 <Pane marginLeft={majorScale(2)} flexGrow={1}>
-                    <MarkdownParagraph text="**BS in Computer Science**" />
+                    <MarkdownParagraph text="**B.S. in Computer Science**" />
                 </Pane>
 
                 <Pane marginLeft="auto">
                     <MarkdownParagraph text="2021 - 2025" />
-                </Pane>
-            </Pane>
-
-            <Pane marginBottom={majorScale(3)}>
-                <Pane display="flex" alignItems="center" width="100%">
-                    <Image
-                        src={
-                            darkMode
-                                ? "https://branyang02.github.io/images/penn-grasp-dark.svg"
-                                : "https://branyang02.github.io/images/penn-grasp.svg"
-                        }
-                        alt="GRASP Lab Logo"
-                        maxWidth={majorScale(30)}
-                        height="auto"
-                        onClick={() =>
-                            window.open(
-                                "https://www.grasp.upenn.edu/",
-                                "_blank"
-                            )
-                        }
-                        cursor="pointer"
-                    />
-
-                    <Pane marginLeft={majorScale(2)}>
-                        <MarkdownParagraph text="**MSE in Robotics**" />
-                        <MarkdownParagraph text="**MSE in Computer and Information Science**" />
-                    </Pane>
-
-                    <Pane marginLeft="auto">
-                        <MarkdownParagraph text="2025 - Expected 2028" />
-                    </Pane>
                 </Pane>
             </Pane>
         </Pane>
