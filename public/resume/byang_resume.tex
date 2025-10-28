@@ -1,0 +1,218 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{fontawesome}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{multirow}
+\usepackage[inkscapelatex=false]{svg}
+
+\singlespacing
+% \setstretch{1.1}
+% \onehalfspacing
+
+\setlist[itemize]{itemsep=0em, topsep=0em, leftmargin=*}
+
+\definecolor{linkblue}{rgb}{0, 0, 1}
+
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+% Sections formatting, reduced vertical space before and after each section.
+\titleformat{\section}{
+    \scshape\raggedright\Large 
+}{}{0em}{}[\color{black}\titlerule]
+\titlespacing*{\section}{0pt}{5pt}{5pt} % left, before-skip, after-skip
+
+%-------------------------Custom commands-------------------------
+
+% Link defaulted to black unless using \linkhref
+\newcommand{\linkhref}[2]{\textcolor{linkblue}{\href{#1}{#2}}} 
+
+% Date in small italics
+\newcommand{\Date}[1]{\textit{\small #1}}
+
+% Heading with 4 arguments: #1: Title, #2: Location, #3: Subtitle, #4: Date
+\newcommand{\heading}[4]{
+  \textbf{#1} \hfill #2 \\
+  \textit{\small#3} \hfill \Date{#4}
+}
+
+% Heading with 3 arguments: #1: Title, #2: Location, #3: Date
+\newcommand{\simpleheading}[3]{%
+  \noindent
+  \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} l r}
+    \multirow{2}{*}[0pt]{\textbf{#1}} & #2 \\[-0.2ex]
+                                      & \Date{#3}
+  \end{tabular*}%
+}
+
+
+\renewcommand{\labelitemi}{$\circ$} % First-level bullet points as circles
+\renewcommand{\labelitemii}{$\circ$} % Second-level bullet points as circles
+
+\begin{document}
+
+\begin{tabular} {@{}l}
+    \textbf{\href{https://brandonyifanyang.com/}{\Large{Brandon Yifan Yang}}} \\[3pt]
+    \faLink \, \linkhref{https://brandonyifanyang.com/}{brandonyifanyang.com} \quad \faEnvelope \, \linkhref{mailto:brandonyang@seas.upenn.edu}{brandonyang@seas.upenn.edu} \quad \faGithub \, \linkhref{https://github.com/branyang02}{branyang02}
+\end{tabular}
+
+
+\section{Education}
+\begin{itemize}
+    \item\heading{%
+              \raisebox{-0.2\height}{%
+                  \includegraphics[height=1.5em]{../penn-logo.png}%
+              }%
+              \hspace{0.2em} University of Pennsylvania%
+          }{Philadelphia, PA}{MSE in Robotics}{Aug 2025 - May 2027}
+    \item \heading{%
+              \raisebox{-0.2\height}{%
+                  \includegraphics[height=1.5em]{../uva-logo.png}%
+              }%
+              \hspace{0.2em} University of Virginia%
+          }{Charlottesville, VA}{BS in Computer Science With Highest Distinction}{August 2021 - May 2025}
+    \item \textbf{Relevant Coursework}: Robotics$^*$, GPU Architecture$^*$, Machine Learning (ML), Reinforcement Learning (RL)$^*$, Natural Language Processing (NLP)$^*$, Probabilistic ML$^*$, Optimization$^*$ \\
+          {\footnotesize *Graduate-level courses.}
+\end{itemize}
+
+\section{Experience}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item \simpleheading{Embodied Intelligence Research Intern}{Beijing, China}{Aug 2024 - Present}
+          \begin{itemize}
+              \item \textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}
+                    \begin{itemize}
+                        \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
+                    \end{itemize}
+          \end{itemize}
+    \item \heading{Research Assistant, Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
+          {Advisor: \href{https://yenlingkuo.com/}{Prof. Yen-Ling Kuo}}{Aug 2024 - Present}
+          \begin{itemize}
+              \item \textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}
+                    \begin{itemize}
+                        \item hehe
+                        \item adsf
+                    \end{itemize}
+          \end{itemize}
+    \item \heading{Research Assistant, University of Maryland}{College Park, MD}
+          {Advisor: \href{https://jbhuang0604.github.io/}{Prof. Jia-Bin Huang}}{May 2024 - September 2024}
+          \begin{itemize}
+              \item \textbf{Semantically Aware 3D Gaussian Splatting}
+                    \begin{itemize}
+                        \item Researched methods to enhance robotic scene understanding using 3D Gaussian Splatting (3DGS) in collaboration with MIT, injecting semantically aware language embeddings to improve accuracy and stability in 3D representations.
+                        \item Developed approaches enabling downstream language-conditioned robotic interaction with objects, leveraging enriched 3DGS scenes for more precise and stable robotic behaviors.
+                        \item Investigated video segmentation techniques (SAMv2) to maintain temporal consistency when integrating 2D training data into 3D scenes, ensuring reliable 3D embeddings for robotic perception and interaction.
+                    \end{itemize}
+          \end{itemize}
+    \item \heading{Research Assistant, \href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
+          {Advisor: \href{https://www.tiqbal.com/}{Prof. Tariq Iqbal}}{May 2022 - May 2024}
+          \begin{itemize}
+              \item \href{https://github.com/branyang02/GLOMA}{\textbf{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]
+                    \begin{itemize}
+                        \item Led team of 3 to develop zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and Behavioral Cloning (BC).
+                        \item Integrated language grounding with visual perception by using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision and improving baseline performance by 65\%.
+                        \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
+                        \item Presented poster at 3 conferences and symposiums.
+                    \end{itemize}
+              \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized multi-agent RL for Collaborative Tasks}} [\linkhref{https://github.com/branyang02/PandaFactory}{code}]
+                    \begin{itemize}
+                        \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks with team of 4 (1 grad + 3 undergrads).
+                        \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration, improving task success rate by 20\%.
+                        \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\section{Honors}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item \heading{Audience's Choice Award \textnormal{(Top 3 of 28)}}{\Date{October 2024}}{University of Virginia Large Language Model (LLM) Workshop}{}
+    \item \heading{University of Virginia Research Computing Exhibition Finalist \textnormal{(Top 5 of 25)}}{\Date{April 2024}}{University of Virginia Research Computing}{}
+    \item \heading{Dean's Engineering Research Scholarship \textnormal{(\$5000 stipend)}}{\Date{May 2023}}{University of Virginia School of Engineering and Applied Science}{}
+    \item \heading{Entrepreneurship Cup Winner \textnormal{(Received \$1000 in funding)}}{\Date{November 2023}}{University of Virginia Darden School of Business}{}
+    \item \heading{Dean's List}{}{University of Virginia}{}
+\end{itemize}
+
+\section{Talks \& Presentations}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item {\href{https://www.brandonyifanyang.com/skillvla.pdf}{\textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}} [\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}]}
+          \begin{itemize}
+              \item University of Virginia Large Language Model (LLM) Workshop, Charlottesville, VA \hfill \Date{October 2024}
+          \end{itemize}
+    \item {\href{https://www.brandonyifanyang.com/MI.pdf}{\textbf{Using Synthetic Data and Sparse Autoencoders To Interpret Large Language Models}} [\linkhref{https://www.brandonyifanyang.com/MI.pdf}{poster}]}
+          \begin{itemize}
+              \item University of Virginia Research Computing Exhibition, Charlottesville, VA \hfill \Date{April 2024}
+          \end{itemize}
+    \item \href{https://www.brandonyifanyang.com/gloma.pdf}{\textbf{GLOMA: Grounded Location for Object Manipulation} [\linkhref{https://www.brandonyifanyang.com/gloma.pdf}{poster}]}
+          \begin{itemize}
+              \item University of Virginia Fall Engineering Research Expo, Charlottesville, VA \hfill \Date{October 2023}
+              \item University of Virginia Spring Thornton Society Dinner, Charlottesville, VA \hfill \Date{September 2023}
+              \item University of Virginia Summer Research Symposium, Charlottesville, VA \hfill \Date{July 2023}
+          \end{itemize}
+    \item \href{https://github.com/branyang02/apriltag_detection}{\textbf{Robot Tool Grasping with AprilTag}}
+          \begin{itemize}
+              \item University of Virginia Engineering Open House, Charlottesville, VA \hfill \Date{November 2023}
+              \item University of Virginia Engineering Open House, Charlottesville, VA \hfill \Date{November 2022}
+          \end{itemize}
+\end{itemize}
+
+\section{Teaching Experience}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item \heading{Teaching Assistant}{University of Virginia}
+          {Machine Learning}{August 2024 - Present}
+          \begin{itemize}
+              \item Authored comprehensive \href{https://www.brandonyifanyang.com/notes/ml}{course notes} with interactive visualizations to support student learning and understanding. [\linkhref{https://www.brandonyifanyang.com/notes/ml}{link}]
+              \item Collaborated with course staff to develop and grade assignments, exams, and projects.
+              \item Mentored 20+ students throughout semester-long ML projects, providing guidance on research methodology and implementation.
+          \end{itemize}
+    \item \heading{Teaching Assistant}{University of Virginia}
+          {Theory of Computation}{Jan 2024 - May 2024}
+          \begin{itemize}
+              \item Held weekly office hours, one-on-one tutoring, and review sessions to assist students with course material.
+          \end{itemize}
+    \item \heading{Lab Lead Teaching Assistant}{University of Virginia}
+          {Computer Systems Organization}{Jan 2023 - May 2023}
+          \begin{itemize}
+              \item Led and co-lectured weekly lab sections on computer systems topics with interactive activities for 70+ students.
+              \item Supervised and coordinated team of 6 TAs to facilitate effective learning and lab management.
+              \item Held office hours and whiteboard sessions to provide additional support for students.
+          \end{itemize}
+\end{itemize}
+
+\section{Software Projects}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{code}, \linkhref{https://www.brandonyifanyang.com/notes}{course notes}, \linkhref{https://www.brandonyifanyang.com/blog}{blog posts}]: Developed open-source React component for Markdown rendering using TypeScript. Used notie-markdown to create \href{https://www.brandonyifanyang.com/notes}{course notes} and \href{https://www.brandonyifanyang.com/blog}{blog posts} on computer science and ML topics.
+    \item \textbf{\href{https://github.com/ewei2406/SmartOH}{SmartOH}} [\linkhref{https://github.com/ewei2406/SmartOH}{code}]: Developed AI-assisted office hour queueing system, built with Python, PyTorch, and TypeScript. Placed 3rd overall at VTHacks11 (Hackathon held at Virginia Tech) (3/393).
+    \item \textbf{Voy}: Collaborated with 7 non-profits to develop Voy, a volunteer and driver management platform using Python and TypeScript; received \$1000 in funding from UVA's Entrepreneurship Cup.
+\end{itemize}
+
+\section{Programming Skills}
+\begin{itemize}[label={}, leftmargin=0pt]
+    \item \textbf{Programming Languages}: Python, C/C++, CUDA, Java, JavaScript, TypeScript, Bash, HTML/CSS
+    \item \textbf{ML + Robotics}: PyTorch, TensorFlow, OpenCV, MuJoCo, ROS, IsaacGym, Habitat, RLBench, Maniskill
+    \item \textbf{Other Tools \& Frameworks}: Git, Docker, Slurm, Linux, \LaTeX, React, Node.js, Next.js Express, Django
+\end{itemize}
+
+\vfill
+\noindent\textit{\small Last Updated: \today}
+\end{document}
