@@ -18,7 +18,7 @@ I am a Teaching Assistant for this course and actively taking notes to support s
 
 P.S. This is a work in progress. Please continue to check for updates!
 
-Please contact me at [branyang@virginia.edu](mailto:branyang@virginia.edu) if you would like to contribute to this project!
+Please contact me at [yang52@seas.upenn.edu](mailto:yang52@seas.upenn.edu) if you would like to contribute to this project!
 
 </span>
 

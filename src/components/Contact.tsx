@@ -10,8 +10,8 @@ const Contact = () => {
     const contactItems = [
         {
             icon: faEnvelope,
-            href: "mailto:branyang@virginia.edu",
-            text: "branyang@virginia.edu",
+            href: "mailto:yang52@seas.upenn.edu",
+            text: "yang52@seas.upenn.edu",
         },
         {
             icon: faGithub,
