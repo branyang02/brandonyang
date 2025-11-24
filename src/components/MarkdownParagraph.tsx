@@ -121,7 +121,7 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
                     <Strong
                         key={text + nextMatch.index}
                         size={TEXT_SIZE}
-                        color={darkMode ? "tint2" : "default"}
+                        color={darkMode ? "rgb(245, 244, 239)" : "default"}
                     >
                         {text}
                     </Strong>
@@ -148,7 +148,7 @@ const MarkdownParagraph = ({ text }: { text: string }) => {
     const paragraphs = text.split(/\n\s*\n/).map((paragraph, index) => (
         <Paragraph
             key={index}
-            color={darkMode ? "tint2" : "default"}
+            color={darkMode ? "rgb(245, 244, 239)" : "default"}
             size={TEXT_SIZE}
             marginBottom={index < text.split(/\n\s*\n/).length - 1 ? 16 : 0}
         >

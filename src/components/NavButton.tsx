@@ -91,7 +91,7 @@ const NavButton = ({
             onClick={() => handleSelect(label, navigate)}
             style={darkMode ? buttonStyle : defaultStyle}
         >
-            <Text size={500} color={darkMode ? "tint2" : "default"}>
+            <Text size={500} color={darkMode ? "white" : "default"}>
                 {label}
             </Text>
         </Button>

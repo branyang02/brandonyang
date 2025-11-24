@@ -121,7 +121,7 @@ const NoteBlogCards = ({ type }: { type: string }) => {
                         justifyContent="space-between"
                         onClick={() => handleCardClick(post.link)}
                         cursor="pointer"
-                        background={darkMode ? "#424242" : "white"}
+                        background={darkMode ? "#424242" : "tint2"}
                     >
                         <Heading
                             size={500}

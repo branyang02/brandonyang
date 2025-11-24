@@ -28,7 +28,7 @@ const latexThemeContentIDs = ["ml", "ode", "flow-matching"];
 function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     const baseTheme: NotieTheme = darkMode
         ? { backgroundColor: "#333" }
-        : { backgroundColor: "#F9FAFC" };
+        : { backgroundColor: "rgb(245, 244, 239)" };
 
     const latexTheme: NotieTheme = {
         fontFamily: '"Computer Modern Serif", serif',

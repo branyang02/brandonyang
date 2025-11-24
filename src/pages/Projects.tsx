@@ -223,9 +223,7 @@ const Projects = () => {
                             display="flex"
                             flexDirection="row"
                             padding={16}
-                            background={darkMode ? "#333" : "white"}
                             borderRadius={4}
-                            color={darkMode ? "white" : "black"}
                         >
                             <Pane flex={1} marginRight={16}>
                                 {project.image && (

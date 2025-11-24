@@ -7,7 +7,7 @@ const NotieLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <Pane
-            background={darkMode ? "#333" : "tint2"}
+            background={darkMode ? "#333" : "rgb(245, 244, 239)"}
             style={{
                 display: "flex",
                 flexDirection: "column",
