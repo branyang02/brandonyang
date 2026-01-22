@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import NotieLayout from "./layouts/NotieLayout";
 import Projects from "./pages/Projects";
 import Home from "./pages/Home";
+import Fun from "./pages/Fun";
 import NoteBlogCards from "./pages/NoteBlogCards";
 import NotesBlogs from "./pages/NoteBlog";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -13,6 +14,7 @@ const App = () => {
     const routes = [
         { path: "/", Layout: MainLayout, Component: Home },
         { path: "/projects", Layout: MainLayout, Component: Projects },
+        { path: "/fun", Layout: MainLayout, Component: Fun },
         {
             path: "/blog",
             Layout: NotieLayout,
