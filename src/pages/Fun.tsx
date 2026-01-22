@@ -33,7 +33,12 @@ const Fun = () => {
         { place: "Altay", date: "12/2025", flag: "🇨🇳" },
     ];
 
-    const photos = [
+    const photos: {
+        src: string;
+        caption: string;
+        offsetY?: string;
+        type?: "image" | "video";
+    }[] = [
         {
             src: "https://branyang02.github.io/images/breck.jpg",
             caption:
@@ -45,7 +50,7 @@ const Fun = () => {
             offsetY: "70%",
         },
         {
-            src: "https://branyang02.github.io/images/tahoe.png",
+            src: "https://branyang02.github.io/images/tahoe.jpg",
             caption: "Lake Tahoe view from Heavenly Mountain Resort.",
         },
         {
@@ -56,6 +61,16 @@ const Fun = () => {
         {
             src: "https://branyang02.github.io/images/whistler.jpg",
             caption: "Nice morning from 7th Heaven at Whistler Blackcomb.",
+        },
+        {
+            src: "https://branyang02.github.io/images/hemu.MP4",
+            caption: "Powder day at Hemu Village, Xinjiang.",
+            type: "video",
+        },
+        {
+            src: "https://branyang02.github.io/images/japan.MP4",
+            caption: "5 days and nights of non-stop snow in Hokkaido, Japan.",
+            type: "video",
         },
     ];
 
@@ -272,22 +287,37 @@ Can't forget the local resorts I love:
                                             : "none",
                                     }}
                                 >
-                                    {extendedPhotos.map((photo, index) => (
-                                        <img
-                                            key={index}
-                                            src={photo.src}
-                                            alt={photo.caption}
-                                            style={{
-                                                width: "100%",
-                                                flexShrink: 0,
-                                                height: "auto",
-                                                display: "block",
-                                                aspectRatio: "4 / 3",
-                                                objectFit: "cover",
-                                                objectPosition: `center ${photo.offsetY ?? "50%"}`,
-                                            }}
-                                        />
-                                    ))}
+                                    {extendedPhotos.map((photo, index) => {
+                                        const isVideo = photo.type === "video";
+                                        const commonStyles = {
+                                            width: "100%",
+                                            flexShrink: 0,
+                                            height: "auto",
+                                            display: "block",
+                                            aspectRatio: "4 / 3",
+                                            objectFit: "cover" as const,
+                                            objectPosition: `center ${photo.offsetY ?? "50%"}`,
+                                        };
+
+                                        return isVideo ? (
+                                            <video
+                                                key={index}
+                                                src={photo.src}
+                                                style={commonStyles}
+                                                muted
+                                                autoPlay
+                                                loop
+                                                playsInline
+                                            />
+                                        ) : (
+                                            <img
+                                                key={index}
+                                                src={photo.src}
+                                                alt={photo.caption}
+                                                style={commonStyles}
+                                            />
+                                        );
+                                    })}
                                 </Pane>
                             </Pane>
                             <IconButton
@@ -322,13 +352,13 @@ Can't forget the local resorts I love:
                     color={darkMode ? "rgb(245, 244, 239)" : "default"}
                 >
                     <ListItem>
-                        <MarkdownParagraph text="[Wintergreen Resort, VA](https://www.wintergreenresort.com/)" />
+                        <MarkdownParagraph text="[Wintergreen, VA](https://www.wintergreenresort.com/)" />
                     </ListItem>
                     <ListItem>
-                        <MarkdownParagraph text="[Massanutten Resort, VA](https://www.massresort.com/)" />
+                        <MarkdownParagraph text="[Massanutten, VA](https://www.massresort.com/)" />
                     </ListItem>
                     <ListItem>
-                        <MarkdownParagraph text="[Canaan Valley Resort, WV](https://www.canaanresort.com/)" />
+                        <MarkdownParagraph text="[Canaan Valley, WV](https://www.canaanresort.com/)" />
                     </ListItem>
                     <ListItem>
                         <MarkdownParagraph text="[Seven Springs, PA](https://www.7springs.com/)" />
