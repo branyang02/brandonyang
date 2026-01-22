@@ -13,6 +13,8 @@ import { useDarkMode } from "../context/DarkModeContext";
 import { Helmet } from "react-helmet";
 import { useState, useRef } from "react";
 import MarkdownParagraph from "../components/MarkdownParagraph";
+import FlightGlobe from "../components/FlightGlobe";
+import FlightStats from "../components/FlightStats";
 
 const Fun = () => {
     const { darkMode } = useDarkMode();
@@ -434,6 +436,19 @@ Can't forget the local resorts I love:
                     </ListItem>
                 </UnorderedList>
                 <MarkdownParagraph text="I really want to do Half Dome one day. Also need to hit up Zion." />
+
+                <Heading
+                    marginTop={majorScale(2)}
+                    size={800}
+                    marginBottom={majorScale(2)}
+                    color={darkMode ? "white" : "default"}
+                >
+                    ✈️ Travelling
+                </Heading>
+                <Pane display="flex" gap={majorScale(4)} flexWrap="wrap">
+                    <FlightGlobe darkMode={darkMode} />
+                    <FlightStats darkMode={darkMode} />
+                </Pane>
             </Pane>
         </div>
     );
