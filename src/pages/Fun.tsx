@@ -133,21 +133,13 @@ Can't forget the local resorts I love:
             >
                 {/* Skiing/Snowboarding Header */}
                 <Heading
+                    marginTop={majorScale(2)}
                     size={800}
                     marginBottom={majorScale(2)}
                     color={darkMode ? "white" : "default"}
                 >
-                    <Text fontSize={32}>🎿</Text>
-                    <Text
-                        size={800}
-                        fontWeight={600}
-                        marginX={majorScale(2)}
-                        color={textColor}
-                    >
-                        Snowboarding & Skiing
-                    </Text>
+                    🏂🎿 Snowboarding & Skiing
                 </Heading>
-
                 {/* Timeline and Photo Slideshow side by side */}
                 <Pane
                     display="flex"
@@ -367,6 +359,11 @@ Can't forget the local resorts I love:
                         <MarkdownParagraph text={"DynaStar Speed"} />
                     </ListItem>
                 </UnorderedList>
+                <MarkdownParagraph
+                    text={
+                        "My future goals are (1) get better at skiing, (2) learn to ride posi-posi, (3) get a carving snowboard."
+                    }
+                />
 
                 <Heading
                     marginTop={majorScale(2)}
@@ -376,17 +373,37 @@ Can't forget the local resorts I love:
                 >
                     Pickleball
                 </Heading>
-                <MarkdownParagraph text="I'm probably a 3.8 - 4.0. Meet me at [Bounce](https://www.bouncepb.com/philadelphia) and [Ballers](https://www.ballers-us.com/location/philadelphia)." />
-
+                <MarkdownParagraph text="I'm probably a 3.8 - 4.0 singles and doubles. Meet me at [Bounce](https://www.bouncepb.com/philadelphia) and [Ballers](https://www.ballers-us.com/location/philadelphia) in Philadelphia." />
                 <Heading
                     marginTop={majorScale(2)}
                     size={800}
                     marginBottom={majorScale(2)}
                     color={darkMode ? "white" : "default"}
                 >
-                    Badminton
+                    🏸 Badminton
                 </Heading>
                 <MarkdownParagraph text="Lost to 12 year olds in tournament in Raleigh. SMH. Meet me at [Club 28 Philadelphia](https://www.club28badminton.com/philadelphia)." />
+                <Heading
+                    marginTop={majorScale(2)}
+                    size={800}
+                    marginBottom={majorScale(2)}
+                    color={darkMode ? "white" : "default"}
+                >
+                    ⛰️ Hiking
+                </Heading>
+                <MarkdownParagraph text="Definitely need to hike more. My favorite trails are:" />
+                <UnorderedList
+                    size={500}
+                    color={darkMode ? "rgb(245, 244, 239)" : "default"}
+                >
+                    <ListItem>
+                        <MarkdownParagraph text="[Old Rag Mountain, Shenandoah National Park](https://www.nps.gov/places/old-rag.htm)" />
+                    </ListItem>
+                    <ListItem>
+                        <MarkdownParagraph text="[Mist Trail, Yosemite National Park](https://www.nps.gov/yose/index.htm)" />
+                    </ListItem>
+                </UnorderedList>
+                <MarkdownParagraph text="I really want to do Half Dome one day. Also need to hit up Zion." />
             </Pane>
         </div>
     );
