@@ -70,4 +70,7 @@ export const airports: Record<string, { lat: number; lng: number; name: string }
   CTS: { lat: 42.7752, lng: 141.6925, name: "Sapporo" },
   BGO: { lat: 60.2934, lng: 5.2181, name: "Bergen" },
   SVG: { lat: 58.8767, lng: 5.6378, name: "Stavanger" },
+  FCO: { lat: 41.8003, lng: 12.2389, name: "Rome" },
+  BKI: { lat: 5.9372, lng: 116.0503, name: "Kota Kinabalu" },
+  KUL: { lat: 2.7456, lng: 101.7099, name: "Kuala Lumpur" },
 };

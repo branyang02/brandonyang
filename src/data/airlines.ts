@@ -33,4 +33,6 @@ export const airlines: Record<string, string> = {
   HKE: "HK Express",
   CCA: "Air China",
   NAX: "Norwegian Air Shuttle",
+  CAL: "China Airlines",
+  AXM: "AirAsia",
 };
