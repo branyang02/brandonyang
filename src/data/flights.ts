@@ -44,7 +44,6 @@ export const flights = [
   { from: "DUS", to: "HKG", date: "2017-06-22", airline: "CPA" },
   { from: "HKG", to: "HEL", date: "2017-07-29", airline: "FIN" },
   { from: "HEL", to: "KEF", date: "2017-07-29", airline: "ICE" },
-  { from: "OSL", to: "HEL", date: "2017-08-12", airline: "FIN" },
   { from: "HEL", to: "KEF", date: "2017-08-14", airline: "ICE" },
   { from: "KEF", to: "IAD", date: "2017-08-14", airline: "ICE" },
   { from: "IAD", to: "ORD", date: "2017-12-16", airline: "UAL" },
@@ -146,4 +145,9 @@ export const flights = [
   { from: "AAT", to: "SZX", date: "2026-01-01", airline: "CSN" },
   { from: "HKG", to: "JFK", date: "2026-01-02", airline: "CPA" },
   { from: "SEZ", to: "NBO", date: "2014-08-18", airline: "KQA" },
+  { from: "IAD", to: "PEK", date: "2026-01-22", airline: "CCA" },
+  { from: "PEK", to: "SZX", date: "2026-01-22", airline: "CCA" },
+  { from: "KEF", to: "BGO", date: "2017-08-10", airline: "ICE" },
+  { from: "BGO", to: "SVG", date: "2017-08-13", airline: "NAX" },
+  { from: "SVG", to: "HEL", date: "2017-08-14", airline: "FIN" },
 ];

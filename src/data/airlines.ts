@@ -14,7 +14,7 @@ export const airlines: Record<string, string> = {
   BER: "Air Berlin",
   EWG: "Eurowings",
   IBB: "Binter Canarias",
-  BEE: "British Airways CityFlyer",
+  BEE: "Flybe",
   FIN: "Finnair",
   ICE: "Icelandair",
   UAL: "United Airlines",
@@ -31,4 +31,6 @@ export const airlines: Record<string, string> = {
   GCR: "Tianjin Airlines",
   CHH: "Hainan Airlines",
   HKE: "HK Express",
+  CCA: "Air China",
+  NAX: "Norwegian Air Shuttle",
 };

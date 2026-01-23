@@ -68,4 +68,6 @@ export const airports: Record<string, { lat: number; lng: number; name: string }
   FYN: { lat: 46.8046, lng: 89.512, name: "Fuyun" },
   AAT: { lat: 47.7499, lng: 88.0858, name: "Altay" },
   CTS: { lat: 42.7752, lng: 141.6925, name: "Sapporo" },
+  BGO: { lat: 60.2934, lng: 5.2181, name: "Bergen" },
+  SVG: { lat: 58.8767, lng: 5.6378, name: "Stavanger" },
 };
