@@ -272,59 +272,46 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
 
 ### Expectation and Variance
 
-For a discrete random variable $X$ with PMF $p_X(x)$, the expectation (or mean) is defined as:
+The Expectation (or mean) of a random variable $X$ is defined as:
 $$
 \begin{equation} \label{eq:expectation_discrete}
-E[X] = \sum_{x} x \, p_X(x).
+E[X] = \sum_{x} x \, p_X(x) \quad \text{(Discrete)},
 \end{equation}
 $$
-Properties of expectation include:
+$$
+\begin{equation} \label{eq:expectation_continuous}
+E[X] = \int_{-\infty}^{\infty} x \, f_X(x) \, dx \quad \text{(Continuous)}.
+\end{equation}
+$$
+Properties of Expectation:
 $$
 \begin{align}
 E[aX + b] & = a E[X] + b, \\
 E[X + Y] & = E[X] + E[Y], \\
-E[XY] & = E[X] E[Y], \quad \text{if }X \text{ and } Y \text{ are independent} \\
-E[g(X)] & = \sum_{x} g(x) \, p_X(x). \label{eq:function_expectation}
+E[XY] & = E[X] E[Y] \quad \text{(if independent)}, \\
+E[g(X)] & = \sum_{x} g(x) \, p_X(x) \quad \text{or} \quad \int g(x) f_X(x) dx. \label{eq:function_expectation}
 \end{align}
 $$
-From $\eqref{eq:function_expectation}$, we can take $g(x) = x^2$ to compute $E[X^2]$, which is then followed by the variance:
+
+The Variance measures the spread of $X$ from its mean $\mu = E[X]$. It is defined generally as $Var(X) = E[(X - \mu)^2]$, or computationally as:
 $$
-\begin{equation} \label{eq:variance_discrete}
-\begin{split}
-Var(X) & = E[(X - E[X])^2] \\
-       & = E[X^2] - (E[X])^2 \\
-       & = \sum_{x} (x - E[X])^2 \, p_X(x).
-\end{split}
+\begin{equation} \label{eq:variance_calc}
+Var(X) = E[X^2] - (E[X])^2.
 \end{equation}
 $$
-Properties of variance include:
+The specific formulas are:
+$$
+\begin{align}
+Var(X) &= \sum_{x} (x - \mu)^2 \, p_X(x) & \text{(Discrete)} \label{eq:variance_discrete} \\
+Var(X) &= \int_{-\infty}^{\infty} (x - \mu)^2 \, f_X(x) \, dx & \text{(Continuous)} \label{eq:variance_continuous}
+\end{align}
+$$
+Properties of Variance:
 $$
 \begin{align}
 Var(aX + b) & = a^2 Var(X), \\
-Var(X + Y) & = Var(X) + Var(Y), \quad \text{if }X \text{ and } Y \text{ are independent}.
+Var(X + Y) & = Var(X) + Var(Y) \quad \text{(if independent)}.
 \end{align}
-$$
-For a continuous random variable $X$ with PDF $f_X(x)$, the expectation is defined as:
-$$
-\begin{equation} \label{eq:expectation_continuous}
-E[X] = \int_{-\infty}^{\infty} x \, f_X(x) \, dx.
-\end{equation}
-$$
-The properties of expectation for continuous random variables are similar to those for discrete random variables:
-$$
-\begin{equation} \label{eq:expectation_properties_continuous}
-E[g(X)] = \int_{-\infty}^{\infty} g(x) \, f_X(x) \, dx.
-\end{equation}
-$$
-The variance for continuous random variables is defined as:
-$$
-\begin{equation} \label{eq:variance_continuous}
-\begin{split}
-Var(X) & = E[(X - E[X])^2] \\
-       & = E[X^2] - (E[X])^2 \\
-       & = \int_{-\infty}^{\infty} (x - E[X])^2 \, f_X(x) \, dx.
-\end{split}
-\end{equation}
 $$
 
 <details><summary>Expectation and Variance Examples</summary>
@@ -385,7 +372,7 @@ $$
 
 For two random variables $X$ and $Y$, the joint distribution characterizes their simultaneous behavior.
 
-The **Joint PMF** $p_{X,Y}(x,y)$ and **Joint CDF** $F_{X,Y}(x,y)$ are defined as:
+The Joint PMF $p_{X,Y}(x,y)$ and Joint CDF $F_{X,Y}(x,y)$ are defined as:
 $$
 \begin{equation} \label{eq:joint_pmf}
 p_{X,Y}(x,y) = P(X = x, Y = y),
@@ -396,44 +383,44 @@ $$
 F_{X,Y}(x,y) = P(X \leq x, Y \leq y) = \sum_{t \leq x} \sum_{s \leq y} p_{X,Y}(t,s).
 \end{equation}
 $$
-**Marginal PMFs** are obtained by summing the joint PMF over the other variable:
+Marginal PMFs are obtained by summing the joint PMF over the other variable:
 $$
 \begin{equation} \label{eq:marginal_pmf}
 p_X(x) = \sum_{y} p_{X,Y}(x,y), \quad p_Y(y) = \sum_{x} p_{X,Y}(x,y).
 \end{equation}
 $$
-The **Conditional PMF** of $X$ given $Y=y$ is:
+The Conditional PMF of $X$ given $Y=y$ is:
 $$
 \begin{equation} \label{eq:conditional_pmf}
 p_{X \mid Y}(x \mid y) = \frac{p_{X,Y}(x,y)}{p_Y(y)}, \quad \text{if } p_Y(y) > 0.
 \end{equation}
 $$
 
-The **Joint PDF** $f_{X,Y}(x,y)$ satisfies:
+The Joint PDF $f_{X,Y}(x,y)$ satisfies:
 $$
 P(X \in A, Y \in B) = \int_{B} \int_{A} f_{X,Y}(x,y) \, dx \, dy.
 $$
-**Marginal PDFs** are obtained by integrating out the other variable:
+Marginal PDFs are obtained by integrating out the other variable:
 $$
 \begin{equation} \label{eq:marginal_pdf}
 f_X(x) = \int_{-\infty}^{\infty} f_{X,Y}(x,y) \, dy, \quad f_Y(y) = \int_{-\infty}^{\infty} f_{X,Y}(x,y) \, dx.
 \end{equation}
 $$
-The **Conditional PDF** of $X$ given $Y=y$ is:
+The Conditional PDF of $X$ given $Y=y$ is:
 $$
 \begin{equation} \label{eq:conditional_pdf}
 f_{X \mid Y}(x \mid y) = \frac{f_{X,Y}(x,y)}{f_Y(y)}, \quad \text{if } f_Y(y) > 0.
 \end{equation}
 $$
 
-Expectations can be computed over joint, marginal, or conditional distributions. The **Joint Expectation** of a function $g(X, Y)$ is:
+Expectations can be computed over joint, marginal, or conditional distributions. The Joint Expectation of a function $g(X, Y)$ is:
 $$
 \begin{align}
 E[g(X, Y)] &= \sum_{x} \sum_{y} g(x, y) \, p_{X,Y}(x,y) \\
 E[g(X, Y)] &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x, y) \, f_{X,Y}(x,y) \, dx \, dy
 \end{align}
 $$
-The **Conditional Expectation** $E[X \mid Y=y]$ is computed using the conditional distribution:
+The Conditional Expectation $E[X \mid Y=y]$ is computed using the conditional distribution:
 $$
 \begin{align}
 E[X \mid Y=y] &= \sum_{x} x \, p_{X \mid Y}(x \mid y) \\
@@ -442,9 +429,74 @@ E[X \mid Y=y] &= \int_{-\infty}^{\infty} x \, f_{X \mid Y}(x \mid y) \, dx
 $$
 Marginal expectations $E[X]$ and variances $Var(X)$ follow the standard single-variable formulas using the derived marginal PMFs or PDFs.
 
+### Multivariate Distributions
+
+We generalize the concept of joint distributions to a sequence or set of $N$ random variables $X_1, X_2, \ldots, X_N$. The joint distribution characterizes the probability of these variables simultaneously taking specific values $x_1, x_2, \ldots, x_N$.
+
+To maintain generality for both discrete (PMF) and continuous (PDF) variables, we denote the joint distribution simply as:
+$$
+\begin{equation} \label{eq:general_joint}
+p(x_1, \ldots, x_N) = p(X_1 = x_1, \ldots, X_N = x_N).
+\end{equation}
+$$
+
+Any joint distribution can be factorized into a product of conditional probabilities. By repeatedly applying the definition of conditional probability, we obtain the **Chain Rule**:
+$$
+\begin{align}
+p(x_1, \ldots, x_N) &= p(x_1) p(x_2 \mid x_1) p(x_3 \mid x_1, x_2) \cdots p(x_N \mid x_1, \ldots, x_{N-1}) \\
+p(x_1, \ldots, x_N) &= \prod_{i=1}^N p(x_i \mid x_1, \ldots, x_{i-1}). \label{eq:chain_rule}
+\end{align}
+$$
+
+We perform marginalization to recover the distribution of a subset of variables from a joint distribution by extending $\eqref{eq:marginal_pmf}$ to multiple variables.
+
+For example, to find the marginal distribution of $X_1$ from the joint distribution $p(x_1, \ldots, x_N)$, we sum over all possible values of $X_2, \ldots, X_N$:
+$$
+\begin{equation} \label{eq:general_marginal}
+p(x_1) = \sum_{x_2} \cdots \sum_{x_N} p(x_1, \ldots, x_N).
+\end{equation}
+$$
+
+Two random variables $X$ and $Y$ are said to be _conditionally independent_ given a third variable $Z$ if knowledge of $Z$ decouples $X$ from $Y$. Mathematically:
+$$
+\begin{equation} \label{eq:conditional_independence}
+p(x, y \mid z) = p(x \mid z) p(y \mid z).
+\end{equation}
+$$
+Equivalently, this implies that once $Z$ is known, knowing $Y$ provides no additional information about $X$:
+$$
+p(x \mid y, z) = p(x \mid z).
+$$
+
+<details><summary>Proof of Chain Rule</summary>
+
+We rearrange the definition of conditional probability from $\eqref{eq:conditional_pmf}$ to solve for the joint distribution $p(x,y)$:
+$$
+p(x, y) = p(x \mid y) p(y).
+$$
+Now consider three random variables $X_1, X_2, X_3$. We can treat the pair $(X_1, X_2)$ as a single random variable and apply the above equation:
+$$
+\begin{align*}
+p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_1, x_2).
+\end{align*}
+$$
+We can then solve for the joint $p(x_1, x_2)$ using the same equation:
+$$
+p(x_1, x_2) = p(x_2 \mid x_1) p(x_1).
+$$
+Substituting this back, we have:
+$$
+\begin{align*}
+p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_2 \mid x_1) p(x_1).
+\end{align*}
+$$
+By repeating this process for $N$ random variables, we arrive at the chain rule in $\eqref{eq:chain_rule}$.
+
+</details>
+
 ### Covariance and Independence
 
-The **Covariance** between two random variables $X$ and $Y$ measures their linear relationship:
+The Covariance between two random variables $X$ and $Y$ measures their linear relationship:
 $$
 \begin{equation} \label{eq:covariance}
 \begin{split}
@@ -453,12 +505,12 @@ Cov(X, Y) & = E[(X - E[X])(Y - E[Y])] \\
 \end{split}
 \end{equation}
 $$
-The **Correlation Coefficient** standardizes covariance, providing a unitless measure in $[-1, 1]$:
+The Correlation Coefficient standardizes covariance, providing a unitless measure in $[-1, 1]$:
 $$
 \rho_{X,Y} = \frac{Cov(X, Y)}{\sqrt{Var(X) Var(Y)}}.
 $$
 
-Two random variables $X$ and $Y$ are **independent** if and only if their joint distribution factorizes into the product of their marginals:
+Two random variables $X$ and $Y$ are independent if and only if their joint distribution factorizes into the product of their marginals:
 $$
 \begin{align}
 p_{X,Y}(x,y) &= p_X(x) p_Y(y) && \text{(Discrete)} \\
@@ -477,8 +529,6 @@ Let us consider a scenario involving a robot's operational state.
 Let $X$ represent the **Robot Mode**, where $X=1$ denotes "Idle" and $X=2$ denotes "Active".
 Let $Y$ represent the **Power Consumption Level**, where $Y=1$ is "Low", $Y=2$ is "Medium", and $Y=3$ is "High".
 
-**1. Joint Probability Mass Function (PMF)**
-
 The joint probabilities $p_{X,Y}(x,y)$ are given by:
 $$
 p_{X,Y}(x,y) = \begin{cases}
@@ -488,15 +538,13 @@ p_{X,Y}(x,y) = \begin{cases}
 0.1, & x=2, y=1, \\
 0.3, & x=2, y=2, \\
 0.3, & x=2, y=3, \\
-0, & \text{otherwise}.
+0, & \text{o.w}.
 \end{cases}
 $$
 
-**2. Deriving Marginal PMFs**
+We obtain the marginal distributions by summing the joint probabilities over the other variable by following $\eqref{eq:marginal_pmf}$.
 
-We obtain the marginal distributions by summing the joint probabilities over the other variable.
-
-- For **Robot Mode ($X$)**:
+- For Robot Mode ($X$):
     $$
     \begin{align*}
     p_X(1) &= 0.2 + 0.1 + 0 = 0.3 \\
@@ -511,7 +559,7 @@ We obtain the marginal distributions by summing the joint probabilities over the
     \end{cases}
     $$
 
-- For **Power Consumption ($Y$)**:
+- For Power Consumption ($Y$):
     $$
     \begin{align*}
     p_Y(1) &= 0.2 + 0.1 = 0.3 \\
@@ -528,69 +576,29 @@ We obtain the marginal distributions by summing the joint probabilities over the
     \end{cases}
     $$
 
-**3. Deriving Conditional PMF**
-
-Suppose we observe **Medium Power** ($Y=2$). We calculate the conditional distribution of $X$ given $Y=2$ using $p_{X \mid Y}(x \mid 2) = \frac{p_{X,Y}(x, 2)}{p_Y(2)}$:
+We obtain the conditional distributions by applying $\eqref{eq:conditional_pmf}$.
 $$
-\begin{align*}
-P(X=1 \mid Y=2) &= \frac{0.1}{0.4} = 0.25 \\
-P(X=2 \mid Y=2) &= \frac{0.3}{0.4} = 0.75
-\end{align*}
+p_{X \mid Y}(x \mid y) = \begin{cases}
+\frac{2}{3}, & x=1, y=1, \\
+\frac{1}{3}, & x=2, y=1, \\
+\frac{1}{4}, & x=1, y=2, \\
+\frac{3}{4}, & x=2, y=2, \\
+0, & x=1, y=3, \\
+1, & x=2, y=3, \\
+0, & \text{o.w.}
+\end{cases}
 $$
-
-**4. Calculating Expectations**
-
-We can now compute expectations using the marginal and conditional distributions derived above.
-
-- **Marginal Expectations ($E[X]$ and $E[Y]$):**
-    $$
-    \begin{align*}
-    E[X] &= \sum_{x} x \, p_X(x) = 1(0.3) + 2(0.7) = 1.7. \\
-    E[Y] &= \sum_{y} y \, p_Y(y) = 1(0.3) + 2(0.4) + 3(0.3) = 2.0.
-    \end{align*}
-    $$
-
-- **Conditional Expectation ($E[X \mid Y=2]$):**
-    $$
-    E[X \mid Y=2] = \sum_{x} x \, p_{X \mid Y}(x \mid 2) = 1(0.25) + 2(0.75) = 1.75.
-    $$
-    _Interpretation: When power usage is Medium, the expected robot mode is closer to Active (1.75) than the general average (1.7)._
-
-- **Joint Expectation ($E[XY]$):**
-    $$
-    \begin{align*}
-    E[XY] &= \sum_{x}\sum_{y} xy \, p_{X,Y}(x,y) \\
-          &= (1\cdot1)(0.2) + (1\cdot2)(0.1) + (2\cdot1)(0.1) + (2\cdot2)(0.3) + (2\cdot3)(0.3) \\
-          &= 0.2 + 0.2 + 0.2 + 1.2 + 1.8 = 3.6.
-    \end{align*}
-    $$
-
-**5. Variance and Covariance**
-
-- **Variance ($Var(X)$):**
-    First, compute the second moment $E[X^2]$:
-    $$
-    E[X^2] = 1^2(0.3) + 2^2(0.7) = 3.1.
-    $$
-    Then, apply the variance formula:
-    $$
-    Var(X) = E[X^2] - (E[X])^2 = 3.1 - (1.7)^2 = 0.21.
-    $$
-
-- **Covariance ($Cov(X,Y)$):**
-    Using the $E[XY]$ calculated in Step 4:
-    $$
-    Cov(X, Y) = E[XY] - E[X]E[Y] = 3.6 - (1.7)(2.0) = 0.2.
-    $$
-    _A positive covariance indicates that higher power consumption is associated with the Active robot mode._
-
-**6. Independence Check**
-
-Are $X$ and $Y$ independent? We check if $p_{X,Y}(x,y) = p_X(x) p_Y(y)$ for a test case $(1,1)$:
 $$
-p_{X,Y}(1,1) = 0.2 \quad \neq \quad p_X(1) p_Y(1) = (0.3)(0.3) = 0.09.
+p_{Y \mid X}(y \mid x) = \begin{cases}
+\frac{2}{3}, & y=1, x=1, \\
+\frac{1}{3}, & y=2, x=1, \\
+0, & y=3, x=1, \\
+\frac{1}{7}, & y=1, x=2, \\
+\frac{3}{7}, & y=2, x=2, \\
+\frac{3}{7}, & y=3, x=2, \\
+0, & \text{o.w.}
+\end{cases}
 $$
-Since the joint probability does not equal the product of the marginals, $X$ and $Y$ are **not** independent.
 
 </details>
 
@@ -598,23 +606,34 @@ Since the joint probability does not equal the product of the marginals, $X$ and
 
 We define a random variable $X$ representing the **state** of the robot and a random variable $Y$ representing the **observation**. Our goal is to estimate the posterior belief about the state given measurements.
 
-**Single Observation Update**
-Using Bayes' Theorem, we compute the posterior $P(X \mid Y)$ by updating the prior $P(X)$ with the likelihood $P(Y \mid X)$:
+We extend Bayes' Theorem $\eqref{eq:bayes_theorem}$ to use Random Variables:
+$$
+\begin{align}
+p_{X \mid Y}(x \mid y) &= \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} \label{eq:bayes_rv} \\
+f_{X \mid Y}(x \mid y) &= \frac{f_{Y \mid X}(y \mid x) f_X(x)}{f_Y(y)} \label{eq:bayes_rv_continuous}
+\end{align}
+$$
+
+- $p_{X \mid Y} (x \mid y)$ or $f_{X \mid Y}(x \mid y)$: _Posterior_ distribution of state $X$ given observation $Y=y$.
+- $p_{Y \mid X} (y \mid x)$ or $f_{Y \mid X}(y \mid x)$: _Likelihood_ of observation $Y=y$ given state $X=x$.
+- $p_X(x)$ or $f_X(x)$: _Prior_ distribution of state $X$ before observing $Y$.
+- $p_Y(y)$ or $f_Y(y)$: _Marginal likelihood_ of observation $Y=y$.
+
+**Single Observation Update**: Using $\eqref{eq:bayes_rv}$, we compute the posterior by updating the prior with the likelihood:
 $$
 \begin{equation} \label{eq:bayes_single}
-P(X \mid Y) = \frac{P(Y \mid X) P(X)}{P(Y)} = \eta \cdot P(Y \mid X) P(X).
+p_{X \mid Y}(x \mid y) = \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} = \eta \cdot p_{Y \mid X}(y \mid x) p_X(x).
 \end{equation}
 $$
 Here, $\eta = \frac{1}{P(Y)}$ is a normalization constant ensuring the posterior sums to 1.
 
-**Recursive Update ($n$ Observations)**
-When receiving a sequence of observations $Y_1, \ldots, Y_n$, we assume observations are conditionally independent given the state. The posterior after $n$ steps uses the posterior from step $n-1$ as the new prior:
+**Recursive Update ($n$ Observations)**: When receiving a sequence of observations $y_1, \ldots, y_n$, we assume observations are conditionally independent given the state $X$, i.e, $Y_i \perp Y_j \mid X$ for $i \neq j$ as shown in $\eqref{eq:conditional_independence}$. The posterior after $n$ steps uses the posterior from step $n-1$ as the new prior:
 $$
 \begin{equation} \label{eq:bayes_recursive}
-P(X \mid Y_1, \ldots, Y_n) = \eta \cdot P(Y_n \mid X) \cdot P(X \mid Y_1, \ldots, Y_{n-1}),
+p(x \mid y_1, \ldots, y_n) = \eta \cdot p(y_n \mid x) \cdot p(x \mid y_1, \ldots, y_{n-1}),
 \end{equation}
 $$
-where $\eta = \frac{1}{P(Y_n \mid Y_1, \ldots, Y_{n-1})}$ is the normalization constant.
+where $\eta$ is the normalization constant for the $n$-th step, given by $\eta = \frac{1}{p(y_n \mid y_1, \ldots, y_{n-1})}$.
 
 <details><summary>Example: Recursive Bayesian Estimation (Door Sensor)</summary>
 
@@ -627,7 +646,7 @@ p_X(x) = \begin{cases}
 0.5, & x = \text{closed}.
 \end{cases}
 $$
-And suppose we have a sensor with the following characteristics:
+And suppose we have a sensor with the following characteristics ($p_{Y \mid X}$):
 
 - If the door is open, the sensor correctly reads "Open" ($y=1$) with probability $0.6$.
 - If the door is closed, the sensor incorrectly reads "Open" ($y=1$) with probability $0.3$.
@@ -641,56 +660,57 @@ p_{Y \mid X}(y \mid x) = \begin{cases}
 \end{cases}
 $$
 
-Suppose we receive a sequence of sensor readings: $Y_1 = 1, Y_2 = 0, Y_3 = 1$, we want to find the probability that the door is open after all three readings.
+Suppose we receive a sequence of sensor readings: $y_1 = 1, y_2 = 0, y_3 = 1$. We want to find the probability that the door is open after all three readings.
 
-From $\eqref{eq:bayes_recursive}$, we have:
+From $\eqref{eq:bayes_recursive}$, the recursive updates are:
 $$
 \begin{align*}
-P(X \mid Y_1, Y_2, Y_3) &= \eta_3 \cdot P(Y_3 \mid X) \cdot P(X \mid Y_1, Y_2) \\
-P(X \mid Y_1, Y_2) &= \eta_2 \cdot P(Y_2 \mid X) \cdot P(X \mid Y_1) \\
-P(X \mid Y_1) &= \eta_1 \cdot P(Y_1 \mid X) \cdot P(X).
+p_{X \mid Y_1, Y_2, Y_3}(x \mid y_1, y_2, y_3) &= \eta_3 \cdot p_{Y \mid X}(y_3 \mid x) \cdot p_{X \mid Y_1, Y_2}(x \mid y_1, y_2) \\
+p_{X \mid Y_1, Y_2}(x \mid y_1, y_2) &= \eta_2 \cdot p_{Y \mid X}(y_2 \mid x) \cdot p_{X \mid Y_1}(x \mid y_1) \\
+p_{X \mid Y_1}(x \mid y_1) &= \eta_1 \cdot p_{Y \mid X}(y_1 \mid x) \cdot p_X(x)
+
 \end{align*}
 $$
 We can compute these step by step:
 
-1. **After first reading $Y_1 = 1$**:
+1. **After first reading $y_1 = 1$**:
     $$
     \begin{align*}
-    P(X=\text{open} \mid Y_1=1) & = \eta_1 \cdot P(Y_1=1 \mid X=\text{open}) \cdot P(X=\text{open}) \\
+    p_{X \mid Y_1}(\text{open} \mid 1) & = \eta_1 \cdot p_{Y \mid X}(1 \mid \text{open}) \cdot p_X(\text{open}) \\
     & = \eta_1 \cdot 0.6 \cdot 0.5 =  \eta_1 \cdot 0.3, \\
-    P(X=\text{closed} \mid Y_1=1) & = \eta_1 \cdot P(Y_1=1 \mid X=\text{closed}) \cdot P(X=\text{closed}) \\
+    p_{X \mid Y_1}(\text{closed} \mid 1) & = \eta_1 \cdot p_{Y \mid X}(1 \mid \text{closed}) \cdot p_X(\text{closed}) \\
     & = \eta_1 \cdot 0.3 \cdot 0.5 = \eta_1 \cdot 0.15.
     \end{align*}
     $$
     Normalizing gives $\eta_1 = \frac{1}{0.3 + 0.15} = \frac{1}{0.45}$, so:
     $$
-    P(X=\text{open} \mid Y_1=1) = \frac{2}{3}, \quad P(X=\text{closed} \mid Y_1=1) = \frac{1}{3}.
+    p_{X \mid Y_1}(\text{open} \mid 1) = \frac{2}{3}, \quad p_{X \mid Y_1}(\text{closed} \mid 1) = \frac{1}{3}.
     $$
-2. **After second reading $Y_2 = 0$**:
+2. **After second reading $y_2 = 0$**:
     $$
     \begin{align*}
-    P(X=\text{open} \mid Y_1=1, Y_2=0) & = \eta_2 \cdot P(Y_2=0 \mid X=\text{open}) \cdot P(X=\text{open} \mid Y_1=1) \\
+    p_{X \mid Y_1, Y_2}(\text{open} \mid 1, 0) & = \eta_2 \cdot p_{Y \mid X}(0 \mid \text{open}) \cdot p_{X \mid Y_1}(\text{open} \mid 1) \\
     & = \eta_2 \cdot 0.4 \cdot \frac{2}{3} = \eta_2 \cdot \frac{4}{15}, \\
-    P(X=\text{closed} \mid Y_1=1, Y_2=0) & = \eta_2 \cdot P(Y_2=0 \mid X=\text{closed}) \cdot P(X=\text{closed} \mid Y_1=1) \\
+    p_{X \mid Y_1, Y_2}(\text{closed} \mid 1, 0) & = \eta_2 \cdot p_{Y \mid X}(0 \mid \text{closed}) \cdot p_{X \mid Y_1}(\text{closed} \mid 1) \\
     & = \eta_2 \cdot 0.7 \cdot \frac{1}{3} = \eta_2 \cdot \frac{7}{30}.
     \end{align*}
     $$
     Normalizing gives $\eta_2 = \frac{1}{\frac{4}{15} + \frac{7}{30}} = 2$, so:
     $$
-    P(X=\text{open} \mid Y_1=1, Y_2=0) = \frac{8}{15}, \quad P(X=\text{closed} \mid Y_1=1, Y_2=0) = \frac{7}{15}.
+    p_{X \mid Y_1, Y_2}(\text{open} \mid 1, 0) = \frac{8}{15}, \quad p_{X \mid Y_1, Y_2}(\text{closed} \mid 1, 0) = \frac{7}{15}.
     $$
-3. **After third reading $Y_3 = 1$**:
+3. **After third reading $y_3 = 1$**:
     $$
     \begin{align*}
-    P(X=\text{open} \mid Y_1=1, Y_2=0, Y_3=1) & = \eta_3 \cdot P(Y_3=1 \mid X=\text{open}) \cdot P(X=\text{open} \mid Y_1=1, Y_2=0) \\
+    p_{X \mid Y_1, Y_2, Y_3}(\text{open} \mid 1, 0, 1) & = \eta_3 \cdot p_{Y \mid X}(1 \mid \text{open}) \cdot p_{X \mid Y_1, Y_2}(\text{open} \mid 1, 0) \\
     & = \eta_3 \cdot 0.6 \cdot \frac{8}{15} = \eta_3 \cdot \frac{16}{50}, \\
-    P(X=\text{closed} \mid Y_1=1, Y_2=0, Y_3=1) & = \eta_3 \cdot P(Y_3=1 \mid X=\text{closed}) \cdot P(X=\text{closed} \mid Y_1=1, Y_2=0) \\
+    p_{X \mid Y_1, Y_2, Y_3}(\text{closed} \mid 1, 0, 1) & = \eta_3 \cdot p_{Y \mid X}(1 \mid \text{closed}) \cdot p_{X \mid Y_1, Y_2}(\text{closed} \mid 1, 0) \\
     & = \eta_3 \cdot 0.3 \cdot \frac{7}{15} = \eta_3 \cdot \frac{7}{50}.
     \end{align*}
     $$
     Normalizing gives $\eta_3 = \frac{1}{\frac{16}{50} + \frac{7}{50}} = \frac{50}{23}$, so:
     $$
-    P(X=\text{open} \mid Y_1=1, Y_2=0, Y_3=1) = \frac{16}{23} \approx 0.6957, \quad P(X=\text{closed} \mid Y_1=1, Y_2=0, Y_3=1) = \frac{7}{23} \approx 0.3043.
+    p_{X \mid Y_1, Y_2, Y_3}(\text{open} \mid 1, 0, 1) = \frac{16}{23} \approx 0.6957, \quad p_{X \mid Y_1, Y_2, Y_3}(\text{closed} \mid 1, 0, 1) = \frac{7}{23} \approx 0.3043.
     $$
 
 After processing the three sensor readings, the robot estimates that there is approximately a $69.57\%$ chance that the door is open.
@@ -700,54 +720,104 @@ After processing the three sensor readings, the robot estimates that there is ap
 From $\eqref{eq:bayes_recursive}$, we can expand the posterior after $n$ observations to obtain:
 $$
 \begin{equation} \label{eq:bayes_expanded}
-P(X \mid Y_1, \ldots, Y_n) = \eta \cdot P(X) \prod_{i=1}^{n} P(Y_i \mid X),
+p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta \cdot p_X(x) \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x),
 \end{equation}
 $$
 where
 $$
-\eta = \frac{1}{P(Y_1, \ldots, Y_n)} = \sum_x \left[P(Y_1, \ldots, Y_n \mid X=x) P(X=x) \right]
+\eta = \frac{1}{p_{Y_1, \ldots, Y_n}(y_1, \ldots, y_n)} = \frac{1}{\sum_{x'} \left[ p_X(x') \prod_{i=1}^n p_{Y_i \mid X}(y_i \mid x') \right]}
 $$
 is the normalization constant at each step. This formulation highlights how each new observation incrementally updates our belief about the state $X$.
+
+<details><summary>Proof of Expanded Bayesian Estimation</summary>
+
+We aim to derive the expanded posterior form $\eqref{eq:bayes_expanded}$ starting from the recursive update rule $\eqref{eq:bayes_recursive}$.
+
+**Assumption:** The observations $Y_1, \ldots, Y_n$ are conditionally independent given the state $X$.
+
+**Base Case ($n=1$):**
+For a single observation, the recursive update $\eqref{eq:bayes_recursive}$ simplifies to the single observation update $\eqref{eq:bayes_single}$.
+$$
+\begin{equation} \label{eq:proof_base}
+p_{X \mid Y_1}(x \mid y_1) = \eta_1 \cdot p_{Y_1 \mid X}(y_1 \mid x) p_X(x).
+\end{equation}
+$$
+This matches the form of $\eqref{eq:bayes_expanded}$ for $n=1$.
+
+**Inductive Step:**
+Assume that the expanded form holds for $n-1$ observations (Inductive Hypothesis). That is:
+$$
+\begin{equation} \label{eq:proof_hypothesis}
+p_{X \mid Y_1, \ldots, Y_{n-1}}(x \mid y_1, \ldots, y_{n-1}) = \eta_{1:n-1} \cdot p_X(x) \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x),
+\end{equation}
+$$
+where $\eta_{1:n-1}$ represents the accumulated normalization constant for the sequence up to $n-1$.
+
+Now, consider the recursive update for the $n$-th step given by $\eqref{eq:bayes_recursive}$:
+$$
+\begin{equation} \label{eq:proof_recursive_step}
+p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta_n \cdot p_{Y_n \mid X}(y_n \mid x) \cdot p_{X \mid Y_1, \ldots, Y_{n-1}}(x \mid y_1, \ldots, y_{n-1}).
+\end{equation}
+$$
+
+Substitute the Inductive Hypothesis $\eqref{eq:proof_hypothesis}$ into the recursive equation $\eqref{eq:proof_recursive_step}$:
+$$
+\begin{equation} \label{eq:proof_sub}
+p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta_n \cdot p_{Y_n \mid X}(y_n \mid x) \cdot \left[ \eta_{1:n-1} \cdot p_X(x) \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x) \right].
+\end{equation}
+$$
+
+We can combine the scalar normalization constants into a single constant $\eta = \eta_n \cdot \eta_{1:n-1}$.
+We can also combine the likelihood term $p_{Y_n \mid X}(y_n \mid x)$ with the product term:
+$$
+\begin{equation} \label{eq:proof_combine}
+p_{Y_n \mid X}(y_n \mid x) \cdot \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x) = \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x).
+\end{equation}
+$$
+
+Substituting $\eqref{eq:proof_combine}$ back into $\eqref{eq:proof_sub}$, we obtain:
+$$
+\begin{equation} \label{eq:proof_final}
+p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta \cdot p_X(x) \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x).
+\end{equation}
+$$
+
+This confirms that the recursive application of Bayes' rule results in the product of individual likelihoods, recovering $\eqref{eq:bayes_expanded}$.
+
+</details>
 
 <details><summary>Example: Expanded Bayesian Estimation</summary>
 
 Following the previous door sensor example, we can express the posterior after three observations using the expanded batch formula $\eqref{eq:bayes_expanded}$:
 $$
-P(x \mid y_{1:3}) = \eta \cdot \underbrace{P(x) \prod_{i=1}^3 P(y_i \mid x)}_{\tilde{P}(x)}.
+p_{X \mid Y_1, Y_2, Y_3}(x \mid y_1, y_2, y_3) = \eta \cdot \underbrace{p_X(x) \prod_{i=1}^3 p_{Y \mid X}(y_i \mid x)}_{\tilde{p}(x)}.
 $$
 
-**1. Hypothesis $X = \text{open}$**
+We first compute the unnormalized mass $\tilde{p}(x)$ for each hypothesis.
 $$
 \begin{align*}
-\tilde{P}(\text{open}) &= P(\text{open}) \cdot P(Y_1=1 \mid \text{open}) \cdot P(Y_2=0 \mid \text{open}) \cdot P(Y_3=1 \mid \text{open}) \\
+\tilde{p}(\text{open}) &= p_X(\text{open}) \cdot p_{Y \mid X}(1 \mid \text{open}) \cdot p_{Y \mid X}(0 \mid \text{open}) \cdot p_{Y \mid X}(1 \mid \text{open}) \\
 &= 0.5 \cdot (0.6 \cdot 0.4 \cdot 0.6) \\
 &= 0.5 \cdot 0.144 \\
-&= 0.072.
-\end{align*}
-$$
-
-**2. Hypothesis $X = \text{closed}$**
-$$
-\begin{align*}
-\tilde{P}(\text{closed}) &= P(\text{closed}) \cdot P(Y_1=1 \mid \text{closed}) \cdot P(Y_2=0 \mid \text{closed}) \cdot P(Y_3=1 \mid \text{closed}) \\
+&= 0.072. \\
+\tilde{p}(\text{closed}) &= p_X(\text{closed}) \cdot p_{Y \mid X}(1 \mid \text{closed}) \cdot p_{Y \mid X}(0 \mid \text{closed}) \cdot p_{Y \mid X}(1 \mid \text{closed}) \\
 &= 0.5 \cdot (0.3 \cdot 0.7 \cdot 0.3) \\
 &= 0.5 \cdot 0.063 \\
 &= 0.0315.
 \end{align*}
 $$
 
-**3. Normalization ($\eta$)**
 The total probability of the observation sequence is the sum of the unnormalized masses:
 $$
-P(Y_{1:3}) = \tilde{P}(\text{open}) + \tilde{P}(\text{closed}) = 0.072 + 0.0315 = 0.1035.
+p_{Y_1, Y_2, Y_3}(1, 0, 1) = \tilde{p}(\text{open}) + \tilde{p}(\text{closed}) = 0.072 + 0.0315 = 0.1035.
 $$
 Thus, the normalization constant is $\eta = \frac{1}{0.1035}$.
 
-**4. Final Posterior Probabilities**
+We can now compute the posterior probabilities:
 $$
 \begin{align*}
-P(\text{open} \mid Y_{1:3}) &= \frac{0.072}{0.1035} = \frac{720}{1035} = \frac{16}{23} \approx 0.6957, \\
-P(\text{closed} \mid Y_{1:3}) &= \frac{0.0315}{0.1035} = \frac{315}{1035} = \frac{7}{23} \approx 0.3043.
+p_{X \mid Y_1, Y_2, Y_3}(\text{open} \mid 1, 0, 1) &= \frac{0.072}{0.1035} = \frac{720}{1035} = \frac{16}{23} \approx 0.6957, \\
+p_{X \mid Y_1, Y_2, Y_3}(\text{closed} \mid 1, 0, 1) &= \frac{0.0315}{0.1035} = \frac{315}{1035} = \frac{7}{23} \approx 0.3043.
 \end{align*}
 $$
 
@@ -778,7 +848,7 @@ These probabilities must satisfy:
 - $0 \leq P_{ij} \leq 1$ for all $i, j \in S$,
 - $\sum_{j \in S} P_{ij} = 1$ for all $i \in S$ (the system must transition to some state).
 
-We can arrage these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $P_{ij}$:
+We can arrange these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $P_{ij}$:
 $$
 \begin{equation} \label{eq:transition_matrix}
 P = \begin{bmatrix}
@@ -926,6 +996,19 @@ $$
 &= \begin{bmatrix} 0.35 \\ 0.45 \\ 0.20 \end{bmatrix}.
 \end{align*}
 $$
+Alternatively, we can use $\eqref{eq:n_step_propagation}$ to compute $\pi^{(2)}$ directly:
+$$
+\begin{align*}
+\pi^{(2)} &= (P^T)^2 \pi^{(0)} \\
+&= \begin{bmatrix}
+0.5 & 0.2 & 0.1 \\
+0.5 & 0.4 & 0.0 \\
+0.0 & 0.4 & 0.9
+\end{bmatrix}^2 \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \\
+&= \begin{bmatrix} 0.35 \\ 0.45 \\ 0.20 \end{bmatrix}.  
+\end{align*}
+$$
+
 Suppose we want to find the stationary distribution $\pi$ satisfying $\pi = P^T \pi$. We set up the equations:
 $$
 \begin{align*}
@@ -950,3 +1033,37 @@ $$
 ```
 
 </details>
+
+### Hidden Markov Models
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto, node distance=3cm]
+
+  % --- Nodes ---
+  % Row 1: Hidden States (X) - Using explicit coordinates like your example
+  \node [circle, draw, minimum size=1.5cm] (x_prev) at (0, 0) {$X_{k-1}$};
+  \node [circle, draw, minimum size=1.5cm] (x_curr) at (4, 0) {$X_k$};
+  \node [circle, draw, minimum size=1.5cm] (x_next) at (8, 0) {$X_{k+1}$};
+
+  % Row 2: Observations (Y) - Placed directly below
+  % Used 'rectangle' shape to distinguish from states, but standard syntax
+  \node [rectangle, draw, minimum size=1.2cm] (y_prev) at (0, -3) {$Y_{k-1}$};
+  \node [rectangle, draw, minimum size=1.2cm] (y_curr) at (4, -3) {$Y_k$};
+  \node [rectangle, draw, minimum size=1.2cm] (y_next) at (8, -3) {$Y_{k+1}$};
+
+  % --- Edges ---
+  
+  % 1. Transition Model (Horizontal: State to State)
+  \draw (x_prev) to node {Transition} (x_curr);
+  \draw (x_curr) to node {$P(x'|x)$} (x_next);
+
+  % 2. Emission Model (Vertical: State to Observation)
+  % Using 'swap' to put the label on the other side of the arrow if needed
+  \draw (x_prev) to node [swap] {Emission} (y_prev);
+  \draw (x_curr) to node [swap] {$P(y|x)$} (y_curr);
+  \draw (x_next) to (y_next);
+
+\end{tikzpicture}
+\end{document}
+```
