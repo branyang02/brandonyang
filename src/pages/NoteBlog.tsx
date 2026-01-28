@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet";
 import Giscus from "@giscus/react";
 import LastUpdated from "../components/LastUpdated";
 import { loadMarkdownModules } from "../utils/utils";
+import MarkovChain from "../components/notie-components/MarkovChain";
 
 const darkTheme = createTheme({
     palette: {
@@ -23,7 +24,12 @@ const lightTheme = createTheme({
     },
 });
 
-const latexThemeContentIDs = ["ml", "ode", "flow-matching", "learning-in-robotics"];
+const latexThemeContentIDs = [
+    "ml",
+    "ode",
+    "flow-matching",
+    "learning-in-robotics",
+];
 
 function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     const baseTheme: NotieTheme = darkMode
@@ -90,6 +96,7 @@ const NotesBlogs = ({ type }: { type: string }) => {
         () => ({
             linearRegression: () => <LinearRegression />,
             logisticRegression: () => <LogisticRegression />,
+            MarkovChain: () => <MarkovChain />,
             LastUpdated: () => <LastUpdated />,
         }),
         []

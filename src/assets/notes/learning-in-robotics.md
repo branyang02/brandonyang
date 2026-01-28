@@ -127,6 +127,30 @@ P(A_i \mid B) = \frac{P(B \mid A_i) P(A_i)}{\sum_{j=1}^n P(B \mid A_j) P(A_j)}.
 \end{equation}
 $$
 
+<details><summary>Example: Total Probability in Localization</summary>
+
+Suppose a robot operates in two distinct zones: **Indoor** ($Z_{in}$) and **Outdoor** ($Z_{out}$). Based on its deployment schedule, the probability of the robot being in each zone is:
+$$
+P(Z_{in}) = 0.8, \quad P(Z_{out}) = 0.2.
+$$
+Let $E$ be the event that the robot's GPS signal is **Lost**. The probability of losing the signal depends on the zone:
+
+- Indoors, the signal is lost frequently: $P(E \mid Z_{in}) = 0.9$.
+- Outdoors, the signal is lost rarely: $P(E \mid Z_{out}) = 0.05$.
+
+Using the **Law of Total Probability**, we can find the overall probability that the robot has lost its GPS signal:
+$$
+\begin{align*}
+P(E) &= P(E \mid Z_{in}) P(Z_{in}) + P(E \mid Z_{out}) P(Z_{out}) \\
+     &= (0.9)(0.8) + (0.05)(0.2) \\
+     &= 0.72 + 0.01 \\
+     &= 0.73.
+\end{align*}
+$$
+Thus, there is a $73\%$ chance the robot has no GPS signal at any random moment.
+
+</details>
+
 ### Random Variables
 
 A random variable is an assignment of a value to every possible outcome, defined as a function:
@@ -567,5 +591,362 @@ $$
 p_{X,Y}(1,1) = 0.2 \quad \neq \quad p_X(1) p_Y(1) = (0.3)(0.3) = 0.09.
 $$
 Since the joint probability does not equal the product of the marginals, $X$ and $Y$ are **not** independent.
+
+</details>
+
+## State Estimation using Bayes Rule
+
+We define a random variable $X$ representing the **state** of the robot and a random variable $Y$ representing the **observation**. Our goal is to estimate the posterior belief about the state given measurements.
+
+**Single Observation Update**
+Using Bayes' Theorem, we compute the posterior $P(X \mid Y)$ by updating the prior $P(X)$ with the likelihood $P(Y \mid X)$:
+$$
+\begin{equation} \label{eq:bayes_single}
+P(X \mid Y) = \frac{P(Y \mid X) P(X)}{P(Y)} = \eta \cdot P(Y \mid X) P(X).
+\end{equation}
+$$
+Here, $\eta = \frac{1}{P(Y)}$ is a normalization constant ensuring the posterior sums to 1.
+
+**Recursive Update ($n$ Observations)**
+When receiving a sequence of observations $Y_1, \ldots, Y_n$, we assume observations are conditionally independent given the state. The posterior after $n$ steps uses the posterior from step $n-1$ as the new prior:
+$$
+\begin{equation} \label{eq:bayes_recursive}
+P(X \mid Y_1, \ldots, Y_n) = \eta \cdot P(Y_n \mid X) \cdot P(X \mid Y_1, \ldots, Y_{n-1}),
+\end{equation}
+$$
+where $\eta = \frac{1}{P(Y_n \mid Y_1, \ldots, Y_{n-1})}$ is the normalization constant.
+
+<details><summary>Example: Recursive Bayesian Estimation (Door Sensor)</summary>
+
+Let $X$ be the random variable for the door state and $Y$ be the random variable for the sensor reading. The realizations are $x \in \{\text{open}, \text{closed}\}$ and $y \in \{0, 1\}$, where $1$ indicates the sensor reads "Open".
+
+Suppose we have prior knowledge that the door is equally likely to be open or closed:
+$$
+p_X(x) = \begin{cases}
+0.5, & x = \text{open}, \\
+0.5, & x = \text{closed}.
+\end{cases}
+$$
+And suppose we have a sensor with the following characteristics:
+
+- If the door is open, the sensor correctly reads "Open" ($y=1$) with probability $0.6$.
+- If the door is closed, the sensor incorrectly reads "Open" ($y=1$) with probability $0.3$.
+
+$$
+p_{Y \mid X}(y \mid x) = \begin{cases}
+0.6, & y=1, x=\text{open}, \\
+0.4, & y=0, x=\text{open}, \\
+0.3, & y=1, x=\text{closed}, \\
+0.7, & y=0, x=\text{closed}.
+\end{cases}
+$$
+
+Suppose we receive a sequence of sensor readings: $Y_1 = 1, Y_2 = 0, Y_3 = 1$, we want to find the probability that the door is open after all three readings.
+
+From $\eqref{eq:bayes_recursive}$, we have:
+$$
+\begin{align*}
+P(X \mid Y_1, Y_2, Y_3) &= \eta_3 \cdot P(Y_3 \mid X) \cdot P(X \mid Y_1, Y_2) \\
+P(X \mid Y_1, Y_2) &= \eta_2 \cdot P(Y_2 \mid X) \cdot P(X \mid Y_1) \\
+P(X \mid Y_1) &= \eta_1 \cdot P(Y_1 \mid X) \cdot P(X).
+\end{align*}
+$$
+We can compute these step by step:
+
+1. **After first reading $Y_1 = 1$**:
+    $$
+    \begin{align*}
+    P(X=\text{open} \mid Y_1=1) & = \eta_1 \cdot P(Y_1=1 \mid X=\text{open}) \cdot P(X=\text{open}) \\
+    & = \eta_1 \cdot 0.6 \cdot 0.5 =  \eta_1 \cdot 0.3, \\
+    P(X=\text{closed} \mid Y_1=1) & = \eta_1 \cdot P(Y_1=1 \mid X=\text{closed}) \cdot P(X=\text{closed}) \\
+    & = \eta_1 \cdot 0.3 \cdot 0.5 = \eta_1 \cdot 0.15.
+    \end{align*}
+    $$
+    Normalizing gives $\eta_1 = \frac{1}{0.3 + 0.15} = \frac{1}{0.45}$, so:
+    $$
+    P(X=\text{open} \mid Y_1=1) = \frac{2}{3}, \quad P(X=\text{closed} \mid Y_1=1) = \frac{1}{3}.
+    $$
+2. **After second reading $Y_2 = 0$**:
+    $$
+    \begin{align*}
+    P(X=\text{open} \mid Y_1=1, Y_2=0) & = \eta_2 \cdot P(Y_2=0 \mid X=\text{open}) \cdot P(X=\text{open} \mid Y_1=1) \\
+    & = \eta_2 \cdot 0.4 \cdot \frac{2}{3} = \eta_2 \cdot \frac{4}{15}, \\
+    P(X=\text{closed} \mid Y_1=1, Y_2=0) & = \eta_2 \cdot P(Y_2=0 \mid X=\text{closed}) \cdot P(X=\text{closed} \mid Y_1=1) \\
+    & = \eta_2 \cdot 0.7 \cdot \frac{1}{3} = \eta_2 \cdot \frac{7}{30}.
+    \end{align*}
+    $$
+    Normalizing gives $\eta_2 = \frac{1}{\frac{4}{15} + \frac{7}{30}} = 2$, so:
+    $$
+    P(X=\text{open} \mid Y_1=1, Y_2=0) = \frac{8}{15}, \quad P(X=\text{closed} \mid Y_1=1, Y_2=0) = \frac{7}{15}.
+    $$
+3. **After third reading $Y_3 = 1$**:
+    $$
+    \begin{align*}
+    P(X=\text{open} \mid Y_1=1, Y_2=0, Y_3=1) & = \eta_3 \cdot P(Y_3=1 \mid X=\text{open}) \cdot P(X=\text{open} \mid Y_1=1, Y_2=0) \\
+    & = \eta_3 \cdot 0.6 \cdot \frac{8}{15} = \eta_3 \cdot \frac{16}{50}, \\
+    P(X=\text{closed} \mid Y_1=1, Y_2=0, Y_3=1) & = \eta_3 \cdot P(Y_3=1 \mid X=\text{closed}) \cdot P(X=\text{closed} \mid Y_1=1, Y_2=0) \\
+    & = \eta_3 \cdot 0.3 \cdot \frac{7}{15} = \eta_3 \cdot \frac{7}{50}.
+    \end{align*}
+    $$
+    Normalizing gives $\eta_3 = \frac{1}{\frac{16}{50} + \frac{7}{50}} = \frac{50}{23}$, so:
+    $$
+    P(X=\text{open} \mid Y_1=1, Y_2=0, Y_3=1) = \frac{16}{23} \approx 0.6957, \quad P(X=\text{closed} \mid Y_1=1, Y_2=0, Y_3=1) = \frac{7}{23} \approx 0.3043.
+    $$
+
+After processing the three sensor readings, the robot estimates that there is approximately a $69.57\%$ chance that the door is open.
+
+</details>
+
+From $\eqref{eq:bayes_recursive}$, we can expand the posterior after $n$ observations to obtain:
+$$
+\begin{equation} \label{eq:bayes_expanded}
+P(X \mid Y_1, \ldots, Y_n) = \eta \cdot P(X) \prod_{i=1}^{n} P(Y_i \mid X),
+\end{equation}
+$$
+where
+$$
+\eta = \frac{1}{P(Y_1, \ldots, Y_n)} = \sum_x \left[P(Y_1, \ldots, Y_n \mid X=x) P(X=x) \right]
+$$
+is the normalization constant at each step. This formulation highlights how each new observation incrementally updates our belief about the state $X$.
+
+<details><summary>Example: Expanded Bayesian Estimation</summary>
+
+Following the previous door sensor example, we can express the posterior after three observations using the expanded batch formula $\eqref{eq:bayes_expanded}$:
+$$
+P(x \mid y_{1:3}) = \eta \cdot \underbrace{P(x) \prod_{i=1}^3 P(y_i \mid x)}_{\tilde{P}(x)}.
+$$
+
+**1. Hypothesis $X = \text{open}$**
+$$
+\begin{align*}
+\tilde{P}(\text{open}) &= P(\text{open}) \cdot P(Y_1=1 \mid \text{open}) \cdot P(Y_2=0 \mid \text{open}) \cdot P(Y_3=1 \mid \text{open}) \\
+&= 0.5 \cdot (0.6 \cdot 0.4 \cdot 0.6) \\
+&= 0.5 \cdot 0.144 \\
+&= 0.072.
+\end{align*}
+$$
+
+**2. Hypothesis $X = \text{closed}$**
+$$
+\begin{align*}
+\tilde{P}(\text{closed}) &= P(\text{closed}) \cdot P(Y_1=1 \mid \text{closed}) \cdot P(Y_2=0 \mid \text{closed}) \cdot P(Y_3=1 \mid \text{closed}) \\
+&= 0.5 \cdot (0.3 \cdot 0.7 \cdot 0.3) \\
+&= 0.5 \cdot 0.063 \\
+&= 0.0315.
+\end{align*}
+$$
+
+**3. Normalization ($\eta$)**
+The total probability of the observation sequence is the sum of the unnormalized masses:
+$$
+P(Y_{1:3}) = \tilde{P}(\text{open}) + \tilde{P}(\text{closed}) = 0.072 + 0.0315 = 0.1035.
+$$
+Thus, the normalization constant is $\eta = \frac{1}{0.1035}$.
+
+**4. Final Posterior Probabilities**
+$$
+\begin{align*}
+P(\text{open} \mid Y_{1:3}) &= \frac{0.072}{0.1035} = \frac{720}{1035} = \frac{16}{23} \approx 0.6957, \\
+P(\text{closed} \mid Y_{1:3}) &= \frac{0.0315}{0.1035} = \frac{315}{1035} = \frac{7}{23} \approx 0.3043.
+\end{align*}
+$$
+
+This result matches the recursive method exactly, confirming that the door is open with probability $\frac{16}{23}$.
+
+</details>
+
+## Markov Chains
+
+A sequence of random variables $X_0, X_1, X_2, \ldots$ is called a Discrete-Time Markov Chain (DTMC) if it satisfies the Markov property:
+$$
+\begin{equation} \label{eq:markov_property}
+P(X_{n+1} = x_{n+1} \mid X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0) = P(X_{n+1} = x_{n+1} \mid X_n = x_n),
+\end{equation}
+$$
+which states that **future state depends only on the present state, not on the sequence of events that preceded it**.
+
+The random variables $X_n$ take values from a countable set $S$ called the state space. Each element $i \in S$ represents a distinct configuration of the system (e.g., a robot's location on a grid).
+
+For a time-homogeneous Markov chain, the probability of transitioning from state $i$ to state $j$ is independent of time $n$. We define the one-step transition probabilities as:
+$$
+\begin{equation} \label{eq:transition_probabilities}
+P_{ij} = P(X_{n+1} = j \mid X_n = i), \quad \forall n \geq 0, \; i, j \in S.
+\end{equation}
+$$
+These probabilities must satisfy:
+
+- $0 \leq P_{ij} \leq 1$ for all $i, j \in S$,
+- $\sum_{j \in S} P_{ij} = 1$ for all $i \in S$ (the system must transition to some state).
+
+We can arrage these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $P_{ij}$:
+$$
+\begin{equation} \label{eq:transition_matrix}
+P = \begin{bmatrix}
+P_{11} & P_{12} & P_{13} & \cdots \\
+P_{21} & P_{22} & P_{23} & \cdots \\
+P_{31} & P_{32} & P_{33} & \cdots \\
+\vdots & \vdots & \vdots & \ddots
+\end{bmatrix}.
+\end{equation}
+$$
+
+We can then derive the $k$-step transition probabilities by taking the $k$-th power of the transition matrix:
+$$
+\begin{equation} \label{eq:k_step_transition}
+P^{(k)} = P^k,
+\end{equation}
+$$
+where the entry $P_{ij}^{(k)}$ gives the probability of transitioning from state $i$ to state $j$ in $k$ steps:
+$$
+P_{ij}^{(k)} = P(X_{n+k} = j \mid X_n = i).
+$$
+
+<details><summary>Example: Markov Chain State Diagram</summary>
+
+Suppose we have state space
+$$
+S = \{\text{Idle}, \text{Moving}, \text{Working}\}
+$$
+with the following one-step transition probabilities:
+$$
+P = \begin{bmatrix}
+0.5 & 0.5 & 0.0 \\
+0.2 & 0.4 & 0.4 \\
+0.1 & 0.0 & 0.9
+\end{bmatrix}.
+$$
+The corresponding state diagram is shown below:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto, node distance=3cm]
+
+  % --- Nodes (defined exactly like your working example) ---
+  % I used explicit coordinates to form a triangle layout
+  \node [circle, draw, minimum size=1.5cm] (idle) at (0, 0) {Idle};
+  \node [circle, draw, minimum size=1.5cm] (moving) at (4, 2) {Moving};
+  \node [circle, draw, minimum size=1.5cm] (working) at (4, -2) {Working};
+
+  % --- Edges (Transitions) ---
+  % Using standard \draw with 'to' and 'bend' for curves
+  
+  % 1. Self Loops (using standard TikZ loops)
+  \draw (idle) to [loop left] node {0.5} (idle);
+  \draw (moving) to [loop above] node {0.4} (moving);
+  \draw (working) to [loop right] node {0.9} (working);
+
+  % 2. Transitions between states
+  % Idle -> Moving
+  \draw (idle) to [bend left] node {0.5} (moving);
+
+  % Moving -> Idle & Moving -> Working
+  \draw (moving) to [bend left] node {0.2} (idle);
+  \draw (moving) to [bend left] node {0.4} (working);
+
+  % Working -> Idle
+  \draw (working) to [bend left] node {0.1} (idle);
+
+\end{tikzpicture}
+\end{document}
+```
+
+</details>
+
+### Evolution of a Markov Chain
+
+The probability of being in a state $j$ at time $k + 1$ can be written as the sum over all possible previous states $i$ of the probability of being in state $i$ at time $k$ multiplied by the transition probability from $i$ to $j$:
+$$
+\begin{equation} \label{eq:chapman_kolmogorov_step_swapped}
+P(X_{k+1} = j) = \sum_{i \in S} P(X_{k+1} = j \mid X_k = i)\, P(X_k = i)
+= \sum_{i \in S} P_{ij}\, P(X_k = i).
+\end{equation}
+$$
+This summation can be expressed compactly using linear algebra. We define a column vector $\pi^{(k)}$ representing the **probability distribution over states** at time $k$:
+$$
+\pi^{(k)} = \begin{bmatrix} P(X_k = 1) \\ P(X_k = 2) \\ \vdots \\ P(X_k = M) \end{bmatrix},
+$$
+where $M$ is the number of states in $S$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
+$$
+\begin{equation} \label{eq:state_propagation}
+\pi^{(k+1)} = P^T \pi^{(k)},
+\end{equation}
+$$
+where $P^T$ is the transpose of the transition matrix defined in $\eqref{eq:transition_matrix}$.
+By induction, the state distribution at any future time step $n$ given an initial distribution $\pi^{(0)}$ is:
+$$
+\begin{equation} \label{eq:n_step_propagation}
+\pi^{(n)} = (P^T)^n \pi^{(0)}.
+\end{equation}
+$$
+This result is fundamental in robotics for **predictive modeling**. If we know the current state uncertainty ($\pi^{(0)}$) and the system dynamics ($P$), we can predict the distribution of the robot's state $n$ steps into the future.
+
+As $n \to \infty$, the probability distribution $\pi^{(n)}$ may converge to a fixed vector $\pi$ that does not change as time progresses. This is known as the **stationary distribution** and satisfies the eigenvector equation:
+$$
+\begin{equation} \label{eq:stationary_distribution}
+\pi = P^T \pi, \quad \text{subject to } \sum_{i \in S} \pi_i = 1.
+\end{equation}
+$$
+The condition $\sum \pi_i = 1$ ensures that $\pi$ remains a valid probability distribution. For the robot, this represents the long-term probability of being in each state if the system evolves indefinitely without external intervention.
+
+<details><summary>Example: Markov Chain State Evolution</summary>
+
+Continuing from the previous Markov chain example with states $S = \{\text{Idle}, \text{Moving}, \text{Working}\}$ and transition matrix:
+$$
+P = \begin{bmatrix}
+0.5 & 0.5 & 0.0 \\
+0.2 & 0.4 & 0.4 \\
+0.1 & 0.0 & 0.9
+\end{bmatrix},
+$$
+suppose the robot starts in the $\text{Idle}$ state with certainty:
+$$
+\pi^{(0)} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}.
+$$  
+To find the state distribution after one time step ($k=1$), we use the transpose $P^T$:
+$$
+\begin{align*}
+\pi^{(1)} &= P^T \pi^{(0)} \\
+&= \begin{bmatrix}
+0.5 & 0.2 & 0.1 \\
+0.5 & 0.4 & 0.0 \\
+0.0 & 0.4 & 0.9
+\end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \\
+&= \begin{bmatrix} 0.5 \\ 0.5 \\ 0.0 \end{bmatrix}.
+\end{align*}
+$$
+To find the state distribution after two time steps ($k=2$):
+$$
+\begin{align*}
+\pi^{(2)} &= P^T \pi^{(1)} \\
+&= \begin{bmatrix}
+0.5 & 0.2 & 0.1 \\
+0.5 & 0.4 & 0.0 \\
+0.0 & 0.4 & 0.9
+\end{bmatrix} \begin{bmatrix} 0.5 \\ 0.5 \\ 0.0 \end{bmatrix} \\
+&= \begin{bmatrix} 0.35 \\ 0.45 \\ 0.20 \end{bmatrix}.
+\end{align*}
+$$
+Suppose we want to find the stationary distribution $\pi$ satisfying $\pi = P^T \pi$. We set up the equations:
+$$
+\begin{align*}
+\pi_1 &= 0.5 \pi_1 + 0.2 \pi_2 + 0.1 \pi_3, \\
+\pi_2 &= 0.5 \pi_1 + 0.4 \pi_2 + 0.0 \pi_3, \\
+\pi_3 &= 0.0 \pi_1 + 0.4 \pi_2 + 0.9 \pi_3, \\
+\pi_1 + \pi_2 + \pi_3 &= 1.
+\end{align*}
+$$
+Solving this system, we find:
+$$
+\pi^{(\infty)} = \lim_{n \to \infty} \pi^{(n)}
+\approx \begin{bmatrix} 0.1935 \\ 0.1613 \\ 0.6452 \end{bmatrix}.
+$$
+
+```component
+
+{
+    componentName: "MarkovChain"
+}
+
+```
 
 </details>
