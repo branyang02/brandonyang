@@ -830,7 +830,7 @@ This result matches the recursive method exactly, confirming that the door is op
 A sequence of random variables $X_0, X_1, X_2, \ldots$ is called a Discrete-Time Markov Chain (DTMC) if it satisfies the Markov property:
 $$
 \begin{equation} \label{eq:markov_property}
-P(X_{n+1} = x_{n+1} \mid X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0) = P(X_{n+1} = x_{n+1} \mid X_n = x_n),
+p(x_{n+1} \mid x_n, x_{n-1}, \ldots, x_0) = p(x_{n+1} \mid x_n),
 \end{equation}
 $$
 which states that **future state depends only on the present state, not on the sequence of events that preceded it**.
@@ -840,21 +840,21 @@ The random variables $X_n$ take values from a countable set $S$ called the state
 For a time-homogeneous Markov chain, the probability of transitioning from state $i$ to state $j$ is independent of time $n$. We define the one-step transition probabilities as:
 $$
 \begin{equation} \label{eq:transition_probabilities}
-P_{ij} = P(X_{n+1} = j \mid X_n = i), \quad \forall n \geq 0, \; i, j \in S.
+p_{ij} = p(x_{n+1} = j \mid x_n = i), \quad \forall n \geq 0, \; i, j \in S.
 \end{equation}
 $$
 These probabilities must satisfy:
 
-- $0 \leq P_{ij} \leq 1$ for all $i, j \in S$,
-- $\sum_{j \in S} P_{ij} = 1$ for all $i \in S$ (the system must transition to some state).
+- $0 \leq p_{ij} \leq 1$ for all $i, j \in S$,
+- $\sum_{j \in S} p_{ij} = 1$ for all $i \in S$ (the system must transition to some state).
 
-We can arrange these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $P_{ij}$:
+We can arrange these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $p_{ij}$:
 $$
 \begin{equation} \label{eq:transition_matrix}
 P = \begin{bmatrix}
-P_{11} & P_{12} & P_{13} & \cdots \\
-P_{21} & P_{22} & P_{23} & \cdots \\
-P_{31} & P_{32} & P_{33} & \cdots \\
+p_{11} & p_{12} & p_{13} & \cdots \\
+p_{21} & p_{22} & p_{23} & \cdots \\
+p_{31} & p_{32} & p_{33} & \cdots \\
 \vdots & \vdots & \vdots & \ddots
 \end{bmatrix}.
 \end{equation}
@@ -866,9 +866,9 @@ $$
 P^{(k)} = P^k,
 \end{equation}
 $$
-where the entry $P_{ij}^{(k)}$ gives the probability of transitioning from state $i$ to state $j$ in $k$ steps:
+where the entry $p_{ij}^{(k)}$ gives the probability of transitioning from state $i$ to state $j$ in $k$ steps:
 $$
-P_{ij}^{(k)} = P(X_{n+k} = j \mid X_n = i).
+p_{ij}^{(k)} = p(x_{n+k} = j \mid x_n = i).
 $$
 
 <details><summary>Example: Markov Chain State Diagram</summary>
@@ -927,15 +927,15 @@ The corresponding state diagram is shown below:
 The probability of being in a state $j$ at time $k + 1$ can be written as the sum over all possible previous states $i$ of the probability of being in state $i$ at time $k$ multiplied by the transition probability from $i$ to $j$:
 $$
 \begin{equation} \label{eq:chapman_kolmogorov_step_swapped}
-P(X_{k+1} = j) = \sum_{i \in S} P(X_{k+1} = j \mid X_k = i)\, P(X_k = i)
-= \sum_{i \in S} P_{ij}\, P(X_k = i).
+p(x_{k+1} = j) = \sum_{i \in S} p(x_{k+1} = j \mid x_k = i)\, p(x_k = i)
+= \sum_{i \in S} p_{ij}\, p(x_k = i).
 \end{equation}
 $$
 This summation can be expressed compactly using linear algebra. We define a column vector $\pi^{(k)}$ representing the **probability distribution over states** at time $k$:
 $$
-\pi^{(k)} = \begin{bmatrix} P(X_k = 1) \\ P(X_k = 2) \\ \vdots \\ P(X_k = M) \end{bmatrix},
+\pi^{(k)} = \begin{bmatrix} p(x_k = 1) \\ p(x_k = 2) \\ \vdots \\ p(x_k = M) \end{bmatrix},
 $$
-where $M$ is the number of states in $S$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
+where $S = \{1, 2, \ldots, M\}$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
 $$
 \begin{equation} \label{eq:state_propagation}
 \pi^{(k+1)} = P^T \pi^{(k)},
@@ -1047,10 +1047,9 @@ $$
   \node [circle, draw, minimum size=1.5cm] (x_next) at (8, 0) {$X_{k+1}$};
 
   % Row 2: Observations (Y) - Placed directly below
-  % Used 'rectangle' shape to distinguish from states, but standard syntax
-  \node [rectangle, draw, minimum size=1.2cm] (y_prev) at (0, -3) {$Y_{k-1}$};
-  \node [rectangle, draw, minimum size=1.2cm] (y_curr) at (4, -3) {$Y_k$};
-  \node [rectangle, draw, minimum size=1.2cm] (y_next) at (8, -3) {$Y_{k+1}$};
+  \node [circle, draw, minimum size=1.2cm] (y_prev) at (0, -3) {$Y_{k-1}$};
+  \node [circle, draw, minimum size=1.2cm] (y_curr) at (4, -3) {$Y_k$};
+  \node [circle, draw, minimum size=1.2cm] (y_next) at (8, -3) {$Y_{k+1}$};
 
   % --- Edges ---
   
