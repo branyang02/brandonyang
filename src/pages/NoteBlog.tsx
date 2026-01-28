@@ -23,7 +23,7 @@ const lightTheme = createTheme({
     },
 });
 
-const latexThemeContentIDs = ["ml", "ode", "flow-matching"];
+const latexThemeContentIDs = ["ml", "ode", "flow-matching", "learning-in-robotics"];
 
 function getConfig(contentId: string, darkMode: boolean): NotieConfig {
     const baseTheme: NotieTheme = darkMode
