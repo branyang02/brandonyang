@@ -160,4 +160,6 @@ export const flights = [
   { from: "BKI", to: "SZX", date: "2011-07-22", airline: "CSZ" },
   { from: "SZX", to: "KUL", date: "2011-12-20", airline: "AXM" },
   { from: "KUL", to: "SZX", date: "2011-12-27", airline: "AXM" },
+  { from: "PHL", to: "SFO", date: "2026-01-29", airline: "AAL" },
+  { from: "SFO", to: "PHL", date: "2026-02-01", airline: "AAL" },
 ];
