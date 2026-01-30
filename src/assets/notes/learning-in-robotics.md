@@ -457,6 +457,19 @@ p(x_1) = \sum_{x_2} \cdots \sum_{x_N} p(x_1, \ldots, x_N).
 \end{equation}
 $$
 
+### Independence
+
+Two random variables $X$ and $Y$ are independent if the occurrence of one does not affect the probability distribution of the other. We derive this from the definition of conditional probability $\eqref{eq:conditional_pmf}$. Suppose $X$ is independent of $Y$, then:
+$$
+p(x \mid y) = p(x).
+$$
+Substituting this back into $\eqref{eq:conditional_pmf}$ an solving for $p(x, y)$, we derive the independence condition:
+$$
+\begin{equation} \label{eq:independence}
+p(x, y) = p(x) p(y).
+\end{equation}
+$$
+
 Two random variables $X$ and $Y$ are said to be _conditionally independent_ given a third variable $Z$ if knowledge of $Z$ decouples $X$ from $Y$. Mathematically:
 $$
 \begin{equation} \label{eq:conditional_independence}
@@ -466,6 +479,26 @@ $$
 Equivalently, this implies that once $Z$ is known, knowing $Y$ provides no additional information about $X$:
 $$
 p(x \mid y, z) = p(x \mid z).
+$$
+
+We extend Bayes' Theorem $\eqref{eq:bayes_theorem}$ to use Random Variables:
+$$
+\begin{align}
+p_{X \mid Y}(x \mid y) &= \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} \label{eq:bayes_rv} \\
+f_{X \mid Y}(x \mid y) &= \frac{f_{Y \mid X}(y \mid x) f_X(x)}{f_Y(y)} \label{eq:bayes_rv_continuous}
+\end{align}
+$$
+Conditioning Bayes' Theorem on an additional variable $Z$ gives:
+$$
+\begin{equation} \label{eq:conditioned-bayes}
+p(x \mid y, z) = \frac{p(y \mid x, z) p(x \mid z)}{p(y \mid z)}
+\end{equation}
+$$
+To find the denominator, we can use the law of total probability conditioned on $Z$:
+$$
+\begin{equation} \label{eq:total_probability_conditioned}
+p(y \mid z) = \sum_{x} p(y \mid x, z) p(x \mid z).
+\end{equation}
 $$
 
 <details><summary>Proof of Chain Rule</summary>
@@ -493,35 +526,6 @@ $$
 By repeating this process for $N$ random variables, we arrive at the chain rule in $\eqref{eq:chain_rule}$.
 
 </details>
-
-### Covariance and Independence
-
-The Covariance between two random variables $X$ and $Y$ measures their linear relationship:
-$$
-\begin{equation} \label{eq:covariance}
-\begin{split}
-Cov(X, Y) & = E[(X - E[X])(Y - E[Y])] \\
-          & = E[XY] - E[X]E[Y].
-\end{split}
-\end{equation}
-$$
-The Correlation Coefficient standardizes covariance, providing a unitless measure in $[-1, 1]$:
-$$
-\rho_{X,Y} = \frac{Cov(X, Y)}{\sqrt{Var(X) Var(Y)}}.
-$$
-
-Two random variables $X$ and $Y$ are independent if and only if their joint distribution factorizes into the product of their marginals:
-$$
-\begin{align}
-p_{X,Y}(x,y) &= p_X(x) p_Y(y) && \text{(Discrete)} \\
-f_{X,Y}(x,y) &= f_X(x) f_Y(y) && \text{(Continuous)}
-\end{align}
-$$
-If $X$ and $Y$ are independent, then:
-$$
-E[XY] = E[X]E[Y] \implies Cov(X, Y) = 0.
-$$
-**Note:** The converse is not necessarily true; zero covariance (uncorrelatedness) does not imply independence, as non-linear dependencies may still exist.
 
 <details><summary>Comprehensive Joint Distribution Example</summary>
 
@@ -606,13 +610,7 @@ $$
 
 We define a random variable $X$ representing the **state** of the robot and a random variable $Y$ representing the **observation**. Our goal is to estimate the posterior belief about the state given measurements.
 
-We extend Bayes' Theorem $\eqref{eq:bayes_theorem}$ to use Random Variables:
-$$
-\begin{align}
-p_{X \mid Y}(x \mid y) &= \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} \label{eq:bayes_rv} \\
-f_{X \mid Y}(x \mid y) &= \frac{f_{Y \mid X}(y \mid x) f_X(x)}{f_Y(y)} \label{eq:bayes_rv_continuous}
-\end{align}
-$$
+From $\eqref{eq:bayes_rv}$, we have:
 
 - $p_{X \mid Y} (x \mid y)$ or $f_{X \mid Y}(x \mid y)$: _Posterior_ distribution of state $X$ given observation $Y=y$.
 - $p_{Y \mid X} (y \mid x)$ or $f_{Y \mid X}(y \mid x)$: _Likelihood_ of observation $Y=y$ given state $X=x$.
@@ -1034,35 +1032,295 @@ $$
 
 </details>
 
-### Hidden Markov Models
+### Hidden Markov Models (HMM)
+
+A Hidden Markov Model is a sequence of random variables $Y_1, \ldots, Y_n$ such that the distribution of $Y_k$ only depends upon the _hidden state_ $X_k$ of the associated Markov chain.
 
 ```tikz
 \begin{document}
-\begin{tikzpicture}[>=stealth, ->, auto, node distance=3cm]
+\begin{tikzpicture}[>=stealth, ->, auto, node distance=2.5cm]
 
   % --- Nodes ---
-  % Row 1: Hidden States (X) - Using explicit coordinates like your example
-  \node [circle, draw, minimum size=1.5cm] (x_prev) at (0, 0) {$X_{k-1}$};
-  \node [circle, draw, minimum size=1.5cm] (x_curr) at (4, 0) {$X_k$};
-  \node [circle, draw, minimum size=1.5cm] (x_next) at (8, 0) {$X_{k+1}$};
+  % Row 1: Hidden States (X)
+  \node [circle, draw, minimum size=1.2cm] (x1) at (0, 0) {$X_1$};
+  \node [circle, draw, minimum size=1.2cm] (x2) at (3, 0) {$X_2$};
+  \node [circle, draw, minimum size=1.2cm] (dots) at (6, 0) {$\dots$};
+  \node [circle, draw, minimum size=1.2cm] (xn) at (9, 0) {$X_n$};
 
-  % Row 2: Observations (Y) - Placed directly below
-  \node [circle, draw, minimum size=1.2cm] (y_prev) at (0, -3) {$Y_{k-1}$};
-  \node [circle, draw, minimum size=1.2cm] (y_curr) at (4, -3) {$Y_k$};
-  \node [circle, draw, minimum size=1.2cm] (y_next) at (8, -3) {$Y_{k+1}$};
+  % Row 2: Observations (Y)
+  \node [circle, draw, minimum size=1.2cm] (y1) at (0, -2.5) {$Y_1$};
+  \node [circle, draw, minimum size=1.2cm] (y2) at (3, -2.5) {$Y_2$};
+  \node [circle, draw, minimum size=1.2cm] (ydots) at (6, -2.5) {$\dots$};
+  \node [circle, draw, minimum size=1.2cm] (yn) at (9, -2.5) {$Y_n$};
 
   % --- Edges ---
   
-  % 1. Transition Model (Horizontal: State to State)
-  \draw (x_prev) to node {Transition} (x_curr);
-  \draw (x_curr) to node {$P(x'|x)$} (x_next);
+  % 1. Transition Model (Horizontal)
+  \draw (x1) to node {$p(x_2|x_1)$} (x2);
+  \draw (x2) to node {} (dots);
+  \draw (dots) to node {} (xn);
 
-  % 2. Emission Model (Vertical: State to Observation)
-  % Using 'swap' to put the label on the other side of the arrow if needed
-  \draw (x_prev) to node [swap] {Emission} (y_prev);
-  \draw (x_curr) to node [swap] {$P(y|x)$} (y_curr);
-  \draw (x_next) to (y_next);
+  % 2. Emission Model (Vertical)
+  \draw (x1) to node [swap] {$p(y_1|x_1)$} (y1);
+  \draw (x2) to node [swap] {$p(y_2|x_2)$} (y2);
+  \draw (dots) to node [swap] {} (ydots);
+  \draw (xn) to node [swap] {$p(y_n|x_n)$} (yn);
 
 \end{tikzpicture}
 \end{document}
 ```
+
+Formally, a HMM is defined by the tuple $\lambda = (S, O, A, B, \pi)$, where:
+
+1. **State Space** $S = \{s_1, \ldots, s_M\}$: The set of discrete hidden states (e.g., robot locations).
+2. **Observation Space** $O = \{o_1, \ldots, o_L\}$: The set of possible observations (e.g., sensor readings).
+3. **Transition Model** $A = \{a_{ij}\}$: The probability of moving from state $i$ to state $j$, consistent with $\eqref{eq:transition_probabilities}$:
+    $$
+    a_{ij} = p(x_{k+1} = s_j \mid x_k = s_i).
+    $$
+4. **Emission Model** $B = \{b_j(v)\}$: The probability of observing $v$ given state $j$:
+    $$
+    b_j(v) = p(y_k = v \mid x_k = s_j).
+    $$
+5. **Initial Distribution** $\pi = \{\pi_i\}$: The probability distribution of the starting state:
+    $$
+    \pi_i = p(x_1 = s_i).
+    $$
+
+The HMM relies on two fundamental independence assumptions:
+
+1. **Markov Assumption**: The current state depends only on the previous state ($X_k \perp X_{1:k-2} \mid X_{k-1}$).
+2. **Output Independence**: The current observation depends only on the current state ($Y_k \perp \{X_{\neq k}, Y_{\neq k}\} \mid X_k$).
+
+Based on these assumptions, the **Joint Probability Distribution** of a sequence of all variables $X_1, Y_1, \ldots, X_n, Y_n$ can be first formulated by following the chain rule $\eqref{eq:chain_rule}$:
+$$
+p(x_{1:n}, y_{1:n}) = p(x_1) \cdot p(y_1 \mid x_1) \cdot p(x_2 \mid x_1, y_1) \cdot p(y_2 \mid x_1, y_1, x_2) \cdots
+$$
+Since each state $X_k$ depends only on $X_{k-1}$ (by the Markov assumption in $\eqref{eq:markov_property}$) and each observation $Y_k$ depends only on $X_k$ (by output independence), we can simplify this to obtain the compact form:
+$$
+\begin{equation} \label{eq:hmm_joint}
+p(x_{1:n}, y_{1:n}) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n p(x_k \mid x_{k-1}) p(y_k \mid x_k).
+\end{equation}
+$$
+
+We can apply HMMs to solve several distinct inference problems in robotics.
+
+1. **Filtering**
+
+    Given observations up to time $k$, compute the distribution of the state at time $k$:
+    $$
+    \begin{equation} \label{eq:hmm_filtering_problem}
+    p(x_k \mid y_{1:k}).
+    \end{equation}
+    $$
+2. **Smoothing**
+
+    Given observations up to time $k$, compute the distribution of the state at anytime $j < k$:
+    $$
+    \begin{equation} \label{eq:hmm_smoothing_problem}
+    p(x_j \mid y_{1:k}) ,\quad j < k.
+    \end{equation}
+    $$
+    In this problem, we are interested in using the entire set of observations from the past $y_{1:j}$ and the future $y_{j+1:k}$ to estimate the state at time $j$. An important thing to remember is that we are interested in solving for all $j < k$, not just the most recent state.
+3. **Prediction**
+
+    Given observations up to time $k$, compute the distribution of the state at a time $j > k$:
+    $$
+    \begin{equation} \label{eq:hmm_prediction_problem}
+    p(x_j \mid y_{1:k}) ,\quad j > k.
+    \end{equation}
+    $$
+4. **Decoding**:
+    Find the most likely state trajectory $x_{1:k}$ that maximizes the probability:
+    $$
+    \begin{equation} \label{eq:hmm_decoding_problem}
+    p(x_{1:k} \mid y_{1:k}).
+    \end{equation}
+    $$
+5. **Likelihood of Observations**:
+    Given the observation trajectory $y_{1:k}$, compute the probability:
+    $$
+    \begin{equation} \label{eq:hmm_likelihood_problem}
+    p(y_{1:k}).
+    \end{equation}
+    $$
+
+These problems can be solved with forward-backward algorithms, Viterbi algorithm, and other dynamic programming techniques tailored for HMMs.
+
+### Robot Environment Interaction
+
+The environment of a robot is a _dynamical system_ that possesses internal _state_. We introduce state first before describing how robots interact with their environment through actions and observations.
+
+#### State
+
+Environments are characterized by _state_, which encapsulates all relevant information about the system at a given time. A state that changes over time is called a _dynamic state_. We denote such state as:
+$$
+X_t = x_t
+$$
+
+Typical states could be:
+
+- robot pose
+- configuration of robot actuators
+- joint velocity
+- location and features of surrounding objects in the environment
+
+#### Environment Interaction
+
+There are two fundamental types of interactions between a robot and its environment:
+
+- The robot can influence the state of its environment through its actuators (control data).
+- The robot can gather information about the state through its sensor (measurement data).
+
+**Measurement Data** provides information about a momentary state of the environment. The measurement data collected at time $t$ is denoted as
+$$
+Z_t = z_t
+$$
+We assume that the robot always start at an initial state $x_0$, and will make the first measurement at time $t = 1$. Therefore, $z_t$ starts at $t=1$.
+
+**Control Data** allows the robot to influence the state of the environment. The control data applied at time $t$ is denoted as
+$$
+U_t = u_t
+$$
+The variable $u_t$ will always correspond to the change of state in the time interval $(t−1;t]$.
+
+#### Modeling Environment Dynamics
+
+Probabilistically, the current state is conditioned on all past states, control inputs, and measurements if we do not assume any preconditions:
+$$
+p(x_t \mid x_{0:t-1}, z_{1:t-1}, u_{1:t})
+$$
+However, states typically follow the markov property $\eqref{eq:markov_property}$. In particular, $x_{t−1}$ is a sufficient statistic of all previous controls and measurements up to this point, that is, $u_{1:t−1}$ and $z_{1:t−1}$. Therefore, we can formulate the following conditional independence for modeling the current state, also known as the _state transition probability_.
+$$
+\begin{equation} \label{eq:state-transition-probability}
+p(x_t \mid x_{0:t-1}, z_{1:t-1}, u_{1:t}) = p(x_t \mid x_{t-1}, u_t).
+\end{equation}
+$$
+To model the effect of measurements on the current state, we assume that the measurement $z_t$ only depends on the current state $x_t$, also known as the _measurement probability_.
+$$
+\begin{equation} \label{eq:measurement-probability}
+p(z_t \mid x_{0:t}, z_{1:t-1}, u_{1:t}) = p(z_t \mid x_t).
+\end{equation}
+$$
+
+Together, the state transition probability and the measurement probability together describe the dynamical stochastic system of the robot and its environment. This probabilistic structure is effectively modeled as a Dynamic Bayesian Network (DBN) (or Hidden Markov Model with control inputs). The graphical model below illustrates these dependencies, showing how the state evolves based on controls and previous states while solely determining the measurements.
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto, node distance=2.5cm]
+
+  % --- Nodes ---
+  % Row 1: Control Inputs (U) - The new addition compared to HMM
+  \node [circle, draw, minimum size=1.2cm] (u1) at (1.5, 1.5) {$u_1$};
+  \node [circle, draw, minimum size=1.2cm] (u2) at (4.5, 1.5) {$u_2$};
+  \node [circle, draw, minimum size=1.2cm] (udots) at (7.5, 1.5) {$\dots$};
+  \node [circle, draw, minimum size=1.2cm] (un) at (10.5, 1.5) {$u_n$};
+
+  % Row 2: Hidden States (X)
+  \node [circle, draw, minimum size=1.2cm] (x0) at (-1.5, 0) {$x_0$};
+  \node [circle, draw, minimum size=1.2cm] (x1) at (1.5, 0) {$x_1$};
+  \node [circle, draw, minimum size=1.2cm] (x2) at (4.5, 0) {$x_2$};
+  \node [circle, draw, minimum size=1.2cm] (dots) at (7.5, 0) {$\dots$};
+  \node [circle, draw, minimum size=1.2cm] (xn) at (10.5, 0) {$x_n$};
+
+  % Row 3: Measurements (Z)
+  \node [circle, draw, minimum size=1.2cm] (z1) at (1.5, -2.5) {$z_1$};
+  \node [circle, draw, minimum size=1.2cm] (z2) at (4.5, -2.5) {$z_2$};
+  \node [circle, draw, minimum size=1.2cm] (zdots) at (7.5, -2.5) {$\dots$};
+  \node [circle, draw, minimum size=1.2cm] (zn) at (10.5, -2.5) {$z_n$};
+
+  % --- Edges ---
+  
+  % 1. State Transitions (Horizontal)
+  \draw (x0) to node {} (x1);
+  \draw (x1) to node {} (x2);
+  \draw (x2) to node {} (dots);
+
+  \draw (dots) to node {} (xn);
+
+  % 2. Control inputs affecting State (Diagonal/Vertical)
+  \draw (u1) to node {} (x1);
+  \draw (u2) to node {} (x2);
+  \draw (udots) to node {} (dots);
+  \draw (un) to node {} (xn);
+
+  % 3. Measurement Model (Vertical)
+  \draw (x1) to node {} (z1);
+  \draw (x2) to node {} (z2);
+    \draw (dots) to node {} (zdots);
+  \draw (xn) to node {} (zn);
+
+\end{tikzpicture}
+\end{document}
+```
+
+#### Belief Distributions
+
+A robot operating in a dynamic environment does not have the luxury of knowing the exact state $x_t$ of the environment at time $t$. Instead, it maintains a _belief distribution_ over all possible states, denoted as:
+$$
+\begin{equation} \label{eq:belief_distribution}
+\text{bel}(x_t) = p(x_t \mid z_{1:t}, u_{1:t}).
+\end{equation}
+$$
+This posterior is the probability distribution over the state $x_t$ at time $t$, conditioned on all past measurements $z_{1:t}$ and all past controls $u_{1:t}$. If we want the belief distribution before taking measurement $z_t$, we denote it as:
+$$
+\begin{equation} \label{eq:predicted_belief_distribution}
+\overline{\text{bel}}(x_t) = p(x_t \mid z_{1:t-1}, u_{1:t}).
+\end{equation}
+$$
+This is known as the _predicted belief distribution_ or _prior belief
+distribution_ at time $t$.
+
+## Bayes Filter
+
+We wish to compute the belief distribution $\eqref{eq:belief_distribution}$ recursively. We first apply Bayes' rule $\eqref{eq:conditioned-bayes}$ to expand the posterior and take out the normalizing constant following $\eqref{eq:bayes_single}$:
+$$
+\begin{align}
+p(x_t \mid z_{1:t}, u_{1:t}) &= \frac{p(z_t \mid x_t, z_{1:t-1}, u_{1:t})p(x_t \mid  z_{1:t-1}, u_{1:t})}{p(y \mid  z_{1:t-1}, u_{1:t})} \label{eq:bayes-filter-before-constant} \\
+&= \eta \cdot p(z_t \mid x_t, z_{1:t-1}, u_{1:t})p(x_t \mid  z_{1:t-1}, u_{1:t}) \label{eq:bayes-filter-after-constant}.
+\end{align}
+$$
+We then simplify with $\eqref{eq:measurement-probability}$ and $\eqref{eq:predicted_belief_distribution}$:
+$$
+\begin{equation} \label{eq:bayes-filter-after-simplify}
+p(x_t \mid z_{1:t}, u_{1:t}) = \eta \cdot p(z_t \mid x_t) \cdot \overline{\text{bel}}(x_t).
+\end{equation}
+$$
+We can expand the term $\overline{\text{bel}}(x_t)$ with $\eqref{eq:total_probability_conditioned}$ by conditioning on $x_{t -1}$:
+$$
+\begin{align}
+\overline{\text{bel}}(x_t) &= p(x_t \mid z_{1:t-1}, u_{1:t}) \\
+&= \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, z_{1:t-1}, u_{1:t})p(x_{t-1} \mid z_{1:t-1}, u_{1:t})
+\end{align}
+$$
+We simply the first term in the summation by using $\eqref{eq:state-transition-probability}$:
+$$
+\begin{equation} \label{eq:predicted-belief-simplified}
+\overline{\text{bel}}(x_t) = \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, u_t)  p(x_{t-1} \mid z_{1:t-1}, u_{1:t}).
+\end{equation}
+$$
+We then observe that the second term in the summation is conditioned on $u_{1:t}$, however $x_{t-1}$ only depends on $u_{1:t-1}$. Therefore, we can simplify it further with $\eqref{eq:belief_distribution}$:
+$$
+\begin{align}
+\overline{\text{bel}}(x_t) &= \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, u_t)  p(x_{t-1} \mid z_{1:t-1}, u_{1:t-1}) \\
+&= \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, u_t)  \text{bel}(x_{t-1}). \label{eq:almost-there-with-bayes-filter}
+\end{align}
+$$
+Now we substitute $\eqref{eq:almost-there-with-bayes-filter}$ back into $\eqref{eq:bayes-filter-after-simplify}$ and write it out explicitly:
+$$
+\begin{equation} \label{bayes-filter-explicit-recursion}
+p(x_t \mid z_{1:t}, u_{1:t}) = \eta \cdot p(z_t \mid x_t) \cdot \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, u_t) p(x_{t-1} \mid z_{1:t-1}, u_{1:t-1})
+\end{equation}
+$$
+or in a more compact form:
+$$
+\begin{equation} \label{bayes-filter-compact}
+\text{bel}(x_t) = \eta \cdot p(z_t \mid x_t) \cdot \sum_{x_{t-1}} p(x_t \mid x_{t - 1}, u_t) \text{bel}(x_{t-1}).
+\end{equation}
+$$
+In the case of continuous RVs:
+$$
+\begin{equation} \label{bayes-filter-compact-continuous-rv}
+\text{bel}(x_t) = \eta \cdot f(z_t \mid x_t) \cdot \int f(x_t \mid x_{t - 1}, u_t) \text{bel}(x_{t-1}) dx_{t-1}.
+\end{equation}
+$$
