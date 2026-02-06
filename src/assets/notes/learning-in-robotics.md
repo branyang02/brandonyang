@@ -457,6 +457,32 @@ p(x_1) = \sum_{x_2} \cdots \sum_{x_N} p(x_1, \ldots, x_N).
 \end{equation}
 $$
 
+<details><summary>Proof of Chain Rule</summary>
+
+We rearrange the definition of conditional probability from $\eqref{eq:conditional_pmf}$ to solve for the joint distribution $p(x,y)$:
+$$
+p(x, y) = p(x \mid y) p(y).
+$$
+Now consider three random variables $X_1, X_2, X_3$. We can treat the pair $(X_1, X_2)$ as a single random variable and apply the above equation:
+$$
+\begin{align*}
+p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_1, x_2).
+\end{align*}
+$$
+We can then solve for the joint $p(x_1, x_2)$ using the same equation:
+$$
+p(x_1, x_2) = p(x_2 \mid x_1) p(x_1).
+$$
+Substituting this back, we have:
+$$
+\begin{align*}
+p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_2 \mid x_1) p(x_1).
+\end{align*}
+$$
+By repeating this process for $N$ random variables, we arrive at the chain rule in $\eqref{eq:chain_rule}$.
+
+</details>
+
 ### Independence
 
 Two random variables $X$ and $Y$ are independent if the occurrence of one does not affect the probability distribution of the other. We derive this from the definition of conditional probability $\eqref{eq:conditional_pmf}$. Suppose $X$ is independent of $Y$, then:
@@ -500,32 +526,6 @@ $$
 p(y \mid z) = \sum_{x} p(y \mid x, z) p(x \mid z).
 \end{equation}
 $$
-
-<details><summary>Proof of Chain Rule</summary>
-
-We rearrange the definition of conditional probability from $\eqref{eq:conditional_pmf}$ to solve for the joint distribution $p(x,y)$:
-$$
-p(x, y) = p(x \mid y) p(y).
-$$
-Now consider three random variables $X_1, X_2, X_3$. We can treat the pair $(X_1, X_2)$ as a single random variable and apply the above equation:
-$$
-\begin{align*}
-p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_1, x_2).
-\end{align*}
-$$
-We can then solve for the joint $p(x_1, x_2)$ using the same equation:
-$$
-p(x_1, x_2) = p(x_2 \mid x_1) p(x_1).
-$$
-Substituting this back, we have:
-$$
-\begin{align*}
-p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_2 \mid x_1) p(x_1).
-\end{align*}
-$$
-By repeating this process for $N$ random variables, we arrive at the chain rule in $\eqref{eq:chain_rule}$.
-
-</details>
 
 <details><summary>Comprehensive Joint Distribution Example</summary>
 
@@ -620,22 +620,59 @@ From $\eqref{eq:bayes_rv}$, we have:
 **Single Observation Update**: Using $\eqref{eq:bayes_rv}$, we compute the posterior by updating the prior with the likelihood:
 $$
 \begin{equation} \label{eq:bayes_single}
-p_{X \mid Y}(x \mid y) = \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} = \eta \cdot p_{Y \mid X}(y \mid x) p_X(x).
+p_{X \mid Y}(x \mid y) = \frac{p_{Y \mid X}(y \mid x) p_X(x)}{p_Y(y)} = \eta \cdot p_{Y \mid X}(y \mid x) p_X(x), \text{ where } \eta = \frac{1}{p_Y(y)}.
 \end{equation}
 $$
-Here, $\eta = \frac{1}{P(Y)}$ is a normalization constant ensuring the posterior sums to 1.
+Here, $\eta$ is a normalization constant ensuring the posterior sums to 1.
 
-**Recursive Update ($n$ Observations)**: When receiving a sequence of observations $y_1, \ldots, y_n$, we assume observations are conditionally independent given the state $X$, i.e, $Y_i \perp Y_j \mid X$ for $i \neq j$ as shown in $\eqref{eq:conditional_independence}$. The posterior after $n$ steps uses the posterior from step $n-1$ as the new prior:
+**Recursive Update ($n$ Observations)**: Suppose we receive a sequence of observations $y_1, y_2, \ldots, y_n$. We can extent $\eqref{eq:bayes_single}$ by treating all observations as a single joint observation:
+$$
+\begin{equation} \label{eq:bayes_multiple}
+p\left(x \mid y_1, \ldots, y_n\right)=\frac{p\left(y_1, \ldots, y_n \mid x\right) p(x)}{p\left(y_1, \ldots, y_n\right)} = \eta \cdot p\left(y_1, \ldots, y_n \mid x\right) p(x)
+\end{equation}
+$$
+Now assume each observation is conditionally independent given the state $X$, which follows the property in $\eqref{eq:conditional_independence}$. Therefore, we expand the conditional probability on the RHS:
+$$
+\begin{equation} \label{eq:conditional_independence_expanded}
+p\left(y_1, \ldots, y_n \mid x\right) = \prod_{i=1}^n p\left(y_i \mid x\right).
+\end{equation}
+$$
+Next we substitute $\eqref{eq:conditional_independence_expanded}$ into $\eqref{eq:bayes_multiple}$ to get:
+$$
+\begin{align}
+p\left(x \mid y_1, \ldots, y_n\right) &= \eta \cdot \left(\prod_{i=1}^n p\left(y_i \mid x\right)\right) p(x) \\
+&= \eta \left( p\left(y_n \mid x\right) \prod_{i=1}^{n-1} p\left(y_i \mid x\right) \right) p(x) \\
+&= \eta \cdot p\left(y_n \mid x\right) \cdot \left( \prod_{i=1}^{n-1} p\left(y_i \mid x\right) \right)p(x)  \label{eq:bayes_multiple_expanded}.
+\end{align}
+$$
+We notice that the term in the parentheses in $\eqref{eq:bayes_multiple_expanded}$ follow the same form as $\eqref{eq:conditional_independence_expanded}$ but with $n-1$ observations. Therefore:
+$$
+\begin{align}
+p\left(x \mid y_1, \ldots, y_n\right) &= \eta \cdot p\left(y_n \mid x\right) \cdot \underbrace{p\left(y_1, \ldots, y_{n - 1} \mid x\right) p(x)}_{\propto  \; p\left(x \mid y_1, \ldots, y_{n-1}\right) \text{ b/c } {\eqref{eq:bayes_multiple}}.} \\
+&= \eta \cdot p\left(y_n \mid x\right) \cdot p\left(x \mid y_1, \ldots, y_{n-1}\right).
+\end{align}
+$$
+Now, we have derived the recursive form of Bayes' Theorem for updating the posterior with each new observation:
 $$
 \begin{equation} \label{eq:bayes_recursive}
-p(x \mid y_1, \ldots, y_n) = \eta \cdot p(y_n \mid x) \cdot p(x \mid y_1, \ldots, y_{n-1}),
+\begin{aligned}
+p(x \mid y_1, \ldots, y_n)
+&= \eta \cdot p(y_n \mid x) \cdot p(x \mid y_1, \ldots, y_{n-1}), \\
+\text{where } \eta
+&= \frac{1}{p(y_n \mid y_1, \ldots, y_{n-1})}.
+\end{aligned}
 \end{equation}
 $$
-where $\eta$ is the normalization constant for the $n$-th step, given by $\eta = \frac{1}{p(y_n \mid y_1, \ldots, y_{n-1})}$.
+We notice how $\eqref{eq:bayes_recursive}$ reduces to $\eqref{eq:bayes_single}$ when $n=1$. To compute the normalization constant $\eta$, we can use the law of total probability conditioned on all previous observations:
+$$
+\begin{equation} \label{eq:total_probability_recursive}
+p(y_n \mid y_1, \ldots, y_{n-1}) = \sum_{x} p(y_n \mid x) p(x \mid y_1, \ldots, y_{n-1}).
+\end{equation}
+$$
 
 <details><summary>Example: Recursive Bayesian Estimation (Door Sensor)</summary>
 
-Let $X$ be the random variable for the door state and $Y$ be the random variable for the sensor reading. The realizations are $x \in \{\text{open}, \text{closed}\}$ and $y \in \{0, 1\}$, where $1$ indicates the sensor reads "Open".
+Let $X$ be the random variable for the door state and $Y = \left( Y_1, Y_2, Y_3 \right)$ be the joint random variable for 3 sensor readings. The realizations are $x \in \{\text{open}, \text{closed}\}$ and $y \in \{0, 1\}$, where $1$ indicates the sensor reads "Open".
 
 Suppose we have prior knowledge that the door is equally likely to be open or closed:
 $$
@@ -669,7 +706,7 @@ p_{X \mid Y_1}(x \mid y_1) &= \eta_1 \cdot p_{Y \mid X}(y_1 \mid x) \cdot p_X(x)
 
 \end{align*}
 $$
-We can compute these step by step:
+We can compute these step by step starting with the prior $p_X(x)$ and following $\eqref{eq:total_probability_recursive}$ to compute $\eta_i$.
 
 1. **After first reading $y_1 = 1$**:
     $$
@@ -715,17 +752,16 @@ After processing the three sensor readings, the robot estimates that there is ap
 
 </details>
 
-From $\eqref{eq:bayes_recursive}$, we can expand the posterior after $n$ observations to obtain:
+From $\eqref{eq:bayes_recursive}$, we can expand the posterior after $n$ observations to obtain the **Expanded Bayesian Estimation**:
 $$
 \begin{equation} \label{eq:bayes_expanded}
-p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta \cdot p_X(x) \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x),
+\begin{aligned}
+p(x \mid y_1, \ldots, y_n) &= \eta \cdot p(x) \prod_{i=1}^{n} p(y_i \mid x) \\
+\text{where } \eta &= \frac{1}{p(y_1, \ldots, y_n)} = \frac{1}{\sum_{x'} \left[ p(x') \prod_{i=1}^n p(y_i \mid x') \right]}.
+\end{aligned}
 \end{equation}
 $$
-where
-$$
-\eta = \frac{1}{p_{Y_1, \ldots, Y_n}(y_1, \ldots, y_n)} = \frac{1}{\sum_{x'} \left[ p_X(x') \prod_{i=1}^n p_{Y_i \mid X}(y_i \mid x') \right]}
-$$
-is the normalization constant at each step. This formulation highlights how each new observation incrementally updates our belief about the state $X$.
+This formulation highlights how each new observation incrementally updates our belief about the state $X$.
 
 <details><summary>Proof of Expanded Bayesian Estimation</summary>
 
@@ -737,7 +773,7 @@ We aim to derive the expanded posterior form $\eqref{eq:bayes_expanded}$ startin
 For a single observation, the recursive update $\eqref{eq:bayes_recursive}$ simplifies to the single observation update $\eqref{eq:bayes_single}$.
 $$
 \begin{equation} \label{eq:proof_base}
-p_{X \mid Y_1}(x \mid y_1) = \eta_1 \cdot p_{Y_1 \mid X}(y_1 \mid x) p_X(x).
+p(x \mid y_1) = \eta_1 \cdot p(y_1 \mid x) p(x).
 \end{equation}
 $$
 This matches the form of $\eqref{eq:bayes_expanded}$ for $n=1$.
@@ -746,7 +782,7 @@ This matches the form of $\eqref{eq:bayes_expanded}$ for $n=1$.
 Assume that the expanded form holds for $n-1$ observations (Inductive Hypothesis). That is:
 $$
 \begin{equation} \label{eq:proof_hypothesis}
-p_{X \mid Y_1, \ldots, Y_{n-1}}(x \mid y_1, \ldots, y_{n-1}) = \eta_{1:n-1} \cdot p_X(x) \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x),
+p(x \mid y_1, \ldots, y_{n-1}) = \eta_{1:n-1} \cdot p(x) \prod_{i=1}^{n-1} p(y_i \mid x),
 \end{equation}
 $$
 where $\eta_{1:n-1}$ represents the accumulated normalization constant for the sequence up to $n-1$.
@@ -754,29 +790,29 @@ where $\eta_{1:n-1}$ represents the accumulated normalization constant for the s
 Now, consider the recursive update for the $n$-th step given by $\eqref{eq:bayes_recursive}$:
 $$
 \begin{equation} \label{eq:proof_recursive_step}
-p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta_n \cdot p_{Y_n \mid X}(y_n \mid x) \cdot p_{X \mid Y_1, \ldots, Y_{n-1}}(x \mid y_1, \ldots, y_{n-1}).
+p(x \mid y_1, \ldots, y_n) = \eta_n \cdot p(y_n \mid x) \cdot p(x \mid y_1, \ldots, y_{n-1}).
 \end{equation}
 $$
 
 Substitute the Inductive Hypothesis $\eqref{eq:proof_hypothesis}$ into the recursive equation $\eqref{eq:proof_recursive_step}$:
 $$
 \begin{equation} \label{eq:proof_sub}
-p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta_n \cdot p_{Y_n \mid X}(y_n \mid x) \cdot \left[ \eta_{1:n-1} \cdot p_X(x) \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x) \right].
+p(x \mid y_1, \ldots, y_n) = \eta_n \cdot p(y_n \mid x) \cdot \left[ \eta_{1:n-1} \cdot p(x) \prod_{i=1}^{n-1} p(y_i \mid x) \right].
 \end{equation}
 $$
 
 We can combine the scalar normalization constants into a single constant $\eta = \eta_n \cdot \eta_{1:n-1}$.
-We can also combine the likelihood term $p_{Y_n \mid X}(y_n \mid x)$ with the product term:
+We can also combine the likelihood term $p(y_n \mid x)$ with the product term:
 $$
 \begin{equation} \label{eq:proof_combine}
-p_{Y_n \mid X}(y_n \mid x) \cdot \prod_{i=1}^{n-1} p_{Y_i \mid X}(y_i \mid x) = \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x).
+p(y_n \mid x) \cdot \prod_{i=1}^{n-1} p(y_i \mid x) = \prod_{i=1}^{n} p(y_i \mid x).
 \end{equation}
 $$
 
 Substituting $\eqref{eq:proof_combine}$ back into $\eqref{eq:proof_sub}$, we obtain:
 $$
 \begin{equation} \label{eq:proof_final}
-p_{X \mid Y_1, \ldots, Y_n}(x \mid y_1, \ldots, y_n) = \eta \cdot p_X(x) \prod_{i=1}^{n} p_{Y_i \mid X}(y_i \mid x).
+p(x \mid y_1, \ldots, y_n) = \eta \cdot p(x) \prod_{i=1}^{n} p(y_i \mid x).
 \end{equation}
 $$
 
@@ -786,7 +822,7 @@ This confirms that the recursive application of Bayes' rule results in the produ
 
 <details><summary>Example: Expanded Bayesian Estimation</summary>
 
-Following the previous door sensor example, we can express the posterior after three observations using the expanded batch formula $\eqref{eq:bayes_expanded}$:
+Following the previous door sensor example where $y_1 = 1, y_2 = 0, y_3 = 1$, we can express the posterior after three observations using the expanded batch formula $\eqref{eq:bayes_expanded}$:
 $$
 p_{X \mid Y_1, Y_2, Y_3}(x \mid y_1, y_2, y_3) = \eta \cdot \underbrace{p_X(x) \prod_{i=1}^3 p_{Y \mid X}(y_i \mid x)}_{\tilde{p}(x)}.
 $$
@@ -1147,6 +1183,10 @@ We can apply HMMs to solve several distinct inference problems in robotics.
 
 These problems can be solved with forward-backward algorithms, Viterbi algorithm, and other dynamic programming techniques tailored for HMMs.
 
+#### Forward Algorithm
+
+#### Backward Algorithm
+
 ### Robot Environment Interaction
 
 The environment of a robot is a _dynamical system_ that possesses internal _state_. We introduce state first before describing how robots interact with their environment through actions and observations.
@@ -1271,7 +1311,7 @@ $$
 This is known as the _predicted belief distribution_ or _prior belief
 distribution_ at time $t$.
 
-## Bayes Filter
+#### Bayes Filter
 
 We wish to compute the belief distribution $\eqref{eq:belief_distribution}$ recursively. We first apply Bayes' rule $\eqref{eq:conditioned-bayes}$ to expand the posterior and take out the normalizing constant following $\eqref{eq:bayes_single}$:
 $$
