@@ -1468,13 +1468,20 @@ $$
 p(y_{1:3}) = \alpha_3(1) + \alpha_3(2) + \alpha_3(3) = 0.11589.
 $$
 
-We can format the forward variable table as follows:
+We can format the forward variable matrix as follows:
 
-| Time Step | State 1 (door) | State 2 (door) | State 3 (door) |
-|-----------|----------------|----------------|----------------|
-| $k=1$     | 0.01           | 0.64           | 0.01           |
-| $k=2$     | 0.1215         | 0.078          | 0.1215         |
-| $k=3$     | 0.010065       | 0.09576        | 0.010065       |
+$$
+\alpha = \begin{bmatrix}
+\alpha_1(1) & \alpha_1(2) & \alpha_1(3) \\
+\alpha_2(1) & \alpha_2(2) & \alpha_2(3) \\
+\alpha_3(1) & \alpha_3(2) & \alpha_3(3)
+\end{bmatrix} =
+\begin{bmatrix}
+0.01 & 0.64 & 0.01 \\
+0.1215 & 0.078 & 0.1215 \\
+0.010065 & 0.09576 & 0.010065
+\end{bmatrix}.
+$$
 
 </details>
 
@@ -1507,7 +1514,7 @@ The algorithm proceeds recursively:
     \end{equation}
     $$
 
-<details open><summary>Backward Algorithm Example</summary>
+<details><summary>Backward Algorithm Example</summary>
 
 Following the previous HMM example:
 $$
@@ -1603,17 +1610,255 @@ We can now compute the likelihood of the observation sequence following $\eqref{
 $$
 p(y_{1:3}) = \sum_{i \in S} \pi_i M_{i, y_1} \beta_1(i) = 0.11589,
 $$
-which matches the likelihood computed from the forward algorithm, confirming the consistency of both methods. The backward variable table can be formatted as follows:
+which matches the likelihood computed from the forward algorithm, confirming the consistency of both methods. The backward variable matrix can be formatted as follows:
 
-| Time Step | State 1 (door) | State 2 (door) | State 3 (door) |
-|-----------|----------------|----------------|----------------|
-| $k=1$     | 0.2265         | 0.174          | 0.2265         |
-| $k=2$     | 0.31           | 0.52           | 0.31           |
-| $k=3$     | 1.0            | 1.0            | 1.0            |
+$$
+\beta = \begin{bmatrix}
+\beta_1(1) & \beta_1(2) & \beta_1(3) \\
+\beta_2(1) & \beta_2(2) & \beta_2(3) \\
+\beta_3(1) & \beta_3(2) & \beta_3(3)
+\end{bmatrix} =
+\begin{bmatrix}
+0.2265 & 0.174 & 0.2265 \\
+0.31 & 0.52 & 0.31 \\
+1 & 1 & 1
+\end{bmatrix}.
+$$
 
 </details>
 
+#### Solving Inference Problems
+
+Using the forward variables $\alpha_k(i)$ and backward variables $\beta_k(i)$, we can solve the filtering, smoothing, prediction, and likelihood problems efficiently.
+
+- **Filtering** (online state estimation) $\eqref{eq:hmm_filtering_problem}$:
+
+  The filtering distribution is obtained by normalizing the forward variables:
+  $$
+  \begin{equation} \label{eq:hmm_filtering_solution}
+  p(X_k = i \mid y_{1:k}) = \frac{\alpha_k(i)}{\sum_{j \in S} \alpha_k(j)}.
+  \end{equation}
+  $$
+
+    <details><summary>Filtering Example</summary>
+
+    We use the same observation sequence as in the forward/backward examples:
+    $$
+    y_{1:3}=(\text{door},\text{wall},\text{door}).
+    $$
+    $$
+    \alpha = \begin{bmatrix}
+        0.01 & 0.64 & 0.01 \\
+        0.1215 & 0.078 & 0.1215 \\
+        0.010065 & 0.09576 & 0.010065
+        \end{bmatrix}.
+    $$
+
+    We follow $\eqref{eq:hmm_filtering_solution}$ to compute the filtering distribution at each time step:
+    $$
+    \begin{align*}
+    p(X_1 = i \mid y_{1:1}) &= \frac{\alpha_1(i)}{\sum_{j \in S} \alpha_1(j)} = \frac{\alpha_1(i)}{0.01 + 0.64 + 0.01} = \frac{\alpha_1(i)}{0.66}, \\
+    p(X_2 = i \mid y_{1:2}) &= \frac{\alpha_2(i)}{\sum_{j \in S} \alpha_2(j)} = \frac{\alpha_2(i)}{0.1215 + 0.078 + 0.1215} = \frac{\alpha_2(i)}{0.321}, \\
+    p(X_3 = i \mid y_{1:3}) &= \frac{\alpha_3(i)}{\sum_{j \in S} \alpha_3(j)} = \frac{\alpha_3(i)}{0.010065 + 0.09576 + 0.010065} = \frac{\alpha_3(i)}{0.11589}.
+    \end{align*}
+    $$
+    Now we can compute the filtering distributions explicitly:
+    $$
+    \begin{align*}
+    p(X_1 = 1 \mid y_{1:1}) &= \frac{0.01}{0.66} \approx 0.0152 & p(X_1 = 2 \mid y_{1:1}) &= \frac{0.64}{0.66} \approx 0.9697 & p(X_1 = 3 \mid y_{1:1}) &= \frac{0.01}{0.66} \approx 0.0152 \\
+    p(X_2 = 1 \mid y_{1:2}) &= \frac{0.1215}{0.321} \approx 0.3785 & p(X_2 = 2 \mid y_{1:2}) &= \frac{0.078}{0.321} \approx 0.2430 & p(X_2 = 3 \mid y_{1:2}) &= \frac{0.1215}{0.321} \approx 0.3785 \\
+    p(X_3 = 1 \mid y_{1:3}) &= \frac{0.0101}{0.1159} \approx 0.0868 & p(X_3 = 2 \mid y_{1:3}) &= \frac{0.0958}{0.1159} \approx 0.8263 & p(X_3 = 3 \mid y_{1:3}) &= \frac{0.0101}{0.1159} \approx 0.0868
+    \end{align*}
+    $$
+    Summarizing nicely into a table:
+
+    | Time $k$ | $p(X_k = 1 \mid y_{1:k})$ | $p(X_k = 2 \mid y_{1:k})$ | $p(X_k = 3 \mid y_{1:k})$ |
+    |-----------|-----------------------------|-----------------------------|-----------------------------|
+    | 1         | 0.0152                      | 0.9697                      | 0.0152                      |
+    | 2         | 0.37850                     | 0.24299                     | 0.37850                     |
+    | 3         | 0.08684                     | 0.82630                     | 0.08684                     |
+
+    </details>
+
+- **Smoothing** (offline state estimation) $\eqref{eq:hmm_smoothing_problem}$:
+
+  Using both past and future observations, the smoothed marginal is:
+  $$
+  \begin{equation} \label{eq:hmm_smoothing_solution}
+  p(X_j = i \mid y_{1:n}) = \frac{\alpha_j(i)\,\beta_j(i)}{\sum_{l \in S} \alpha_j(l)\,\beta_j(l)}, \quad 1 \le j \le n.
+  \end{equation}
+  $$
+  Since $\sum_{l \in S} \alpha_j(l)\beta_j(l) = p(y_{1:n})$, this can also be written as
+  $$
+  \begin{equation} \label{eq:hmm_smoothing_solution_alternative}
+  p(X_j = i \mid y_{1:n}) = \frac{\alpha_j(i)\,\beta_j(i)}{p(y_{1:n})}.
+  \end{equation}
+  $$
+
+    <details><summary>Smoothing Example</summary>
+
+    We use the same observation sequence as in the forward/backward examples:
+    $$
+    y_{1:3}=(\text{door},\text{wall},\text{door}).
+    $$
+    $$
+    \alpha = \begin{bmatrix}
+        0.01 & 0.64 & 0.01 \\
+        0.1215 & 0.078 & 0.1215 \\
+        0.010065 & 0.09576 & 0.010065
+        \end{bmatrix}, \quad
+    \beta = \begin{bmatrix}
+        0.2265 & 0.174 & 0.2265 \\
+        0.31 & 0.52 & 0.31 \\
+        1 & 1 & 1
+        \end{bmatrix}.
+    $$
+    We follow $\eqref{eq:hmm_smoothing_solution_alternative}$ to compute the smoothing distribution at each time step. Note that we have already computed
+    $$
+    p(y_{1:3}) = \sum_{i \in S} \alpha_3(i) = 0.11589.
+    $$
+    Now we can compute the smoothing distributions explicitly:
+    $$
+    \begin{align*}
+    p(X_1 = 1 \mid y_{1:3}) &= \frac{0.01 \cdot 0.2265}{0.11589} \approx 0.0195 & p(X_1 = 2 \mid y_{1:3}) &= \frac{0.64 \cdot 0.174}{0.11589} \approx 0.9609 & p(X_1 = 3 \mid y_{1:3}) &= \frac{0.01 \cdot 0.2265}{0.11589} \approx 0.0195 \\
+    p(X_2 = 1 \mid y_{1:3}) &= \frac{0.1215 \cdot 0.31}{0.11589} \approx 0.3250 & p(X_2 = 2 \mid y_{1:3}) &= \frac{0.078 \cdot 0.52}{0.11589} \approx 0.3500 & p(X_2 = 3 \mid y_{1:3}) &= \frac{0.1215 \cdot 0.31}{0.11589} \approx 0.3250 \\
+    p(X_3 = 1 \mid y_{1:3}) &= \frac{0.0101 \cdot 1}{0.11589} \approx 0.0868 & p(X_3 = 2 \mid y_{1:3}) &= \frac{0.0958 \cdot 1}{0.11589} \approx 0.8263 & p(X_3 = 3 \mid y_{1:3}) &= \frac{0.0101 \cdot 1}{0.11589} \approx 0.0868
+    \end{align*}
+    $$
+
+    </details>
+
+    <details><summary>Proof of denominator in smoothing solution</summary>
+
+    We want to show:
+    $$
+    \sum_{l \in S} \alpha_j(l) \beta_j(l)=p\left(y_{1: n}\right)
+    $$
+    Recall the definitions of $\alpha_j(l)$ $\eqref{eq:forward_variable}$ and $\beta_j(l)$ $\eqref{eq:backward_variable}$:
+    $$
+    \begin{align*}
+    \alpha_j(i) &= p(Y_{1:j} = y_{1:j}, X_j = i), \\
+    \beta_j(i) &= p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i).
+    \end{align*}
+    $$
+    We multiply these two terms:
+    $$
+    \alpha_j(i) \beta_j(i) = p(Y_{1:j} = y_{1:j}, X_j = i) p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i)
+    $$
+    Since the probability of future observations $y_{j+1:n}$ depends only on the current state $X_j$, we can add past observations $y_{1:j}$ to the conditioning of the second term without changing its value:
+    $$
+    \alpha_j(i) \beta_j(i) = p(Y_{1:j} = y_{1:j}, X_j = i) p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i, Y_{1:j} = y_{1:j})
+    $$
+    Now we combine the two terms using the chain rule $\eqref{eq:chain_rule}$:
+    $$
+    \alpha_j(i) \beta_j(i)  = p(Y_{1:j} = y_{1:j}, X_j = i, Y_{j+1:n} = y_{j+1:n}) = p(Y_{1:n} = y_{1:n}, X_j = i).
+    $$
+    Now sum over all possible states $i \in S$:
+    $$
+    \sum_{i \in S} \alpha_j(i) \beta_j(i)=\sum_{i \in S} p\left(X_j=i, Y_{1: n}=y_{1: n}\right)
+    $$
+    By the law of total probability $\eqref{eq:total_probability}$, we can sum over all states to get the marginal probability of the observation sequence:
+    $$
+    \sum_{i \in S} \alpha_j(i) \beta_j(i)=p\left(y_{1: n}\right).
+    $$
+
+    </details>
+
+- **Prediction** (forecasting future states) $\eqref{eq:hmm_prediction_problem}$:
+
+  First compute the filtering distribution at time $k$, then propagate it forward using the transition matrix. For $j > k$,
+  $$
+  \begin{equation} \label{eq:hmm_prediction_solution}
+  p(X_j = i \mid y_{1:k}) = \sum_{l \in S} (P^{\,j-k})_{l i}\; p(X_k = l \mid y_{1:k}),
+  \end{equation}
+  $$
+  where $P^{\,j-k}$ denotes the $(j-k)$-step transition matrix. In particular, for one-step prediction ($j=k+1$):
+  $$
+  p(X_{k+1} = i \mid y_{1:k}) = \sum_{l \in S} P_{l i}\; p(X_k = l \mid y_{1:k}).
+  $$
+
+- **Likelihood of Observations** $\eqref{eq:hmm_likelihood_problem}$:
+
+  The likelihood of the entire observation sequence can be computed either from the forward variables:
+  $$
+  \begin{equation} \label{eq:hmm_likelihood_solution_forward}
+  p(y_{1:n}) = \sum_{i \in S} \alpha_n(i),
+  \end{equation}
+  $$
+  or from the backward variables:
+  $$
+  \begin{equation} \label{eq:hmm_likelihood_solution_backward}
+  p(y_{1:n}) = \sum_{i \in S} \pi_i\, M_{i, y_1}\, \beta_1(i).
+  \end{equation}
+  $$
+
+These identities show that once the forward and backward variables are available, filtering, smoothing, prediction, and likelihood evaluation can all be performed efficiently using simple algebraic operations.
+
 #### Viterbi Algorithm
+
+Given an observed sequence $y_{1:n}$, the **decoding** problem is to find the most likely hidden state sequence
+$$
+\begin{equation} \label{eq:hmm_decoding_problem_viterbi}
+x_{1:n}^* = \arg\max_{x_{1:n}} p(X_{1:n} = x_{1:n} \mid y_{1:n}).
+\end{equation}
+$$
+Since $p(y_{1:n})$ is constant w.r.t. $x_{1:n}$, this is equivalent to maximizing the joint:
+$$
+\begin{equation} \label{eq:hmm_decoding_problem_viterbi_equivalent}
+x_{1:n}^* = \arg\max_{x_{1:n}} p(x_{1:n}, y_{1:n}).
+\end{equation}
+$$
+Using the HMM factorization $\eqref{eq:hmm_factorization}$, we can express the joint probability as:
+$$
+\begin{equation} \label{eq:hmm_decoding_joint_factorization}
+p(x_{1:n}, y_{1:n}) = \pi_{x_1}M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
+\end{equation}
+$$
+We can solve $\eqref{eq:hmm_decoding_problem_viterbi_equivalent}$ using dynamic programming.
+
+We define the **Viterbi (max-product) variable** $\delta_k(j)$ as the probability of the most _likely_ state path ending in state $j$ at time $k$, together with the observations up to $k$:
+$$
+\begin{equation} \label{eq:viterbi_variable}
+\delta_k(j) = \max_{x_{1:k-1}} p(x_{1:k-1}, X_k = j, y_{1:k}).
+\end{equation}
+$$
+We also store the **backpointer** $\psi_k(j)$, which records which previous state achieves the max:
+$$
+\begin{equation} \label{eq:viterbi_backpointer}
+\psi_k(j) = \arg\max_{i \in S} \left[ \delta_{k-1}(i) P_{i j} \right], \quad k \geq 2.
+\end{equation}
+$$
+
+1. **Base Case** ($k=1$):
+   $$
+   \begin{equation} \label{eq:viterbi_base_case}
+   \delta_1(j) = \pi_j M_{j, y_1}, \quad \psi_1(j) = 0, \quad \forall j \in S.
+   \end{equation}
+   $$
+2. **Recursive Case** ($k > 1$):
+    $$
+    \begin{equation} \label{eq:viterbi_recursive_case}
+    \delta_k(j) = \left[ \max_{i \in S} \delta_{k-1}(i) P_{i j} \right] M_{j, y_k}, \quad \forall j \in S
+    \end{equation}
+    $$
+    $$
+    \begin{equation} \label{eq:viterbi_backpointer_recursive_case}
+    \psi_k(j) = \arg\max_{i \in S} \left[ \delta_{k-1}(i) P_{i j} \right], \quad \forall j \in S
+    \end{equation}
+    $$
+3. **Termination**:
+   $$
+   \begin{equation} \label{eq:viterbi_termination}
+   p^* = \max_{j \in S} \delta_n(j), \quad x_n^* = \arg\max_{j \in S} \delta_n(j),
+   \end{equation}
+   $$
+   where $p^*$ is the joint probability of the best path with the observations.
+4. **Path Backtracking**: After computing $\delta_n(j)$ and $\psi_k(j)$ for all $k$ and $j$, we can backtrack to find the optimal state sequence:
+   $$
+   \begin{equation} \label{eq:viterbi_backtracking}
+   x_k^* = \psi_{k+1}(x_{k+1}^*), \quad k = n-1, n-2, \dots, 1.
+   \end{equation}
+   $$
 
 ### Robot Environment Interaction
 
