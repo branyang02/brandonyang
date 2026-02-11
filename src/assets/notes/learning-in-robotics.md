@@ -1133,7 +1133,7 @@ $$
 We define the initial distribution by
 $$
 \begin{equation} \label{eq:hmm_initial_distribution}
-\pi(i) = p(X_1 = i), \quad i \in S, \quad \text{with } \sum_{i \in S} \pi(i) = 1,
+\pi_i = p(X_1 = i), \quad i \in S, \quad \text{with } \sum_{i \in S} \pi_i = 1,
 \end{equation}
 $$
 and the one-step transition probabilities by
@@ -1158,7 +1158,7 @@ $$
 Under these assumptions, the joint distribution over a state sequence $x_{1:n}$ and an observation sequence $y_{1:n}$ can be factorized as:
 $$
 \begin{equation} \label{eq:hmm_factorization}
-p(x_{1:n}, y_{1:n} \mid \lambda) = \pi(x_1) M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
+p(x_{1:n}, y_{1:n} \mid \lambda) = \pi_{x_1} M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
 \end{equation}
 $$
 
@@ -1199,7 +1199,7 @@ p(x_{1:n}, y_{1:n} \mid \lambda) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n \left [p
 $$
 Finally, we map these probability terms to the model parameters:
 
-- $p(x_1) = \pi(x_1)$ (initial distribution),
+- $p(x_1) = \pi_{x_1}$ (initial distribution),
 - $p(x_k \mid x_{k-1}) = P_{x_{k-1}, x_k}$ (transition probabilities),
 - $p(y_k \mid x_k) = M_{x_k, y_k}$ (emission probabilities). Thus, we arrive at the factorized form that is consistent with $\eqref{eq:hmm_factorization}$:
 
@@ -1219,9 +1219,9 @@ where these are observations $Y_k \in \mathcal{O}$.
 
 Assume robot starts in the middle with high probability:
 $$
-\pi(1) = 0.1, \quad \pi(2) = 0.8, \quad \pi(3) = 0.1.
+\pi_1 = 0.1, \quad \pi_2 = 0.8, \quad \pi_3 = 0.1,
 $$
-Alternatively, we can write the initial distribution as a vector:
+which can be written as a column vector:
 $$
 \pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}.
 $$
@@ -1248,7 +1248,7 @@ $$
 M=\left[\begin{array}{ll}
 M_{1, \text { door }} & M_{1, \text { wall }} \\
 M_{2, \text { door }} & M_{2, \text { wall }} \\
-M_{3, \text { door }} & M_{1 \text { avall }}
+M_{3, \text { door }} & M_{3, \text { wall }}
 \end{array}\right]=\left[\begin{array}{ll}
 0.1 & 0.9 \\
 0.8 & 0.2 \\
@@ -1332,7 +1332,286 @@ These problems can be solved with forward-backward algorithms, Viterbi algorithm
 
 #### Forward Algorithm
 
+Given an observed sequence $y_{1:n}$, we define the **forward variable** $\alpha_k(i)$ as the joint probability of the observation sequence up to time $k$ and the state being $i$ at time $k$:
+$$
+\begin{equation} \label{eq:forward_variable}
+\alpha_k(i) = p(Y_{1:k} = y_{1:k}, X_k = i).
+\end{equation}
+$$
+The algorithm proceeds recursively:
+
+1. **Base Case** ($k=1$): Using the definition of conditional probability $\eqref{eq:conditional_pmf}$:
+   $$
+   \begin{equation} \label{eq:forward_base_case}
+   \alpha_1(i) = p(y_1, X_1 = i) = p(y_1 \mid X_1 = i) p(X_1 = i) = M_{i, y_1} \pi_i.
+   \end{equation}
+   $$
+2. **Recursive Case** ($k > 1$): We can express $\alpha_k(j)$ in terms of $\alpha_{k-1}(i)$:
+   $$
+   \begin{equation} \label{eq:forward_recursive_case}
+   \alpha_k(j) = \left[ \sum_{i \in S} \alpha_{k-1}(i)P_{ij} \right] M_{j, y_k}.
+   \end{equation}
+   $$
+3. **Termination**: The likelihood of the observation sequence is the sum of the forward variables at time $n$:
+   $$
+    \begin{equation} \label{eq:forward_termination}
+   p(y_{1:n}) = \sum_{i \in S} \alpha_n(i).
+    \end{equation}
+   $$
+
+<details><summary>Forward Algorithm Example</summary>
+
+Following the previous HMM example:
+$$
+\mathcal{O} = \{\text{door}, \text{wall}\}, \quad S = \{1, 2, 3\}, \quad \lambda = (\pi, P, M),
+$$
+with
+$$
+\pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}, \quad P=\left[\begin{array}{lll}
+0.7 & 0.3 & 0.0 \\
+0.2 & 0.6 & 0.2 \\
+0.0 & 0.3 & 0.7
+\end{array}\right], \quad M=\left[\begin{array}{ll}
+0.1 & 0.9 \\
+0.8 & 0.2 \\
+0.1 & 0.9
+\end{array}\right].
+$$
+Suppose we observe:
+$$
+y_{1:3} = (\text{door}, \text{wall}, \text{door}).
+$$
+We'll compute:
+$$
+\alpha_1(i), \alpha_2(i), \alpha_3(i) \quad \text{for } i = 1, 2, 3.
+$$
+We initialize with $k=1$ with $y_1 = \text{door}$ following $\eqref{eq:forward_base_case}$:
+$$
+\begin{align*}
+\alpha_1(1) &= M_{1, \text{door}} \pi_1 = 0.1 \cdot 0.1 = 0.01, \\
+\alpha_1(2) &= M_{2, \text{door}} \pi_2 = 0.8 \cdot 0.8 = 0.64, \\
+\alpha_1(3) &= M_{3, \text{door}} \pi_3 = 0.1 \cdot 0.1 = 0.01.
+\end{align*}
+$$
+Next, we compute $\alpha_2(j)$ for $j = 1, 2, 3$ with $y_2 = \text{wall}$ using $\eqref{eq:forward_recursive_case}$:
+$$
+\begin{align*}
+\alpha_2(1) &= \left[ \alpha_1(1)P_{11} + \alpha_1(2)P_{21} + \alpha_1(3)P_{31} \right] M_{1, \text{wall}}, \\
+&= \left[ 0.01 \cdot 0.7 + 0.64 \cdot 0.2 + 0.01 \cdot 0.0 \right] \cdot 0.9 = 0.1215 \\
+\alpha_2(2) &= \left[ \alpha_1(1)P_{12} + \alpha_1(2)P_{22} + \alpha_1(3)P_{32} \right] M_{2, \text{wall}}, \\
+&= \left[ 0.01 \cdot 0.3 + 0.64 \cdot 0.6 + 0.01 \cdot 0.3 \right] \cdot 0.2 = 0.078, \\
+\alpha_2(3) &= \left[ \alpha_1(1)P_{13} + \alpha_1(2)P_{23} + \alpha_1(3)P_{33} \right] M_{3, \text{wall}}, \\
+&= \left[ 0.01 \cdot 0.0 + 0.64 \cdot 0.2 + 0.01 \cdot 0.7 \right] \cdot 0.9 = 0.1215.
+\end{align*}
+$$
+Finally we compute $\alpha_3(j)$ for $j = 1, 2, 3$ with $y_3 = \text{door}$ using the same recursive formula. Below is an example code snippet for computing forward variables in Python:
+
+```execute-python
+import numpy as np
+
+S = [1, 2, 3]
+
+pi = np.array([0.1, 0.8, 0.1])
+P = np.array([
+    [0.7, 0.3, 0.0],
+    [0.2, 0.6, 0.2],
+    [0.0, 0.3, 0.7],
+])
+M = np.array([
+    [0.1, 0.9],  # state 1: P(door)=0.1, P(wall)=0.9
+    [0.8, 0.2],  # state 2
+    [0.1, 0.9],  # state 3
+])
+
+# Observation sequence y_{1:3} = (door, wall, door)
+obs_to_idx = {"door": 0, "wall": 1}
+y_seq = ["door", "wall", "door"]
+y_idx = np.array([obs_to_idx[o] for o in y_seq], dtype=int)
+
+# Forward algorithm
+n_states = pi.shape[0]
+T = len(y_idx)
+
+alpha = np.zeros((T, n_states), dtype=float)
+
+# Base case
+alpha[0, :] = pi * M[:, y_idx[0]]
+
+# Recursive case
+for t in range(1, T):
+    # alpha[t, j] = (sum_i alpha[t-1, i] * P[i, j]) * M[j, y_t]
+    alpha[t, :] = (alpha[t - 1, :] @ P) * M[:, y_idx[t]]
+
+# Termination: likelihood
+likelihood = alpha[-1, :].sum()
+
+print("Observations:", y_seq)
+print("\nalpha table (rows=t, cols=state 1..3):")
+print(alpha)
+print("\nalpha_1:", alpha[0])
+print("alpha_2:", alpha[1])
+print("alpha_3:", alpha[2])
+print("\nLikelihood p(y_1:T):", likelihood)
+```
+
+From the code execute, we get:
+$$
+\begin{align*}
+\alpha_3(1) &= 0.010065, \\
+\alpha_3(2) &= 0.09576, \\
+\alpha_3(3) &= 0.010065.
+\end{align*}
+$$
+
+We can now compute the likelihood of the observation sequence following $\eqref{eq:forward_termination}$:
+$$
+p(y_{1:3}) = \alpha_3(1) + \alpha_3(2) + \alpha_3(3) = 0.11589.
+$$
+
+We can format the forward variable table as follows:
+
+| Time Step | State 1 (door) | State 2 (door) | State 3 (door) |
+|-----------|----------------|----------------|----------------|
+| $k=1$     | 0.01           | 0.64           | 0.01           |
+| $k=2$     | 0.1215         | 0.078          | 0.1215         |
+| $k=3$     | 0.010065       | 0.09576        | 0.010065       |
+
+</details>
+
 #### Backward Algorithm
+
+Given an observed sequence $y_{1:n}$, we define the **backward variable** $\beta_k(i)$ as the probability of the _future_ observations from time $k+1$ to $n$, conditioned on the state being $i$ at time $k$:
+$$
+\begin{equation} \label{eq:backward_variable}
+\beta_k(i) = p(Y_{k+1:n} = y_{k+1:n} \mid X_k = i).
+\end{equation}
+$$
+The algorithm proceeds recursively:
+
+1. **Base Case** ($k=n$): There are no future observations, so we set:
+   $$
+   \begin{equation} \label{eq:backward_base_case}
+   \beta_n(i) = 1, \quad \forall i \in S.
+   \end{equation}
+   $$
+2. **Recursive Case** ($k < n$): We can express $\beta_k(i)$ in terms of $\beta_{k+1}(j)$:
+   $$
+    \begin{equation} \label{eq:backward_recursive_case}
+    \beta_k(i) = \sum_{j \in S} P_{ij} M_{j, y_{k+1}} \beta_{k+1}(j).
+    \end{equation}
+    $$
+3. **Termination**: The likelihood of the observation sequence can also be computed using the backward variables at time $1$:
+   $$
+    \begin{equation} \label{eq:backward_termination}
+    p(y_{1:n}) = \sum_{i \in S} \pi_i M_{i, y_1} \beta_1(i).
+    \end{equation}
+    $$
+
+<details open><summary>Backward Algorithm Example</summary>
+
+Following the previous HMM example:
+$$
+\mathcal{O} = \{\text{door}, \text{wall}\}, \quad S = \{1, 2, 3\}, \quad \lambda = (\pi, P, M),
+$$
+with
+$$
+\pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}, \quad P=\left[\begin{array}{lll}
+0.7 & 0.3 & 0.0 \\
+0.2 & 0.6 & 0.2 \\
+0.0 & 0.3 & 0.7
+\end{array}\right], \quad M=\left[\begin{array}{ll}
+0.1 & 0.9 \\
+0.8 & 0.2 \\
+0.1 & 0.9
+\end{array}\right].
+$$
+Suppose we observe:
+$$
+y_{1:3} = (\text{door}, \text{wall}, \text{door}).
+$$
+We'll compute:
+$$
+\beta_3(i), \beta_2(i), \beta_1(i) \quad \text{for } i = 1, 2, 3.
+$$
+
+We initialize with $k=3$ following $\eqref{eq:backward_base_case}$:
+$$
+\beta_3(1) = \beta_3(2) = \beta_3(3) = 1.
+$$
+Next, we compute $\beta_2(i)$ for $i = 1, 2, 3$ with $y_3 = \text{door}$ using $\eqref{eq:backward_recursive_case}$:
+$$
+\begin{align*}
+\beta_2(1) &= P_{11}M_{1,\text{door}}\beta_3(1) + P_{12}M_{2,\text{door}}\beta_3(2) + P_{13}M_{3,\text{door}}\beta_3(3) \\
+&= 0.7\cdot 0.1 \cdot 1 + 0.3\cdot 0.8 \cdot 1 + 0.0\cdot 0.1 \cdot 1 = 0.31, \\
+\beta_2(2) &= P_{21}M_{1,\text{door}}\beta_3(1) + P_{22}M_{2,\text{door}}\beta_3(2) + P_{23}M_{3,\text{door}}\beta_3(3) \\
+&= 0.2\cdot 0.1 \cdot 1 + 0.6\cdot 0.8 \cdot 1 + 0.2\cdot 0.1 \cdot 1 = 0.52, \\
+\beta_2(3) &= P_{31}M_{1,\text{door}}\beta_3(1) + P_{32}M_{2,\text{door}}\beta_3(2) + P_{33}M_{3,\text{door}}\beta_3(3) \\
+&= 0.0\cdot 0.1 \cdot 1 + 0.3\cdot 0.8 \cdot 1 + 0.7\cdot 0.1 \cdot 1 = 0.31.
+\end{align*}
+$$
+Finally we compute $\beta_1(i)$ for $i = 1, 2, 3$ with $y_2 = \text{wall}$ using the same recursive formula using the following code snippet:
+
+```execute-python
+import numpy as np
+
+pi = np.array([0.1, 0.8, 0.1])
+P = np.array([
+    [0.7, 0.3, 0.0],
+    [0.2, 0.6, 0.2],
+    [0.0, 0.3, 0.7],
+])
+M = np.array([
+    [0.1, 0.9],
+    [0.8, 0.2],
+    [0.1, 0.9],
+])
+
+obs_to_idx = {"door": 0, "wall": 1}
+y_seq = ["door", "wall", "door"]
+y_idx = np.array([obs_to_idx[o] for o in y_seq], dtype=int)
+
+n_states = pi.shape[0]
+T = len(y_idx)
+
+beta = np.zeros((T, n_states))
+
+# Base case
+beta[T-1, :] = 1.0
+
+# Recursion backward
+for t in range(T-2, -1, -1):
+    for i in range(n_states):
+        beta[t, i] = np.sum(P[i, :] * M[:, y_idx[t+1]] * beta[t+1, :])
+
+# Likelihood
+likelihood = np.sum(pi * M[:, y_idx[0]] * beta[0, :])
+
+print("beta table (rows=t, cols=state 1..3):")
+print(beta)
+print("Likelihood:", likelihood)
+```
+
+From the code execute, we get:
+$$
+\begin{align*}
+\beta_1(1) &= 0.2265, \\
+\beta_1(2) &= 0.174, \\
+\beta_1(3) &= 0.2265.
+\end{align*}
+$$
+We can now compute the likelihood of the observation sequence following $\eqref{eq:backward_termination}$:
+$$
+p(y_{1:3}) = \sum_{i \in S} \pi_i M_{i, y_1} \beta_1(i) = 0.11589,
+$$
+which matches the likelihood computed from the forward algorithm, confirming the consistency of both methods. The backward variable table can be formatted as follows:
+
+| Time Step | State 1 (door) | State 2 (door) | State 3 (door) |
+|-----------|----------------|----------------|----------------|
+| $k=1$     | 0.2265         | 0.174          | 0.2265         |
+| $k=2$     | 0.31           | 0.52           | 0.31           |
+| $k=3$     | 1.0            | 1.0            | 1.0            |
+
+</details>
 
 #### Viterbi Algorithm
 
