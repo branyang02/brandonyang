@@ -442,10 +442,12 @@ $$
 
 Any joint distribution can be factorized into a product of conditional probabilities. By repeatedly applying the definition of conditional probability, we obtain the **Chain Rule**:
 $$
-\begin{align}
+\begin{equation} \label{eq:chain_rule}
+\begin{aligned}
 p(x_1, \ldots, x_N) &= p(x_1) p(x_2 \mid x_1) p(x_3 \mid x_1, x_2) \cdots p(x_N \mid x_1, \ldots, x_{N-1}) \\
-p(x_1, \ldots, x_N) &= \prod_{i=1}^N p(x_i \mid x_1, \ldots, x_{i-1}). \label{eq:chain_rule}
-\end{align}
+p(x_1, \ldots, x_N) &= \prod_{i=1}^N p(x_i \mid x_1, \ldots, x_{i-1}).
+\end{aligned}
+\end{equation}
 $$
 
 We perform marginalization to recover the distribution of a subset of variables from a joint distribution by extending $\eqref{eq:marginal_pmf}$ to multiple variables.
@@ -504,7 +506,9 @@ p(x, y \mid z) = p(x \mid z) p(y \mid z).
 $$
 Equivalently, this implies that once $Z$ is known, knowing $Y$ provides no additional information about $X$:
 $$
+\begin{equation} \label{eq:conditional_independence_equivalent}
 p(x \mid y, z) = p(x \mid z).
+\end{equation}
 $$
 
 We extend Bayes' Theorem $\eqref{eq:bayes_theorem}$ to use Random Variables:
@@ -864,7 +868,7 @@ This result matches the recursive method exactly, confirming that the door is op
 A sequence of random variables $X_0, X_1, X_2, \ldots$ is called a Discrete-Time Markov Chain (DTMC) if it satisfies the Markov property:
 $$
 \begin{equation} \label{eq:markov_property}
-p(x_{n+1} \mid x_n, x_{n-1}, \ldots, x_0) = p(x_{n+1} \mid x_n),
+p(X_{n+1} \mid X_n, X_{n-1}, \ldots, X_0) = p(X_{n+1} \mid X_n),
 \end{equation}
 $$
 which states that **future state depends only on the present state, not on the sequence of events that preceded it**.
@@ -874,7 +878,7 @@ The random variables $X_n$ take values from a countable set $S$ called the state
 For a time-homogeneous Markov chain, the probability of transitioning from state $i$ to state $j$ is independent of time $n$. We define the one-step transition probabilities as:
 $$
 \begin{equation} \label{eq:transition_probabilities}
-p_{ij} = p(x_{n+1} = j \mid x_n = i), \quad \forall n \geq 0, \; i, j \in S.
+p_{ij} = p(X_{n+1} = j \mid X_n = i), \quad \forall n \geq 0, \; i, j \in S.
 \end{equation}
 $$
 These probabilities must satisfy:
@@ -902,7 +906,7 @@ P^{(k)} = P^k,
 $$
 where the entry $p_{ij}^{(k)}$ gives the probability of transitioning from state $i$ to state $j$ in $k$ steps:
 $$
-p_{ij}^{(k)} = p(x_{n+k} = j \mid x_n = i).
+p_{ij}^{(k)} = p(X_{n+k} = j \mid X_n = i).
 $$
 
 <details><summary>Example: Markov Chain State Diagram</summary>
@@ -961,13 +965,13 @@ The corresponding state diagram is shown below:
 The probability of being in a state $j$ at time $k + 1$ can be written as the sum over all possible previous states $i$ of the probability of being in state $i$ at time $k$ multiplied by the transition probability from $i$ to $j$:
 $$
 \begin{equation} \label{eq:chapman_kolmogorov_step_swapped}
-p(x_{k+1} = j) = \sum_{i \in S} p(x_{k+1} = j \mid x_k = i)\, p(x_k = i)
-= \sum_{i \in S} p_{ij}\, p(x_k = i).
+p(X_{k+1} = j) = \sum_{i \in S} p(X_{k+1} = j \mid X_k = i)\, p(X_k = i)
+= \sum_{i \in S} p_{ij}\, p(X_k = i).
 \end{equation}
 $$
 This summation can be expressed compactly using linear algebra. We define a column vector $\pi^{(k)}$ representing the **probability distribution over states** at time $k$:
 $$
-\pi^{(k)} = \begin{bmatrix} p(x_k = 1) \\ p(x_k = 2) \\ \vdots \\ p(x_k = M) \end{bmatrix},
+\pi^{(k)} = \begin{bmatrix} p(X_k = 1) \\ p(X_k = 2) \\ \vdots \\ p(X_k = M) \end{bmatrix},
 $$
 where $S = \{1, 2, \ldots, M\}$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
 $$
@@ -1106,58 +1110,198 @@ A Hidden Markov Model is a sequence of random variables $Y_1, \ldots, Y_n$ such 
 \end{document}
 ```
 
-Formally, a HMM is defined by the tuple $\lambda = (S, O, A, B, \pi)$, where:
+Formally, A Hidden Markov Model (HMM) is a pair of stochastic processes
+$\{X_k\}_{k=1}^{n}$ and $\{Y_k\}_{k=1}^{n}$ where:
 
-1. **State Space** $S = \{s_1, \ldots, s_M\}$: The set of discrete hidden states (e.g., robot locations).
-2. **Observation Space** $O = \{o_1, \ldots, o_L\}$: The set of possible observations (e.g., sensor readings).
-3. **Transition Model** $A = \{a_{ij}\}$: The probability of moving from state $i$ to state $j$, consistent with $\eqref{eq:transition_probabilities}$:
-    $$
-    a_{ij} = p(x_{k+1} = s_j \mid x_k = s_i).
-    $$
-4. **Emission Model** $B = \{b_j(v)\}$: The probability of observing $v$ given state $j$:
-    $$
-    b_j(v) = p(y_k = v \mid x_k = s_j).
-    $$
-5. **Initial Distribution** $\pi = \{\pi_i\}$: The probability distribution of the starting state:
-    $$
-    \pi_i = p(x_1 = s_i).
-    $$
+- $X_k$ is the (unobserved) **hidden state** at time $k$, taking values in a countable state space $S$.
+- $Y_k$ is the **observation** at time $k$, taking values in an observation space $\mathcal{O}$.
 
-The HMM relies on two fundamental independence assumptions:
-
-1. **Markov Assumption**: The current state depends only on the previous state ($X_k \perp X_{1:k-2} \mid X_{k-1}$).
-2. **Output Independence**: The current observation depends only on the current state ($Y_k \perp \{X_{\neq k}, Y_{\neq k}\} \mid X_k$).
-
-Based on these assumptions, the **Joint Probability Distribution** of a sequence of all variables $X_1, Y_1, \ldots, X_n, Y_n$ can be first formulated by following the chain rule $\eqref{eq:chain_rule}$:
+An HMM is specified by parameters
 $$
-p(x_{1:n}, y_{1:n}) = p(x_1) \cdot p(y_1 \mid x_1) \cdot p(x_2 \mid x_1, y_1) \cdot p(y_2 \mid x_1, y_1, x_2) \cdots
+\lambda = (\pi, P, M)
 $$
-Since each state $X_k$ depends only on $X_{k-1}$ (by the Markov assumption in $\eqref{eq:markov_property}$) and each observation $Y_k$ depends only on $X_k$ (by output independence), we can simplify this to obtain the compact form:
+where $\pi$ is the initial distribution, $P$ is the state transition matrix, and $M$ is the emission (measurement) model.
+
+The model is defined by the following assumptions.
+
+First, the hidden state process satisfies the Markov property:
 $$
-\begin{equation} \label{eq:hmm_joint}
-p(x_{1:n}, y_{1:n}) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n p(x_k \mid x_{k-1}) p(y_k \mid x_k).
+\begin{equation} \label{eq:hmm_markov}
+p\left(X_k \mid X_{k - 1}, \ldots, X_1 \right) = p \left(X_k \mid X_{k - 1} \right), \quad \forall k \geq 2.
+\end{equation}
+$$
+We define the initial distribution by
+$$
+\begin{equation} \label{eq:hmm_initial_distribution}
+\pi(i) = p(X_1 = i), \quad i \in S, \quad \text{with } \sum_{i \in S} \pi(i) = 1,
+\end{equation}
+$$
+and the one-step transition probabilities by
+$$
+\begin{equation} \label{eq:hmm_transition_probabilities}
+P_{ij} = p(X_k = j \mid X_{k-1} = i), \quad i, j \in S, \; k \geq 2, \quad \text{with } \sum_{j \in S} P_{ij} = 1.
 \end{equation}
 $$
 
-We can apply HMMs to solve several distinct inference problems in robotics.
+Second, the observations are _conditionally independent_ $\eqref{eq:conditional_independence_equivalent}$ given the hidden states and only depend on the current state:
+$$
+\begin{equation} \label{eq:hmm_emission}
+p(Y_k \mid X_1, \ldots, X_k, Y_1, \ldots, Y_{k-1}) = p(Y_k \mid X_k), \quad \forall k \geq 1.
+\end{equation}
+$$
+We parameterize this distribution by the emission model
+$$
+\begin{equation} \label{eq:hmm_emission_model}
+M_{iy} = p(Y_k = y \mid X_k = i), \quad i \in S, \; y \in \mathcal{O}.
+\end{equation}
+$$
+Under these assumptions, the joint distribution over a state sequence $x_{1:n}$ and an observation sequence $y_{1:n}$ can be factorized as:
+$$
+\begin{equation} \label{eq:hmm_factorization}
+p(x_{1:n}, y_{1:n} \mid \lambda) = \pi(x_1) M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
+\end{equation}
+$$
+
+<details><summary>Proof of HMM Factorization</summary>
+
+We start with the joint distribution of the state and observation sequences:
+$$
+p(x_{1:n}, y_{1:n} \mid \lambda) = p(x_1, y_1, x_2, y_2, \ldots, x_n, y_n \mid \lambda).
+$$
+Using the chain rule of probability $\eqref{eq:chain_rule}$, we can factor this joint distribution as:
+$$
+\begin{align*}
+p(x_{1:n}, y_{1:n} \mid \lambda) &= p(x_1) \\
+& \; \cdot p(y_1 \mid x_1) \\
+& \; \cdot p(x_2 \mid x_1, y_1) \\
+& \; \cdot p(y_2 \mid x_1, y_1, x_2) \\
+& \; \vdots \\
+& \; \cdot p(x_k \mid x_{1:k-1}, y_{1:k-1}) \\
+& \; \cdot p(y_k \mid x_{1:k}, y_{1:k-1}) \\
+& \; \vdots \\
+& \; \cdot p(x_n \mid x_{1:n-1}, y_{1:n-1}) \\
+& \; \cdot p(y_n \mid x_{1:n}, y_{1:n-1}).
+\end{align*}
+$$
+Applying the markov property $\eqref{eq:hmm_markov}$, we can simplify the state transition terms:
+$$
+p(x_k \mid x_{1:k-1}, y_{1:k-1}) = p(x_k \mid x_{k-1}).
+$$
+Applying the conditional independence assumption $\eqref{eq:hmm_emission}$, we can simplify the emission terms:
+$$
+p(y_k \mid x_{1:k}, y_{1:k-1}) = p(y_k \mid x_k).
+$$
+Substituting these simplifications back into the chain rule expansion:
+$$
+\begin{equation} \label{eq:hmm_factorization_proof}
+p(x_{1:n}, y_{1:n} \mid \lambda) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n \left [p(x_k \mid x_{k-1}) p(y_k \mid x_k)\right].
+\end{equation}
+$$
+Finally, we map these probability terms to the model parameters:
+
+- $p(x_1) = \pi(x_1)$ (initial distribution),
+- $p(x_k \mid x_{k-1}) = P_{x_{k-1}, x_k}$ (transition probabilities),
+- $p(y_k \mid x_k) = M_{x_k, y_k}$ (emission probabilities). Thus, we arrive at the factorized form that is consistent with $\eqref{eq:hmm_factorization}$:
+
+</details>
+
+<details><summary>HMM Example</summary>
+
+Suppose a robot moves in a hallway with 3 positions:
+$$
+S = \{1, 2, 3\}
+$$
+where these are hidden states $X_k \in S$. The robot has a sensor that observes whether it is near a door or wall:
+$$
+\mathcal{O} = \{\text{door}, \text{wall}\}
+$$
+where these are observations $Y_k \in \mathcal{O}$.
+
+Assume robot starts in the middle with high probability:
+$$
+\pi(1) = 0.1, \quad \pi(2) = 0.8, \quad \pi(3) = 0.1.
+$$
+Alternatively, we can write the initial distribution as a vector:
+$$
+\pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}.
+$$
+Suppose the robot has the following transition probabilities:
+$$
+P=\left[\begin{array}{lll}
+0.7 & 0.3 & 0.0 \\
+0.2 & 0.6 & 0.2 \\
+0.0 & 0.3 & 0.7
+\end{array}\right]
+$$
+For example, $P_{12} = p(X_k = 2 \mid X_{k-1} = 1) = 0.3$ means that if the robot is at position 1 at time $k-1$, it has a 30% chance of moving to position 2 at time $k$.
+
+Suppose position 2 is near a door, position 1 and 3 are near walls, and the sensor is noisy with the following emission probabilities:
+$$
+\begin{array}{ll}
+M_{1, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=1\right)=0.9, & M_{1, \text { door }}=p\left(Y_k=\text { door } \mid X_k=1\right)=0.1, \\
+M_{2, \text { door }}=p\left(Y_k=\text { door } \mid X_k=2\right)=0.8, & M_{2, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=2\right)=0.2, \\
+M_{3, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=3\right)=0.9, & M_{3, \text { door }}=p\left(Y_k=\text { door } \mid X_k=3\right)=0.1 .
+\end{array}
+$$
+Equivalently, we can write the emission model as a matrix:
+$$
+M=\left[\begin{array}{ll}
+M_{1, \text { door }} & M_{1, \text { wall }} \\
+M_{2, \text { door }} & M_{2, \text { wall }} \\
+M_{3, \text { door }} & M_{1 \text { avall }}
+\end{array}\right]=\left[\begin{array}{ll}
+0.1 & 0.9 \\
+0.8 & 0.2 \\
+0.1 & 0.9
+\end{array}\right] .
+$$
+Now the full HMM is:
+$$
+\lambda = (\pi, P, M),
+$$
+with
+$$
+\pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}, \quad P=\left[\begin{array}{lll}
+0.7 & 0.3 & 0.0 \\
+0.2 & 0.6 & 0.2 \\
+0.0 & 0.3 & 0.7
+\end{array}\right], \quad M=\left[\begin{array}{ll}
+0.1 & 0.9 \\
+0.8 & 0.2 \\
+0.1 & 0.9
+\end{array}\right].
+$$
+
+</details>
+
+This probabilistic model provides a unified framework for several fundamental inference problems in robotics and state estimation.
+
+Given an HMM specified by
+$$
+\lambda = (\pi, P, M),
+$$
+and an observation sequence
+$$
+y_{1:n} = (y_1, y_2, \ldots, y_n),
+$$
+the central tasks can be formulated as the following inference problems:
 
 1. **Filtering**
-
     Given observations up to time $k$, compute the distribution of the state at time $k$:
     $$
     \begin{equation} \label{eq:hmm_filtering_problem}
     p(x_k \mid y_{1:k}).
     \end{equation}
     $$
+    This is the belief state at time $k$, which represents our uncertainty about the current state given all past observations. In robotics, this corresponds to estimating the robot’s current state as new sensor data arrives sequentially.
 2. **Smoothing**
-
     Given observations up to time $k$, compute the distribution of the state at anytime $j < k$:
     $$
     \begin{equation} \label{eq:hmm_smoothing_problem}
     p(x_j \mid y_{1:k}) ,\quad j < k.
     \end{equation}
     $$
-    In this problem, we are interested in using the entire set of observations from the past $y_{1:j}$ and the future $y_{j+1:k}$ to estimate the state at time $j$. An important thing to remember is that we are interested in solving for all $j < k$, not just the most recent state.
+    We use both **past and future** observations (relative to time $j$) to improve the estimate of an earlier state. In robotics, smoothing is useful for offline analysis, mapping, or trajectory refinement after data collection.
 3. **Prediction**
 
     Given observations up to time $k$, compute the distribution of the state at a time $j > k$:
@@ -1166,13 +1310,15 @@ We can apply HMMs to solve several distinct inference problems in robotics.
     p(x_j \mid y_{1:k}) ,\quad j > k.
     \end{equation}
     $$
+    This uses the system dynamics to project uncertainty forward in time beyond the last observation. In robotics, prediction is used for forecasting motion, planning, and anticipating future states of the system.
 4. **Decoding**:
-    Find the most likely state trajectory $x_{1:k}$ that maximizes the probability:
+    Given observations up to time $k$, find the most likely hidden state sequence:
     $$
     \begin{equation} \label{eq:hmm_decoding_problem}
-    p(x_{1:k} \mid y_{1:k}).
+    x^*_{1:k} = \arg\max_{x_{1:k}} p(x_{1:k} \mid y_{1:k}).
     \end{equation}
     $$
+    This finds the single most probably trajectory of hidden states explaining the observations. In robotics and speech recognition, this corresponds to trajectory estimation or sequence labeling (typically solved by the Viterbi algorithm).
 5. **Likelihood of Observations**:
     Given the observation trajectory $y_{1:k}$, compute the probability:
     $$
@@ -1180,12 +1326,15 @@ We can apply HMMs to solve several distinct inference problems in robotics.
     p(y_{1:k}).
     \end{equation}
     $$
+    This measures how well the model explains the data.
 
 These problems can be solved with forward-backward algorithms, Viterbi algorithm, and other dynamic programming techniques tailored for HMMs.
 
 #### Forward Algorithm
 
 #### Backward Algorithm
+
+#### Viterbi Algorithm
 
 ### Robot Environment Interaction
 
@@ -1316,7 +1465,7 @@ distribution_ at time $t$.
 We wish to compute the belief distribution $\eqref{eq:belief_distribution}$ recursively. We first apply Bayes' rule $\eqref{eq:conditioned-bayes}$ to expand the posterior and take out the normalizing constant following $\eqref{eq:bayes_single}$:
 $$
 \begin{align}
-p(x_t \mid z_{1:t}, u_{1:t}) &= \frac{p(z_t \mid x_t, z_{1:t-1}, u_{1:t})p(x_t \mid  z_{1:t-1}, u_{1:t})}{p(y \mid  z_{1:t-1}, u_{1:t})} \label{eq:bayes-filter-before-constant} \\
+p(x_t \mid z_{1:t}, u_{1:t}) &= \frac{p(z_t \mid x_t, z_{1:t-1}, u_{1:t})p(x_t \mid  z_{1:t-1}, u_{1:t})}{p(z_t \mid  z_{1:t-1}, u_{1:t})} \label{eq:bayes-filter-before-constant} \\
 &= \eta \cdot p(z_t \mid x_t, z_{1:t-1}, u_{1:t})p(x_t \mid  z_{1:t-1}, u_{1:t}) \label{eq:bayes-filter-after-constant}.
 \end{align}
 $$
