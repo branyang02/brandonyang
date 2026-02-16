@@ -863,7 +863,7 @@ This result matches the recursive method exactly, confirming that the door is op
 
 </details>
 
-## Markov Chains
+### Markov Chains
 
 A sequence of random variables $X_0, X_1, X_2, \ldots$ is called a Discrete-Time Markov Chain (DTMC) if it satisfies the Markov property:
 $$
@@ -960,7 +960,7 @@ The corresponding state diagram is shown below:
 
 </details>
 
-### Evolution of a Markov Chain
+#### Evolution of a Markov Chain
 
 The probability of being in a state $j$ at time $k + 1$ can be written as the sum over all possible previous states $i$ of the probability of being in state $i$ at time $k$ multiplied by the transition probability from $i$ to $j$:
 $$
@@ -1120,7 +1120,7 @@ An HMM is specified by parameters
 $$
 \lambda = (\pi, P, M)
 $$
-where $\pi$ is the initial distribution, $P$ is the state transition matrix, and $M$ is the emission (measurement) model.
+where $\pi \in \mathbb{R}^{|S|}$ is the initial distribution, $P \in \mathbb{R}^{|S| \times |S|}$ is the state transition matrix, and $M \in \mathbb{R}^{|S| \times |\mathcal{O}|}$ is the emission (measurement) model.
 
 The model is defined by the following assumptions.
 
@@ -2037,3 +2037,5 @@ $$
 \text{bel}(x_t) = \eta \cdot f(z_t \mid x_t) \cdot \int f(x_t \mid x_{t - 1}, u_t) \text{bel}(x_{t-1}) dx_{t-1}.
 \end{equation}
 $$
+
+## Kalman Filter
