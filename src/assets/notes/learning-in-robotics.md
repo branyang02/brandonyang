@@ -310,7 +310,8 @@ Properties of Variance:
 $$
 \begin{align}
 Var(aX + b) & = a^2 Var(X), \\
-Var(X + Y) & = Var(X) + Var(Y) \quad \text{(if independent)}.
+Var(X + Y) & = Var(X) + Var(Y) \quad \text{(if independent)} \\
+Var(X + Y) & = Var(X) + Var(Y) + 2 \mathrm{Cov}(X, Y) \quad \text{(general case)}.
 \end{align}
 $$
 
@@ -571,6 +572,20 @@ $$
 If the components $X_i$ and $X_j$ are independent, then $\Sigma_{ij} = \operatorname{Cov}(X_i, X_j) = 0$, though the converse is not necessarily true.
 
 #### More About Covariance
+
+Covariance has a similar property to variance in terms of scaling and addition. For any scalar $a \in \mathbb{R}$, we have
+$$
+\begin{equation} \label{eq:covariance_scaling}
+\operatorname{Cov}(aX) = a^2 \operatorname{Cov}(X).
+\end{equation}
+$$
+For any two random vectors $X, Y \in \mathbb{R}^N$, we have
+$$
+\begin{align}
+\operatorname{Cov}(X + Y) &= \operatorname{Cov}(X) + \operatorname{Cov}(Y) + \operatorname{Cov}(X, Y) + \operatorname{Cov}(Y, X). \label{eq:covariance_addition} \\
+\operatorname{Cov}(X + Y) &= \operatorname{Cov}(X) + \operatorname{Cov}(Y), \quad \text{if } X \text{ and } Y \text{ are independent} \label{eq:covariance_addition_independent}
+\end{align}
+$$
 
 The covariance matrix $\Sigma$ is, by construction, symmetric and positive semi-definite. This means it can be factorized as
 $$
@@ -2022,14 +2037,14 @@ $$
 3. **Termination**:
    $$
    \begin{equation} \label{eq:viterbi_termination}
-   p^* = \max_{j \in S} \delta_n(j), \quad x_n^* = \arg\max_{j \in S} \delta_n(j),
+   p^*= \max_{j \in S} \delta_n(j), \quad x_n^* = \arg\max_{j \in S} \delta_n(j),
    \end{equation}
    $$
    where $p^*$ is the joint probability of the best path with the observations.
 4. **Path Backtracking**: After computing $\delta_n(j)$ and $\psi_k(j)$ for all $k$ and $j$, we can backtrack to find the optimal state sequence:
    $$
    \begin{equation} \label{eq:viterbi_backtracking}
-   x_k^* = \psi_{k+1}(x_{k+1}^*), \quad k = n-1, n-2, \dots, 1.
+   x_k^*= \psi_{k+1}(x_{k+1}^*), \quad k = n-1, n-2, \dots, 1.
    \end{equation}
    $$
 
@@ -2212,3 +2227,126 @@ $$
 $$
 
 ## Kalman Filter
+
+### Linear State Estimation
+
+Let $X \in \mathbb{R}^d$ denote the state of a system, we would like to build an estimator for this state denoted as
+$$
+\hat{X}.
+$$
+We would like this estimator to be unbiased, that is:
+$$
+\mathbb{E}[\hat{X}] = \mathbb{E}[X].
+$$
+The error in our belief is defined as
+$$
+\tilde{X} = \hat{X} - X.
+$$
+The error is zero-mean since the estimator is unbiased:
+$$
+\mathbb{E}[\tilde{X}] = 0, \quad \mathrm{Cov}(\tilde{X}) = \Sigma_{\tilde{X}}.
+$$
+Suppose we have two independent unbiased estimators $\hat{X}_1$ and $\hat{X}_2$ with error covariances $\Sigma_{\tilde{X}_1}$ and $\Sigma_{\tilde{X}_2}$ respectively. We would like to combine the two to obtain a better estimate of what the state could be. Our goal is now:
+$$
+\hat{X} = \mathrm{fun}(\hat{X}_1, \hat{X}_2),
+$$
+which has the best error covariance $\mathrm{tr}(\Sigma_{\tilde{X}})$.
+
+#### One-dimensional Gaussian Random Variables
+
+Suppose $\hat{X}_1, \hat{X}_2 \in \mathbb{R}$ are Gaussian random variables with means $\mu_1, \mu_2$ and variances $\sigma_1^2, \sigma_2^2$ respectively. Assume both are unbiased estimaotrs of $X \in \mathbb{R}$, we can linearly combine them as follows:
+$$
+\begin{equation} \label{eq:linear_combination_1d}
+\hat{X} = k_1 \hat{X}_1 + k_2 \hat{X}_2,
+\end{equation}
+$$
+where $k_1, k_2 \in \mathbb{R}$ are the weights for the two estimators. Since we want $\hat{X}$ to be an unbiased estimator of $X$ (i.e $\mathbb{E}[\hat{X}] = \mathbb{E}[X]$), we can derive the following constraint on the weights:
+$$
+\begin{align}
+\mathbb{E}[\hat{X}] &= \mathbb{E}[k_1 \hat{X}_1 + k_2 \hat{X}_2] \\
+&= k_1 \mathbb{E}[\hat{X}_1] + k_2 \mathbb{E}[\hat{X}_2] \\
+&= k_1 \mathbb{E}[X] + k_2 \mathbb{E}[X]  = \mathbb{E}[X], \quad \text{since } \mathbb{E}[\hat{X}_1] = \mathbb{E}[\hat{X}_2] = \mathbb{E}[X] \\
+&\implies k_1 + k_2 = 1. \label{eq:weight_constraint_1d}
+\end{align}
+$$
+The variance of $\hat{X}$ is:
+$$
+\begin{align}
+\mathrm{Var}(\hat{X}) &= \mathrm{Var}(k_1 \hat{X}_1 + k_2 \hat{X}_2) \\
+&= k_1^2 \mathrm{Var}(\hat{X}_1) + k_2^2 \mathrm{Var}(\hat{X}_2), \quad \text{since } \hat{X}_1, \hat{X}_2 \text{ are independent} \\
+&= k_1^2 \sigma_1^2 + k_2^2 \sigma_2^2 \\
+&= k_1^2 \sigma_1^2 + (1-k_1)^2 \sigma_2^2 \label{eq:variance_linear_combination_1d}
+\end{align}
+$$
+The optimal weight $k_1^*$ that minimizes the variance can be found by taking the derivative of $\eqref{eq:variance_linear_combination_1d}$ w.r.t. $k_1$ and setting it to zero:
+$$
+\begin{align}
+\frac{d}{dk_1} \left( k_1^2 \sigma_1^2 + (1-k_1)^2 \sigma_2^2 \right) &= 0 \\
+2 k_1 \sigma_1^2 - 2 (1-k_1) \sigma_2^2 &= 0
+\end{align}
+$$
+Soving for $k_1$ gives us the optimal weight:
+$$
+\begin{equation} \label{eq:optimal_weight_1d}
+k_1^*= \frac{\sigma_2^2}{\sigma_1^2 + \sigma_2^2}, \quad k_2^* = 1 - k_1^* = \frac{\sigma_1^2}{\sigma_1^2 + \sigma_2^2}.
+\end{equation}
+$$
+Now we get the final estimator by substituting the optimal weights back into $\eqref{eq:linear_combination_1d}$:
+$$
+\begin{equation} \label{eq:final_estimator_1d}
+\hat{X} = \frac{\sigma_2^2}{\sigma_1^2 + \sigma_2^2} \hat{X}_1 + \frac{\sigma_1^2}{\sigma_1^2 + \sigma_2^2} \hat{X}_2.
+\end{equation}
+$$
+This is an unbiased estimator of $X$ with the smallest variance among all linear combinations of $\hat{X}_1$ and $\hat{X}_2$. The variance of this optimal estimator is:
+$$
+\begin{equation} \label{eq:optimal_variance_1d}
+\mathrm{Var}(\hat{X}) = \frac{\sigma_1^2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}.
+\end{equation}
+$$
+
+#### Multi-dimensional Gaussian Random Variables
+
+Now we consider the case where $\hat{X}_1, \hat{X}_2 \in \mathbb{R}^d$ are Gaussian random variables with means $\mu_1, \mu_2$ and covariance matrices $\Sigma_1, \Sigma_2$ respectively. Assume both are unbiased estimators of $X \in \mathbb{R}^d$, we can linearly combine them as follows:
+$$
+\begin{equation} \label{eq:linear_combination_multi_d}
+\hat{X} = K_1 \hat{X}_1 + K_2 \hat{X}_2,
+\end{equation}
+$$
+where $K_1, K_2 \in \mathbb{R}^{d \times d}$ are the weight matrices for the two estimators. Since we want $\hat{X}$ to be an unbiased estimator of $X$ (i.e $\mathbb{E}[\hat{X}] = \mathbb{E}[X]$), we can derive the following constraint on the weight matrices:
+$$
+\begin{align}
+\mathbb{E}[\hat{X}] &= \mathbb{E}[K_1 \hat{X}_1 + K_2 \hat{X}_2] \\
+&= K_1 \mathbb{E}[\hat{X}_1] + K_2 \mathbb{E}[\hat{X}_2] \\
+&= K_1 \mathbb{E}[X] + K_2 \mathbb{E}[X]  = (K_1 + K_2) \mathbb{E}[X] \\
+&\implies K_1 + K_2 = I. \label{eq:weight_constraint_multi_d}
+\end{align}
+$$
+By using $\eqref{eq:gaussian_linear_transform}$, we find the covariance of $\hat{X}$:
+$$
+\begin{align}
+\mathrm{Cov}(\hat{X}) &= \mathrm{Cov}(K_1 \hat{X}_1 + K_2 \hat{X}_2) \\
+&= K_1 \Sigma_1 K_1^T + K_2 \Sigma_2 K_2^T \\
+&= K_1 \Sigma_1 K_1^T + (I-K_1) \Sigma_2 (I-K_1)^T \label{eq:covariance_linear_combination_multi_d}
+\end{align}
+$$
+We can minimize the trace of the covariance matrix by taking the derivative w.r.t. $K_1$ and setting it to zero. We can use the following identity for the partial derivative of a matrix product:
+$$
+\begin{equation} \label{eq:matrix_product_derivative_identity}
+\frac{\partial}{\partial A} \mathrm{tr}(ABA^T) = 2AB, \quad \text{if } B \text{ is symmetric}.
+\end{equation}
+$$
+Therefore, we have:
+$$
+\begin{align}
+\frac{\partial}{\partial K_1} \mathrm{tr}(\mathrm{Cov}(\hat{X})) &= \frac{\partial}{\partial K_1} \mathrm{tr}(K_1 \Sigma_1 K_1^T + (I-K_1) \Sigma_2 (I-K_1)^T) \\
+&= 2 K_1 \Sigma_1 - 2 (I-K_1) \Sigma_2 \\
+&=  K_1 \Sigma_1 -  (I-K_1) \Sigma_2 \\
+&\implies K_1 = \Sigma_2 (\Sigma_1 + \Sigma_2)^{-1}, \quad K_2 = I - K_1 = \Sigma_1 (\Sigma_1 + \Sigma_2)^{-1}. \label{eq:optimal_weight_multi_d}
+\end{align}
+$$
+Now we get the final estimator by substituting the optimal weights back into $\eqref{eq:linear_combination_multi_d}$:
+$$
+\begin{equation} \label{eq:final_estimator_multi_d}
+\hat{X} = \Sigma_2 (\Sigma_1 + \Sigma_2)^{-1} \hat{X}_1 + \Sigma_1 (\Sigma_1 + \Sigma_2)^{-1} \hat{X}_2.
+\end{equation}
+$$
