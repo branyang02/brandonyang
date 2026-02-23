@@ -429,6 +429,38 @@ E[X \mid Y=y] &= \int_{-\infty}^{\infty} x \, f_{X \mid Y}(x \mid y) \, dx
 $$
 Marginal expectations $E[X]$ and variances $Var(X)$ follow the standard single-variable formulas using the derived marginal PMFs or PDFs.
 
+The covariance between two random variables $X$ and $Y$ is defined as:
+$$
+\begin{equation} \label{eq:covariance}
+Cov(X, Y) = E[(X - E[X])(Y - E[Y])] = E[XY] - E[X]E[Y].
+\end{equation}
+$$
+An equivalent and often more convenient form is:
+$$
+\begin{equation} \label{eq:covariance_alternative}
+Cov(X, Y) = E[XY] - E[X]E[Y].
+\end{equation}
+$$
+In the discrete case:
+$$
+\begin{equation} \label{eq:covariance_discrete}
+Cov(X, Y) = \sum_{x} \sum_{y} (x - E[X])(y - E[Y]) p_{X,Y}(x,y)
+\end{equation}
+$$
+and in the continuous case:
+$$
+\begin{equation} \label{eq:covariance_continuous}
+Cov(X, Y) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} (x - E[X])(y - E[Y]) f_{X,Y}(x,y) \, dx \, dy
+\end{equation}
+$$
+The variance is a special case of covariance:
+$$
+\begin{equation} \label{eq:variance_covariance}
+Var(X) = Cov(X, X).
+\end{equation}
+$$
+If $X$ and $Y$ are independent, then $Cov(X, Y) = 0$, but the converse is not necessarily true.
+
 ### Multivariate Distributions
 
 We generalize the concept of joint distributions to a sequence or set of $N$ random variables $X_1, X_2, \ldots, X_N$. The joint distribution characterizes the probability of these variables simultaneously taking specific values $x_1, x_2, \ldots, x_N$.
@@ -450,7 +482,7 @@ p(x_1, \ldots, x_N) &= \prod_{i=1}^N p(x_i \mid x_1, \ldots, x_{i-1}).
 \end{equation}
 $$
 
-We perform marginalization to recover the distribution of a subset of variables from a joint distribution by extending $\eqref{eq:marginal_pmf}$ to multiple variables.
+We perform marginalization to recover the distribution of a subset of variables from a joint distribution.
 
 For example, to find the marginal distribution of $X_1$ from the joint distribution $p(x_1, \ldots, x_N)$, we sum over all possible values of $X_2, \ldots, X_N$:
 $$
@@ -458,6 +490,13 @@ $$
 p(x_1) = \sum_{x_2} \cdots \sum_{x_N} p(x_1, \ldots, x_N).
 \end{equation}
 $$
+
+In the continuous case, the sums are replaced by integrals:
+$$
+p(x_1) = \int \cdots \int p(x_1, \ldots, x_N)\, dx_2 \cdots dx_N.
+$$
+
+More generally, for any subset of components $x_A$, the marginal $p(x_A)$ is obtained by summing or integrating over the complementary components $x_{\bar A}$.
 
 <details><summary>Proof of Chain Rule</summary>
 
@@ -482,6 +521,140 @@ p(x_1, x_2, x_3) & = p(x_3 \mid x_1, x_2) p(x_2 \mid x_1) p(x_1).
 \end{align*}
 $$
 By repeating this process for $N$ random variables, we arrive at the chain rule in $\eqref{eq:chain_rule}$.
+
+</details>
+
+For an $N$-dimensional random vector $X = (X_1, \ldots, X_N)^\top$, the expectation is defined component-wise:
+$$
+E[X] =
+\begin{bmatrix}
+E[X_1] \\
+\vdots \\
+E[X_N]
+\end{bmatrix}.
+$$
+Expectations are linear. In particular, for random vectors $X, Y \in \mathbb{R}^N$,
+$$
+\begin{equation} \label{eq:multivariate_expectation_addition}
+E[X + Y] = E[X] + E[Y].
+\end{equation}
+$$
+More generally, for scalars $a, b \in \mathbb{R}$,
+$$
+E[aX + bY] = aE[X] + bE[Y].
+$$
+
+The **covariance matrix** of an $N$-dimensional random vector $X$ is defined as:
+$$
+\begin{equation} \label{eq:covariance_matrix_def}
+\operatorname{Cov}(X) = \Sigma = E\!\left[(X - E[X])(X - E[X])^\top\right],
+\end{equation}
+$$
+where $\Sigma \in \mathbb{R}^{N \times N}$ is an $N \times N$ matrix.
+
+The $(i,j)$-th entry of this matrix is the covariance between $X_i$ and $X_j$:
+$$
+\begin{equation} \label{eq:covariance_entries}
+\Sigma_{ij} = \operatorname{Cov}(X)_{ij} = \operatorname{Cov}(X_i, X_j) = E\!\left[(X_i - E[X_i])(X_j - E[X_j])\right].
+\end{equation}
+$$
+In particular, the diagonal entries are the variances:
+$$
+\Sigma_{ii} = \operatorname{Cov}(X)_{ii} = \operatorname{Var}(X_i).
+$$
+An equivalent and often useful expression for the covariance matrix is:
+$$
+\begin{equation} \label{eq:covariance_alt}
+\Sigma = \operatorname{Cov}(X) = E[XX^\top] - E[X]E[X]^\top.
+\end{equation}
+$$
+If the components $X_i$ and $X_j$ are independent, then $\Sigma_{ij} = \operatorname{Cov}(X_i, X_j) = 0$, though the converse is not necessarily true.
+
+#### More About Covariance
+
+The covariance matrix $\Sigma$ is, by construction, symmetric and positive semi-definite. This means it can be factorized as
+$$
+\Sigma = U \Lambda U^\top, \quad U U^\top = U^\top U = I, \quad \Lambda = \operatorname{diag}(\lambda_1, \ldots, \lambda_N) \geq 0.
+$$
+where $U \in \mathbb{R}^{N \times N}$ is an orthonormal matrix and $\Lambda \in \mathbb{R}^{N \times N}$ is a diagonal matrix with non-negative entries (the eigenvalues of $\Sigma$). The trace of the covariance matrix $\operatorname{tr}(\Sigma)$ is the sum of its eigenvalues and also the sum of marginal variances:
+$$
+\begin{equation} \label{eq:covariance_trace}
+\operatorname{tr}(\Sigma) = \sum_{i=1}^N \Sigma_{ii} = \sum_{i=1}^N \Lambda_{i} = \sum_{i=1}^N \operatorname{Var}(X_i).
+\end{equation}
+$$
+
+We also have a few more properties of matrix traces that are useful in the context of covariance matrices.
+
+For matrices $A, B$, we have
+$$
+\begin{equation} \label{eq:trace_cyclic}
+\operatorname{tr}(AB) = \operatorname{tr}(BA),
+\end{equation}
+$$
+where the two matrices are not necessarily square, but the products $AB$ and $BA$ must be square.
+
+For $A, B \in \mathbb{R}^{m \times n}$, we have
+$$
+\begin{equation} \label{eq:trace_product}
+\operatorname{tr}(A^\top B) = \operatorname{tr}(B^\top A) =  \sum_{i=1}^m \sum_{j=1}^n B_{ij} A_{ij}.
+\end{equation}
+$$
+
+<details><summary>Multivariate Gaussian Distribution</summary>
+
+The multivariate $d$-dimensional Gaussian distribution with mean $\mu \in \mathbb{R}^d$ and covariance matrix $\Sigma \in \mathbb{R}^{d \times d}$ is defined by the PDF:
+$$
+\begin{equation} \label{eq:gaussian_pdf}
+f_X(x) = \frac{1}{\sqrt{\operatorname{det}(2\pi\Sigma)}} \exp\left(-\frac{1}{2}(x - \mu)^\top \Sigma^{-1} (x - \mu)\right), \quad x \in \mathbb{R}^d.
+\end{equation}
+$$
+We can simplify the left part with the property $\operatorname{det}(cA) = c^n \operatorname{det}(A)$ for $A \in \mathbb{R}^{n \times n}$ and $c \in \mathbb{R}$:
+$$
+\begin{align*}
+\frac{1}{\sqrt{\operatorname{det}(2\pi\Sigma)}} &= \frac{1}{\sqrt{(2\pi)^d \operatorname{det}(\Sigma)}} \\
+&= \frac{1}{(2\pi)^{d/2} \sqrt{\operatorname{det}(\Sigma)}}
+\end{align*}
+$$
+We can also remember the fact:
+$$
+\begin{equation} \label{eq:gaussian_integral}
+\int_{x \in \mathbb{R}^d} \exp\left(-\frac{1}{2}(x - \mu)^\top \Sigma^{-1} (x - \mu)\right) dx = (2\pi)^{d/2} \sqrt{\operatorname{det}(\Sigma)}.
+\end{equation}
+$$
+This ensures that the PDF integrates to 1 over $\mathbb{R}^d$.
+
+Given two Gaussian RV $X, Y \in \mathbb{R}^d$ and $Z = X + Y$, we have
+$$
+\begin{equation} \label{eq:gaussian_sum}
+E[Z] = E[X + Y] = E[X] + E[Y]
+\end{equation}
+$$
+with covariance
+$$
+\begin{equation} \label{eq:gaussian_sum_covariance}
+\operatorname{Cov}(Z)=\Sigma_Z=\Sigma_X+\Sigma_Y+\Sigma_{X Y}+\Sigma_{Y X}
+\end{equation}
+$$
+where
+$$
+\Sigma_{X Y} = E[(X - E[X])(Y - E[Y])^\top], \quad \Sigma_{Y X} = E[(Y - E[Y])(X - E[X])^\top].
+$$
+If $X$ and $Y$ are independent, then $\Sigma_{X Y} = \Sigma_{Y X} = 0$, and we have $\Sigma_Z = \Sigma_X + \Sigma_Y$. In this case, the sum of two independent Gaussian RV is also Gaussian.
+
+Suppose $X \in \mathbb{R}^d$ is a Gaussian RV:
+$$
+X \sim \mathcal{N}(\mu_X, \Sigma_X), \quad \mu_X \in \mathbb{R}^d, \Sigma_X \in \mathbb{R}^{d \times d}.
+$$
+Let
+$$
+Y = A X, \quad A \in \mathbb{R}^{m \times d}, Y \in \mathbb{R}^m.
+$$
+Then $Y$ is also Gaussian:
+$$
+\begin{equation} \label{eq:gaussian_linear_transform}
+Y \sim \mathcal{N}(\mu_Y, \Sigma_Y), \quad \mu_Y = A \mu_X, \Sigma_Y = A \Sigma_X A^\top.
+\end{equation}
+$$
 
 </details>
 
@@ -1158,7 +1331,7 @@ $$
 Under these assumptions, the joint distribution over a state sequence $x_{1:n}$ and an observation sequence $y_{1:n}$ can be factorized as:
 $$
 \begin{equation} \label{eq:hmm_factorization}
-p(x_{1:n}, y_{1:n} \mid \lambda) = \pi_{x_1} M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
+p(x_{1:n}, y_{1:n}) = \pi_{x_1} M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
 \end{equation}
 $$
 
@@ -1166,12 +1339,12 @@ $$
 
 We start with the joint distribution of the state and observation sequences:
 $$
-p(x_{1:n}, y_{1:n} \mid \lambda) = p(x_1, y_1, x_2, y_2, \ldots, x_n, y_n \mid \lambda).
+p(x_{1:n}, y_{1:n}) = p(x_1, y_1, x_2, y_2, \ldots, x_n, y_n).
 $$
 Using the chain rule of probability $\eqref{eq:chain_rule}$, we can factor this joint distribution as:
 $$
 \begin{align*}
-p(x_{1:n}, y_{1:n} \mid \lambda) &= p(x_1) \\
+p(x_{1:n}, y_{1:n}) &= p(x_1) \\
 & \; \cdot p(y_1 \mid x_1) \\
 & \; \cdot p(x_2 \mid x_1, y_1) \\
 & \; \cdot p(y_2 \mid x_1, y_1, x_2) \\
@@ -1194,7 +1367,7 @@ $$
 Substituting these simplifications back into the chain rule expansion:
 $$
 \begin{equation} \label{eq:hmm_factorization_proof}
-p(x_{1:n}, y_{1:n} \mid \lambda) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n \left [p(x_k \mid x_{k-1}) p(y_k \mid x_k)\right].
+p(x_{1:n}, y_{1:n}) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n \left [p(x_k \mid x_{k-1}) p(y_k \mid x_k)\right].
 \end{equation}
 $$
 Finally, we map these probability terms to the model parameters:
