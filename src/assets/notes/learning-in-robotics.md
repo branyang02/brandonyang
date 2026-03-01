@@ -666,8 +666,8 @@ Y = A X, \quad A \in \mathbb{R}^{m \times d}, Y \in \mathbb{R}^m.
 $$
 Then $Y$ is also Gaussian:
 $$
-\begin{equation} \label{eq:gaussian_linear_transform}
-Y \sim \mathcal{N}(\mu_Y, \Sigma_Y), \quad \mu_Y = A \mu_X, \Sigma_Y = A \Sigma_X A^\top.
+\begin{equation}\label{eq:gaussian_linear_transform}
+Y = AX,\; X \sim \mathcal{N}(\mu_X,\Sigma_X)\;\Longrightarrow\; Y \sim \mathcal{N}\!\big(A\mu_X,\;A\Sigma_XA^\top\big).
 \end{equation}
 $$
 
@@ -2254,7 +2254,7 @@ which has the best error covariance $\mathrm{tr}(\Sigma_{\tilde{X}})$.
 
 #### One-dimensional Gaussian Random Variables
 
-Suppose $\hat{X}_1, \hat{X}_2 \in \mathbb{R}$ are Gaussian random variables with means $\mu_1, \mu_2$ and variances $\sigma_1^2, \sigma_2^2$ respectively. Assume both are unbiased estimaotrs of $X \in \mathbb{R}$, we can linearly combine them as follows:
+Suppose $\hat{X}_1, \hat{X}_2 \in \mathbb{R}$ are Gaussian random variables with means $\mu_1, \mu_2$ and variances $\sigma_1^2, \sigma_2^2$ respectively. Assume both are unbiased estimators of $X \in \mathbb{R}$, we can linearly combine them as follows:
 $$
 \begin{equation} \label{eq:linear_combination_1d}
 \hat{X} = k_1 \hat{X}_1 + k_2 \hat{X}_2,
@@ -2278,7 +2278,7 @@ $$
 &= k_1^2 \sigma_1^2 + (1-k_1)^2 \sigma_2^2 \label{eq:variance_linear_combination_1d}
 \end{align}
 $$
-The optimal weight $k_1^*$ that minimizes the variance can be found by taking the derivative of $\eqref{eq:variance_linear_combination_1d}$ w.r.t. $k_1$ and setting it to zero:
+Suppose we set an objective for the new estimator to have the smallest variance among all linear combinations of $\hat{X}_1$ and $\hat{X}_2$. The optimal weight $k_1^*$ that minimizes the variance can be found by taking the derivative of $\eqref{eq:variance_linear_combination_1d}$ w.r.t. $k_1$ and setting it to zero:
 $$
 \begin{align}
 \frac{d}{dk_1} \left( k_1^2 \sigma_1^2 + (1-k_1)^2 \sigma_2^2 \right) &= 0 \\
@@ -2321,7 +2321,7 @@ $$
 &\implies K_1 + K_2 = I. \label{eq:weight_constraint_multi_d}
 \end{align}
 $$
-By using $\eqref{eq:gaussian_linear_transform}$, we find the covariance of $\hat{X}$:
+By using $\eqref{eq:gaussian_linear_transform}$ and $\eqref{eq:covariance_addition_independent}$, we find the covariance of $\hat{X}$:
 $$
 \begin{align}
 \mathrm{Cov}(\hat{X}) &= \mathrm{Cov}(K_1 \hat{X}_1 + K_2 \hat{X}_2) \\
@@ -2329,6 +2329,8 @@ $$
 &= K_1 \Sigma_1 K_1^T + (I-K_1) \Sigma_2 (I-K_1)^T \label{eq:covariance_linear_combination_multi_d}
 \end{align}
 $$
+Unlike the one-dimensional case, the covariance of $\hat{X}$ is a matrix, and we cannot directly compare two covariance matrices to determine which one is smaller. Instead, we can use the trace of the covariance matrix as a scalar measure of the overall uncertainty in our estimator. Therefore, our objective is to minimize $\mathrm{tr}(\mathrm{Cov}(\hat{X}))$.
+
 We can minimize the trace of the covariance matrix by taking the derivative w.r.t. $K_1$ and setting it to zero. We can use the following identity for the partial derivative of a matrix product:
 $$
 \begin{equation} \label{eq:matrix_product_derivative_identity}
@@ -2339,8 +2341,8 @@ Therefore, we have:
 $$
 \begin{align}
 \frac{\partial}{\partial K_1} \mathrm{tr}(\mathrm{Cov}(\hat{X})) &= \frac{\partial}{\partial K_1} \mathrm{tr}(K_1 \Sigma_1 K_1^T + (I-K_1) \Sigma_2 (I-K_1)^T) \\
-&= 2 K_1 \Sigma_1 - 2 (I-K_1) \Sigma_2 \\
-&=  K_1 \Sigma_1 -  (I-K_1) \Sigma_2 \\
+&= 2 K_1 \Sigma_1 - 2 (I-K_1) \Sigma_2 = 0, \quad \text{since } \mathrm{tr}(A+B) = \mathrm{tr}(A) + \mathrm{tr}(B) \\
+&=  K_1 \Sigma_1 -  (I-K_1) \Sigma_2  = 0\\
 &\implies K_1 = \Sigma_2 (\Sigma_1 + \Sigma_2)^{-1}, \quad K_2 = I - K_1 = \Sigma_1 (\Sigma_1 + \Sigma_2)^{-1}. \label{eq:optimal_weight_multi_d}
 \end{align}
 $$
