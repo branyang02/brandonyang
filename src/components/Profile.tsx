@@ -1,4 +1,4 @@
-import { Text, Heading, Pane, majorScale } from "evergreen-ui";
+import { Heading, Pane, majorScale } from "evergreen-ui";
 import Contact from "../components/Contact";
 import { useDarkMode } from "../context/DarkModeContext";
 
@@ -31,13 +31,6 @@ const Profile = () => {
             >
                 Brandon Y. Yang
             </Heading>
-            {/* <Text
-                size={500}
-                color={darkMode ? "gray500" : "muted"}
-                marginTop={5}
-            >
-                Computer Science @ UVA
-            </Text> */}
             <Contact />
         </Pane>
     );
