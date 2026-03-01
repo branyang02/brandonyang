@@ -31,13 +31,13 @@ const Profile = () => {
             >
                 Brandon Y. Yang
             </Heading>
-            <Text
+            {/* <Text
                 size={500}
                 color={darkMode ? "gray500" : "muted"}
                 marginTop={5}
             >
                 Computer Science @ UVA
-            </Text>
+            </Text> */}
             <Contact />
         </Pane>
     );
