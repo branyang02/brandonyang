@@ -2226,6 +2226,422 @@ $$
 \end{equation}
 $$
 
+### IMU Sensors
+
+IMU contains an accelerometer and a gyroscope. The accelerometer measures the linear acceleration of the robot, while the gyroscope measures the angular velocity. We define $a(t)$ as the linear acceleration measurement and $\omega(t)$ as the angular velocity measurement at time $t$. 
+
+#### Estimating Velocity and Position from IMU
+
+From the definition of acceleration, we can derive the velocity and position by integrating the acceleration measurement over time:
+$$
+\begin{align}
+v(t) &= v_0 + \int_{t_0}^t a(\tau) d\tau \label{eq:velocity_from_acceleration} \\
+x(t) &= x_0 + \int_{t_0}^t v(\tau) d\tau \label{eq:position_from_velocity}
+\end{align}
+$$
+where $\tau$ is the dummy variable for integration, $v(0) = v_0$ is the initial velocity, and $x(0) = x_0$ is the initial position. For 3D data, we can simply apply the above equations to each dimension of the acceleration measurement to get the velocity and position in 3D space.
+
+In the discrete-time setting, we are given consecutive timestamps $t_i$ and $t_{i+1}$. We use the approximations
+$$
+\begin{align}
+v\left(t_{i+1}\right) &\approx v\left(t_i\right)+a\left(t_i\right)\left(t_{i+1}-t_i\right) \\
+x\left(t_{i+1}\right) &\approx x\left(t_i\right)+v\left(t_i\right)\left(t_{i+1}-t_i\right)+\frac{1}{2}a\left(t_i\right)\left(t_{i+1}-t_i\right)^2 \label{eq:discrete-time-velocity-position}
+\end{align}
+$$
+The discrete-time equations are obtained by approximating the continuous dynamics over a small interval $[t_i,t_{i+1}]$, where $\Delta t_i=t_{i+1}-t_i$. Since
+$$
+a(t)=\frac{dv}{dt},
+$$
+the change in velocity over a short interval is approximately
+$$
+v(t_{i+1})-v(t_i)\approx a(t_i)\Delta t_i,
+$$
+which gives
+$$
+v(t_{i+1})\approx v(t_i)+a(t_i)\Delta t_i.
+$$
+For position, we derive the discrete-time update using a Taylor expansion of the continuous position function $\eqref{eq:position_from_velocity}$ about $t_i$:
+$$
+x(t_{i+1})
+=
+x(t_i)
++
+x'(t_i)(t_{i+1}-t_i)
++
+\frac{1}{2}x''(t_i)(t_{i+1}-t_i)^2
++
+\mathcal{O}\!\left((t_{i+1}-t_i)^3\right).
+$$
+From the continuous definitions of velocity and acceleration,
+$$
+x'(t)=v(t), \qquad x''(t)=a(t).
+$$
+Substituting these into the Taylor expansion gives
+$$
+x(t_{i+1})
+=
+x(t_i)
++
+v(t_i)(t_{i+1}-t_i)
++
+\frac{1}{2}a(t_i)(t_{i+1}-t_i)^2
++
+\mathcal{O}\!\left((t_{i+1}-t_i)^3\right).
+$$
+Neglecting the higher-order terms yields $\eqref{eq:discrete-time-velocity-position}$.
+
+
+<details><summary>Example of online recursive estimation of velocity and position from IMU data</summary>
+
+```execute-python
+import numpy as np
+
+# Example data: 5 acceleration samples measured at non-uniform timestamps
+t = np.array([0.0, 0.8, 1.5, 2.7, 3.1, 4.0])
+a = np.array([1.0, 3.0, 8.0, 2.0, -1.0])
+
+# Initial conditions
+v0 = 0.0
+x0 = 0.0
+
+
+v_online = [v0]
+x_online = [x0]
+
+for i in range(len(a)):
+    dt = t[i + 1] - t[i]
+
+    v_next = v_online[-1] + a[i] * dt
+    x_next = x_online[-1] + v_online[-1] * dt + 0.5 * a[i] * dt**2
+
+    v_online.append(v_next)
+    x_online.append(x_next)
+
+print("Online recursive results:")
+print("time\taccel\tvelocity\tposition")
+for i in range(len(t)):
+    accel_str = f"{a[i]:.1f}" if i < len(a) else "-"
+    print(f"{t[i]:.1f}\t{accel_str}\t{v_online[i]:.3f}\t\t{x_online[i]:.3f}")
+
+```
+
+</details>
+
+#### Gyroscope for Orientation Estimation
+
+The accelerometer measurements are expressed in the sensor's local coordinate frame, which is generally not aligned with the global coordinate frame. Denote the accelerometer reading by
+$$
+f^{\text{body}}(t),
+$$
+where the superscript $\text{body}$ indicates that the quantity is measured in the sensor's local frame. To express this measurement in the global frame, we use the rotation matrix
+$$
+R(t)=R_{\text{body}}^{\text{world}}(t),
+$$
+which maps vectors from the body frame to the world frame. Applying this rotation gives
+$$
+f^{\text{world}}(t)=R(t)\,f^{\text{body}}(t).
+$$
+Because an accelerometer measures specific force rather than pure linear acceleration, we must also account for gravity to recover the world-frame acceleration:
+$$
+a^{\text{world}}(t)=f^{\text{world}}(t)+g^{\text{world}}.
+$$
+This world-frame acceleration can then be integrated over time to estimate velocity and position. To estimate the rotation matrix $R(t)$, we use the gyroscope measurements $\omega(t)$, which provide the angular velocity of the sensor over time.
+
+Formally, the gyroscope measures the sensor’s angular velocity, expressed in the sensor’s local **body** frame. We denote this by
+$$
+\omega^{\text {body }}(t)=\left[\begin{array}{c}
+\omega_x(t) \\
+\omega_y(t) \\
+\omega_z(t)
+\end{array}\right],
+$$
+where $\omega_x(t), \omega_y(t), \omega_z(t)$ are the angular velocity components around the sensor’s local $x$, $y$, and $z$ axes respectively. Their units are typically in radians per second (rad/s). 
+
+Over a small interval from $t_i$ to $t_{i+1}$, we update the orientation by applying the small rotation induced by the gyroscope measurement:
+$$
+R\left(t_{i+1}\right) \approx R\left(t_i\right) \exp \left(\left[\omega^{\text {body }}\left(t_i\right)\right]_{\times}\left(t_{i+1}-t_i\right)\right),
+$$
+where $[\omega]_{\times}$ is the skew-symmetric matrix associated with the angular velocity vector $\omega$:
+$$
+[\omega]_{\times}=\left[\begin{array}{ccc}
+0 & -\omega_z & \omega_y \\
+\omega_z & 0 & -\omega_x \\
+-\omega_y & \omega_x & 0
+\end{array}\right] .
+$$
+For very small time intervals, this is often approximated by
+$$
+R\left(t_{i+1}\right) \approx R\left(t_i\right)\left(I+\left[\omega^{\text {body }}\left(t_i\right)\right]_{\times}\left(t_{i+1}-t_i\right)\right) .
+$$
+
+<details><summary>Example of recursive estimation of rotation matrix from gyroscope data</summary>
+
+```execute-python
+import numpy as np
+
+# Example data: 5 gyroscope samples measured over 5 time intervals
+t = np.array([0.0, 0.8, 1.5, 2.7, 3.1, 4.0])
+
+# omega[i] = [wx, wy, wz] in rad/s, expressed in the body frame
+omega = np.array([
+    [0.10, 0.00, 0.20],
+    [0.00, 0.15, 0.10],
+    [0.20, 0.10, 0.00],
+    [0.05, 0.00, -0.10],
+    [0.00, -0.05, 0.10],
+])
+
+def skew(omega_vec):
+    """Return the skew-symmetric matrix [omega]_x."""
+    wx, wy, wz = omega_vec
+    return np.array([
+        [0.0, -wz,  wy],
+        [wz,  0.0, -wx],
+        [-wy, wx,  0.0],
+    ])
+
+def exp_so3(omega_vec, dt):
+    """
+    Compute exp([omega]_x * dt) using Rodrigues' formula.
+    This gives the incremental rotation over one time interval.
+    """
+    theta = np.linalg.norm(omega_vec) * dt
+    Omega_dt = skew(omega_vec) * dt
+
+    if theta < 1e-10:
+        return np.eye(3) + Omega_dt
+
+    A = np.sin(theta) / theta
+    B = (1.0 - np.cos(theta)) / (theta ** 2)
+    return np.eye(3) + A * Omega_dt + B * (Omega_dt @ Omega_dt)
+
+# Initial orientation
+R0 = np.eye(3)
+
+# Store Rodrigues / matrix exponential update results
+R_exp = R0.copy()
+R_exp_list = [R_exp.copy()]
+
+# Store first-order approximation results
+R_lin = R0.copy()
+R_lin_list = [R_lin.copy()]
+
+for i in range(len(omega)):
+    dt = t[i + 1] - t[i]
+    Omega_dt = skew(omega[i]) * dt
+
+    # Incremental rotation using Rodrigues / exp
+    dR_exp = exp_so3(omega[i], dt)
+
+    # First-order approximation: exp(A) ≈ I + A
+    dR_lin = np.eye(3) + Omega_dt
+
+    R_exp = R_exp @ dR_exp
+    R_lin = R_lin @ dR_lin
+
+    R_exp_list.append(R_exp.copy())
+    R_lin_list.append(R_lin.copy())
+
+print("Comparison of orientation estimates:\n")
+for i in range(len(t)):
+    print(f"t = {t[i]:.1f}")
+    print("R using Rodrigues / exp:")
+    print(R_exp_list[i])
+    print("R using first-order I + [omega]_x dt:")
+    print(R_lin_list[i])
+    print("Difference norm:", np.linalg.norm(R_exp_list[i] - R_lin_list[i]))
+    print()
+
+print("Orthogonality check ||R^T R - I||:\n")
+for i in range(len(t)):
+    ortho_exp = np.linalg.norm(R_exp_list[i].T @ R_exp_list[i] - np.eye(3))
+    ortho_lin = np.linalg.norm(R_lin_list[i].T @ R_lin_list[i] - np.eye(3))
+    print(
+        f"t = {t[i]:.1f} | "
+        f"exp/Rodrigues orthogonality = {ortho_exp:.3e} | "
+        f"first-order orthogonality = {ortho_lin:.3e}"
+    )
+```
+The Rodrigues / exponential update stays on the rotation manifold, so the resulting matrix remains a valid rotation matrix up to numerical precision. That is why
+
+$$
+R(t)^{\top} R(t) \approx I
+$$
+
+stays extremely close to identity, with values around $10^{-16}$, which is essentially machine precision.
+
+By contrast, the first-order approximation
+
+$$
+R\left(t_{i+1}\right) \approx R\left(t_i\right)\left(I+\left[\omega\left(t_i\right)\right]_{\times} \Delta t\right)
+$$
+
+does not exactly preserve the defining constraints of a rotation matrix. A true rotation matrix must satisfy:
+
+$$
+R^{\top} R=I, \quad \operatorname{det}(R)=1 .
+$$
+
+
+The first-order update only approximates the exponential, so after repeated multiplication it gradually drifts away from these constraints. Your orthogonality numbers show exactly that drift.
+
+</details>
+
+<details><summary>Proof of this approximation</summary>
+
+Let $R(t) = R_{\text{body}}^{\text{world}}(t)$ denote the rotation matrix that maps a vector expressed in the body frame to its representation in the world frame. The gyroscope measures the angular velocity of the rigid body in the body frame, which we denote by
+$$
+\begin{equation}
+\omega^{\text{body}}(t) =
+\begin{bmatrix}
+\omega_x(t) \\
+\omega_y(t) \\
+\omega_z(t)
+\end{bmatrix}.
+\label{eq:body_angular_velocity}
+\end{equation}
+$$
+Here, $\omega_x(t)$, $\omega_y(t)$, and $\omega_z(t)$ are the instantaneous angular velocities about the body-frame axes. The gyroscope therefore provides rotational rate, not orientation directly.
+
+To derive the evolution equation for $R(t)$, consider any vector $u^{\text{body}}$ that is fixed in the body frame. Its world-frame representation is
+$$
+\begin{equation}
+u^{\text{world}}(t) = R(t) u^{\text{body}}.
+\label{eq:world_vector_from_body_vector}
+\end{equation}
+$$
+Because $u^{\text{body}}$ is constant, all time variation in $u^{\text{world}}(t)$ comes from the rotation matrix.
+
+The defining kinematic fact of rigid-body rotation is that if a rigid body rotates with angular velocity $\omega^{\text{world}}(t)$, then the time derivative of any vector attached to the body is given by
+$$
+\begin{equation}
+\frac{d}{dt} u^{\text{world}}(t)
+=
+\omega^{\text{world}}(t) \times u^{\text{world}}(t).
+\label{eq:rigid_body_kinematic_fact}
+\end{equation}
+$$
+This states that the instantaneous change of a rotating vector is perpendicular to both the angular velocity and the vector itself.
+
+It is convenient to represent the cross product as matrix multiplication. For any $\omega = (\omega_x,\omega_y,\omega_z)^\top$, define the skew-symmetric matrix
+$$
+\begin{equation}
+[\omega]_\times
+=
+\begin{bmatrix}
+0 & -\omega_z & \omega_y \\
+\omega_z & 0 & -\omega_x \\
+-\omega_y & \omega_x & 0
+\end{bmatrix},
+\label{eq:skew_symmetric_matrix}
+\end{equation}
+$$
+so that $[\omega]_\times v = \omega \times v$ for every vector $v$.
+
+Differentiating $\eqref{eq:world_vector_from_body_vector}$ with respect to time gives
+$$
+\begin{equation}
+\frac{d}{dt} u^{\text{world}}(t)
+=
+\left(\frac{d}{dt} R(t)\right) u^{\text{body}},
+\label{eq:derivative_of_rotated_vector}
+\end{equation}
+$$
+since $u^{\text{body}}$ is constant. Substituting $\eqref{eq:world_vector_from_body_vector}$ into $\eqref{eq:rigid_body_kinematic_fact}$, we also have
+$$
+\begin{equation}
+\frac{d}{dt} u^{\text{world}}(t)
+=
+[\omega^{\text{world}}(t)]_\times R(t) u^{\text{body}}.
+\label{eq:kinematic_fact_matrix_form}
+\end{equation}
+$$
+Comparing $\eqref{eq:derivative_of_rotated_vector}$ and $\eqref{eq:kinematic_fact_matrix_form}$, we obtain
+$$
+\begin{equation}
+\left(\frac{d}{dt} R(t)\right) u^{\text{body}}
+=
+[\omega^{\text{world}}(t)]_\times R(t) u^{\text{body}}.
+\label{eq:matrix_action_equality}
+\end{equation}
+$$
+Since this holds for every fixed vector $u^{\text{body}}$, the matrices must be equal:
+$$
+\begin{equation}
+\frac{d}{dt} R(t)
+=
+[\omega^{\text{world}}(t)]_\times R(t).
+\label{eq:R_dynamics_world_omega}
+\end{equation}
+$$
+
+Next, we express this in terms of the gyroscope measurement $\omega^{\text{body}}(t)$. Since $R(t)$ maps body-frame vectors to world-frame vectors, the angular velocity transforms as
+$$
+\begin{equation}
+\omega^{\text{world}}(t) = R(t)\,\omega^{\text{body}}(t).
+\label{eq:omega_world_from_body}
+\end{equation}
+$$
+Using the identity
+$$
+\begin{equation}
+[R\omega]_\times = R[\omega]_\times R^\top,
+\label{eq:skew_rotation_identity}
+\end{equation}
+$$
+we get
+$$
+\begin{equation}
+[\omega^{\text{world}}(t)]_\times
+=
+R(t)\,[\omega^{\text{body}}(t)]_\times\,R(t)^\top.
+\label{eq:omega_world_skew_from_body}
+\end{equation}
+$$
+Substituting $\eqref{eq:omega_world_skew_from_body}$ into $\eqref{eq:R_dynamics_world_omega}$ yields
+$$
+\begin{align}
+\frac{d}{dt} R(t) &= R(t)\,[\omega^{\text{body}}(t)]_\times\,R(t)^\top R(t) \\
+\frac{d}{dt} R(t)  &= R(t)\,[\omega^{\text{body}}(t)]_\times, \label{eq:R_dynamics_body_omega}
+\end{align}
+$$
+since $R(t)^\top R(t) = I$.
+
+Equation $\eqref{eq:R_dynamics_body_omega}$ is the continuous-time kinematic equation relating the gyroscope measurement to the rotation matrix. Given an initial orientation $R(t_0)$, this differential equation determines $R(t)$ for later times.
+
+Over a short interval $[t_i,t_{i+1}]$, if we assume $\omega^{\text{body}}(t)$ is approximately constant and equal to $\omega^{\text{body}}(t_i)$, then $\eqref{eq:R_dynamics_body_omega}$ has the solution
+$$
+\begin{equation}
+R(t_{i+1})
+=
+R(t_i)\exp\!\left([\omega^{\text{body}}(t_i)]_\times (t_{i+1}-t_i)\right).
+\label{eq:rotation_update_matrix_exponential}
+\end{equation}
+$$
+This follows from the standard solution of a linear matrix differential equation with constant coefficient.
+
+Finally, using the Taylor expansion of the matrix exponential,
+$$
+\begin{equation}
+\exp(A) = I + A + \frac{A^2}{2!} + \cdots,
+\label{eq:matrix_exponential_taylor}
+\end{equation}
+$$
+we obtain the first-order approximation
+$$
+\begin{equation}
+R(t_{i+1})
+\approx
+R(t_i)\left(I + [\omega^{\text{body}}(t_i)]_\times (t_{i+1}-t_i)\right),
+\label{eq:rotation_update_first_order}
+\end{equation}
+$$
+which is valid when the timestep $t_{i+1}-t_i$ is small.
+
+Therefore, starting from the gyroscope measurement $\omega^{\text{body}}(t)$ and an initial orientation $R(t_0)$, we recover the orientation over time by integrating the kinematic equation $\eqref{eq:R_dynamics_body_omega}$, or equivalently by applying the discrete update $\eqref{eq:rotation_update_matrix_exponential}$ at successive timesteps.
+
+</details>
+
 ## Kalman Filter
 
 ### Linear State Estimation
