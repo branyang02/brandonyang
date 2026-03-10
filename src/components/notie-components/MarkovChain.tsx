@@ -339,7 +339,7 @@ const MarkovChain = () => {
             </Typography>
 
             {/* Controls */}
-            <Box
+            <Box component="div"
                 sx={{
                     display: "flex",
                     gap: 2,
@@ -360,7 +360,7 @@ const MarkovChain = () => {
             </Box>
 
             {/* Speed slider */}
-            <Box sx={{ width: 300, marginBottom: 3 }}>
+            <Box  component="div" sx={{ width: 300, marginBottom: 3 }}>
                 <Typography gutterBottom>Speed: {getSpeedLabel()}</Typography>
                 <Slider
                     value={speed}
@@ -382,7 +382,7 @@ const MarkovChain = () => {
             </Typography>
 
             {/* State diagram */}
-            <Box
+            <Box component="div"
                 sx={{
                     display: "flex",
                     justifyContent: "center",
@@ -402,7 +402,7 @@ const MarkovChain = () => {
             >
                 Empirical Distribution:
             </Typography>
-            <Box
+            <Box component="div"
                 sx={{
                     display: "flex",
                     gap: 3,

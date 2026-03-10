@@ -196,7 +196,7 @@ const LogisticRegression = () => {
 
     return (
         <Paper sx={{ padding: 2, borderRadius: 3 }} elevation={3}>
-            <Box sx={{ marginBottom: 2, fontSize: 18, fontWeight: "bold" }}>
+            <Box component="div" sx={{ marginBottom: 2, fontSize: 18, fontWeight: "bold" }}>
                 Logistic Regression Visualization
             </Box>
             <Button
@@ -223,7 +223,7 @@ const LogisticRegression = () => {
             >
                 Run 100 Steps
             </Button>
-            <Box sx={{ width: 300, marginY: 2 }}>
+            <Box component="div" sx={{ width: 300, marginY: 2 }}>
                 <Slider
                     value={learningRate}
                     onChange={(_, newValue) =>
@@ -235,9 +235,9 @@ const LogisticRegression = () => {
                     max={1}
                     valueLabelDisplay="auto"
                 />
-                <Box>Learning Rate: {learningRate.toFixed(2)}</Box>
-                <Box>Step Count: {stepCount}</Box>
-                <Box>Loss: {loss.toFixed(4)}</Box>
+                <Box component="div">Learning Rate: {learningRate.toFixed(2)}</Box>
+                <Box component="div">Step Count: {stepCount}</Box>
+                <Box component="div">Loss: {loss.toFixed(4)}</Box>
             </Box>
             <ResponsiveChartContainer
                 xAxis={[
