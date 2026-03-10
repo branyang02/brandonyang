@@ -2244,7 +2244,7 @@ where $\tau$ is the dummy variable for integration, $v(0) = v_0$ is the initial 
 In the discrete-time setting, we are given consecutive timestamps $t_i$ and $t_{i+1}$. We use the approximations
 $$
 \begin{align}
-v\left(t_{i+1}\right) &\approx v\left(t_i\right)+a\left(t_i\right)\left(t_{i+1}-t_i\right) \\
+v\left(t_{i+1}\right) &\approx v\left(t_i\right)+a\left(t_i\right)\left(t_{i+1}-t_i\right) \label{eq:discrete-time-acceleration-velocity} \\
 x\left(t_{i+1}\right) &\approx x\left(t_i\right)+v\left(t_i\right)\left(t_{i+1}-t_i\right)+\frac{1}{2}a\left(t_i\right)\left(t_{i+1}-t_i\right)^2 \label{eq:discrete-time-velocity-position}
 \end{align}
 $$
@@ -2642,6 +2642,37 @@ Therefore, starting from the gyroscope measurement $\omega^{\text{body}}(t)$ and
 
 </details>
 
+<details><summary>IMU Visualization</summary>
+
+We provide an example of visualizing the IMU data in 3D space. Note that $\eqref{eq:discrete-time-acceleration-velocity}$ and $\eqref{eq:discrete-time-velocity-position}$ are exact only when acceleration is constant on that interval because of the Taylor expansion. To show this, we first expand $\eqref{eq:discrete-time-acceleration-velocity}$ to include the higher-order terms:
+$$
+\begin{equation}
+v(t_{i+1})=v(t_i)+\dot{v}(t_i) \left(t_{i+1}-t_i\right)+\frac{1}{2} \ddot{v}(t_i) \left( t_{i+1}-t_i\right)^2+\mathcal{O}\left(\left( t_{i+1}-t_i\right)^3\right)
+\end{equation}
+$$
+Since $\dot{v}(t)=a(t)$ and $\ddot{v}(t)=\dot{a}(t)$, we can rewrite this as
+$$
+\begin{equation}
+v(t_{i+1})=v(t_i)+a(t_i) \left(t_{i+1}-t_i\right)+\frac{1}{2} \dot{a}(t_i) \left( t_{i+1}-t_i\right)^2+\mathcal{O}\left(\left( t_{i+1}-t_i\right)^3\right)
+\end{equation}
+$$
+If we have constant acceleration, then $\dot{a}(t_i)=0$ and the higher-order terms vanish, so $\eqref{eq:discrete-time-acceleration-velocity}$ is exact. Similarly, we can expand $\eqref{eq:discrete-time-velocity-position}$ to include the higher-order terms:
+$$
+\begin{equation}
+x(t_{i+1})=x(t_i)+\dot{x}(t_i) \left(t_{i+1}-t_i\right)+\frac{1}{2} \ddot{x}(t_i) \left( t_{i+1}-t_i\right)^2+\mathcal{O}\left(\left( t_{i+1}-t_i\right)^3\right)
+\end{equation}
+$$
+Since $\dot{x}(t)=v(t)$ and $\ddot{x}(t)=a(t)$, we can rewrite this as
+$$
+\begin{equation}
+x(t_{i+1})=x(t_i)+v(t_i) \left(t_{i+1}-t_i\right)+\frac{1}{2} a(t_i) \left( t_{i+1}-t_i\right)^2+\mathcal{O}\left(\left( t_{i+1}-t_i\right)^3\right)
+\end{equation}
+$$
+If we have constant acceleration, then $a(t)=a(t_i)$ for all $t \in [t_i, t_{i+1}]$, so the higher-order terms vanish and $\eqref{eq:discrete-time-velocity-position}$ is exact.
+
+In the visualization below, we have two modes: one with constant acceleration and one with non-constant acceleration. The constant acceleration mode shows a 3D ballistic arc, while the non-constant acceleration mode shows a Lissajous curve. The constant acceleration mode demonstrates that the discrete-time updates perfectly match the continuous-time trajectory, while the non-constant acceleration mode shows that the discrete-time updates deviate from the continuous-time trajectory due to the higher-order terms.
+
+
 ```component
 
 {
@@ -2649,6 +2680,8 @@ Therefore, starting from the gyroscope measurement $\omega^{\text{body}}(t)$ and
 }
 
 ```
+
+</details>
 
 ## Kalman Filter
 

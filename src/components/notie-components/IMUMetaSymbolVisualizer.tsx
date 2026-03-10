@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDarkMode } from "../../context/DarkModeContext";
-import { Button, Paper, Slider, Stack, Typography } from "@mui/material";
+import { Button, FormControlLabel, Paper, Slider, Stack, Switch, Typography } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import { Canvas } from "@react-three/fiber";
 import { Html, Line, OrbitControls, PerspectiveCamera } from "@react-three/drei";
@@ -20,7 +20,7 @@ import {
   BASE_DT,
   TRAIL_LIMIT,
 } from "./imuMath";
-import type { Vec3, Mat3, SimulationState, DistSample } from "./imuMath";
+import type { Vec3, Mat3, SimulationState, DistSample, TrajectoryMode } from "./imuMath";
 
 type MetricCardProps = {
   title: string;
@@ -275,6 +275,8 @@ export default function IMUMetaSymbolVisualizer() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [imuNoise, setImuNoise] = useState<number>(0);
   const [timeScale, setTimeScale] = useState<number>(1);
+  const [dt, setDt] = useState<number>(BASE_DT);
+  const [trajectoryMode, setTrajectoryMode] = useState<TrajectoryMode>("lissajous");
   const [, forceRender] = useState<number>(0);
 
   const rafRef = useRef<number | null>(null);
@@ -283,13 +285,17 @@ export default function IMUMetaSymbolVisualizer() {
   const simRef = useRef<SimulationState | null>(null);
   const imuNoiseRef = useRef<number>(imuNoise);
   const timeScaleRef = useRef<number>(timeScale);
+  const dtRef = useRef<number>(dt);
+  const trajectoryModeRef = useRef<TrajectoryMode>(trajectoryMode);
 
   // Keep refs in sync so the animation loop always reads the latest values
   useEffect(() => { imuNoiseRef.current = imuNoise; }, [imuNoise]);
   useEffect(() => { timeScaleRef.current = timeScale; }, [timeScale]);
+  useEffect(() => { dtRef.current = dt; }, [dt]);
+  useEffect(() => { trajectoryModeRef.current = trajectoryMode; }, [trajectoryMode]);
 
   const resetSimulation = () => {
-    const truth0 = groundTruthAt(0);
+    const truth0 = groundTruthAt(0, trajectoryMode);
     simRef.current = {
       simTime: 0,
       truth: truth0,
@@ -312,16 +318,15 @@ export default function IMUMetaSymbolVisualizer() {
     forceRender((n) => n + 1);
   };
 
-  useEffect(() => {
-    resetSimulation();
-  }, []);
+  useEffect(() => { resetSimulation(); }, []);
+  useEffect(() => { resetSimulation(); }, [trajectoryMode]);
 
   useEffect(() => {
     const stepSimulation = (dt: number) => {
       const sim = simRef.current;
       if (!sim) return;
 
-      const truth = groundTruthAt(sim.simTime);
+      const truth = groundTruthAt(sim.simTime, trajectoryModeRef.current);
       const gyroNoiseSigma = imuNoiseRef.current * 0.05;
       const accelNoiseSigma = imuNoiseRef.current * 0.3;
 
@@ -341,7 +346,7 @@ export default function IMUMetaSymbolVisualizer() {
       sim.exp.v = add(sim.exp.v, scale(aWorldExp, dt));
 
       sim.simTime += dt;
-      sim.truth = groundTruthAt(sim.simTime);
+      sim.truth = groundTruthAt(sim.simTime, trajectoryModeRef.current);
       sim.imu = {
         accelBody: imuAccel,
         gyroBody: imuGyro,
@@ -351,10 +356,10 @@ export default function IMUMetaSymbolVisualizer() {
       pushLimited(sim.truthTrail, sim.truth.p, TRAIL_LIMIT);
       pushLimited(sim.expTrail, sim.exp.p, TRAIL_LIMIT);
 
-      // Sample distance every ~12 steps (≈0.1 s sim-time) for the chart
-      if (Math.round(sim.simTime / BASE_DT) % 12 === 0) {
-        const d = norm(sub(sim.truth.p, sim.exp.p));
-        sim.distHistory.push({ t: sim.simTime, d });
+      // Sample distance every ~0.1 s of sim-time regardless of dt
+      const lastSampleT = sim.distHistory.length > 0 ? sim.distHistory[sim.distHistory.length - 1].t : -Infinity;
+      if (sim.simTime - lastSampleT >= 0.1) {
+        sim.distHistory.push({ t: sim.simTime, d: norm(sub(sim.truth.p, sim.exp.p)) });
       }
     };
 
@@ -370,9 +375,10 @@ export default function IMUMetaSymbolVisualizer() {
       lastRef.current = now;
       accumulatorRef.current += elapsed * timeScaleRef.current;
 
-      while (accumulatorRef.current >= BASE_DT) {
-        stepSimulation(BASE_DT);
-        accumulatorRef.current -= BASE_DT;
+      const stepDt = dtRef.current;
+      while (accumulatorRef.current >= stepDt) {
+        stepSimulation(stepDt);
+        accumulatorRef.current -= stepDt;
       }
 
       forceRender((n) => n + 1);
@@ -467,7 +473,7 @@ export default function IMUMetaSymbolVisualizer() {
 
       <StatsGrid sim={sim} truthToExp={truthToExp} />
 
-      <div style={{ marginTop: 20, display: "flex", gap: 40, flexWrap: "wrap" }}>
+      <div style={{ marginTop: 20, display: "flex", gap: 40, flexWrap: "wrap", alignItems: "flex-start" }}>
         <div style={{ minWidth: 280, flex: 1, maxWidth: 400 }}>
           <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
             {noiseLabel}
@@ -492,6 +498,34 @@ export default function IMUMetaSymbolVisualizer() {
             value={timeScale}
             onChange={(_, v) => setTimeScale(v as number)}
             aria-label="Simulation time scale"
+          />
+        </div>
+        <div style={{ minWidth: 280, flex: 1, maxWidth: 400 }}>
+          <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
+            {`Integration step: ${(dt * 1000).toFixed(1)} ms`}
+          </Typography>
+          <Slider
+            min={0.002}
+            max={0.1}
+            step={0.002}
+            value={dt}
+            onChange={(_, v) => setDt(v as number)}
+            aria-label="Integration timestep"
+          />
+        </div>
+        <div style={{ minWidth: 200, display: "flex", alignItems: "center", paddingTop: 4 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={trajectoryMode === "constant"}
+                onChange={(e) => setTrajectoryMode(e.target.checked ? "constant" : "lissajous")}
+              />
+            }
+            label={
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                Constant acceleration
+              </Typography>
+            }
           />
         </div>
       </div>

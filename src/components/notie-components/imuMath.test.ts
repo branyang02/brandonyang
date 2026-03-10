@@ -19,7 +19,7 @@ import {
   rotationAt,
   groundTruthAt,
 } from "./imuMath";
-import type { Mat3, Vec3 } from "./imuMath";
+import type { Mat3, Vec3, TrajectoryMode } from "./imuMath";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -362,6 +362,83 @@ describe("zero-noise integration", () => {
     const diff = matSub(expR, truth.R);
     const err = frobeniusNorm(diff);
     expect(err).toBeLessThan(0.01);
+  });
+});
+
+// ─── Constant-acceleration exact integration ─────────────────────────────────
+
+describe("constant-accel mode: zero-noise integration is numerically exact", () => {
+  // Use step-based loop (not t += DT) to avoid floating-point time accumulation
+  // e.g. 50 × 0.1_fp64 < 5.0 in IEEE 754, causing an extra loop iteration
+  function integrateConstant(steps: number, DT: number) {
+    const mode: TrajectoryMode = "constant";
+    const truth0 = groundTruthAt(0, mode);
+    let expR: Mat3 = truth0.R;
+    let expP: Vec3 = truth0.p;
+    let expV: Vec3 = truth0.v;
+
+    for (let k = 0; k < steps; k++) {
+      const t = k * DT; // exact: integer × DT avoids accumulation
+      const truth = groundTruthAt(t, mode);
+      const aWorld = matVec(expR, truth.fBody);
+      const dR = expSO3(truth.gyroBody, DT);
+      expR = matMul(expR, dR);
+      expP = add(add(expP, scale(expV, DT)), scale(aWorld, 0.5 * DT * DT));
+      expV = add(expV, scale(aWorld, DT));
+    }
+
+    return { expP, expR, tFinal: steps * DT };
+  }
+
+  it("position error < 1e-9 at dt=1/120 after 5s", () => {
+    const { expP, tFinal } = integrateConstant(600, 1 / 120);
+    const err = norm(sub(expP, groundTruthAt(tFinal, "constant").p));
+    console.log(`  constant-accel dt=1/120  pos err = ${err.toExponential(3)} m`);
+    expect(err).toBeLessThan(1e-9);
+  });
+
+  it("position error < 1e-9 at dt=1/15 after 5s (large step, still exact)", () => {
+    const { expP, tFinal } = integrateConstant(75, 1 / 15);
+    const err = norm(sub(expP, groundTruthAt(tFinal, "constant").p));
+    console.log(`  constant-accel dt=1/15   pos err = ${err.toExponential(3)} m`);
+    expect(err).toBeLessThan(1e-9);
+  });
+
+  it("position error < 1e-9 at dt=0.1 after 5s (very large step, still exact)", () => {
+    const { expP, tFinal } = integrateConstant(50, 0.1);
+    const err = norm(sub(expP, groundTruthAt(tFinal, "constant").p));
+    console.log(`  constant-accel dt=0.1    pos err = ${err.toExponential(3)} m`);
+    expect(err).toBeLessThan(1e-9);
+  });
+
+  it("orientation error (Frobenius) < 1e-9 after 5s", () => {
+    const { expR, tFinal } = integrateConstant(600, 1 / 120);
+    const diff = matSub(expR, groundTruthAt(tFinal, "constant").R);
+    const err = frobeniusNorm(diff);
+    console.log(`  constant-accel orientation err = ${err.toExponential(3)}`);
+    expect(err).toBeLessThan(1e-9);
+  });
+
+  it("starting with wrong initial R (lissajous R(0)) causes large drift — confirms the resetSimulation bug", () => {
+    const mode: TrajectoryMode = "constant";
+    const wrongR = groundTruthAt(0).R; // lissajous R(0) ≠ identity
+    let expR: Mat3 = wrongR;
+    let expP: Vec3 = [0, 0, 0];
+    let expV: Vec3 = [0, 0, 0];
+    const DT = 1 / 120;
+
+    for (let k = 0; k < 360; k++) { // 3 seconds
+      const truth = groundTruthAt(k * DT, mode);
+      const aWorld = matVec(expR, truth.fBody);
+      const dR = expSO3(truth.gyroBody, DT);
+      expR = matMul(expR, dR);
+      expP = add(add(expP, scale(expV, DT)), scale(aWorld, 0.5 * DT * DT));
+      expV = add(expV, scale(aWorld, DT));
+    }
+
+    const err = norm(sub(expP, groundTruthAt(3, mode).p));
+    console.log(`  wrong-init R drift at 3s = ${err.toFixed(4)} m`);
+    expect(err).toBeGreaterThan(0.1); // large drift confirms the bug
   });
 });
 

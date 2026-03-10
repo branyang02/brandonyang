@@ -38,6 +38,14 @@ export const LOOP_PERIOD = 18;
 export const BASE_DT = 1 / 120;
 export const TRAIL_LIMIT = 900;
 
+export type TrajectoryMode = "lissajous" | "constant";
+
+// Constant-acceleration trajectory parameters (exact Verlet integration)
+// Ballistic arc: launched at an angle, "gravity" pulls in -y. Zero integration error for any dt.
+const CONST_V0: Vec3 = [0.5, 0.7, 0.4];        // m/s – launch velocity (gives a 3-D arc)
+const CONST_ACCEL: Vec3 = [0.02, -0.24, 0.04]; // m/s² – mostly downward + slight drift
+const CONST_OMEGA: Vec3 = [0.3, 0.15, 0.25];  // rad/s – constant body-frame angular vel
+
 export function add(a: Vec3, b: Vec3): Vec3 {
   return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
@@ -163,7 +171,14 @@ export function eulerBodyToWorld(roll: number, pitch: number, yaw: number): Mat3
   return matMul(matMul(Rz(yaw), Ry(pitch)), Rx(roll));
 }
 
-export function positionAt(t: number): Vec3 {
+export function positionAt(t: number, mode: TrajectoryMode = "lissajous"): Vec3 {
+  if (mode === "constant") {
+    return [
+      CONST_V0[0] * t + 0.5 * CONST_ACCEL[0] * t * t,
+      CONST_V0[1] * t + 0.5 * CONST_ACCEL[1] * t * t,
+      CONST_V0[2] * t + 0.5 * CONST_ACCEL[2] * t * t,
+    ];
+  }
   const s = (2 * Math.PI * t) / LOOP_PERIOD;
   return [
     2.2 * Math.sin(s),
@@ -172,24 +187,38 @@ export function positionAt(t: number): Vec3 {
   ];
 }
 
-export function velocityAt(t: number): Vec3 {
+export function velocityAt(t: number, mode: TrajectoryMode = "lissajous"): Vec3 {
+  if (mode === "constant") {
+    return [
+      CONST_V0[0] + CONST_ACCEL[0] * t,
+      CONST_V0[1] + CONST_ACCEL[1] * t,
+      CONST_V0[2] + CONST_ACCEL[2] * t,
+    ];
+  }
   const h = 1e-3;
-  const pPlus = positionAt(t + h);
-  const pMinus = positionAt(t - h);
+  const pPlus = positionAt(t + h, mode);
+  const pMinus = positionAt(t - h, mode);
   return scale(sub(pPlus, pMinus), 1 / (2 * h));
 }
 
-export function accelerationAt(t: number): Vec3 {
+export function accelerationAt(t: number, mode: TrajectoryMode = "lissajous"): Vec3 {
+  if (mode === "constant") {
+    return [...CONST_ACCEL] as Vec3;
+  }
   const h = 1e-3;
-  const pPlus = positionAt(t + h);
-  const p = positionAt(t);
-  const pMinus = positionAt(t - h);
+  const pPlus = positionAt(t + h, mode);
+  const p = positionAt(t, mode);
+  const pMinus = positionAt(t - h, mode);
   return scale(add(sub(pPlus, scale(p, 2)), pMinus), 1 / (h * h));
 }
 
-export function rotationAt(t: number): Mat3 {
+export function rotationAt(t: number, mode: TrajectoryMode = "lissajous"): Mat3 {
+  if (mode === "constant") {
+    // Constant body-frame angular velocity → expSO3 accumulates exactly
+    return expSO3(CONST_OMEGA, t);
+  }
   const s = (2 * Math.PI * t) / LOOP_PERIOD;
-  const v = velocityAt(t);
+  const v = velocityAt(t, mode);
   const yaw = Math.atan2(v[1], v[0]);
   const speedXY = Math.hypot(v[0], v[1]) + 1e-6;
   const pitch = 0.22 * Math.atan2(v[2], speedXY);
@@ -197,23 +226,26 @@ export function rotationAt(t: number): Mat3 {
   return eulerBodyToWorld(roll, pitch, yaw);
 }
 
-export function gyroBodyAt(t: number): Vec3 {
+export function gyroBodyAt(t: number, mode: TrajectoryMode = "lissajous"): Vec3 {
+  if (mode === "constant") {
+    return [...CONST_OMEGA] as Vec3;
+  }
   const h = 1e-4;
-  const R = rotationAt(t);
-  const Rp = rotationAt(t + h);
-  const Rm = rotationAt(t - h);
+  const R = rotationAt(t, mode);
+  const Rp = rotationAt(t + h, mode);
+  const Rm = rotationAt(t - h, mode);
   const Rdot = scaleMat(subMat(Rp, Rm), 1 / (2 * h));
   const M = matMul(transpose(R), Rdot);
   const Omega = scaleMat(subMat(M, transpose(M)), 0.5);
   return vee(Omega);
 }
 
-export function groundTruthAt(t: number): GroundTruthState {
-  const p = positionAt(t);
-  const v = velocityAt(t);
-  const a = accelerationAt(t);
-  const R = rotationAt(t);
-  const gyroBody = gyroBodyAt(t);
+export function groundTruthAt(t: number, mode: TrajectoryMode = "lissajous"): GroundTruthState {
+  const p = positionAt(t, mode);
+  const v = velocityAt(t, mode);
+  const a = accelerationAt(t, mode);
+  const R = rotationAt(t, mode);
+  const gyroBody = gyroBodyAt(t, mode);
   // Ignore gravity: specific force = R^T * a (not R^T * (a - G))
   const fBody = matVec(transpose(R), a);
   return { p, v, a, R, gyroBody, fBody };
