@@ -2642,6 +2642,14 @@ Therefore, starting from the gyroscope measurement $\omega^{\text{body}}(t)$ and
 
 </details>
 
+```component
+
+{
+    componentName: "IMUMetaSymbolVisualizer"
+}
+
+```
+
 ## Kalman Filter
 
 ### Linear State Estimation

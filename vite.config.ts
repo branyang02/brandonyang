@@ -16,6 +16,9 @@ const getLastCommitDate = (filePath: string) => {
 export default defineConfig({
     plugins: [react()],
     assetsInclude: ["**/*.md"],
+    resolve: {
+        dedupe: ["react", "react-dom", "three", "@react-three/fiber", "@react-three/drei"],
+    },
     define: {
         "import.meta.env.VITE_ML_COMMIT_DATE": JSON.stringify(
             getLastCommitDate("src/assets/notes/ml.md")

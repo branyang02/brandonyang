@@ -11,6 +11,7 @@ import Giscus from "@giscus/react";
 import LastUpdated from "../components/LastUpdated";
 import { loadMarkdownModules } from "../utils/utils";
 import MarkovChain from "../components/notie-components/MarkovChain";
+import IMUMetaSymbolVisualizer from "../components/notie-components/IMUMetaSymbolVisualizer";
 
 const darkTheme = createTheme({
     palette: {
@@ -98,6 +99,7 @@ const NotesBlogs = ({ type }: { type: string }) => {
             logisticRegression: () => <LogisticRegression />,
             MarkovChain: () => <MarkovChain />,
             LastUpdated: () => <LastUpdated />,
+            IMUMetaSymbolVisualizer: () => <IMUMetaSymbolVisualizer />,
         }),
         []
     );
