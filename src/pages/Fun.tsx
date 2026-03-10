@@ -33,6 +33,8 @@ const Fun = () => {
         { place: "Killington, VT", date: "11/2025", flag: "🇺🇸" },
         { place: "Hemu", date: "12/2025", flag: "🇨🇳" },
         { place: "Altay", date: "12/2025", flag: "🇨🇳" },
+        { place: "Stratton, VT", date: "02/2026", flag: "🇺🇸" },
+        { place: "Palisades Tahoe, CA", date: "03/2026", flag: "🇺🇸" },
     ];
 
     const photos: {
@@ -340,14 +342,6 @@ Can't forget the local resorts I love:
                         </Text>
                     </Pane>
                 </Pane>
-                <Heading
-                    size={500}
-                    marginBottom={majorScale(2)}
-                    color={darkMode ? "white" : "default"}
-                >
-                    I am currently looking for ski buddies for a trip to Mammoth
-                    in March 2026! Contact me if interested.
-                </Heading>
                 <MarkdownParagraph text={skiText} />
                 <UnorderedList
                     size={500}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDarkMode } from "../../context/DarkModeContext";
 import { Button, Paper, Slider, Stack, Typography } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import { Canvas } from "@react-three/fiber";
@@ -36,6 +37,7 @@ type SceneContentsProps = {
   expCurrent: Vec3;
   currentBodyAxes: Vec3[];
   expBodyAxes: Vec3[];
+  darkMode: boolean;
 };
 
 function toThree(points: Vec3[]): THREE.Vector3[] {
@@ -51,9 +53,16 @@ function SceneContents({
   expCurrent,
   currentBodyAxes,
   expBodyAxes,
+  darkMode,
 }: SceneContentsProps) {
   const truth3 = toThree(truthPoints);
   const exp3 = toThree(expPoints);
+
+  const sceneBg = darkMode ? "#0f1117" : "#fafbfd";
+  const gridCenter = darkMode ? "#2d3350" : "#d7dce3";
+  const gridLines = darkMode ? "#1e2235" : "#edf1f6";
+  const pillBg = darkMode ? "rgba(15,17,30,0.88)" : "rgba(255,255,255,0.85)";
+  const pillBgFaint = darkMode ? "rgba(15,17,30,0.72)" : "rgba(255,255,255,0.70)";
 
   // Sample paired error lines at every ERROR_LINE_STRIDE-th trail point
   const errorPairs: [Vec3, Vec3][] = [];
@@ -66,11 +75,11 @@ function SceneContents({
 
   return (
     <>
-      <color attach="background" args={["#fafbfd"]} />
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[6, 8, 7]} intensity={1.15} />
+      <color attach="background" args={[sceneBg]} />
+      <ambientLight intensity={darkMode ? 0.6 : 0.8} />
+      <directionalLight position={[6, 8, 7]} intensity={darkMode ? 0.9 : 1.15} />
       <directionalLight position={[-6, -3, 5]} intensity={0.35} />
-      <gridHelper args={[14, 14, "#d7dce3", "#edf1f6"]} position={[0, 0, -1.1]} />
+      <gridHelper args={[14, 14, gridCenter, gridLines]} position={[0, 0, -1.1]} />
       <axesHelper args={[1.8]} />
       {truth3.length >= 2 && (
         <Line points={truth3} color="#2563eb" lineWidth={4.5} transparent opacity={0.55} />
@@ -124,10 +133,10 @@ function SceneContents({
                   fontSize: 12,
                   fontWeight: 700,
                   color: colors[idx],
-                  background: "rgba(255,255,255,0.85)",
+                  background: pillBg,
                   padding: "2px 6px",
                   borderRadius: 999,
-                  border: `1px solid ${colors[idx]}22`,
+                  border: `1px solid ${colors[idx]}33`,
                   whiteSpace: "nowrap",
                 }}
               >
@@ -156,7 +165,7 @@ function SceneContents({
                   fontSize: 11,
                   fontWeight: 600,
                   color: colors[idx],
-                  background: "rgba(255,255,255,0.7)",
+                  background: pillBgFaint,
                   padding: "1px 5px",
                   borderRadius: 999,
                   border: `1px solid ${colors[idx]}44`,
@@ -262,6 +271,7 @@ function DistanceChart({ history }: { history: DistSample[] }) {
 }
 
 export default function IMUMetaSymbolVisualizer() {
+  const { darkMode } = useDarkMode();
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [imuNoise, setImuNoise] = useState<number>(0);
   const [timeScale, setTimeScale] = useState<number>(1);
@@ -400,11 +410,12 @@ export default function IMUMetaSymbolVisualizer() {
 
   const truthToExp = norm(sub(sim.truth.p, sim.exp.p));
 
+  const paperBg = darkMode
+    ? "linear-gradient(180deg, #1a1b2e 0%, #141520 100%)"
+    : "linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%)";
+
   return (
-    <Paper
-      elevation={3}
-      sx={{ p: 3, borderRadius: 4, background: "linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%)" }}
-    >
+    <Paper elevation={3} sx={{ p: 3, borderRadius: 4, background: paperBg }}>
       <Stack
         direction={{ xs: "column", md: "row" }}
         justifyContent="space-between"
@@ -436,6 +447,7 @@ export default function IMUMetaSymbolVisualizer() {
               expCurrent={expCurrent}
               currentBodyAxes={bodyAxesWorld}
               expBodyAxes={expBodyAxesWorld}
+              darkMode={darkMode}
             />
           </Canvas>
         </div>
