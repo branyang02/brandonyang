@@ -415,12 +415,6 @@ export default function IMUMetaSymbolVisualizer() {
           <Typography variant="h5" sx={{ fontWeight: 800 }}>
             IMU to Position in 3D
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5, maxWidth: 920 }}>
-            Drag to orbit the scene, scroll to zoom, and track how gyroscope and accelerometer
-            measurements reconstruct the motion of a simulated IMU tracing a path in 3D space. The
-            estimate uses the matrix exponential on SO(3). Predicted orientation axes (x̂_b, ŷ_b,
-            ẑ_b) are shown in translucent colors at the estimated position.
-          </Typography>
         </div>
         <Stack direction="row" spacing={1.25}>
           <Button variant="outlined" onClick={resetSimulation}>
