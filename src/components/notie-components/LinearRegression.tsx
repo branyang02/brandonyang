@@ -234,7 +234,7 @@ const LinearRegression = () => {
             <Button variant="outlined" onClick={runGradientDescent}>
                 Run 1000 Steps
             </Button>
-            <Box sx={{ width: 300, marginY: 2 }}>
+            <Box component="div" sx={{ width: 300, my: 2 }}>
                 <Slider
                     value={learningRate}
                     onChange={(_, newValue) =>
@@ -246,8 +246,8 @@ const LinearRegression = () => {
                     max={0.1}
                     valueLabelDisplay="auto"
                 />
-                <Box>Learning Rate: {learningRate}</Box>
-                <Box>Step Count: {stepCount}</Box>
+                <Box component="div">Learning Rate: {learningRate}</Box>
+                <Box component="div">Step Count: {stepCount}</Box>
             </Box>
             <Paper sx={{ width: "100%", height: 400, borderRadius: 3 }}>
                 <ResponsiveChartContainer
@@ -304,7 +304,7 @@ const LinearRegression = () => {
                     />
                 </ResponsiveChartContainer>
             </Paper>
-            <Box sx={{ marginTop: 2 }}>Mean Squared Error: {mseValue} </Box>
+            <Box component="div" sx={{ marginTop: 2 }}>Mean Squared Error: {mseValue} </Box>
         </Paper>
     );
 };
