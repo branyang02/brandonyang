@@ -12,6 +12,10 @@ import MarkdownParagraph from "./MarkdownParagraph";
 const Experience = () => {
     const experience = [
         {
+            date: "May 2026 - Aug 2026",
+            title: "AI/ML Intern at [LinkedIn](https://www.linkedin.com/research/) at Mountain View.",
+        },
+        {
             date: "Aug 2025 - Present",
             title: "Graduate Research Assistant at UPenn's [GRASP Lab](https://www.grasp.upenn.edu/).",
         },
