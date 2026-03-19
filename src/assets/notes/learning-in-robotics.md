@@ -2786,7 +2786,7 @@ $$
 &= K_1 \Sigma_1 K_1^T + (I-K_1) \Sigma_2 (I-K_1)^T \label{eq:covariance_linear_combination_multi_d}
 \end{align}
 $$
-Unlike the one-dimensional case, the covariance of $\hat{X}$ is a matrix, and we cannot directly compare two covariance matrices to determine which one is smaller. Instead, we can use the trace of the covariance matrix as a scalar measure of the overall uncertainty in our estimator. Therefore, our objective is to minimize $\mathrm{tr}(\mathrm{Cov}(\hat{X}))$.
+Unlike the one-dimensional case, the covariance of $\hat{X}$ is a matrix, and we cannot directly compare two covariance matrices to determine which one is smaller. Instead, we can use the trace of the covariance matrix as a scalar measure of the overall uncertainty in our estimator. Therefore, our objective is to minimize $\mathrm{tr}(\mathrm{Cov}(\hat{X}))$. Note that there are other ways to compare covariance matrices, such as using the determinant or eigenvalues.
 
 We can minimize the trace of the covariance matrix by taking the derivative w.r.t. $K_1$ and setting it to zero. We can use the following identity for the partial derivative of a matrix product:
 $$
@@ -2809,3 +2809,462 @@ $$
 \hat{X} = \Sigma_2 (\Sigma_1 + \Sigma_2)^{-1} \hat{X}_1 + \Sigma_1 (\Sigma_1 + \Sigma_2)^{-1} \hat{X}_2.
 \end{equation}
 $$
+
+#### Incorporating Gaussian Observations of a State
+
+Now, suppose we have a sensor that gives us observations of the state. We consider a special type of sensor that gives observations
+$$
+\begin{equation} \label{eq:linear_observation_model}
+Y = CX + \nu, \quad, Y \in \mathbb{R}^p,
+\end{equation}
+$$
+which is a linear function of the true state $X \in \mathbb{R}^d$ with the matrix $C \in \mathbb{R}^{p \times d}$ being something that is unique to the particular sensor. This observation is corrupted by noise
+$$
+\nu \sim \mathcal{N}(0, Q), \quad Q \in \mathbb{R}^{p \times p},
+$$
+which is zero-mean Gaussian with covariance $Q$. Note that the dimensionality of the observation $Y$ can be different from that of the state $X$. Also note that $Y$ is a random variable that estimates $X$, but $X$ is not a random variable, it is a fixed but unknown value that we want to estimate. Therefore, we ahve
+$$
+\begin{equation} \label{eq:observation_expectation_and_covariance}
+\mathbb{E}[Y] = CX, \quad \mathrm{Cov}(Y) = \mathrm{Cov}(\nu) = Q.
+\end{equation}
+$$
+
+We want to solve the following problem: given an existing unbiased estimator $\hat{X}'$ of the state $X$ and a new observation $Y$, we want to combine them to get a better estimator $\hat{X}$ that minimizes variance. We will use a lienar combination
+$$
+\begin{equation} \label{eq:linear_combination_observation}
+\hat{X} = K' \hat{X}' + KY,
+\end{equation}
+$$
+where $K' \in \mathbb{R}^{d \times d}$ and $K \in \mathbb{R}^{d \times p}$ are the weight matrices for the existing estimator and the new observation respectively. 
+
+We want the new estimator $\hat{X}$ to be unbiased, that is $\mathbb{E}[\hat{X}] = X$ (note that $X$ is not a random variable, it is a fixed but unknown value).
+$$
+\begin{align}
+\mathbb{E}[\hat{X}] &= \mathbb{E}[K' \hat{X}' + KY] \\
+&= K' X + K\mathbb{E}[Y] \quad \text{since } \hat{X}' \text{ is an unbiased estimator of } X \\
+&= K' X + KCX \quad \text{by } \eqref{eq:observation_expectation_and_covariance} \\
+&= \left(K' + KC\right) X \\
+&= X \quad \text{since we want } \hat{X} \text{ to be an unbiased estimator of } X \\
+&\implies I = K' + KC. \label{eq:unbiased_constraint_observation} \\
+&\implies \hat{X} = \left(I - KC\right) \hat{X}' + KY. \label{eq:linear_combination_observation_unbiased} \\
+&\implies \hat{X} = \hat{X}' + K\left(Y - C\hat{X}'\right) \label{eq:linear_combination_observation_innovation_form}
+\end{align}
+$$
+The old estimator $\hat{X}'$ gets an additive term $K(Y - C\hat{X}')$ as given in $\eqref{eq:linear_combination_observation_innovation_form}$. We call this term
+$$
+\begin{equation} \label{eq:innovation}
+\text{innovation} = Y - C\hat{X}',
+\end{equation}
+$$
+which measures the discrepancy between the new observation $Y$ and the prediction of the observation based on the old estimator $C\hat{X}'$. We also assume that $\hat{X}'$ and $Y$ are independent, which means that the error in the old estimator is independent of the new observation. Following the same procedure as in the previous sections, we can derive the optimal weight matrix $K$ that minimizes the trace of the covariance of $\hat{X}$. First, we derive the covariance of $\hat{X}$ from the form in $\eqref{eq:linear_combination_observation_unbiased}$:
+$$
+\begin{equation} \label{eq:covariance_observation}
+\Sigma_{\hat{X}} = \left(I - KC\right) \Sigma_{\hat{X}'} \left(I - KC\right)^T + KQK^T.
+\end{equation}
+$$
+We optimize the trace of $\Sigma_{\hat{X}}$ by taking the derivative w.r.t. $K$ and setting it to zero:
+$$
+\begin{align}
+\frac{\partial}{\partial K} \mathrm{tr}\left(\Sigma_{\hat{X}}\right) &= \frac{\partial}{\partial K} \mathrm{tr}\left(\left(I - KC\right) \Sigma_{\hat{X}'} \left(I - KC\right)^T + KQK^T\right) \\
+0 &= -2 \left( I - KC \right) \Sigma_{\hat{X}'} C^T + 2 KQ \\
+\implies \Sigma_{\hat{X}'} C^T &= K \left( C \Sigma_{\hat{X}'} C^T + Q \right) \\
+\implies K &= \Sigma_{\hat{X}'} C^T \left(C \Sigma_{\hat{X}'} C^T + Q\right)^{-1}. \label{eq:optimal_weight_observation}
+\end{align}
+$$
+The matrix $K$ is known as the **Kalman gain**. 
+
+Now we can substitute the optimal Kalman gain back into $\eqref{eq:linear_combination_observation_innovation_form}$ to get the final estimator:
+$$
+\begin{equation} \label{eq:final_estimator_observation}
+\hat{X} = \hat{X}' + \Sigma_{\hat{X}'} C^T \left(C \Sigma_{\hat{X}'} C^T + Q\right)^{-1} \left(Y - C\hat{X}'\right).
+\end{equation}
+$$
+We can also derive the covariance of this optimal estimator by substituting the optimal Kalman gain back into $\eqref{eq:covariance_observation}$:
+$$
+\begin{equation}\label{eq:optimal_covariance_observation}
+\begin{aligned}
+\Sigma_{\hat{X}}
+&= \left(I - KC\right) \Sigma_{\hat{X}'} \left(I - KC\right)^T + KQK^T \\
+&= \left( \Sigma_{\hat{X}'}^{-1} + C^T Q^{-1} C \right)^{-1}.
+\end{aligned}
+\end{equation}
+$$
+Another way of expressing the Kalman gain is:
+$$
+\begin{align}
+\Sigma_{\hat{X}}^{-1} &= \Sigma_{\hat{X}'}^{-1} + C^T Q^{-1} C \\
+K &= \Sigma_{\hat{X}} C^T Q^{-1} \label{eq:kalman_gain_alternative_expression} \\
+\hat{X} &= \hat{X}' + \Sigma_{\hat{X}} C^T Q^{-1} \left(Y - C\hat{X}'\right) \label{eq:final_estimator_observation_alternative_expression}
+\end{align}
+$$
+
+
+## Reinforcement Learning
+
+Let $S$ denote the state space, $A$ denote the action space, we define a trajectory to be
+$$
+\tau = (s_1, a_2, \ldots, s_T, a_T),
+$$
+which is a sequence of states and actions. We define a reward function $r: S \times A \to \mathbb{R}$, which gives us a reward for taking action $a$ in state $s$. We define the return of a trajectory to be
+$$
+\begin{equation} \label{eq:lr-total-return}
+R(\tau) = \sum_{t=1}^T r(s_t, a_t)
+\end{equation}
+$$
+which is the total reward accumulated along the trajectory. We define a policy
+$$
+\pi_\theta(a_t \mid s_t)
+$$
+which is a probability distribution over actions given the current state, parameterized by $\theta$. We define the **trajectory distribution** under policy $\pi_\theta$ to be
+$$
+\begin{equation} \label{eq:trajectory_probability}
+p_\theta(\tau) = p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t)
+\end{equation}
+$$
+where $p(s_1)$ is the initial state distribution and $p(s_{t+1}\mid s_t, a_t)$ is the transition probability of going to state $s_{t+1}$ given that we are in state $s_t$ and take action $a_t$. 
+
+<details><summary>Factorization of the trajectory distribution</summary>
+
+By definition, the trajectory distribution is defined as:
+$$
+p_\theta(\tau) = p(s_1, a_2, \ldots, s_T, a_T).
+$$
+Using the chain rule $\eqref{eq:chain_rule}$, we can factorize this joint distribution as follows:
+$$
+\begin{aligned}
+p_\theta(\tau) &= p(s_1, a_2, \ldots, s_T, a_T) \\
+&= p(s_1) p(a_2\mid s_1) p(s_2 \mid s_1, a_2) p(a_3 \mid s_1, a_2, s_2) \cdots
+\end{aligned}
+$$
+We are working in a Markov Decision Process (MDP) setting, which means that the transition probability only depends on the current state and action
+$$
+p(s_{t+1} \mid s_1, a_2, \ldots, s_t, a_t) = p(s_{t+1} \mid s_t, a_t).
+$$
+and the policy only depends on the current state
+$$
+\pi_\theta(a_t \mid s_1, a_2, \ldots, s_t) = \pi_\theta(a_t \mid s_t).
+$$
+Therefore, we can simplify the factorization of the trajectory distribution to be:
+$$
+p_\theta(\tau) = p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t),
+$$
+which is the expression given in $\eqref{eq:trajectory_probability}$.
+
+</details>
+
+The goal of RL is to find the optimal policy parameters $\theta^*$ that maximize the expected return of the trajectory distribution:
+$$
+\begin{equation} \label{eq:rl-objective}
+\theta^* = \arg\max_\theta \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[R(\tau)\right].
+\end{equation}
+$$
+We define the obective function to be
+$$
+\begin{equation} \label{eq:rl-objective-function}
+J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[R(\tau)\right].
+\end{equation}
+$$
+To optimize this objective function, we can use gradient ascent
+$$
+\begin{equation} \label{eq:gradient_ascent}
+\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta),
+\end{equation}
+$$
+Therefore, our main task is to compute the policy gradient $\nabla_\theta J(\theta)$. 
+
+### Policy Gradient
+
+To compute the policy gradient, we first express the objective function as an summation over the trajectory space following the definition of expectation $\eqref{eq:function_expectation}$:
+$$
+\begin{equation} \label{eq:objective_function_trajectory_sum}
+J(\theta) = \sum_\tau p_\theta(\tau) R(\tau).
+\end{equation}
+$$
+Since the $R(\tau)$ term does not depend on $\theta$, we can take the gradient w.r.t. $\theta$ and move it inside the summation:
+$$
+\nabla_\theta J(\theta) = \sum_\tau  \nabla_\theta p_\theta(\tau) R(\tau).
+$$
+Given the property
+$$
+\begin{equation} \label{eq:log_derivative_trick}
+\nabla_\theta \log p_\theta(\tau) = \frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)},
+\end{equation}
+$$
+we can rewrite the policy gradient as follows:
+$$
+\begin{align}
+\nabla_\theta J(\theta) &= \sum_\tau p_\theta(\tau) \nabla_\theta \log p_\theta(\tau) R(\tau)  \\
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log p_\theta(\tau) R(\tau)\right]. \label{eq:policy_gradient_before_expansion}
+\end{align}
+$$
+We expand $\nabla_\theta \log p_\theta(\tau)$ using the factorization of the trajectory distribution $\eqref{eq:trajectory_probability}$, and the fact that $\log(ab) = \log a + \log b$:
+$$
+\begin{aligned}
+\nabla_\theta \log p_\theta(\tau) &= \nabla_\theta \log \left( p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t) \right) \\
+&= \nabla_\theta \left( 
+    \log p(s_1) + \sum_{t=1}^T \log \pi_\theta(a_t \mid s_t) + \sum_{t=1}^T \log p(s_{t+1}\mid s_t, a_t)
+\right) \\
+&= \nabla_\theta \log p(s_1) + \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) + \sum_{t=1}^T \nabla_\theta \log p(s_{t+1}\mid s_t, a_t).
+\end{aligned}
+$$
+The term $\nabla_\theta \log p(s_1)$ is zero since the initial state distribution does not depend on $\theta$. The term $\nabla_\theta \log p(s_{t+1}\mid s_t, a_t)$ is also zero since the transition probability does not depend on $\theta$. Therefore, we have
+$$
+\begin{equation} \label{eq:log_trajectory_gradient}
+\nabla_\theta \log p_\theta(\tau) = \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t).
+\end{equation}
+$$
+Substituting back into the policy gradient $\eqref{eq:policy_gradient_before_expansion}$:
+$$
+\begin{equation} \label{eq:policy_gradient_final}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right]
+\end{equation}
+$$
+This is the policy gradient, which gives us a way to compute the gradient of the expected return w.r.t. the policy parameters $\theta$ using samples from the trajectory distribution. In practice, we can estimate this policy gradient using **Monte Carlo sampling** by generating trajectories using the current policy and computing the empirical return for each trajectory:
+$$
+\begin{equation} \label{eq:monte_carlo_policy_gradient_estimate}
+\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \right) R(\tau^{(i)}),
+\end{equation}
+$$
+where $\tau^{(i)}$ is the $i$-th trajectory sampled from the current policy, and $N$ is the number of trajectories sampled. This is known as the REINFORCE algorithm.
+
+
+### Policy Gradient with Reward-to-Go
+
+The policy gradient in $\eqref{eq:policy_gradient_final}$ uses the total return $R(\tau)$ for the entire trajectory. However, we can improve the gradient estimation by recognizing that an action taken at time $t$ should only be influenced by the rewards that come after it, not the rewards that came before. This leads to the **reward-to-go** formulation.
+
+The **reward-to-go** at time $t$ is defined as:
+$$
+\begin{equation} \label{eq:reward_to_go}
+G_t = \sum_{t'=t}^T r(s_{t'}, a_{t'}),
+\end{equation}
+$$
+which is the cumulative reward from time $t$ onwards. Note that $G_t$ depends only on future rewards relative to time $t$, not past rewards.
+
+We can rewrite the policy gradient using reward-to-go:
+$$
+\begin{equation} \label{eq:policy_gradient_reward_to_go}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \, G_t\right].
+\end{equation}
+$$
+
+We show that the reward-to-go formulation is still an unbiased estimator of the policy gradient. First, we can split $\eqref{eq:lr-total-return}$ into $B_t$ and $G_t$:
+$$
+\begin{equation} \label{eq:return_split}
+R(\tau) = B_t + G_t, \quad \text{where } B_t = \sum_{t'=1}^{t-1} r(s_{t'}, a_{t'}), \quad G_t = \sum_{t'=t}^T r(s_{t'}, a_{t'}).
+\end{equation}
+$$
+Substituting this back into the original policy gradient $\eqref{eq:policy_gradient_final}$:
+$$
+\begin{align}
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
+&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) (B_t + G_t)\right] \\
+&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] + \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) G_t\right] \\
+\end{align}
+$$
+We want to show that 
+$$
+\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0.
+$$
+Given linearity of expectation, we can show that each term in the summation is zero:
+$$
+\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0.
+$$
+We write the expectation in the summation form:
+$$
+\sum_\tau p_\theta(\tau) \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t.
+$$
+We split the trajectory $\tau$ into three parts: the part before time $t$, the part at time $t$, and the part after time $t$:
+$$
+\tau = (h_t, a_t, f_t), \quad \text{where } h_t = (s_1, a_1, \ldots, s_t), f_t = (s_{t+1}, a_{t+1}, \ldots, s_T, a_T).
+$$
+We can now split the summation over $\tau$ into three summations over $h_t, a_t, f_t$:
+$$
+\sum_{h_t} \sum_{a_t} \sum_{f_t} p_\theta(h_t, a_t, f_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t.
+$$
+Note that term $\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t$ does not depend on $f_t$, so we can sum out the future:
+$$
+\sum_{h_t} \sum_{a_t} p_\theta(h_t, a_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t.
+$$
+We rewrite $p_\theta(h_t, a_t)$ using the chain rule:
+$$
+p_\theta(h_t, a_t) = p_\theta(h_t) p_\theta(a_t \mid h_t) = p_\theta(h_t) \pi_\theta(a_t \mid s_t).
+$$
+We substitute this back into the summation:
+$$
+\sum_{h_t}  p_\theta(h_t) \sum_{a_t} \pi_\theta(a_t \mid s_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t.
+$$
+And since $B_t$ does not depend on $a_t$, we can move it outside the summation:
+$$
+\sum_{h_t}  p_\theta(h_t) B_t \sum_{a_t} \pi_\theta(a_t \mid s_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t).
+$$
+Written in expectation form, we have:
+$$
+\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = \mathbb{E}_{h_t \sim p_\theta(h_t)}\left[B_t \mathbb{E}_{a_t \sim \pi_\theta(a_t \mid s_t)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t)\right]\right].
+$$
+We then compute the inner expectation:
+$$
+\begin{align*}
+\mathbb{E}_{a_t \sim \pi_\theta(a_t \mid s_t)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t)\right] &= \sum_{a_t} \pi_\theta(a_t \mid s_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t) \\
+&= \sum_{a_t} \pi_\theta(a_t \mid s_t) \left( \frac{1}{\pi_\theta(a_t \mid s_t)} \nabla_\theta \pi_\theta(a_t \mid s_t)\right) \\
+&= \sum_{a_t} \nabla_\theta \pi_\theta(a_t \mid s_t) \\
+&= \nabla_\theta \sum_{a_t} \pi_\theta(a_t \mid s_t) \\
+&= \nabla_\theta 1 = 0.
+\end{align*}
+$$
+Therefore, we have shown that
+$$
+\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0,
+$$
+which means that the reward-to-go formulation has the exact same gradient as the original formulation, and is therefore an unbiased estimator of the policy gradient. 
+
+In general, a baseline defined as
+$$
+b(h_t), \quad \text{where } h_t = (s_1, a_1, \ldots, s_t)
+$$
+can be subtracted from the return without changing the expected value of the policy gradient:
+$$
+\begin{equation} \label{eq:policy_gradient_with_baseline}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \left(G_t - b(h_t)\right)\right].
+\end{equation}
+$$
+Note that the baseline can be any function of the history $h_t$ up to time $t$, as long as it does not depend on the action at time $t$ or future actions.
+
+### Value Functions and Advantage Functions
+
+The reward-to-go $G_t$ defined in $\eqref{eq:reward_to_go}$ is a sample-based quantity: for a particular trajectory, it gives the actual cumulative reward obtained from time $t$ onward. In RL, it is often useful to consider the _expected_ future return conditioned on the current state or action. This leads to the definitions of the state-value function, action-value function, and advantage function.
+
+#### State-Value Function
+
+The **state-value function** under policy $\pi$ measures the expected future return starting from state $s$ and then following policy $\pi$ thereafter:
+$$
+\begin{equation} \label{eq:state_value_reward_to_go}
+V^\pi(s_t) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[G_t \mid s_t\right].
+\end{equation}
+$$
+Thus, $G_t$ is a Monte Carlo sample of $V^\pi(s_t)$.
+
+#### Action-Value Function
+
+The **action-value function** under policy $\pi$ measures the expected future return starting from state $s$, taking action $a$, and then following policy $\pi$ thereafter:
+$$
+\begin{equation} \label{eq:action_value_reward_to_go}
+Q^\pi(s_t,a_t) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[G_t \mid s_t,\; a_t\right].
+\end{equation}
+$$
+The difference between $V^\pi(s_t)$ and $Q^\pi(s_t,a_t)$ is that $V^\pi(s_t)$ averages over the action chosen by the policy, while $Q^\pi(s_t,a_t)$ conditions on a particular action being taken.
+
+#### Relationship Between $V^\pi$ and $Q^\pi$
+
+The state-value function is the expectation of the action-value function over the policy:
+$$
+\begin{equation} \label{eq:v_from_q}
+V^\pi(s_t) = \mathbb{E}_{a \sim \pi_\theta(\cdot \mid s_t)}\left[Q^\pi(s_t,a_t)\right].
+\end{equation}
+$$
+For discrete action spaces, this can be written explicitly as
+$$
+\begin{equation} \label{eq:v_from_q_discrete}
+V^\pi(s_t) = \sum_{a} \pi_\theta(a \mid s_t) Q^\pi(s_t,a).
+\end{equation}
+$$
+This equation shows that $V^\pi(s)$ is the average quality of the actions available in state $s$, weighted by how likely the policy is to choose each action.
+
+#### Advantage Function
+
+The **advantage function** compares the value of taking a particular action to the average value of the state:
+$$
+\begin{equation} \label{eq:advantage_function}
+A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s).
+\end{equation}
+$$
+It measures how much better or worse action $a$ is relative to the average action that the policy would take in state $s$.
+- If $A^\pi(s,a) > 0$, then action $a$ is better than average in state $s$.
+- If $A^\pi(s,a) < 0$, then action $a$ is worse than average in state $s$.
+- If $A^\pi(s,a) = 0$, then action $a$ is exactly as good as the policy's average action in state $s$.
+
+Using $\eqref{eq:v_from_q}$, we can also see that the advantage has zero mean under the policy:
+$$
+\begin{align}
+\mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[A^\pi(s,a)\right]
+&= \mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[Q^\pi(s,a) - V^\pi(s)\right] \\
+&= \mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[Q^\pi(s,a)\right] - V^\pi(s) \\
+&= V^\pi(s) - V^\pi(s) = 0. \label{eq:advantage_zero_mean}
+\end{align}
+$$
+This property is important because it explains why subtracting a value baseline does not change the expected policy gradient.
+
+#### Advantage as a Baseline-Corrected Return
+
+From $\eqref{eq:policy_gradient_with_baseline}$, we showed that we may subtract any baseline $b(h_t)$ that does not depend on the sampled action $a_t$ without changing the expected value of the gradient. A particularly important choice is the state-value function:
+$$
+\begin{equation} \label{eq:value_baseline_choice}
+b(h_t) = V^\pi(s_t).
+\end{equation}
+$$
+Substituting this into $\eqref{eq:policy_gradient_with_baseline}$ gives
+$$
+\begin{equation} \label{eq:policy_gradient_with_value_baseline}
+\nabla_\theta J(\theta)
+=
+\mathbb{E}_{\tau \sim p_\theta(\tau)}
+\left[
+\sum_{t=1}^T
+\nabla_\theta \log \pi_\theta(a_t \mid s_t)
+\left(G_t - V^\pi(s_t)\right)
+\right].
+\end{equation}
+$$
+The term
+$$
+\begin{equation} \label{eq:empirical_advantage}
+\hat{A}_t = G_t - V^\pi(s_t)
+\end{equation}
+$$
+can be interpreted as a sample-based estimate of the true advantage $A^\pi(s_t,a_t)$, since
+$$
+\begin{align}
+\mathbb{E}_{\tau \sim p_\pi(\tau)}\left[G_t - V^\pi(s_t) \mid s_t, a_t\right]
+&=
+\mathbb{E}_{\tau \sim p_\pi(\tau)}\left[G_t \mid s_t, a_t\right] - V^\pi(s_t) \\
+&=
+Q^\pi(s_t,a_t) - V^\pi(s_t) \\
+&=
+A^\pi(s_t,a_t). \label{eq:advantage_estimator_unbiased}
+\end{align}
+$$
+Therefore, $G_t - V^\pi(s_t)$ is an unbiased estimator of the advantage.
+
+This gives a useful interpretation of the policy gradient update: actions whose realized return is larger than expected for the current state are encouraged, while actions whose realized return is smaller than expected are discouraged.
+
+### Actor-Critic Methods
+
+REINFORCE is unbiased, but it often has high variance because it uses full sampled returns. Actor-critic methods reduce this variance by introducing a learned critic, which estimates either the state-value function $V^\pi(s)$, the action-value function $Q^\pi(s,a)$, or the advantage function $A^\pi(s,a)$. The actor updates the policy, while the critic provides a lower-variance training signal. We have the following two components in an actor-critic method:
+
+- The **actor** is the policy $\pi_\theta(a \mid s)$
+- The **critic** is a function approximator $V_\phi(s)$
+
+Instead of using the Monte Carlo return $G_t - V^\pi(s_t)$ as the advantage estimator, we can use the critic's estimate of the value function to compute a lower-variance advantage estimator:
+$$
+\begin{equation} \label{eq:critic_advantage_estimator}
+\hat{A}_t \approx G_t - V_\phi(s_t).
+\end{equation}
+$$
+The actor update becomes
+$$
+\begin{equation} \label{eq:actor_update}
+\nabla_\theta J(\theta) \approx \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \hat{A}_t\right].
+\end{equation}
+$$
+The critic is trained to minimize the mean squared error between its value estimates and the observed returns:
+$$
+\begin{equation} \label{eq:critic_loss}
+L(\phi) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \left(V_\phi(s_t) - G_t\right)^2\right].
+\end{equation}
+$$
+The critic can be trained using gradient descent:
+$$
+\begin{equation} \label{eq:critic_update}
+\phi \leftarrow \phi - \beta \nabla_\phi L(\phi),
+\end{equation}
+$$
+where $\beta$ is the learning rate for the critic.

@@ -56,6 +56,12 @@
   \textit{\small#3} \hfill \Date{#4}
 }
 
+\newcommand{\headingjob}[4]{
+  \textbf{#1} \hfill #2 \\
+  \textit{#3} \hfill \Date{#4}
+}
+
+
 % % Heading with 3 arguments: #1: Title, #2: Location, #3: Date
 % \newcommand{\simpleheading}[3]{%
 %   \noindent
@@ -91,13 +97,17 @@
               }%
               \hspace{0.2em} University of Virginia%
           }{Charlottesville, VA}{B.S. in Computer Science with Highest Distinction $(3.9/4.0)$}{August 2021 - May 2025}
-    \item \textbf{Relevant Coursework}: Robotics$^*$, GPU Programming \& Architecture$^*$, Machine Learning, Reinforcement Learning$^*$, Natural Language Processing$^*$, Probabilistic ML$^*$, Optimization$^*$ \\
+    \item \textbf{Relevant Coursework}: Physical Intelligence$^*$, Learning in Robotics$^*$, GPU Programming \& Architecture$^*$, Machine Learning, Reinforcement Learning$^*$, Natural Language Processing$^*$, Probabilistic ML$^*$, Optimization$^*$ \\
           {\footnotesize *Graduate-level courses.}
 \end{itemize}
 
 \section{Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \heading{Embodied Intelligence Research Intern}{Beijing, China}{Spirit AI}{May 2025 - Aug 2025}
+    \item \headingjob{Incoming AI/ML Engineer Intern}{Mountain View, CA}{LinkedIn}{May 2026 - Aug 2026}
+          \begin{itemize}
+              \item Incoming AI/ML Engineer Intern at LinkedIn.
+          \end{itemize}
+    \item \headingjob{Embodied Intelligence Research Intern}{Beijing, China}{Spirit AI}{May 2025 - Aug 2025}
           \begin{itemize}
               \item Trained and deployed Vision-Language-Action (VLA) model variants in PyTorch on a dual-arm robot, experimenting with contrastive objectives, observation-noise curricula, reduced guidance inputs, and mixture-of-experts (MoE).
               \item Designed and implemented DAgger data-collection pipeline for VLA models, including operator-takeover logic and post-training workflows for scaling corrective demonstrations.
@@ -150,8 +160,8 @@
 \begin{itemize}[label={}, leftmargin=0pt]
     \item Lee, Sung-Wook, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``Class: Contrastive learning via action sequence supervision for robot manipulation." \\
           In \textit{Conference on Robot Learning}, pp. 4743-4766. PMLR, 2025. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
-    \item Sethi, Amish*, \textbf{Brandon Y. Yang*}, Yuchen Zheng, Jiani Huang, Jianing Qian, Chris Watson, Junyao Shi, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model". \\
-          Ongoing project.
+          % \item Sethi, Amish*, \textbf{Brandon Y. Yang*}, Yuchen Zheng, Jiani Huang, Jianing Qian, Chris Watson, Junyao Shi, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model". \\
+          %       Ongoing project.
 \end{itemize}
 
 \section{Software Projects}
