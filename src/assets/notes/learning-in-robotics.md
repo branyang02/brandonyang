@@ -3144,10 +3144,12 @@ $$
 We will linearize the dynamics equation around the mean of the previous state estimate $\mu_{k|k}$:
 $$
 \begin{align}
-x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
-&\approx f(\mu_{k|k}, u_k) + \frac{\partial f}{\partial x}\bigg|_{x = \mu_{k|k}} (x_k - \mu_{k|k}) + \epsilon_k 
+\hat{x}_{k+1|k} &= f(\hat{x}_{k|k}, u_k) + \epsilon_k \\
+&\approx f(\mu_{k|k}, u_k) + \frac{\partial f}{\partial x}\bigg|_{x = \mu_{k|k}} (\hat{x}_{k|k} - \mu_{k|k}) + \epsilon_k 
 \end{align}
 $$
+Since we assumed $u_k$ is a fixed control input, we do not need to linearize around $u_k$. If we also want to linearize around $u_k$, we can get an additional Jacobian matrix for the control input, but we will ignore that for now for simplicity.
+
 We denote the Jacobian of $f$ w.r.t. $x$ at the point $\mu_{k|k}$ as
 $$
 \begin{equation} \label{eq:jacobian_f}
@@ -3157,15 +3159,15 @@ $$
 Then we can write the linearized dynamics as
 $$
 \begin{equation} \label{eq:ekf_linearized_dynamics}
-x_{k+1} \approx f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k.
+\hat{x}_{k+1|k} \approx f(\mu_{k|k}, u_k) + A_k (\hat{x}_{k|k} - \mu_{k|k}) + \epsilon_k.
 \end{equation}
 $$
 We can now find the Gaussian parameters of the predicted state estimate $\hat{x}_{k+1|k}$. First we find the mean:
 $$
 \begin{align}
 \mu_{k+1|k} &= \mathbb{E}\left[ \hat{x}_{k+1|k} \right] \\
-&= \mathbb{E}\left[ f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k \right] \\
-&= \mathbb{E} \left[ f(\mu_{k|k}, u_k) \right] + A_k \mathbb{E} \left[ x_k - \mu_{k|k} \right] + \mathbb{E} \left[ \epsilon_k \right] \\
+&= \mathbb{E}\left[ f(\mu_{k|k}, u_k) + A_k (\hat{x}_{k|k} - \mu_{k|k}) + \epsilon_k \right] \\
+&= \mathbb{E} \left[ f(\mu_{k|k}, u_k) \right] + A_k \mathbb{E} \left[ \hat{x}_{k|k} - \mu_{k|k} \right] + \mathbb{E} \left[ \epsilon_k \right] \\
 &= f(\mu_{k|k}, u_k) \label{eq:ekf_prediction_mean}
 \end{align}
 $$
@@ -3173,7 +3175,7 @@ Next we find the covariance:
 $$
 \begin{align}
 \Sigma_{k+1|k} &= \mathrm{Cov}\left( \hat{x}_{k+1|k} \right) \label{eq:ekf_prediction_covariance_initial} \\
-&= \mathrm{Cov}\left( f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k \right) \\
+&= \mathrm{Cov}\left( f(\mu_{k|k}, u_k) + A_k (\hat{x}_{k|k} - \mu_{k|k}) + \epsilon_k \right) \\
 &= A_k \Sigma_{k|k} A_k^\top + R \label{eq:ekf_prediction_covariance}
 \end{align}
 $$
