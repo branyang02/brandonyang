@@ -3148,7 +3148,7 @@ $$
 &\approx f(\mu_{k|k}, u_k) + \frac{\partial f}{\partial x}\bigg|_{x = \mu_{k|k}} (\hat{x}_{k|k} - \mu_{k|k}) + \epsilon_k 
 \end{align}
 $$
-Since we assumed $u_k$ is a fixed control input, we do not need to linearize around $u_k$. If we also want to linearize around $u_k$, we can get an additional Jacobian matrix for the control input, but we will ignore that for now for simplicity.
+Since $u_k$ is assumed to be a known deterministic control input, we treat it as fixed during linearization. Thus we linearize $f\left(x_k, u_k\right)$ only with respect to the state variable $x_k$, around $x_k=\mu_{k \mid k}$. Formally, the expansion point is $\left(\mu_{k \mid k}, u_k\right)$, but the first-order term in $u$ vanishes because $u_k-u_k=0$. If we instead modeled the control as uncertain and expanded around a nominal control $\bar{u}_k$, then an additional Jacobian term with respect to the control input would appear.
 
 We denote the Jacobian of $f$ w.r.t. $x$ at the point $\mu_{k|k}$ as
 $$
