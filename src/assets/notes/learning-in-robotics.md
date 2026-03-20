@@ -2810,7 +2810,7 @@ $$
 \end{equation}
 $$
 
-#### Incorporating Gaussian Observations of a State
+### Kalman Gain
 
 Now, suppose we have a sensor that gives us observations of the state. We consider a special type of sensor that gives observations
 $$
@@ -2895,6 +2895,342 @@ $$
 \Sigma_{\hat{X}}^{-1} &= \Sigma_{\hat{X}'}^{-1} + C^T Q^{-1} C \\
 K &= \Sigma_{\hat{X}} C^T Q^{-1} \label{eq:kalman_gain_alternative_expression} \\
 \hat{X} &= \hat{X}' + \Sigma_{\hat{X}} C^T Q^{-1} \left(Y - C\hat{X}'\right) \label{eq:final_estimator_observation_alternative_expression}
+\end{align}
+$$
+
+### Linear and Nonlinear Dynamical Systems
+
+In many problems, we care about how the **state** of a system evolves over time. We can model the state evolution as a dynamical system. 
+
+A **continuous-time signal** is a function of real time:
+$$
+y: \mathbb{R} \rightarrow \mathbb{R}, \quad t \mapsto y(t) .
+$$
+A **discrete-time signal** is a function defined only at integer time steps:
+$$
+y: \mathbb{Z} \rightarrow \mathbb{R}, \quad k \mapsto y_k
+$$
+
+A **dynamical system** is simply a system that takes a control input $u(t)$ which changes the state of the system $x(t)$ over time. A system is linear if it satisfies superposition:
+
+If
+$$
+u_1 \mapsto y_1, \quad u_2 \mapsto y_2,
+$$
+then for any scalars $\alpha_1, \alpha_2 \in \mathbb{R}$, we have
+$$
+\alpha_1 u_1 + \alpha_2 u_2 \mapsto \alpha_1 y_1 + \alpha_2 y_2.
+$$
+
+For example, suppose a mass move along a line. Let
+- $z(t)$: position
+- $u(t)$: applied force
+- $m$: mass
+- $c$: damping coefficient
+- $k$: string constant
+The equation of motion is 
+$$
+m \ddot{z}(t) + c \dot{z}(t) + k z(t) = u(t),
+$$
+which is a second-order linear dynamical system. We can rewrite this as a first-order system by defining the state variables
+$$
+z_1(t) = z(t), \quad z_2(t) = \dot{z}(t).
+$$
+We can clearly see that $\dot{z}_1(t) = z_2(t)$, and from the original equation of motion, we have
+$$
+\dot{z}_2(t)=-\frac{k}{m} z_1(t)-\frac{c}{m} z_2(t)+\frac{1}{m} u(t).
+$$
+We define the state vector to be
+$$
+x(t) = \begin{bmatrix}z_1(t) \\ z_2(t) \end{bmatrix},
+$$
+then we can write the system dynamics in matrix form as
+$$
+\dot{x}(t)=\begin{bmatrix}\dot{z}_1(t) \\ \dot{z}_2(t) \end{bmatrix} = 
+\left[\begin{array}{cc}
+0 & 1 \\
+-\frac{k}{m} & -\frac{c}{m}
+\end{array}\right] x(t)+\left[\begin{array}{c}
+0 \\
+\frac{1}{m}
+\end{array}\right] u(t) .
+$$
+
+We can now model a robot system:
+- $x(t) \in \mathbb{R}^d$: state of the robot
+- $u(t) \in \mathbb{R}^m$: control input to the robot
+- $y(t) \in \mathbb{R}^p$: observation of the robot state
+The robot dynamics can be modeled as a linear dynamical system:
+$$
+\begin{equation} \label{eq:linear_dynamical_system}
+\begin{aligned}
+\dot{x}(t) &= A x(t) + B u(t) \\
+y(t) &= C x(t) + D u(t) 
+\end{aligned}
+\end{equation}
+$$
+where 
+- $A \in \mathbb{R}^{d \times d}$ is the state transition matrix
+- $B \in \mathbb{R}^{d \times m}$ is the control input matrix
+- $C \in \mathbb{R}^{p \times d}$ is the sensor's mapping from state to observation
+- $D \in \mathbb{R}^{p \times m}$ is the sensor's mapping from control input to observation (often not present in many systems)
+
+In the case of nonlinear dynamical systems, the dynamics can be expressed as
+$$
+\begin{equation} \label{eq:nonlinear_dynamical_system}
+\begin{aligned}
+\dot{x}(t) &= f(x(t), u(t)) \\
+y(t) &= g(x(t), u(t))
+\end{aligned}
+\end{equation}
+$$
+where
+- $f: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^d$ is the state transition function
+- $g: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^p$ is the observation function, and it could ignore the control input $u(t)$ and only depend on the state $x(t)$.
+
+### HMMs and MDPs
+
+Markov Decision Processes (MDPs) models
+$$
+\begin{aligned}
+x_{k+1} &\sim p(x_{k+1} \mid x_k, u_k) \\
+y_k &\sim p(y_k \mid x_k)
+\end{aligned}
+$$
+This can be alternatively called a **stochastic dynamical system** modeled as the following for nonlinear dynamics:
+$$
+\begin{aligned}
+x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
+y_k &= g(x_k) + \nu_k
+\end{aligned}
+$$
+Or in the linear case:
+$$
+\begin{aligned}
+x_{k+1} &= A x_k + B u_k + \epsilon_k \\
+y_k &= C x_k + \nu_k
+\end{aligned}
+$$
+where $\epsilon_k$ and $\nu_k$ are zero-mean Gaussian noise:
+$$
+\epsilon_k \sim \mathcal{N}(0, R), \quad \nu_k \sim \mathcal{N}(0, Q)
+$$
+
+### Kalman Filter
+Consider a linear dynamical system:
+$$
+\begin{equation} \label{eq:kalman_filter_dynamical_system}
+\begin{aligned}
+x_{k+1} &= A x_k + B u_k + \epsilon_k \\
+y_k &= C x_k + \nu_k
+\end{aligned}
+\end{equation}
+$$
+with noise vectors
+$$
+\begin{aligned}
+\epsilon_k &\sim \mathcal{N}(0, R), \quad R \in \mathbb{R}^{d \times d} \\
+\nu_k &\sim \mathcal{N}(0, Q), \quad Q \in \mathbb{R}^{p \times p}
+\end{aligned}
+$$
+Our goal is to compute the best estimate of the state after multiple observations by solving the filtering problem $\eqref{eq:hmm_filtering_problem}$.
+
+Since all operations are linear and all noise is Gaussian, if we assume the initial state $x_0$ is Gaussian, then the state at any time step $k$ will also be Gaussian. We denote the filtering problem solution at time step $k$ as
+$$
+\begin{equation} \label{eq:kalman_filter_estimate}
+\hat{x}_{k|k} \sim \mathrm{P}(x_k \mid y_{1:k}) = \mathcal{N}(\mu_{k|k}, \Sigma_{k|k})
+\end{equation}
+$$
+where the subscript $k|k$ denotes that this is the estimate of $x_k$ given observations up to time step $k$. We assume to have the initial state estimates:
+$$
+\hat{x}_{0|0} \sim \mathcal{N}(\mu_{0|0}, \Sigma_{0|0}),
+$$
+
+#### Propagation Step
+Suppose we have estimate $\hat{x}_{k|k}$ , we can use the prediction problem $\eqref{eq:hmm_prediction_problem}$ to compute the estimate of the state at time $k+1$ given observations up to time step $k$:
+$$
+\begin{equation} \label{eq:kalman_filter_prediction}
+\hat{x}_{k+1|k} \sim \mathrm{P}(x_{k+1} \mid y_{1:k}) = \mathcal{N}(\mu_{k+1|k}, \Sigma_{k+1|k})
+\end{equation}
+$$
+The dynamics of the system is given by $\eqref{eq:kalman_filter_dynamical_system}$:
+$$
+\begin{equation} \label{eq:kalman_filter_dynamics_part_1}
+\hat{x}_{k+1|k} = A \hat{x}_{k|k} + B u_k + \epsilon_k
+\end{equation}
+$$
+We can now find the Gaussian parameters of $\hat{x}_{k+1|k}$. First we find the mean:
+$$
+\begin{align}
+\mu_{k+1|k} &= \mathbb{E}\left[ \hat{x}_{k+1|k} \right] \\
+&= \mathbb{E}\left[ A \hat{x}_{k|k} + B u_k + \epsilon_k \right] \\
+&= A \mu_{k|k} + B u_k \label{eq:kalman_filter_prediction_mean}
+\end{align}
+$$
+Next we find the covariance:
+$$
+\begin{align}
+\Sigma_{k+1|k} &= \mathrm{Cov}\left( \hat{x}_{k+1|k} \right) \\
+&= \mathrm{Cov}\left( A \hat{x}_{k|k} + B u_k + \epsilon_k \right) \\
+&= A \Sigma_{k|k} A^\top + R \label{eq:kalman_filter_prediction_covariance}
+\end{align}
+$$
+
+#### Update Step
+Now that we have a new estimate of the state $\hat{x}_{k+1|k}$, we can use the new observation $y_{k+1}$ to update our estimate of the state at time step $k+1$. The dynamics of the system is given by $\eqref{eq:kalman_filter_dynamical_system}$:
+$$
+\begin{equation} \label{eq:kalman_filter_dynamics_part_2}
+y_{k+1} = C x_{k+1} + \nu_{k+1}
+\end{equation}
+$$
+We first compute the Kalman gain following $\eqref{eq:optimal_weight_observation}$:
+$$
+\begin{equation} \label{eq:kalman_gain_kalman_filter}
+K_{k+1} = \Sigma_{k+1|k} C^\top \left(C \Sigma_{k+1|k} C^\top + Q\right)^{-1}.
+\end{equation}
+$$
+Then we can update our state estimate using the new observation following $\eqref{eq:linear_combination_observation_innovation_form}$:
+$$
+\begin{equation} \label{eq:kalman_filter_update}
+\hat{x}_{k+1|k+1} = \hat{x}_{k+1|k} + K_{k+1} \left(y_{k+1} - C \hat{x}_{k+1|k}\right).
+\end{equation}
+$$
+We can now find the Gaussian parameters of $\hat{x}_{k+1|k+1}$. First we find the mean:
+$$
+\begin{align}
+\mu_{k+1|k+1} &= \mathbb{E}\left[ \hat{x}_{k+1|k+1} \right] \\
+&= \mathbb{E}\left[ \hat{x}_{k+1|k} + K_{k+1} \left(y_{k+1} - C \hat{x}_{k+1|k}\right) \right] \\
+&= \mu_{k+1|k} + K_{k+1} \left( y_{k+1} - C \mu_{k+1|k} \right) \\
+\end{align}
+$$
+Next we find the covariance following $\eqref{eq:optimal_covariance_observation}$:
+$$
+\begin{align}
+\Sigma_{k+1|k+1} &= \left(I - K_{k+1} C \right) \Sigma_{k+1|k} \label{eq:kalman_filter_update_covariance} \\
+&= \left(I - K_{k+1} C \right) \Sigma_{k+1|k} \left(I - K_{k+1} C \right)^\top + K_{k+1} Q K_{k+1}^\top \label{eq:kalman_filter_update_covariance_alternative} \\
+&= \left( \Sigma_{k+1|k}^{-1} + C^\top Q^{-1} C \right)^{-1} \label{eq:kalman_filter_update_covariance_final}
+\end{align}
+$$
+All three expressions for the covariance of the updated state estimate are equivalent. We then repeat the propagation step and update step for each time step to get the state estimates at all time steps.
+
+### Extended Kalman Filter (EKF)
+
+The Extended Kalman Filter (EKF) is an extension of the standard Kalman Filter that can handle nonlinear systems. It linearizes the nonlinear functions around the current estimate and applies the standard Kalman Filter equations to the linearized system.
+
+Consider the following nonlinear dynamical system:
+$$
+\begin{equation} \label{eq:ekf_dynamical_system}
+\begin{aligned}
+x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
+y_k &= g(x_k) + \nu_k 
+\end{aligned}
+\end{equation}
+$$
+with
+$$
+\begin{aligned}
+&x_k \in \mathbb{R}^d, \quad u_k \in \mathbb{R}^m, \quad y_k \in \mathbb{R}^p \\
+&\epsilon_k \sim \mathcal{N}(0, R), \quad R \in \mathbb{R}^{d \times d}, \quad \nu_k \sim \mathcal{N}(0, Q), \quad Q \in \mathbb{R}^{p \times p} \\
+&f: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^d, \quad g: \mathbb{R}^d \to \mathbb{R}^p
+\end{aligned}
+$$
+We again assume to have Gaussian initial state estimates:
+$$
+\hat{x}_{0|0} \sim \mathcal{N}(\mu_{0|0}, \Sigma_{0|0}).
+$$
+
+#### Propagation Step
+
+We will linearize the dynamics equation around the mean of the previous state estimate $\mu_{k|k}$:
+$$
+\begin{align}
+x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
+&\approx f(\mu_{k|k}, u_k) + \frac{\partial f}{\partial x}\bigg|_{x = \mu_{k|k}} (x_k - \mu_{k|k}) + \epsilon_k 
+\end{align}
+$$
+We denote the Jacobian of $f$ w.r.t. $x$ at the point $\mu_{k|k}$ as
+$$
+\begin{equation} \label{eq:jacobian_f}
+A_k = \frac{\partial f}{\partial x}\bigg|_{x = \mu_{k|k}}, \quad A_k \in \mathbb{R}^{d \times d}.
+\end{equation}
+$$
+Then we can write the linearized dynamics as
+$$
+\begin{equation} \label{eq:ekf_linearized_dynamics}
+x_{k+1} \approx f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k.
+\end{equation}
+$$
+We can now find the Gaussian parameters of the predicted state estimate $\hat{x}_{k+1|k}$. First we find the mean:
+$$
+\begin{align}
+\mu_{k+1|k} &= \mathbb{E}\left[ \hat{x}_{k+1|k} \right] \\
+&= \mathbb{E}\left[ f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k \right] \\
+&= \mathbb{E} \left[ f(\mu_{k|k}, u_k) \right] + A_k \mathbb{E} \left[ x_k - \mu_{k|k} \right] + \mathbb{E} \left[ \epsilon_k \right] \\
+&= f(\mu_{k|k}, u_k) \label{eq:ekf_prediction_mean}
+\end{align}
+$$
+Next we find the covariance:
+$$
+\begin{align}
+\Sigma_{k+1|k} &= \mathrm{Cov}\left( \hat{x}_{k+1|k} \right) \label{eq:ekf_prediction_covariance_initial} \\
+&= \mathrm{Cov}\left( f(\mu_{k|k}, u_k) + A_k (x_k - \mu_{k|k}) + \epsilon_k \right) \\
+&= A_k \Sigma_{k|k} A_k^\top + R \label{eq:ekf_prediction_covariance}
+\end{align}
+$$
+
+#### Update Step
+
+We will linearize the observation equation around the mean of the predicted state estimate $\mu_{k+1|k}$:
+$$
+\begin{align}
+y_{k+1} &= g(x_{k+1}) + \nu_{k+1} \\
+&\approx g(\mu_{k+1|k}) + \frac{\partial g}{\partial x}\bigg|_{x = \mu_{k+1|k}} (x_{k+1} - \mu_{k+1|k}) + \nu_{k+1}
+\end{align}
+$$
+We denote the Jacobian of $g$ w.r.t. $x$ at the point $\mu_{k+1|k}$ as
+$$
+\begin{equation} \label{eq:jacobian_g}
+C_{k+1} = \frac{\partial g}{\partial x}\bigg|_{x = \mu_{k+1|k}}, \quad C_{k+1} \in \mathbb{R}^{p \times d}.
+\end{equation}
+$$
+Then we can write the linearized observation equation as
+$$
+\begin{equation} \label{eq:ekf_linearized_observation}
+y_{k+1} \approx g(\mu_{k+1|k}) + C_{k+1} (x_{k+1} - \mu_{k+1|k}) + \nu_{k+1}.
+\end{equation}
+$$
+Suppose we have a fake observation $y_{k+1}'$ that is a transformed version of the actual observation $y_{k+1}$. We rearrange $\eqref{eq:ekf_linearized_observation}$ to get
+$$
+\begin{equation} \label{eq:fake_observation}
+y_{k+1}' = y_{k+1} - g(\mu_{k+1|k}) + C_{k+1} \mu_{k+1|k} \approx C_{k+1} x_{k+1} + \nu_{k+1}
+\end{equation}
+$$
+$y_{k+1}'$ is a linear function of the state $x_{k+1}$ so we can therefore use the Kalman gain formula $\eqref{eq:optimal_weight_observation}$ to compute the Kalman gain for the EKF. 
+$$
+\begin{equation} \label{eq:kalman_gain_ekf}
+K_{k+1} = \Sigma_{k+1|k} C_{k+1}^\top \left(C_{k+1} \Sigma_{k+1|k} C_{k+1}^\top + Q\right)^{-1}.
+\end{equation}
+$$
+Then we can update our state estimate using the fake observation $y_{k+1}'$ following $\eqref{eq:linear_combination_observation_innovation_form}$:
+$$
+\begin{align} 
+\hat{x}_{k+1|k+1} &= \hat{x}_{k+1|k} + K_{k+1} \left(y_{k+1}' - C_{k+1} \hat{x}_{k+1|k}\right) \label{eq:ekf_update_fake_observation} \\
+&= \hat{x}_{k+1|k} + K_{k+1} \left(\left(y_{k+1} - g(\mu_{k+1|k}) + C_{k+1} \mu_{k+1|k} \right) - C_{k+1} \hat{x}_{k+1|k}\right) \label{eq:ekf_update_actual_observation}
+\end{align}
+$$
+We can now find the Gaussian parameters of $\hat{x}_{k+1|k+1}$. First we find the mean:
+$$
+\begin{align}
+\mu_{k+1|k+1} &= \mathbb{E}\left[ \hat{x}_{k+1|k+1} \right] \\
+&= \mathbb{E}\left[ \hat{x}_{k+1|k} + K_{k+1} \left(\left(y_{k+1} - g(\mu_{k+1|k}) + C_{k+1} \mu_{k+1|k} \right) - C_{k+1} \hat{x}_{k+1|k}\right) \right] \\
+&= \mu_{k+1|k} + K_{k+1} \left( \mathbb{E}\left[ y_{k+1} - g(\mu_{k+1|k}) \right] + \mathbb{E}\left[C_{k+1} \mu_{k+1|k} \right] - \mathbb{E}\left[ C_{k+1} \hat{x}_{k+1|k} \right] \right) \\
+&= \mu_{k+1|k} + K_{k+1} \left( y_{k+1} - g(\mu_{k+1|k}) \right)
+\end{align}
+$$
+Next we find the covariance following $\eqref{eq:kalman_filter_update_covariance}$:
+$$
+\begin{align}
+\Sigma_{k+1|k+1} &= \left(I - K_{k+1} C_{k+1} \right) \Sigma_{k+1|k} \label{eq:ekf_update_covariance}
 \end{align}
 $$
 
