@@ -3236,6 +3236,154 @@ $$
 \end{align}
 $$
 
+### Uncented Kalman Filter (UKF)
+
+UKF is a more accurate way of handling nonlinear systems than EKF. Consider the setting of the same nonlinear dynamical system as EKF:
+$$
+\begin{equation} \label{eq:ukf_dynamical_system}
+\begin{aligned}
+x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
+y_k &= g(x_k) + \nu_k 
+\end{aligned}
+\end{equation}
+$$
+with
+$$
+\begin{aligned}
+&x_k \in \mathbb{R}^d, \quad u_k \in \mathbb{R}^m, \quad y_k \in \mathbb{R}^p \\
+&\epsilon_k \sim \mathcal{N}(0, R), \quad R \in \mathbb{R}^{d \times d}, \quad \nu_k \sim \mathcal{N}(0, Q), \quad Q \in \mathbb{R}^{p \times p} \\
+&f: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^d, \quad g: \mathbb{R}^d \to \mathbb{R}^p
+\end{aligned}
+$$
+We again assume to have Gaussian initial state estimates:
+$$
+\hat{x}_{0|0} \sim \mathcal{N}(\mu_{0|0}, \Sigma_{0|0}).
+$$
+
+We define **sigma points**:
+$$
+\begin{equation} \label{eq:sigma_points}
+\text{Sigma Points} = \left\{ x^{(1)}, \ldots, x^{(2d)} \right\}, \quad x^{(i)} \in \mathbb{R}^d
+\end{equation}
+$$
+we denote $x_{k|k}^{(i)}$ to be the $i$-th sigma point corresponding to the state estimate $\hat{x}_{k|k}$. 
+
+#### Propagation Step
+The sigma points at the propagation step are computed as follows
+$$
+\begin{equation}
+\begin{aligned}
+x_{k|k}^{(i)} &= \mu_{k|k} + \left(\sqrt{d \Sigma_{k|k}} \right)_i^\top \\
+x_{k|k}^{(d + i)} &= \mu_{k|k} - \left(\sqrt{d \Sigma_{k|k}} \right)_i^\top \\
+\end{aligned}, \quad i = 1, \ldots, d,
+\end{equation}
+$$
+
+<details><summary> Matrix Square Root</summary>
+
+Given a positive definite matrix $\Sigma \in \mathbb{R}^{d \times d}$, we can compute its square root $\sqrt{\Sigma}$ using SVD.
+$$
+\Sigma = V D V^\top = V D V^{-1}, \quad D = \mathrm{diag}(\lambda_1, \ldots, \lambda_d)
+$$
+where $\lambda_1, \ldots, \lambda_d$ are the eigenvalues of $\Sigma$. 
+
+Suppose we have
+$$
+\Sigma = SS,
+$$
+then we have the following
+$$
+SS = V D^{1/2} V^{-1} V D^{1/2} V^{-1} = V D V^{-1} = \Sigma.
+$$
+Therefore, we can compute the matrix square root as
+$$
+\sqrt{\Sigma} = V D^{1/2} V^{-1}, \quad D^{1/2} = \mathrm{diag}(\sqrt{\lambda_1}, \ldots, \sqrt{\lambda_d}), \quad \sqrt{\Sigma} \in \mathbb{R}^{d \times d}.
+$$
+
+</details>
+
+where $\left(\sqrt{d \Sigma_{k|k}} \right)_i \in \mathbb{R}^{1 \times d}$ is the $i$-th row of the matrix $\sqrt{d \Sigma_{k|k}}$. 
+
+We define a scalar weight for each sigma point:
+$$
+\begin{equation} \label{eq:sigma_point_weights}
+w^{(i)} = \frac{1}{2d}, \quad i = 1, \ldots, 2d.
+\end{equation}
+$$
+
+
+We can now propagate each sigma point through the nonlinear dynamics to estimate $\hat{x}_{k+1|k} \sim \mathcal{N}(\mu_{k+1|k}, \Sigma_{k+1|k})$:
+$$
+\begin{equation} \label{eq:ukf_propagation_mean}
+\begin{aligned}
+\mu_{k+1|k} &= \sum_{i=1}^{2d} w^{(i)} f\left(x_{k|k}^{(i)}, u_k\right) \\
+\Sigma_{k+1|k} &= R + \sum_{i=1}^{2d} w^{(i)} \left(f\left(x_{k|k}^{(i)}, u_k\right) - \mu_{k+1|k}\right) \left(f\left(x_{k|k}^{(i)}, u_k\right) - \mu_{k+1|k}\right)^\top
+\end{aligned}
+\end{equation}
+$$
+
+#### Update Step
+
+We compute new sigma points based on the predicted state estimate $\hat{x}_{k+1|k}$:
+$$
+\begin{equation}
+\begin{aligned}
+x_{k+1|k}^{(i)} &= \mu_{k+1|k} + \left(\sqrt{d \Sigma_{k+1|k}} \right)_i^\top \\
+x_{k+1|k}^{(d + i)} &= \mu_{k+1|k} - \left(\sqrt{d \Sigma_{k+1|k}} \right)_i^\top \\
+\end{aligned}, \quad i = 1, \ldots, d,
+\end{equation}
+$$
+We again define a scalar weight for each sigma point:
+$$
+\begin{equation}
+w^{(i)} = \frac{1}{2d}, \quad i = 1, \ldots, 2d.
+\end{equation}
+$$
+To find the Kalman Gain, we first compute the mean of the sigma points after passing through the observation function $g$:
+$$
+\begin{equation} \label{eq:ukf_update_observation_mean}
+\mu_{y} = \sum_{i=1}^{2d} w^{(i)} g\left(x_{k+1|k}^{(i)}\right)
+\end{equation}
+$$
+Then we compute the measure covariance of the sigma points after passing through the observation function $g$:
+$$
+\begin{equation} \label{eq:ukf_update_observation_covariance}
+\Sigma_{y y} = Q + \sum_{i=1}^{2d} w^{(i)} \left(g\left(x_{k+1|k}^{(i)}\right) - \mu_{y}\right) \left(g\left(x_{k+1|k}^{(i)}\right) - \mu_{y}\right)^\top
+\end{equation}
+$$
+Finally, we compute the cross covariance between the state and the observation:
+$$
+\begin{equation} \label{eq:ukf_update_cross_covariance}
+\Sigma_{x y} = \sum_{i=1}^{2d} w^{(i)} \left(x_{k+1|k}^{(i)} - \mu_{k+1|k}\right) \left(g\left(x_{k+1|k}^{(i)}\right) - \mu_{y}\right)^\top
+\end{equation}
+$$
+We observe that:
+$$
+\Sigma_{y y} \in \mathbb{R}^{p \times p}, \quad \Sigma_{x y} \in \mathbb{R}^{d \times p}
+$$
+
+Given the Kalman Gain for UKF:
+$$
+\begin{equation} \label{eq:kalman_gain_ukf}
+K=\Sigma_{x y} \Sigma_{y y}^{-1}, \quad K \in \mathbb{R}^{d \times p}
+\end{equation}
+$$
+
+<details><summary>Deriving the Kalman Gain for UKF</summary>
+
+TODO
+
+</details>
+
+We use the Kalman Gain to estimate $\hat{x}_{k+1|k+1} \sim \mathcal{N}(\mu_{k+1|k+1}, \Sigma_{k+1|k+1})$:
+$$
+\begin{align}
+\mu_{k+1|k+1} &= \mu_{k+1|k} + K \left(y_{k+1} - \mu_{y}\right) \label{eq:ukf_update_mean} \\
+\Sigma_{k+1|k+1} &= \Sigma_{k+1|k} - \Sigma_{x y} \Sigma_{y y}^{-1} \Sigma_{y x} \label{eq:ukf_update_covariance} \\
+&= \Sigma_{k+1|k} - K \Sigma_{yy} K^\top \label{eq:ukf_update_covariance_alternative}
+\end{align}
+$$
+
 
 ## Reinforcement Learning
 
