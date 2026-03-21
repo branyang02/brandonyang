@@ -698,6 +698,17 @@ $$
 p(x \mid y, z) = p(x \mid z).
 \end{equation}
 $$
+We extend the Law of Total Probability $\eqref{eq:total_probability}$ to use Random Variables:
+$$
+\begin{equation} \label{eq:total_probability_rv_discrete}
+p_Y(y) = \sum_{x} p_{Y \mid X}(y \mid x) p_X(x).
+\end{equation}
+$$
+$$
+\begin{equation} \label{eq:total_probability_rv_continuous}
+f_Y(y) = \int_{-\infty}^{\infty} f_{Y \mid X}(y \mid x) f_X(x) \, dx.
+\end{equation}
+$$
 
 We extend Bayes' Theorem $\eqref{eq:bayes_theorem}$ to use Random Variables:
 $$
@@ -3383,6 +3394,549 @@ $$
 &= \Sigma_{k+1|k} - K \Sigma_{yy} K^\top \label{eq:ukf_update_covariance_alternative}
 \end{align}
 $$
+
+### Particle Filter
+
+We now extend UKF to handle non-Gaussian filtering problems. They key building block of particle filters is importance sampling.
+
+#### Importance Sampling
+
+Given a target distribution $p(x)$ that we want to sample from, we can approximate it with $\hat{p}(x)$ modeled as a weighted sum of Dirac-delta functions:
+$$
+\begin{equation} \label{eq:particle_filter_approximation}
+\hat{p}(x) = \sum_{i=1}^n w^{(i)} \delta_{x^{(i)}}(x)
+\end{equation}
+$$
+where $x^{(i)}$ is the $i$-th sample and $w^{(i)}$ is the corresponding weight. The Dirac delta at $x^{(i)}$ written as $\delta_{x^{(i)}}(x)$ is a distribution that puts all its mass at $x^{(i)}$:
+$$
+\delta_{x^{(i)}}(x) = \begin{cases}
+\infty, & x = x^{(i)} \\
+0, & x \neq x^{(i)}
+\end{cases}
+$$
+and it satisfies the property that for any function $f$,
+$$
+\begin{equation} \label{eq:dirac_delta_property}
+\int f(x) \delta_{x^{(i)}}(x) dx = f(x^{(i)}).
+\end{equation}
+$$
+For example, to compute the expectation of $\hat{p}(x)$ for some function $f$, we can do the following:
+$$
+\begin{align}
+\mathbb{E}_{x \sim \hat{p}(x)}[f(x)] &= \int f(x) \hat{p}(x) dx \\
+&= \int f(x) \sum_{i=1}^n w^{(i)} \delta_{x^{(i)}}(x) dx \\
+&= \sum_{i=1}^n w^{(i)} \int f(x) \delta_{x^{(i)}}(x) dx \\
+&= \sum_{i=1}^n w^{(i)} f(x^{(i)}) \label{eq:expectation_particle_filter}
+\end{align}
+$$
+To make sure $\hat{p}(x)$ approximates the **target distribution** $p(x)$ well, we can use importance sampling. Given a **proposal distribution** $q(x)$ that we can easily sample from (such as Gaussian), we can sample $x^{(i)} \sim q(x)$ for $i = 1, \ldots, n$ and assign weights to each sample as follows:
+$$
+\begin{equation} \label{eq:importance_sampling_weights}
+\tilde{w}^{(i)} = \frac{p(x^{(i)})}{q(x^{(i)})}, \quad i = 1, \ldots, n.
+\end{equation}
+$$
+We can then normalize the weights to get a valid probability distribution in $\eqref{eq:particle_filter_approximation}$:
+$$
+\begin{equation} \label{eq:importance_sampling_normalized_weights}
+w^{(i)} = \frac{\tilde{w}^{(i)}}{\sum_{j=1}^n \tilde{w}^{(j)}}, \quad i = 1, \ldots, n.
+\end{equation}
+$$
+
+<details><summary>Example of Importance Sampling</summary>
+
+Let the target be:
+$$
+p(x) = \mathcal{N}(0, 1)
+$$
+and the proposal be:
+$$
+q(x) = \mathcal{N}(2, 4).
+$$
+Suppose we draw 5 examples from $q(x)$:
+$$
+x^{(1)}=-1, \quad x^{(2)}=0, \quad x^{(3)}=1, \quad x^{(4)}=2, \quad x^{(5)}=4
+$$
+Then we can compute the unnormalized weights for each sample as follows:
+$$
+\tilde{w}^{(i)}=\frac{p\left(x^{(i)}\right)}{q\left(x^{(i)}\right)}
+$$
+Using the formula for Gaussian distribution:
+- $p(-1) \approx 0.242, q(-1) \approx 0.065$, so $\tilde{w}^{(1)} \approx 3.72$
+- $p(0) \approx 0.399, q(0) \approx 0.121$, so $\tilde{w}^{(2)} \approx 3.30$
+- $p(1) \approx 0.242, q(1) \approx 0.176$, so $\tilde{w}^{(3)} \approx 1.37$
+- $p(2) \approx 0.054, q(2) \approx 0.199$, so $\tilde{w}^{(4)} \approx 0.27$
+- $p(4) \approx 0.000134, q(4) \approx 0.121$, so $\tilde{w}^{(5)} \approx 0.0011$
+
+We then normalize the weights:
+$$
+w^{(i)} = \frac{\tilde{w}^{(i)}}{\sum_{j=1}^5 \tilde{w}^{(j)}}
+$$
+- $w^{(1)} \approx 0.43$
+- $w^{(2)} \approx 0.38$
+- $w^{(3)} \approx 0.16$
+- $w^{(4)} \approx 0.03$
+- $w^{(5)} \approx 0.0001$
+
+We can see that $x^{(5)} = 4$ has a very small weight because it is very unlikely to be drawn from the target distribution $p(x)$. Therefore, the weighted approximation $\hat{p}(x)$ becomes
+$$
+\hat{p}(x) = 0.43 \delta_{-1}(x) + 0.38 \delta_{0}(x) + 0.16 \delta_{1}(x) + 0.03 \delta_{2}(x) + 0.0001 \delta_{4}(x)
+$$
+We can take the expectation of $\hat{p}(x)$ following $\eqref{eq:expectation_particle_filter}$:
+$$
+\mathbb{E}_{x \sim \hat{p}(x)}[X] = 0.43 (-1) + 0.38 (0) + 0.16 (1) + 0.03 (2) + 0.0001 (4) \approx -0.21
+$$
+Which is somewhat close to the true expectation of $p(x)$ which is 0. The approximation can be improved by drawing more samples from the proposal distribution.
+
+```execute-python
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(0)
+
+# target p(x) = N(0,1), proposal q(x) = N(2,4) = N(2, 2^2)
+n = 60
+x = np.random.normal(loc=2, scale=2, size=n)
+
+def normal_pdf(x, mu, sigma):
+    return np.exp(-0.5 * ((x - mu) / sigma) ** 2) / (sigma * np.sqrt(2 * np.pi))
+
+p = normal_pdf(x, 0, 1)
+q = normal_pdf(x, 2, 2)
+w = (p / q)
+w /= w.sum()
+
+# plot p, q, and weighted particles
+xx = np.linspace(-5, 8, 400)
+plt.plot(xx, normal_pdf(xx, 0, 1), label='p(x) = N(0,1)')
+plt.plot(xx, normal_pdf(xx, 2, 2), label='q(x) = N(2,4)')
+plt.stem(x, w, basefmt=" ", label='weighted particles')
+plt.legend()
+plt.xlabel("x")
+plt.ylabel("density / weight")
+plt.title("Importance Sampling Example")
+
+get_image(plt)
+```
+
+</details>
+
+#### Resampling
+
+After a while, often only a few particles have large weight, and most particles have almost zero weight. Then the approximation is effectively being carried by only a few samples.
+
+Resampling fixes this by:
+
+- duplicating particles with large weights
+- removing particles with tiny weights
+
+So it converts a weighted particle set into an unweighted one that still approximates the same distribution.
+
+Given normalized weights $w^{(1)}, \ldots, w^{(n)}$ for the particles $x^{(1)}, \ldots, x^{(n)}$, we can lay them on the interval $[0, 1]$ as cumulative sums where each segment corresponds to the weight $w^{(i)}$.
+
+To resample, we draw a random scalar:
+$$
+r \sim \mathrm{Uniform}\left(0, \frac{1}{n}\right).
+$$
+Then we construct $n$ equally spaced points starting from $r$:
+$$
+u^{(k)}=r+\frac{k-1}{n}, \quad k=1, \ldots, n .
+$$
+For each point $u^{(k)}$, we find the corresponding segment it falls into, and select the particle corresponding to that segment. 
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[x=12cm,y=1.4cm,>=stealth]
+
+% Example cumulative positions:
+% Make w^(2) large so that it gets sampled multiple times
+\def\cOne{0.08}
+\def\cTwo{0.70}
+\def\cThree{0.78}
+\def\cFour{0.86}
+
+% Example resampling points for n=5
+% r in [0,1/n] with 1/n = 0.20
+\def\one{0.04}
+\def\two{0.24}
+\def\three{0.44}
+\def\four{0.64}
+
+% Main timeline
+\draw[thick,->] (0,0) -- (1.05,0);
+
+% Ticks and labels
+\foreach \x/\lab in {
+    0/{0},
+    \cOne/{$w^{(1)}$},
+    \cTwo/{$w^{(1)}+w^{(2)}$},
+    1/{1}
+}{
+    \draw[thick] (\x,0.05) -- (\x,-0.05);
+    \node[below] at (\x,-0.05) {\lab};
+}
+
+% Optional unlabeled tick near the end
+\draw[thick] (\cFour,0.05) -- (\cFour,-0.05);
+
+% Segment labels
+\node[above] at ({\cOne/2},0) {$w^{(1)}$};
+\node[above] at ({(\cOne+\cTwo)/2},0) {$w^{(2)}$};
+\node[above] at ({(\cTwo+\cThree)/2},0) {$w^{(3)}$};
+\node[above] at ({(\cFour+1)/2},0) {$w^{(n)}$};
+
+% Boundary dots
+\fill (\cOne,0) circle (0.8pt);
+\fill (\cTwo,0) circle (0.8pt);
+\fill (\cThree,0) circle (0.8pt);
+\fill (\cFour,0) circle (0.8pt);
+
+% Red dot for r
+\fill[red] (\one,0.38) circle (1.2pt);
+\node[above,red] at (\one,0.45) {$r$};
+
+% Remaining red points
+\fill[red] (\two,0.38) circle (1.2pt);
+\fill[red] (\three,0.38) circle (1.2pt);
+\fill[red] (\four,0.38) circle (1.2pt);
+\fill[red] (0.84,0.38) circle (1.2pt);
+
+\node[above,red] at (\two,0.55) {$u^{(2)}$};
+\node[above,red] at (\three,0.55) {$u^{(3)}$};
+\node[above,red] at (\four,0.55) {$u^{(4)}$};
+\node[above,red] at (0.84,0.55) {$u^{(5)}$};
+
+% Dashed lines down
+\foreach \x in {\one,\two,\three,\four,0.84}{
+    \draw[dashed,red!70] (\x,0.38) -- (\x,0);
+}
+
+% Curved red arrows showing jumps of size 1/n
+\draw[->,red,thick] (\one,0.45) to[out=40,in=140] (\two,0.45);
+\draw[->,red,thick] (\two,0.45) to[out=40,in=140] (\three,0.45);
+\draw[->,red,thick] (\three,0.45) to[out=40,in=140] (\four,0.45);
+\draw[->,red,thick] (\four,0.45) to[out=40,in=140] (0.84,0.45);
+
+% Jump labels
+\node[above,red] at ({(\one+\two)/2},0.75) {$\frac{1}{n}$};
+\node[above,red] at ({(\two+\three)/2},0.75) {$\frac{1}{n}$};
+\node[above,red] at ({(\three+\four)/2},0.75) {$\frac{1}{n}$};
+\node[above,red] at ({(\four+0.84)/2},0.75) {$\frac{1}{n}$};
+
+% Show which particles are selected
+\node[below] at (\one,-0.65) {$x'^{(1)} = x^{(1)}$};
+\node[below] at (\two,-0.65) {$x'^{(2)}= x^{(2)}$};
+\node[below] at (\three,-0.65) {$x'^{(3)}= x^{(2)}$};
+\node[below] at (\four,-0.65) {$x'^{(4)}= x^{(2)}$};
+\node[below] at (0.84,-0.65) {$x'^{(5)}= x^{(4)}$};
+
+\end{tikzpicture}
+\end{document}
+```
+
+After resampling, we obtain a new set of particles
+$$
+\begin{equation} \label{eq:resampled_particles}
+\left\{ x'^{(1)}, \ldots, x'^{(n)} \right\}
+\end{equation}
+$$
+and each of them is assigned the uniform weight $\frac{1}{n}$. Now we have the following approximation of the target distribution:
+$$
+\begin{equation} \label{eq:resampled_approximation}
+\hat{p}_{\text{resampled}}(x) = \frac{1}{n} \sum_{i=1}^n \delta_{x'^{(i)}}(x)
+\end{equation}
+$$
+
+<details><summary>Example of Resampling</summary>
+
+Continuing the previous example, suppose after importance sampling we obtained the normalized weights
+$$
+w^{(1)} \approx 0.43,\quad
+w^{(2)} \approx 0.38,\quad
+w^{(3)} \approx 0.16,\quad
+w^{(4)} \approx 0.03,\quad
+w^{(5)} \approx 0.0001.
+$$
+Thus, the weighted approximation is
+$$
+\hat{p}(x)
+=
+0.43 \delta_{-1}(x)
++0.38 \delta_{0}(x)
++0.16 \delta_{1}(x)
++0.03 \delta_{2}(x)
++0.0001 \delta_{4}(x).
+$$
+
+To perform systematic resampling with $n=5$, we first draw
+$$
+r \sim \mathrm{Uniform}\left(0,\frac{1}{5}\right).
+$$
+Suppose we draw
+$$
+r = 0.12.
+$$
+We then construct the equally spaced points
+$$
+u^{(1)} = 0.12,\quad
+u^{(2)} = 0.32,\quad
+u^{(3)} = 0.52,\quad
+u^{(4)} = 0.72,\quad
+u^{(5)} = 0.92.
+$$
+
+Next, we form the cumulative sums of the weights:
+$$
+c_1 = 0.43,\quad
+c_2 = 0.43+0.38 = 0.81,\quad
+c_3 = 0.97,\quad
+c_4 = 1.00,\quad
+c_5 = 1.00.
+$$
+So the intervals are approximately:
+$$
+[0,0.43) \rightarrow x^{(1)}=-1,
+$$
+$$
+[0.43,0.81) \rightarrow x^{(2)}=0,
+$$
+$$
+[0.81,0.97) \rightarrow x^{(3)}=1,
+$$
+$$
+[0.97,0.9999) \rightarrow x^{(4)}=2,
+$$
+$$
+[0.9999,1] \rightarrow x^{(5)}=4.
+$$
+
+Now we assign each resampling point to the interval it falls into:
+- $u^{(1)} = 0.12 \in [0,0.43)$, so $x'^{(1)} = x^{(1)} = -1$
+- $u^{(2)} = 0.32 \in [0,0.43)$, so $x'^{(2)} = x^{(1)} = -1$
+- $u^{(3)} = 0.52 \in [0.43,0.81)$, so $x'^{(3)} = x^{(2)} = 0$
+- $u^{(4)} = 0.72 \in [0.43,0.81)$, so $x'^{(4)} = x^{(2)} = 0$
+- $u^{(5)} = 0.92 \in [0.81,0.97)$, so $x'^{(5)} = x^{(3)} = 1$
+
+Therefore, after resampling we obtain the new particle set
+$$
+x'^{(1)}=-1,\quad
+x'^{(2)}=-1,\quad
+x'^{(3)}=0,\quad
+x'^{(4)}=0,\quad
+x'^{(5)}=1.
+$$
+Each resampled particle now has uniform weight
+$$
+w'^{(i)}=\frac{1}{5}, \quad i=1,\dots,5.
+$$
+
+So the resampled approximation becomes
+$$
+\hat{p}_{\mathrm{resampled}}(x)
+=
+\frac{1}{5}\delta_{-1}(x)
++\frac{1}{5}\delta_{-1}(x)
++\frac{1}{5}\delta_{0}(x)
++\frac{1}{5}\delta_{0}(x)
++\frac{1}{5}\delta_{1}(x).
+$$
+Combining repeated particles, this can also be written as
+$$
+\hat{p}_{\mathrm{resampled}}(x)
+=
+\frac{2}{5}\delta_{-1}(x)
++\frac{2}{5}\delta_{0}(x)
++\frac{1}{5}\delta_{1}(x).
+$$
+
+Using this resampled approximation, the expectation becomes
+$$
+\mathbb{E}_{x\sim \hat{p}_{\mathrm{resampled}}(x)}[X]
+=
+\frac{2}{5}(-1)
++\frac{2}{5}(0)
++\frac{1}{5}(1)
+=
+-0.2.
+$$
+This is very close to the weighted estimate before resampling, which was approximately $-0.21$.
+
+We see that after resampling, the high-weight particles $-1$ and $0$ are duplicated, while the very low-weight particles $2$ and $4$ disappear. The result is an unweighted particle set that still approximates the same target distribution.
+
+</details>
+
+#### Particle Filter Algorithm
+
+Consider the following nonlinear dynamical system:
+$$
+\begin{equation} \label{eq:particle_dynamical_system}
+\begin{aligned}
+x_{k+1} &= f(x_k, u_k) + \epsilon_k \\
+y_k &= g(x_k) + \nu_k 
+\end{aligned}
+\end{equation}
+$$
+with
+$$
+\begin{aligned}
+&x_k \in \mathbb{R}^d, \quad u_k \in \mathbb{R}^m, \quad y_k \in \mathbb{R}^p \\
+&\epsilon_k \sim \mathcal{N}(0, R), \quad R \in \mathbb{R}^{d \times d}, \quad \nu_k \sim \mathcal{N}(0, Q), \quad Q \in \mathbb{R}^{p \times p} \\
+&f: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^d, \quad g: \mathbb{R}^d \to \mathbb{R}^p
+\end{aligned}
+$$
+At time step $k = 0$, we can assume that we have a proposal distribution $p(x_0)$ that we can easily sample from, and we can initialize the particles as follows:
+$$
+x_{0|0}^{(i)} \sim p(x_0), \quad w_{0|0}^{(i)} = \frac{1}{n}, \quad i = 1, \ldots, n.
+$$
+For all future timesteps, we assume we have a set of particles with equal weights:
+$$
+\left\{ x_{k|k}^{(i)} \right\}_{i=1}^n, \quad \left\{ w_{k|k}^{(i)} = \frac{1}{n} \right\}_{i=1}^n
+$$
+that are used to approximate the posterior distribution:
+$$
+\hat{x}_{k|k} \sim \hat{p}(x_k \mid y_{1:k}) = \frac{1}{n} \sum_{i=1}^n \delta_{x_{k|k}^{(i)}}(x_k)
+$$
+Note the slight abuse of notation: we use $\hat{x}_{k|k}$ to denote the state according to $\hat{p}(x_k \mid y_{1:k})$, and we use $x_{k|k}^{(i)}$ to denote the $i$-th particle.
+
+##### Propagation Step
+
+Each particle is updated with the dynamics:
+$$
+\begin{equation} \label{eq:particle_propagation}
+x_{k+1|k}^{(i)} = f\left(x_{k|k}^{(i)}, u_k\right) + \epsilon_k^{(i)}
+\end{equation}
+$$
+And weights remain unchanged:
+$$
+w_{k+1|k}^{(i)} = w_{k|k}^{(i)} = \frac{1}{n}.
+$$
+So we have:
+$$
+\begin{equation} \label{eq:particle_propagation_approximation}
+\hat{x}_{k+1|k} \sim \hat{p}\left(x_{k+1} \mid y_{1:k}\right) = \frac{1}{n} \sum_{i=1}^n \delta_{x_{k+1|k}^{(i)}}(x_{k+1})
+\end{equation}
+$$
+
+##### Update Step
+
+Given a new observation $y_{k+1}$, we update the weight of each particle using the likelihood of receiving that observation:
+$$
+\begin{equation} \label{eq:particle_update_weights}
+w_{k+1|k+1}^{(i)} \propto  p\left(y_{k+1} \mid x_{k+1|k}^{(i)}\right )w_{k+1|k}^{(i)} 
+\end{equation}
+$$
+The probability is computed from the observation noise model:
+$$
+\begin{align}
+p\left(y_{k+1} \mid x_{k+1|k}^{(i)}\right)
+&= p\left(\nu_{k+1} = y_{k+1} - g\left(x_{k+1|k}^{(i)}\right)\right) \\
+&= p_{\nu}\left(y_{k+1} - g\left(x_{k+1|k}^{(i)}\right)\right).
+\end{align}
+$$
+Given that the observation noise is Gaussian, the likelihood becomes
+$$
+\begin{equation} \label{eq:particle_likelihood_gaussian}
+p\left(y_{k+1} \mid x_{k+1|k}^{(i)}\right)
+=
+\frac{1}{\sqrt{(2\pi)^p |Q|}}
+
+\exp\left(
+-\frac{1}{2}
+\left(y_{k+1} - g\left(x_{k+1|k}^{(i)}\right)\right)^\top
+Q^{-1}
+\left(y_{k+1} - g\left(x_{k+1|k}^{(i)}\right)\right)
+\right)
+\end{equation}
+$$
+After computing these unnormalized weights, we normalize them so that they sum to 1:
+$$
+\begin{equation} \label{eq:particle_weight_normalization}
+w_{k+1|k+1}^{(i)}
+=
+\frac{
+p\left(y_{k+1} \mid x_{k+1|k}^{(i)}\right) w_{k+1|k}^{(i)}
+}{
+\sum_{j=1}^n
+p\left(y_{k+1} \mid x_{k+1|k}^{(j)}\right) w_{k+1|k}^{(j)}
+}.
+\end{equation}
+$$
+We keep the particles unchanged
+$$
+x_{k+1|k+1}^{(i)} = x_{k+1|k}^{(i)}.
+$$
+So we have:
+$$
+\begin{equation} \label{eq:particle_update_approximation}
+\hat{x}_{k+1|k+1} \sim \hat{p}\left(x_{k+1} \mid y_{1:k+1}\right) = \sum_{i=1}^n w_{k+1|k+1}^{(i)} \delta_{x_{k+1|k}^{(i)}}(x_{k+1})
+\end{equation}
+$$
+
+##### Resampling Step
+
+Given 
+$$
+\left\{ x_{k+1|k+1}^{(i)}, w_{k+1|k+1}^{(i)} \right\}_{i=1}^n,
+$$ 
+we perform resampling to get a new set of particles and normalized weights:
+$$
+\left\{ x_{k+1|k+1}'^{(i)}, w_{k+1|k+1}'^{(i)} \right\}_{i=1}^n, \quad w_{k+1|k+1}'^{(i)} = \frac{1}{n}.
+$$ 
+Then we simply repeat the propagation and update steps for the next time step.
+
+#### Particle Filter Insights
+Note that we modeled MDP as a stochastic dynamical system:
+$$
+\begin{equation}
+\begin{aligned}
+x_{k+1} \sim p\left(x_{k+1} \mid x_k, u_k\right) &\iff x_{k+1}=f\left(x_k, u_k\right)+\epsilon_k \\
+y_k \sim p\left(y_k \mid x_k\right) &\iff y_k=g\left(x_k\right)+\nu_k
+\end{aligned}
+\end{equation}
+$$
+In the propagation step, our goal is to approximate target distribution:
+$$
+\text{target distribution} = p\left(x_{k+1} \mid y_1, \ldots, y_k\right).
+$$
+We use the previous posterior distribution as the proposal distribution:
+$$
+\text{proposal distribution} = p\left(x_k \mid y_1, \ldots, y_k\right),
+$$
+By definition $\eqref{eq:particle_filter_approximation}$, and the assumption that all particles have equal weights (after performing resampling), we have the following approximation of the proposal distribution:
+$$
+\begin{equation} \label{eq:proposal_approximation}
+p\left(x_k \mid y_1, \ldots, y_k\right) \approx \frac{1}{n} \sum_{i=1}^n \delta_{x_{k|k}^{(i)}}(x_k).
+\end{equation}
+$$
+If we have a particle $x$ that's supposed to approximate the target distribution, then we follow $\eqref{eq:importance_sampling_weights}$ to compute the unnormalized weight.
+$$
+\tilde{w}_{k+1|k+1}^{(i)} = \frac{
+p\left(x_{k+1} = x \mid y_1, \ldots, y_k\right)
+}{p\left(x_{k} = x \mid y_1, \ldots, y_k\right)}.
+$$
+First let's simplify the numerator:
+$$
+\begin{align}
+p\left(x_{k+1}=x \mid y_{1:k}\right)
+&=
+\int
+p\left(x_{k+1}=x \mid x_k=x', y_{1:k}\right)
+p\left(x_k=x' \mid y_{1:k}\right)
+\, dx'
+\quad \text{by } \eqref{eq:total_probability_conditioned}
+\\
+&= \int
+p\left(x_{k+1}=x \mid x_k=x', u=u_k\right)
+p\left(x_k=x' \mid y_{1:k}\right)
+\, dx'
+\quad \text{by the Markov assumption}
+\\
+&\approx \frac{1}{n} \int p\left(x_{k+1}=x \mid x_k=x', u=u_k\right) \left(\sum_{i=1}^n \delta_{x_{k|k}^{(i)}}(x')\right) \, dx' \quad \text{by } \eqref{eq:proposal_approximation} \\
+&\approx \frac{1}{n} \sum_{i=1}^n \int p\left(x_{k+1}=x \mid x_k=x^{\prime}, u=u_k\right) \delta_{x_{k \mid k}^{(i)}}\left(x^{\prime}\right) d x^{\prime} \\
+&\approx \frac{1}{n} \sum_{i=1}^n p\left(x_{k+1}=x \mid x_k=x_{k \mid k}^{(i)}, u=u_k\right) \quad \text{by } \eqref{eq:dirac_delta_property}
+\end{align}
+$$ 
+
+TODO: This is really hard.
 
 
 ## Reinforcement Learning
