@@ -3938,6 +3938,543 @@ $$
 
 TODO: This is really hard.
 
+## Rigid-body Transforms and Mapping
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[line cap=round,line join=round,scale=1.2]
+
+% Parameters
+\def\th{32}    % angle in degrees
+\def\r{4.2}    % length of x_1
+\def\ry{3.9}   % length of y_1
+
+% Coordinates computed explicitly
+\pgfmathsetmacro{\xx}{\r*cos(\th)}
+\pgfmathsetmacro{\xy}{\r*sin(\th)}
+\pgfmathsetmacro{\yx}{\ry*cos(\th+90)}
+\pgfmathsetmacro{\yy}{\ry*sin(\th+90)}
+\pgfmathsetmacro{\tx}{1.05*cos(\th/2)}
+\pgfmathsetmacro{\ty}{1.05*sin(\th/2)-0.15}
+
+% Origin
+\coordinate (O) at (0,0);
+
+% Frame 0
+\draw[->] (O) -- (5.2,0) node[below right] {$x_0$};
+\draw[->] (O) -- (0,3.6) node[above] {$y_0$};
+
+% Frame 1
+\draw[dashed,->] (O) -- (\xx,\xy) node[above right] {$x_1$};
+\draw[dashed,->] (O) -- (\yx,\yy) node[above left] {$y_1$};
+
+% Origin dot and label
+\fill (O) circle (2pt);
+\node[below left] at (O) {$o_0,o_1$};
+
+% Angle arc
+\draw[->] (0.9,0) arc (0:\th:0.9);
+\node at (\tx,\ty) {$\theta$};
+
+% Projection lines from x1 tip
+\draw[dotted] (\xx,\xy) -- (\xx,0);
+\draw[dotted] (\xx,\xy) -- (0,\xy);
+
+% cos(theta) dimension
+\draw[<->] (0,-0.8) -- node[below] {$\cos\theta$} (\xx,-0.8);
+
+% sin(theta) dimension
+\draw[<->] (\xx+0.55,0) -- node[right] {$\sin\theta$} (\xx+0.55,\xy);
+
+\end{tikzpicture}
+\end{document}
+```
+
+Let $R^0_1$ denote the rotation matrix that transforms coordinates from frame 1 to frame 0. In other words, $R$ expresses frame-1 things in terms of frame-0 coordinates. Let $v^0$ denote the coordinates of a vector $v$ in frame 0. In general, we use superscripts to denote the frame of reference.
+
+For example, in the figure above, we have
+$$
+R^0_1 = \left[\begin{array}{cc}
+\cos \theta & -\sin \theta \\
+\sin \theta & \cos \theta
+\end{array}\right]
+$$
+which states that frame 1 is obtained by rotating frame 0 by $\theta$ degrees in the positive direction (counterclockwise).
+
+### The Special Orthogonal Group
+
+<blockquote class="definition">
+
+**Properties of the Matrix Group** $SO(n)$
+- $R \in S O(n)$
+- $R^{-1} \in S O(n)$
+- $R^{-1}=R^T$
+- $R^0_2 = R^0_1 R^1_2$
+- The columns (and therefore the rows) of $R$ are mutually orthogonal
+- Each column (and therefore each row) of $R$ is a unit vector
+- $\operatorname{det} R=1$
+
+</blockquote>
+
+Furthermore, rotations perserve inner products. For any vectors $x, y \in \mathbb{R}^n$ and any rotation matrix $R \in SO(n)$, we have
+$$
+\begin{equation} \label{eq:rotation_inner_product}
+\left(Rx\right)^\top \left(Ry\right) = x^\top R^\top R y = x^\top y.
+\end{equation}
+$$
+Rotations also preserve distances:
+$$
+\begin{equation} \label{eq:rotation_distance}
+\|R x-R y\|=\|x-y\| .
+\end{equation}
+$$
+We take the transpose of $R$ to transform coordinates in the opposite direction:
+$$
+\begin{equation} \label{eq:rotation_transform}
+R^0_1  = \left(R^1_0\right) ^\top, \quad R^1_0 = \left(R^0_1\right) ^\top.
+\end{equation}
+$$
+
+In $SO(3)$, we have the following basic rotation matrices:
+$$
+\begin{equation} \label{eq:basic_rotation_matrices}
+R_{x, \theta}=\left[\begin{array}{ccc}
+1 & 0 & 0 \\
+0 & \cos \theta & -\sin \theta \\
+0 & \sin \theta & \cos \theta
+\end{array}\right], \quad
+R_{y, \theta}=\left[\begin{array}{ccc}
+\cos \theta & 0 & \sin \theta \\
+0 & 1 & 0 \\
+-\sin \theta & 0 & \cos \theta
+\end{array}\right], \quad
+R_{z, \theta}=\left[\begin{array}{ccc}
+\cos \theta & -\sin \theta & 0 \\
+\sin \theta & \cos \theta & 0 \\
+0 & 0 & 1
+\end{array}\right]
+\end{equation}
+$$
+$R_{\alpha, \theta}$ denotes the rotation matrix for rotating by $\theta$ radians about the $\alpha$-axis.
+
+### The Special Euclidean Group
+
+While $SO(n)$ describes **rotations**, the **special Euclidean group** $SE(n)$ describes **rigid-body transformations**, that is, rotations together with translations. An element of $SE(n)$ has the form
+$$
+\begin{equation} \label{eq:SEn_definition}
+T =
+\left[\begin{array}{cc}
+R & t \\
+0 & 1
+\end{array}\right],
+\qquad R \in SO(n), \quad t \in \mathbb{R}^n.
+\end{equation}
+$$
+
+Let $T^0_1$ denote the rigid-body transformation that transforms coordinates from frame 1 to frame 0. If $p^1$ denotes the coordinates of a point $p$ in frame 1, then
+$$
+\begin{equation} \label{eq:SE_point_transform}
+p^0 = R^0_1 p^1 + t^0_1,
+\end{equation}
+$$
+where $R^0_1$ is the rotational part and $t^0_1$ is the translation of the origin of frame 1 expressed in frame 0.
+
+Using homogeneous coordinates,
+$$
+\bar{p} =
+\left[\begin{array}{c}
+p \\
+1
+\end{array}\right],
+$$
+we can write this as
+$$
+\begin{equation} \label{eq:SE_homogeneous_transform}
+\bar{p}^0
+=
+T^0_1 \bar{p}^1
+=
+\left[\begin{array}{cc}
+R^0_1 & t^0_1 \\
+0 & 1
+\end{array}\right]
+\left[\begin{array}{c}
+p^1 \\
+1
+\end{array}\right].
+\end{equation}
+$$
+
+<blockquote class="definition">
+
+**Properties of the Matrix Group** $SE(n)$
+- $T \in SE(n)$
+- $T^{-1} \in SE(n)$
+- $T^0_2 = T^0_1 T^1_2$
+- The rotational part of $T$ lies in $SO(n)$
+- The translational part of $T$ lies in $\mathbb{R}^n$
+
+</blockquote>
+
+If
+$$
+T^0_1 =
+\left[\begin{array}{cc}
+R^0_1 & t^0_1 \\
+0 & 1
+\end{array}\right],
+$$
+then its inverse is
+$$
+\begin{equation} \label{eq:SE_inverse}
+T^1_0 = \left(T^0_1\right)^{-1}
+=
+\left[\begin{array}{cc}
+\left(R^0_1\right)^\top & -\left(R^0_1\right)^\top t^0_1 \\
+0 & 1
+\end{array}\right].
+\end{equation}
+$$
+
+If
+$$
+T^0_1 =
+\left[\begin{array}{cc}
+R^0_1 & t^0_1 \\
+0 & 1
+\end{array}\right],
+\qquad
+T^1_2 =
+\left[\begin{array}{cc}
+R^1_2 & t^1_2 \\
+0 & 1
+\end{array}\right],
+$$
+then
+$$
+\begin{equation} \label{eq:SE_composition_parts}
+T^0_2 = T^0_1 T^1_2
+=
+\left[\begin{array}{cc}
+R^0_1 R^1_2 & R^0_1 t^1_2 + t^0_1 \\
+0 & 1
+\end{array}\right].
+\end{equation}
+$$
+
+A point is transformed by both rotation and translation, but a vector is transformed only by rotation. Thus,
+$$
+\begin{equation} \label{eq:SE_vector_transform}
+v^0 = R^0_1 v^1.
+\end{equation}
+$$
+
+In $SE(3)$, an element has the form
+$$
+\begin{equation} \label{eq:SE3_definition}
+T =
+\left[\begin{array}{cc}
+R & t \\
+0 & 1
+\end{array}\right],
+\qquad R \in SO(3), \quad t \in \mathbb{R}^3.
+\end{equation}
+$$
+Thus, $SO(3)$ describes **orientation**, while $SE(3)$ describes **pose**.
+
+### Euler Angles
+
+In $SO(3)$, any rotation matrix can be represented as a sequence of three basic rotations about coordinate axes. Such a representation is called an **Euler-angle parameterization**. In other words, rather than describing a rotation matrix $R \in SO(3)$ directly, we describe it using three angles together with a specified order of rotations.
+
+A common convention in robotics is the **roll-pitch-yaw** convention, in which a rotation is written as
+$$
+\begin{equation} \label{eq:rpy_rotation}
+\begin{aligned}
+R(\alpha, \beta, \gamma) &= R_{z,\alpha} R_{y,\beta} R_{x,\gamma} \\
+&= \left[\begin{array}{ccc}
+\cos \alpha \cos \beta & \cos \sin \beta \sin \gamma-\sin \alpha \cos \gamma & \cos \alpha \sin \beta \cos \gamma+\sin \alpha \sin \gamma \\
+\sin \alpha \cos \beta & \sin \alpha \sin \beta \sin \gamma+\cos \alpha \cos \gamma & \sin \alpha \sin \beta \cos \gamma-\cos \alpha \sin \gamma \\
+-\sin \beta & \cos \beta \sin \gamma & \cos \beta \cos \gamma
+\end{array}\right]
+\end{aligned}
+\end{equation}
+$$
+where
+- $\alpha$ is the **roll** angle,
+- $\beta$ is the **pitch** angle,
+- $\gamma$ is the **yaw** angle.
+
+Thus, the overall rotation is obtained by composing three basic rotations: first about the $x$-axis, then about the $y$-axis, and finally about the $z$-axis. Note that all three angles are defined with respect to the original coordinate axes, not the rotated axes.
+
+We can also compute rotation matrices from Euler angles. Let
+$$
+\begin{equation} \label{eq:euler_angles_rotation_matrix}
+\begin{aligned}
+R(\alpha, \beta, \gamma) = \begin{bmatrix}
+r_{11} & r_{12} & r_{13} \\
+r_{21} & r_{22} & r_{23} \\
+r_{31} & r_{32} & r_{33}
+\end{bmatrix}
+\end{aligned}
+\end{equation}
+$$
+We can compute the entries of the rotation matrix as follows:
+$$
+\begin{equation} \label{eq:euler_angles_rotation_matrix_entries}
+\begin{aligned}
+& \alpha=\tan ^{-1}\left(r_{21} / r_{11}\right) \\
+& \beta=\tan ^{-1}\left(-r_{31} / \sqrt{r_{32}^2+r_{33}^2}\right) \\
+& \gamma=\tan ^{-1}\left(r_{32} / r_{33}\right) .
+\end{aligned}
+\end{equation}
+$$
+
+### Rodrigues' Formula
+
+An angular velocity $\omega \in \mathbb{R}^3$ encodes:
+$$
+\text { axis of rotation }=\frac{\omega}{\|\omega\|}, \quad \text { angular speed }=\|\omega\| .
+$$
+
+Consider a point $r(t) \in \mathbb{R}^3$ that is being rotated about an axis defined by a unit vector $\omega \in \mathbb{R}^3$ with angular velocity $1$ rad/s.  The instantaneous linear velocity of the point is given by
+$$
+\begin{equation} \label{eq:rodrigues_velocity}
+\dot{r}(t) = \omega \times r(t).
+\end{equation}
+$$
+where $\times$ denotes the cross product of two vectors which is:
+$$
+\begin{equation} \label{eq:cross_product}
+a \times b = \left[\begin{array}{c}
+a_2 b_3 - a_3 b_2 \\
+a_3 b_1 - a_1 b_3 \\
+a_1 b_2 - a_2 b_1
+\end{array}\right].
+\end{equation}
+$$
+We can write the cross product as a matrix-vector product:
+$$
+\begin{equation} \label{eq:cross_product_matrix}
+a \times b = \hat{a}b, \quad \text{where } \hat{a} = \left[\begin{array}{ccc}
+0 & -a_3 & a_2 \\
+a_3 & 0 & -a_1 \\
+-a_2 & a_1 & 0
+\end{array}\right].
+\end{equation}
+$$
+$\hat{a}$ is called the **skew-symmetric matrix** of $a$. So we rewrite the velocity equation as
+$$
+\begin{equation} \label{eq:rodrigues_velocity_matrix}
+\dot{r}(t) = \hat{\omega} r(t).
+\end{equation}
+$$
+The solution to the differential equation $\eqref{eq:rodrigues_velocity_matrix}$ at time $t = \theta$  is given by:
+$$
+\begin{equation} \label{eq:rodrigues_formula}
+r(\theta) = \mathrm{exp}(\hat{\omega} \theta) r(0),
+\end{equation}
+$$
+where $\mathrm{exp}(\hat{\omega} \theta)$ is the matrix exponential of $\hat{\omega} \theta$. The matrix exponential can be computed using the Taylor series expansion:
+$$
+\begin{equation} \label{eq:matrix_exponential}
+\mathrm{exp}(A) = I + A + \frac{A^2}{2!} + \frac{A^3}{3!} + \cdots = \sum_{k=0}^\infty \frac{A^k}{k!}.
+\end{equation}
+$$
+We observe that the rotation about a fixed axis $\omega$ by $\theta$ can be represented as matrix:
+$$
+\begin{equation} \label{eq:rodrigues_rotation_matrix}
+R = \mathrm{exp}(\hat{\omega} \theta), \quad \hat{\omega} \in \mathbb{R}^{3 \times 3}, \quad \theta \in \mathbb{R}.
+\end{equation}
+$$
+We can expand this to get
+$$
+\begin{equation} \label{eq:rodrigues_rotation_matrix_expanded}
+R = I + \hat{\omega} \sin \theta + \hat{\omega}^2 (1 - \cos \theta).
+\end{equation}
+$$
+We can also go in the opposite direction and compute the axis and angle of rotation given a rotation matrix $R$:
+$$
+\begin{equation} \label{eq:rodrigues_axis_angle}
+\begin{aligned}
+\cos \theta & =\frac{\operatorname{tr}(R)-1}{2} \\
+\hat{\omega} & =\frac{R-R^{\top}}{2 \sin \theta}
+\end{aligned}
+\end{equation}
+$$
+
+Similar to the differential equation $\eqref{eq:rodrigues_velocity_matrix}$, we can also write the differential equation for the rotation matrix itself:
+$$
+\begin{equation} \label{eq:rodrigues_rotation_matrix_differential}
+\dot{R}(t) = \hat{\omega} R(t).
+\end{equation}
+$$
+We can derive this by observing that
+$$
+\begin{align}
+RR^\top &= I \\
+\frac{d}{dt} RR^\top &= \frac{d}{dt} I \\
+\dot{R} R^\top + R \dot{R}^\top &= 0, \quad \text{by } \frac{d}{d t}(A B)=\dot{A} B+A \dot{B} \\
+S + S^\top &= 0
+\end{align}
+$$
+Above we set $\dot{R} R^\top = S$, which is a skew-symmetric matrix. This gives
+$$
+\begin{align}
+\dot{R} R^\top &= S \\
+\dot{R} R^\top R &= S R \\
+\dot{R} &= S R , \quad \text{by } R^\top R = I \text{ in } SO(3)\\
+\end{align}
+$$
+Now consider a point in body frame $r \in \mathbb{R}^3$ that is represented as $r' = Rr$ in the world frame. We compute the time derivative of $r'$:
+$$
+\begin{align}
+r' &= Rr \\
+\frac{d}{dt} r' &= \dot{R} r + R \dot{r} ,\quad \text{by } \frac{d}{d t}(A x)=\dot{A} x+A \dot{x} \\
+\dot{r}' &= \dot{R} r , \quad \text{since } \dot{r} = 0 \text{ $r$ is fixed in the body frame} \\
+\dot{r}' &= SRr \\
+\dot{r}' &= Sr'. \label{eq:rodrigues_velocity_matrix_derivation}
+\end{align}
+$$
+We observe from $\eqref{eq:rodrigues_velocity_matrix}$ and combine with $\eqref{eq:rodrigues_velocity_matrix_derivation}$ to conclude that
+$$
+S = \hat{\omega}.
+$$
+
+Now, at a high level, if we are provided with an axis of rotation $\omega$ and an angle of rotation $\theta$, we can:
+1. Compute the skew-symmetric matrix $\hat{\omega}$ using $\eqref{eq:cross_product_matrix}$.
+2. Compute the rotation matrix $R$ with $\eqref{eq:rodrigues_rotation_matrix}$. 
+3. Study the dynamics of $R$ with $\eqref{eq:rodrigues_rotation_matrix_differential}$.
+
+Note that above we assumed $R$ is w.r.t the world frame and $\omega$ is w.r.t the world frame:
+$$
+\begin{equation} \label{eq:rodrigues_rotation_matrix_differential_world}
+\dot{R}^{\text{world}}_{\text{body}} = \hat{\omega}^{\text{world}} R^{\text{world}}_{\text{body}}.
+\end{equation}
+$$
+If we have $R$ w.r.t the world frame but $\omega$ w.r.t the body frame, then we can use the following formula:
+$$
+\begin{equation} \label{eq:rodrigues_rotation_matrix_differential_body}
+\dot{R}^{\text{world}}_{\text{body}} = R^{\text{world}}_{\text{body}} \hat{\omega}^{\text{body}}.
+\end{equation}
+$$
+
+### Quaternions
+
+This is what we should use for any real problem in 3D.
+
+A quaternion $q$ is a 4d vector
+$$
+q = \left(u_0, u_1, u_2, u_3\right) = \left(u_0, u\right) = u_0 + u_1 i + u_2 j + u_3 k,
+$$
+where $i, j, k$ are imaginary components that satisfy
+$$
+\begin{equation} \label{eq:quaternion_imaginary_components}
+i^2 = j^2 = k^2 = ijk = -1.
+\end{equation}
+$$
+A unit quaternion is a quaternion with norm 1:
+$$
+\|q\| = \sqrt{u_0^2 + u_1^2 + u_2^2 + u_3^2} = 1 \text{ if unit quaternion}.
+$$
+and they are used to represent rotations in 3D. 
+
+**Quaternion to Axis-Angle**
+
+The quaternion $q = \left(u_0, u\right)$ corresponds to a counterclockwise rotation of angle $\theta$ about a unit vector $\omega$:
+$$
+\begin{equation} \label{eq:quaternion_axis_angle}
+q = \left(\cos \frac{\theta}{2}, \omega \sin \frac{\theta}{2}\right).
+\end{equation}
+$$
+We can also compute the inverse of a quaternion:
+$$
+\begin{equation} \label{eq:quaternion_inverse}
+q^{-1} = \left(u_0, -u\right),
+\end{equation}
+$$
+where $q^{-1}$ corresponds to a rotation of angle $-\theta$ about the same axis $\omega$.
+
+We can see that the identity rotation corresponds to the quaternion:
+$$
+\begin{equation} \label{eq:quaternion_identity}
+\text{identity rotation} = (1, 0, 0, 0).
+\end{equation}
+$$
+
+Note that the same rotation can be represented by two different unit quaternions:
+$$
+\begin{equation} \label{eq:quaternion_double_cover}
+q = \left(\cos \frac{\theta}{2}, \omega \sin \frac{\theta}{2}\right)
+\quad \text{and} \quad
+-q = \left(-\cos \frac{\theta}{2}, -\omega \sin \frac{\theta}{2}\right).
+\end{equation}
+$$
+Thus, unit quaternions provide a double-cover of $SO(3)$. We can see this trivally by observing from $\eqref{eq:rodrigues_rotation_matrix}$ that:
+$$
+R = \mathrm{exp}\left(\hat{\omega} \theta\right) = \mathrm{exp}\left(\left(-\hat{\omega}\right) \left(-\theta\right)\right)
+$$
+
+**Multiplication of Quaternions**
+
+Given two quaternions $q_1 = \left(u_0, u\right)$ and $q_2 = \left(v_0, v\right)$, we can compute their product as follows:
+$$
+\begin{equation} \label{eq:quaternion_multiplication}
+q_1 q_2 = (u_0, u) \cdot (v_0, v) = \left(u_0 v_0 - u^\top v, u_0 v + v_0 u + u \times v\right).
+\end{equation}
+$$
+
+**Pure Quaternions**
+
+A pure quaternion is a quaternion with zero scalar part:
+$$
+\text{pure quaternion} = (0, u_1, u_2, u_3).
+$$
+We can store a standard 3d vector $x \in \mathbb{R}^3$ as a pure quaternion:
+$$
+\begin{equation} \label{eq:quaternion_pure_quaternion}
+(0, x) = (0, x_1, x_2, x_3).
+\end{equation}
+$$
+To rotate a vector $x$ by a unit quaternion $q$, we can use the following formula:
+$$
+\begin{equation} \label{eq:quaternion_rotation}
+q \cdot (0, x) \cdot q^{-1} = (0, R(q) x),
+\end{equation}
+$$
+where $\cdot$ denotes quaternion multiplication and $R(q)$ is the rotation matrix corresponding to the quaternion $q$.
+
+Suppose we have $x^\text{body} \in \mathbb{R}^3$ that we want to transform to the world frame $x^\text{world}$. Suppose $q^\text{world}_\text{body}$ is the unit quaternion that represents the rotation from the body frame to the world frame. Then we can compute $x^\text{world}$ as follows:
+$$
+(0, x^\text{world}) = q^\text{world}_\text{body} \cdot (0, x^\text{body}) \cdot \left(q^\text{world}_\text{body}\right)^{-1}.
+$$
+To go the other way, if we have $x^\text{world}$ and want to transform it to the body frame, we can compute
+$$
+(0, x^\text{body}) = \left(q^\text{world}_\text{body}\right)^{-1} \cdot (0, x^\text{world}) \cdot q^\text{world}_\text{body}.
+$$
+We observe that:
+$$
+\begin{equation} \label{eq:quaternion_rotation_inverse}
+\left(q_{\text {body}}^{\text {world}}\right)^{-1}=q_{\text {world}}^{\text {body}}
+\end{equation}
+$$
+
+Similar to $\eqref{eq:rodrigues_rotation_matrix_differential_world}$ and $\eqref{eq:rodrigues_rotation_matrix_differential_body}$, we can also write the differential equation for the quaternion itself given the angular velocity in the body frame $\omega^\text{body} \in \mathbb{R}^3$:
+$$
+\begin{equation} \label{eq:quaternion_differential}
+\dot{q}^{\text{world}}_{\text{body}} = \frac{1}{2} q^{\text{world}}_{\text{body}} \cdot (0, \omega^{\text{body}}).
+\end{equation}
+$$
+If we are instead given the angular velocity in the world frame $\omega^\text{world} \in \mathbb{R}^3$, then we can compute the quaternion differential as follows:
+$$
+\begin{equation} \label{eq:quaternion_differential_world}
+\dot q^{\text{world}}_{\text{body}}
+=
+\frac{1}{2}\,
+(0,\omega^{\text{world}})
+\cdot
+q^{\text{world}}_{\text{body}}.
+\end{equation}
+$$
 
 ## Reinforcement Learning
 
