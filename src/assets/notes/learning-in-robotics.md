@@ -3924,12 +3924,10 @@ p\left(x_k=x' \mid y_{1:k}\right)
 \, dx'
 \quad \text{by } \eqref{eq:total_probability_conditioned}
 \\
-&= \int
+&\stackrel{\text { Markov }}{=} \int
 p\left(x_{k+1}=x \mid x_k=x', u=u_k\right)
 p\left(x_k=x' \mid y_{1:k}\right)
-\, dx'
-\quad \text{by the Markov assumption}
-\\
+\, dx' \\
 &\approx \frac{1}{n} \int p\left(x_{k+1}=x \mid x_k=x', u=u_k\right) \left(\sum_{i=1}^n \delta_{x_{k|k}^{(i)}}(x')\right) \, dx' \quad \text{by } \eqref{eq:proposal_approximation} \\
 &\approx \frac{1}{n} \sum_{i=1}^n \int p\left(x_{k+1}=x \mid x_k=x^{\prime}, u=u_k\right) \delta_{x_{k \mid k}^{(i)}}\left(x^{\prime}\right) d x^{\prime} \\
 &\approx \frac{1}{n} \sum_{i=1}^n p\left(x_{k+1}=x \mid x_k=x_{k \mid k}^{(i)}, u=u_k\right) \quad \text{by } \eqref{eq:dirac_delta_property}
@@ -4475,6 +4473,340 @@ $$
 q^{\text{world}}_{\text{body}}.
 \end{equation}
 $$
+
+### Occupancy Grids
+An occupancy grid is a discretized representation of the environment, where each cell in the grid can be either occupied or free. We have the following assumptions:
+
+**Assumption 1: Each cell is either occupied or free.**
+
+Let the probability that the cell $m_i$ is occupied be $p(m_i)$.
+
+**Assumption 2: The world is static, so the occupancy of each cell does not change over time.**
+
+**Assumption 3: The occupancy of each cell is independent of the occupancy of other.**
+
+This means if cells are denoted by a vector $m = (m_1, m_2, \ldots, m_n)$, then we have
+$$
+p(m) = \prod_{i=1}^n p(m_i).
+$$
+
+Suppose the robot pose (position and orientation) is given by the sequence $x_1, \ldots, x_k$. While proceeding along this sequence, the robot receives $y_1, \ldots, y_k$ as sensor measurements. Our goal is to estimate the state of each cell $m_i \in \{0, 1\}$ :
+$$
+\mathrm{P}(m \mid x_{1:k}, y_{1:k}) = \prod_{i=1}^n \mathrm{P}(m_i \mid x_{1:k}, y_{1:k}).
+$$
+We have the following for each cell $m_i$:
+$$
+\begin{align}
+\mathrm{P}\left(m_i \mid x_{1: k}, y_{1: k}\right) &\stackrel{\text { Bayes rule }}{=} \frac{\mathrm{P}\left(y_k \mid m_i, y_{1: k-1}, x_{1: k}\right) \mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k}\right)}{\mathrm{P}\left(y_k \mid y_{1: k-1}, x_{1: k}\right)} \\
+&\stackrel{\text { Markov }}{=}\frac{\textcolor{red}{\mathrm{P}\left(y_k \mid m_i, x_k\right)} \mathrm{P}\left(m_i \mid y_{1: k-1}, \textcolor{red}{x_{1: k-1}}\right)}{\mathrm{P}\left(y_k \mid y_{1: k-1}, x_{1: k}\right)}  \label{eq:occupancy_grid_bayes_markov_some_eq} \\
+&\stackrel{\text { Bayes rule }}{=}  \frac{\textcolor{red}{\mathrm{P}\left(m_i \mid y_k, x_k\right) \mathrm{P}\left(y_k \mid x_k \right)} \mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)}{\textcolor{red}{\mathrm{P}\left(m_i \mid x_k \right)}\mathrm{P}\left(y_k \mid y_{1: k-1}, x_{1: k}\right)}  \\
+&\stackrel{\text { Independence }}{=}  \frac{\mathrm{P}\left(m_i \mid y_k, x_k\right) \mathrm{P}\left(y_k \mid x_k \right) \mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)}{\textcolor{red}{\mathrm{P}\left(m_i \right)}\mathrm{P}\left(y_k \mid y_{1: k-1}, x_{1: k}\right)}.
+\end{align} 
+$$
+$\eqref{eq:occupancy_grid_bayes_markov_some_eq}$'s term $\mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k}\right) = \mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)$ because of the Markov assumption that the current measurement $y_k$ only depends on the current pose $x_k$ and the state of the cell $m_i$, and does not depend on the previous measurements and poses.
+
+We have a similar expression for the opposite probability
+$$
+\begin{equation} \label{eq:occupancy_grid_opposite_probability}
+\mathrm{P}\left(\neg m_i \mid x_{1: k}, y_{1: k}\right) =\frac{\mathrm{P}\left(\neg m_i \mid y_k, x_k\right) \mathrm{P}\left(y_k \mid x_k \right) \mathrm{P}\left( \neg m_i \mid y_{1: k-1}, x_{1: k-1}\right)}{\mathrm{P}\left(\neg m_i \right)\mathrm{P}\left(y_k \mid y_{1: k-1}, x_{1: k}\right)}.
+\end{equation}
+$$
+We take the ratio of the two probabilities to get
+$$
+\begin{align}
+\frac{\mathrm{P}\left(m_i \mid x_{1: k}, y_{1: k}\right)}{\mathrm{P}\left(\neg m_i \mid x_{1: k}, y_{1: k}\right)} & =\frac{\mathrm{P}\left(m_i \mid y_k, x_k\right)}{\mathrm{P}\left(\neg m_i \mid y_k, x_k\right)} \frac{\mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)}{\mathrm{P}\left(\neg m_i \mid y_{1: k-1}, x_{1: k-1}\right)} \frac{\mathrm{P}\left(\neg m_i\right)}{\mathrm{P}\left(m_i\right)} \\
+& =\underbrace{\frac{\mathrm{P}\left(m_i \mid y_k, x_k\right)}{1-\mathrm{P}\left(m_i \mid y_k, x_k\right)}}_{\text {uses observation } y_k} \underbrace{\frac{\mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)}{1-\mathrm{P}\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)}}_{\text {recursive term }} \underbrace{\frac{1-\mathrm{P}\left(m_i\right)}{\mathrm{P}\left(m_i\right)}}_{\text {prior }} \label{eq:occupancy_grid_log_odds_ratio}.
+\end{align}
+$$
+This is a recursive formula and note that the first term uses the current observation $y_k$ while the second term uses the previous observations $y_{1:k-1}$. The log-odds-ratio of the probability $p(x)$ of a binary variable $x$ is defined as
+$$
+\begin{equation} \label{eq:log_odds_ratio}
+l(x)=\log \frac{p(x)}{1-p(x)}, \text { and } p(x)=1-\frac{1}{1+e^{l(x)}}
+\end{equation}
+$$
+So the expression $\eqref{eq:occupancy_grid_log_odds_ratio}$ can be rewritten in terms of log-odds-ratio as follows:
+$$
+\begin{equation} \label{eq:occupancy_grid_log_odds_ratio_recursive}
+l\left(m_i \mid y_{1: k}, x_{1: k}\right)=l\left(m_i \mid y_k, x_k\right)+l\left(m_i \mid y_{1: k-1}, x_{1: k-1}\right)-l\left(m_i\right) .
+\end{equation}
+$$
+We use the odds ratio to create the map. The term $l\left(m_i \mid y_k, x_k\right)$ is called the **sensor model**, and we can use the entire expression in $\eqref{eq:occupancy_grid_log_odds_ratio_recursive}$ to recursively update the log-odds-ratio of the occupancy of each cell as we receive new observations.
+
+### 3D Occupancy Grids
+
+We use Quad Trees and Octrees to represent 2D and 3D occupancy grids respectively. The following is a representation of a Quad Tree, where the blue lines represent the first split, the red lines represent the second split, and the green lines represent the third split. Each data point is stored in a leaf node, and we have **at most one data point per leaf node**.
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[scale=1]
+
+% Outer boundary
+\draw[thick] (0,0) rectangle (8,8);
+
+% First split (Level 1) - Blue
+\draw[thick, blue] (4,0) -- (4,8);
+\draw[thick, blue] (0,4) -- (8,4);
+
+% Second split (Level 2 - NE and SW quadrants) - Red
+\draw[thick, red] (6,4) -- (6,8);
+\draw[thick, red] (4,6) -- (8,6);
+\draw[thick, red] (2,0) -- (2,4);
+\draw[thick, red] (0,2) -- (4,2);
+
+% Third split (Level 3 - SW-SW quadrant) - Green
+\draw[thick, green] (1,0) -- (1,2);
+\draw[thick, green] (0,1) -- (2,1);
+
+% Data Points (Max 1 per region)
+% NW Quadrant
+\filldraw (2, 6) circle (2pt) node[above right] {$p_1$};
+
+% NE Quadrant
+\filldraw (5, 7) circle (2pt) node[above right] {$p_2$};
+\filldraw (4.5, 4.5) circle (2pt) node[above right] {$p_3$};
+\filldraw (7, 5) circle (2pt) node[above right] {$p_4$};
+
+% SW Quadrant
+\filldraw (3, 3) circle (2pt) node[above right] {$p_5$};
+\filldraw (0.5, 1.5) circle (2pt) node[above right] {$p_6$};
+\filldraw (1.5, 0.5) circle (2pt) node[above right] {$p_7$};
+\filldraw (3, 1) circle (2pt) node[above right] {$p_8$};
+
+% SE Quadrant
+\filldraw (6, 2) circle (2pt) node[above right] {$p_9$};
+
+% Main quadrant labels
+\node[gray] at (0.5, 7.5) {NW};
+\node[gray] at (7.5, 7.5) {NE};
+\node[gray] at (0.5, 3.5) {SW};
+\node[gray] at (7.5, 3.5) {SE};
+
+\end{tikzpicture}
+\end{document}
+```
+An equivalent representation of the Quad Tree can be drawn with a tree structure
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[scale=0.9]
+
+% Root Node
+\node[draw, circle, minimum size=0.5cm] (root) at (6, 10) {};
+
+% LEVEL 1 (Blue Splits)
+\node[draw, rectangle, minimum size=0.5cm] (nw) at (2, 8) {$p_1$};
+\node[draw, circle, minimum size=0.5cm] (ne) at (5, 8) {};
+\node[draw, circle, minimum size=0.5cm] (sw) at (8, 8) {};
+\node[draw, rectangle, minimum size=0.5cm] (se) at (11, 8) {$p_9$};
+
+\draw[blue, thick] (root) -- (nw);
+\draw[blue, thick] (root) -- (ne);
+\draw[blue, thick] (root) -- (sw);
+\draw[blue, thick] (root) -- (se);
+
+% Labels for Level 1 branches
+\node[blue] at (3.5, 9.2) {NW};
+\node[blue] at (5.2, 9.2) {NE};
+\node[blue] at (7.2, 9.2) {SW};
+\node[blue] at (8.7, 9.2) {SE};
+
+% LEVEL 2 - NE Quadrant (Red Splits)
+\node[draw, rectangle, minimum size=0.5cm] (nenw) at (3.5, 6) {$p_2$};
+\node[draw, rectangle, dashed, minimum size=0.5cm] (nene) at (4.5, 6) {$\emptyset$};
+\node[draw, rectangle, minimum size=0.5cm] (nesw) at (5.5, 6) {$p_3$};
+\node[draw, rectangle, minimum size=0.5cm] (nese) at (6.5, 6) {$p_4$};
+
+\draw[red, thick] (ne) -- (nenw);
+\draw[red, thick] (ne) -- (nene);
+\draw[red, thick] (ne) -- (nesw);
+\draw[red, thick] (ne) -- (nese);
+
+% LEVEL 2 - SW Quadrant (Red Splits)
+\node[draw, rectangle, dashed, minimum size=0.5cm] (swnw) at (7.5, 6) {$\emptyset$};
+\node[draw, rectangle, minimum size=0.5cm] (swne) at (8.5, 6) {$p_5$};
+\node[draw, circle, minimum size=0.5cm] (swsw) at (9.5, 6) {};
+\node[draw, rectangle, minimum size=0.5cm] (swse) at (10.5, 6) {$p_8$};
+
+\draw[red, thick] (sw) -- (swnw);
+\draw[red, thick] (sw) -- (swne);
+\draw[red, thick] (sw) -- (swsw);
+\draw[red, thick] (sw) -- (swse);
+
+% LEVEL 3 - SW-SW Quadrant (Green Splits)
+\node[draw, rectangle, minimum size=0.5cm] (swswnw) at (8, 4) {$p_6$};
+\node[draw, rectangle, dashed, minimum size=0.5cm] (swswne) at (9, 4) {$\emptyset$};
+\node[draw, rectangle, dashed, minimum size=0.5cm] (swswsw) at (10, 4) {$\emptyset$};
+\node[draw, rectangle, minimum size=0.5cm] (swswse) at (11, 4) {$p_7$};
+
+\draw[green, thick] (swsw) -- (swswnw);
+\draw[green, thick] (swsw) -- (swswne);
+\draw[green, thick] (swsw) -- (swswsw);
+\draw[green, thick] (swsw) -- (swswse);
+
+\end{tikzpicture}
+\end{document}
+```
+
+An Octree is a similar data structure for 3D occupancy grids, where each node has 8 children instead of 4. The same principle of at most one data point per leaf node applies to Octrees as well.
+
+```tikz
+\begin{document}
+
+\begin{tikzpicture}[
+    x={(1cm,0cm)},
+    y={(0cm,1cm)},
+    z={(0.4cm,0.3cm)},
+    scale=0.8,
+    line cap=round,
+    line join=round,
+    visible/.style={black, line width=1pt},
+    hidden/.style={black!55, dashed, line width=0.8pt},
+    lOne/.style={blue!80, line width=0.9pt},
+    lOneHidden/.style={blue!60, dashed, line width=0.7pt},
+    lTwo/.style={red!80, line width=0.9pt},
+    lTwoHidden/.style={red!60, dashed, line width=0.7pt},
+    lThree/.style={green!50!black, line width=0.9pt},
+    lThreeHidden/.style={green!50!black, dashed, line width=0.7pt},
+    pt/.style={circle, fill=black, inner sep=2.2pt}
+]
+
+% =========================
+% Outer Bounding Cube
+% =========================
+
+% Front face (solid)
+\draw[visible] (0,0,0) -- (8,0,0) -- (8,8,0) -- (0,8,0) -- cycle;
+
+% Back face (dashed)
+\draw[hidden] (0,0,8) -- (8,0,8) -- (8,8,8) -- (0,8,8) -- cycle;
+
+% Connecting edges
+\draw[hidden] (0,0,0) -- (0,0,8);
+\draw[visible] (8,0,0) -- (8,0,8);
+\draw[visible] (8,8,0) -- (8,8,8);
+\draw[visible] (0,8,0) -- (0,8,8);
+
+% =========================
+% Level 1 Split (Blue)
+% =========================
+
+% X = 4 plane
+\draw[lOne]       (4,0,0) -- (4,8,0);
+\draw[lOneHidden] (4,0,8) -- (4,8,8);
+\draw[lOneHidden] (4,0,0) -- (4,0,8);
+\draw[lOne]       (4,8,0) -- (4,8,8);
+
+% Y = 4 plane
+\draw[lOne]       (0,4,0) -- (8,4,0);
+\draw[lOneHidden] (0,4,8) -- (8,4,8);
+\draw[lOneHidden] (0,4,0) -- (0,4,8);
+\draw[lOne]       (8,4,0) -- (8,4,8);
+
+% Z = 4 plane
+\draw[lOneHidden] (0,0,4) -- (8,0,4);
+\draw[lOne]       (0,8,4) -- (8,8,4);
+\draw[lOneHidden] (0,0,4) -- (0,8,4);
+\draw[lOne]       (8,0,4) -- (8,8,4);
+
+% Internal crosshairs (dashed so they are less dominant)
+\draw[lOneHidden] (4,4,0) -- (4,4,8);
+\draw[lOneHidden] (4,0,4) -- (4,8,4);
+\draw[lOneHidden] (0,4,4) -- (8,4,4);
+
+% =========================
+% Level 2 Split (Red)
+% Top-NorthEast Octant: X,Y,Z in [4,8]
+% =========================
+
+\draw[lTwo]       (6,4,4) -- (6,8,4);
+\draw[lTwoHidden] (6,4,8) -- (6,8,8);
+\draw[lTwoHidden] (6,4,4) -- (6,4,8);
+\draw[lTwo]       (6,8,4) -- (6,8,8);
+
+\draw[lTwo]       (4,6,4) -- (8,6,4);
+\draw[lTwoHidden] (4,6,8) -- (8,6,8);
+\draw[lTwoHidden] (4,6,4) -- (4,6,8);
+\draw[lTwo]       (8,6,4) -- (8,6,8);
+
+\draw[lTwoHidden] (4,4,6) -- (8,4,6);
+\draw[lTwo]       (4,8,6) -- (8,8,6);
+\draw[lTwoHidden] (4,4,6) -- (4,8,6);
+\draw[lTwo]       (8,4,6) -- (8,8,6);
+
+% Internal crosshairs
+\draw[lTwoHidden] (6,6,4) -- (6,6,8);
+\draw[lTwoHidden] (6,4,6) -- (6,8,6);
+\draw[lTwoHidden] (4,6,6) -- (8,6,6);
+
+% =========================
+% Level 2 Split (Red)
+% Bottom-SouthWest Octant: X,Y,Z in [0,4]
+% =========================
+
+\draw[lTwo]       (2,0,0) -- (2,4,0);
+\draw[lTwoHidden] (2,0,4) -- (2,4,4);
+\draw[lTwoHidden] (2,0,0) -- (2,0,4);
+\draw[lTwo]       (2,4,0) -- (2,4,4);
+
+\draw[lTwo]       (0,2,0) -- (4,2,0);
+\draw[lTwoHidden] (0,2,4) -- (4,2,4);
+\draw[lTwoHidden] (0,2,0) -- (0,2,4);
+\draw[lTwo]       (4,2,0) -- (4,2,4);
+
+\draw[lTwoHidden] (0,0,2) -- (4,0,2);
+\draw[lTwo]       (0,4,2) -- (4,4,2);
+\draw[lTwoHidden] (0,0,2) -- (0,4,2);
+\draw[lTwo]       (4,0,2) -- (4,4,2);
+
+% Internal crosshairs
+\draw[lTwoHidden] (2,2,0) -- (2,2,4);
+\draw[lTwoHidden] (2,0,2) -- (2,4,2);
+\draw[lTwoHidden] (0,2,2) -- (4,2,2);
+
+% =========================
+% Level 3 Split (Green)
+% Bottom-SW sub-octant: X,Y,Z in [0,2]
+% =========================
+
+\draw[lThree]       (1,0,0) -- (1,2,0);
+\draw[lThreeHidden] (1,0,2) -- (1,2,2);
+\draw[lThreeHidden] (1,0,0) -- (1,0,2);
+\draw[lThree]       (1,2,0) -- (1,2,2);
+
+\draw[lThree]       (0,1,0) -- (2,1,0);
+\draw[lThreeHidden] (0,1,2) -- (2,1,2);
+\draw[lThreeHidden] (0,1,0) -- (0,1,2);
+\draw[lThree]       (2,1,0) -- (2,1,2);
+
+\draw[lThreeHidden] (0,0,1) -- (2,0,1);
+\draw[lThree]       (0,2,1) -- (2,2,1);
+\draw[lThreeHidden] (0,0,1) -- (0,2,1);
+\draw[lThree]       (2,0,1) -- (2,2,1);
+
+% Internal crosshairs
+\draw[lThreeHidden] (1,1,0) -- (1,1,2);
+\draw[lThreeHidden] (1,0,1) -- (1,2,1);
+\draw[lThreeHidden] (0,1,1) -- (2,1,1);
+
+% =========================
+% Data Points
+% =========================
+
+\node[pt,label=above right:$p_1$] at (2,6,6) {};
+\node[pt,label=above right:$p_2$] at (5,7,7) {};
+\node[pt,label=above right:$p_3$] at (4.5,4.5,5) {};
+\node[pt,label=above right:$p_4$] at (7,5,6) {};
+\node[pt,label=above right:$p_5$] at (3,3,3) {};
+\node[pt,label=above right:$p_6$] at (0.5,1.5,1.5) {};
+\node[pt,label=above right:$p_7$] at (1.5,0.5,0.5) {};
+\node[pt,label=above right:$p_8$] at (3,1,2) {};
+\node[pt,label=above right:$p_9$] at (6,2,2) {};
+
+\end{tikzpicture}
+
+\end{document}
+```
+
 
 ## Reinforcement Learning
 
