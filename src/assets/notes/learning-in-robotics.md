@@ -1067,31 +1067,31 @@ This result matches the recursive method exactly, confirming that the door is op
 A sequence of random variables $X_0, X_1, X_2, \ldots$ is called a Discrete-Time Markov Chain (DTMC) if it satisfies the Markov property:
 $$
 \begin{equation} \label{eq:markov_property}
-p(X_{n+1} \mid X_n, X_{n-1}, \ldots, X_0) = p(X_{n+1} \mid X_n),
+\mathrm{P}(X_{n+1} \mid X_n, X_{n-1}, \ldots, X_0) = \mathrm{P}(X_{n+1} \mid X_n),
 \end{equation}
 $$
 which states that **future state depends only on the present state, not on the sequence of events that preceded it**.
 
-The random variables $X_n$ take values from a countable set $S$ called the state space. Each element $i \in S$ represents a distinct configuration of the system (e.g., a robot's location on a grid).
+The random variables $X_n$ take values from a countable set $S$ called the state space. Each element $s_i \in S$ represents a distinct configuration of the system (e.g., a robot's location on a grid).
 
-For a time-homogeneous Markov chain, the probability of transitioning from state $i$ to state $j$ is independent of time $n$. We define the one-step transition probabilities as:
+For a time-homogeneous Markov chain, the probability of transitioning from state $s_i$ to state $s_j$ is independent of time $n$. We define the one-step transition probabilities as:
 $$
 \begin{equation} \label{eq:transition_probabilities}
-p_{ij} = p(X_{n+1} = j \mid X_n = i), \quad \forall n \geq 0, \; i, j \in S.
+P_{ij} = \mathrm{P}(X_{k+1} = s_j \mid X_k = s_i), \quad \forall k \geq 0, \; \forall s_i, s_j \in S.
 \end{equation}
 $$
 These probabilities must satisfy:
 
-- $0 \leq p_{ij} \leq 1$ for all $i, j \in S$,
-- $\sum_{j \in S} p_{ij} = 1$ for all $i \in S$ (the system must transition to some state).
+- $0 \leq P_{ij} \leq 1$ for all $s_i, s_j \in S$ (valid probabilities).
+- $\sum_{s_j \in S} P_{ij} = 1$ for all $s_i \in S$ (the system must transition to some state).
 
-We can arrange these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $p_{ij}$:
+We can arrange these probabilities into a transition matrix $P$, where the entry in the $i$-th row and $j$-th column is $P_{ij}$:
 $$
 \begin{equation} \label{eq:transition_matrix}
 P = \begin{bmatrix}
-p_{11} & p_{12} & p_{13} & \cdots \\
-p_{21} & p_{22} & p_{23} & \cdots \\
-p_{31} & p_{32} & p_{33} & \cdots \\
+P_{11} & P_{12} & P_{13} & \cdots \\
+P_{21} & P_{22} & P_{23} & \cdots \\
+P_{31} & P_{32} & P_{33} & \cdots \\
 \vdots & \vdots & \vdots & \ddots
 \end{bmatrix}.
 \end{equation}
@@ -1103,9 +1103,9 @@ $$
 P^{(k)} = P^k,
 \end{equation}
 $$
-where the entry $p_{ij}^{(k)}$ gives the probability of transitioning from state $i$ to state $j$ in $k$ steps:
+where the entry $P_{ij}^{(k)}$ gives the probability of transitioning from state $s_i$ to state $s_j$ in $k$ steps:
 $$
-p_{ij}^{(k)} = p(X_{n+k} = j \mid X_n = i).
+P_{ij}^{(k)} = \mathrm{P}(X_{n+k} = s_j \mid X_n = s_i).
 $$
 
 <details><summary>Example: Markov Chain State Diagram</summary>
@@ -1161,18 +1161,18 @@ The corresponding state diagram is shown below:
 
 #### Evolution of a Markov Chain
 
-The probability of being in a state $j$ at time $k + 1$ can be written as the sum over all possible previous states $i$ of the probability of being in state $i$ at time $k$ multiplied by the transition probability from $i$ to $j$:
+The probability of being in a state $s_j$ at time $k + 1$ can be written as the sum over all possible previous states $s_i$ of the probability of being in state $s_i$ at time $k$ multiplied by the transition probability from $s_i$ to $s_j$:
 $$
 \begin{equation} \label{eq:chapman_kolmogorov_step_swapped}
-p(X_{k+1} = j) = \sum_{i \in S} p(X_{k+1} = j \mid X_k = i)\, p(X_k = i)
-= \sum_{i \in S} p_{ij}\, p(X_k = i).
+\mathrm{P}(X_{k+1} = s_j) = \sum_{s_i \in S} \mathrm{P}(X_{k+1} = s_j \mid X_k = s_i)\, \mathrm{P}(X_k = s_i)
+= \sum_{s_i \in S} P_{ij}\, \mathrm{P}(X_k = s_i).
 \end{equation}
 $$
 This summation can be expressed compactly using linear algebra. We define a column vector $\pi^{(k)}$ representing the **probability distribution over states** at time $k$:
 $$
-\pi^{(k)} = \begin{bmatrix} p(X_k = 1) \\ p(X_k = 2) \\ \vdots \\ p(X_k = M) \end{bmatrix},
+\pi^{(k)} = \begin{bmatrix} \pi_{1} \\ \pi_{2} \\ \vdots \\ \pi_{m} \end{bmatrix} = \begin{bmatrix} \mathrm{P}(X_k = s_1) \\ \mathrm{P}(X_k = s_2) \\ \vdots \\ \mathrm{P}(X_k = s_m) \end{bmatrix},
 $$
-where $S = \{1, 2, \ldots, M\}$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
+where $S = \{s_1, s_2, \ldots, s_m\}$, and $\sum_{i=1}^m \pi_i = 1$. The evolution of the probability distribution from time $k$ to $k+1$ is then given by:
 $$
 \begin{equation} \label{eq:state_propagation}
 \pi^{(k+1)} = P^T \pi^{(k)},
@@ -1187,13 +1187,13 @@ $$
 $$
 This result is fundamental in robotics for **predictive modeling**. If we know the current state uncertainty ($\pi^{(0)}$) and the system dynamics ($P$), we can predict the distribution of the robot's state $n$ steps into the future.
 
-As $n \to \infty$, the probability distribution $\pi^{(n)}$ may converge to a fixed vector $\pi$ that does not change as time progresses. This is known as the **stationary distribution** and satisfies the eigenvector equation:
+As $n \to \infty$, the probability distribution $\pi^{(n)}$ may converge to a fixed vector $\pi$ that does not change as time progresses. This is known as the **stationary distribution**:
 $$
 \begin{equation} \label{eq:stationary_distribution}
-\pi = P^T \pi, \quad \text{subject to } \sum_{i \in S} \pi_i = 1.
+\pi = P^T \pi, \quad \text{subject to } \sum_{i=1}^m \pi_i = 1.
 \end{equation}
 $$
-The condition $\sum \pi_i = 1$ ensures that $\pi$ remains a valid probability distribution. For the robot, this represents the long-term probability of being in each state if the system evolves indefinitely without external intervention.
+The condition $\sum_{i=1}^m \pi_i = 1$ ensures that $\pi$ remains a valid probability distribution. For the robot, this represents the long-term probability of being in each state if the system evolves indefinitely without external intervention.
 
 <details><summary>Example: Markov Chain State Evolution</summary>
 
@@ -1207,7 +1207,7 @@ P = \begin{bmatrix}
 $$
 suppose the robot starts in the $\text{Idle}$ state with certainty:
 $$
-\pi^{(0)} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}.
+\pi^{(0)} = \begin{bmatrix} \mathrm{P}(X_0 = \text{Idle}) \\ \mathrm{P}(X_0 = \text{Moving}) \\ \mathrm{P}(X_0 = \text{Working}) \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}.
 $$  
 To find the state distribution after one time step ($k=1$), we use the transpose $P^T$:
 $$
@@ -1273,7 +1273,7 @@ $$
 
 ### Hidden Markov Models (HMM)
 
-A Hidden Markov Model is a sequence of random variables $Y_1, \ldots, Y_n$ such that the distribution of $Y_k$ only depends upon the _hidden state_ $X_k$ of the associated Markov chain.
+A Hidden Markov Model (HMM) consists of a hidden state sequence $X_1, \ldots, X_n$ that forms a Markov chain, together with an observation sequence $Y_1, \ldots, Y_n$, where each observation $Y_k$ is conditionally independent of all other states and observations given the corresponding hidden state $X_k$.
 
 ```tikz
 \begin{document}
@@ -1309,57 +1309,58 @@ A Hidden Markov Model is a sequence of random variables $Y_1, \ldots, Y_n$ such 
 \end{document}
 ```
 
-Formally, A Hidden Markov Model (HMM) is a pair of stochastic processes
+Formally, A HMM is a pair of stochastic processes
 $\{X_k\}_{k=1}^{n}$ and $\{Y_k\}_{k=1}^{n}$ where:
 
-- $X_k$ is the (unobserved) **hidden state** at time $k$, taking values in a countable state space $S$.
-- $Y_k$ is the **observation** at time $k$, taking values in an observation space $\mathcal{O}$.
+- $X_k$ is the (unobserved) **hidden state** at time $k$, taking values in a countable state space $S = \{s_1, s_2, \ldots, s_m\}$.
+- $Y_k$ is the **observation** at time $k$, taking values in an observation space $\mathcal{Y} = \{y_1, y_2, \ldots, y_l\}$.
 
-An HMM is specified by parameters
+An HMM $\lambda$ is specified by parameters
 $$
 \lambda = (\pi, P, M)
 $$
-where $\pi \in \mathbb{R}^{|S|}$ is the initial distribution, $P \in \mathbb{R}^{|S| \times |S|}$ is the state transition matrix, and $M \in \mathbb{R}^{|S| \times |\mathcal{O}|}$ is the emission (measurement) model.
+where $\pi \in \mathbb{R}^{m}$ is the initial distribution, $P \in \mathbb{R}^{m \times m}$ is the state transition matrix, and $M \in \mathbb{R}^{m \times l}$ is the emission (measurement) model.
 
 The model is defined by the following assumptions.
 
 First, the hidden state process satisfies the Markov property:
 $$
 \begin{equation} \label{eq:hmm_markov}
-p\left(X_k \mid X_{k - 1}, \ldots, X_1 \right) = p \left(X_k \mid X_{k - 1} \right), \quad \forall k \geq 2.
+\mathrm{P}\left(X_k \mid X_{k - 1}, \ldots, X_1 \right) = \mathrm{P} \left(X_k \mid X_{k - 1} \right), \quad \forall k \geq 2.
 \end{equation}
 $$
 We define the initial distribution by
 $$
 \begin{equation} \label{eq:hmm_initial_distribution}
-\pi_i = p(X_1 = i), \quad i \in S, \quad \text{with } \sum_{i \in S} \pi_i = 1,
+\pi = \pi^{(1)} \begin{bmatrix} \pi_{s_1} \\ \pi_{s_2} \\ \vdots \\ \pi_{s_m} \end{bmatrix} = \begin{bmatrix} p(X_1 = s_1) \\ p(X_1 = s_2) \\ \vdots \\ p(X_1 = s_m) \end{bmatrix}, \quad \text{with } \sum_{i=1}^m \pi_{s_i} = 1,
 \end{equation}
 $$
 and the one-step transition probabilities by
 $$
 \begin{equation} \label{eq:hmm_transition_probabilities}
-P_{ij} = p(X_k = j \mid X_{k-1} = i), \quad i, j \in S, \; k \geq 2, \quad \text{with } \sum_{j \in S} P_{ij} = 1.
+P_{s_i, s_j} = \mathrm{P}(X_{k+1} = s_j \mid X_k = s_i), \quad \forall k \geq 0, \; \forall s_i, s_j \in S.
 \end{equation}
 $$
 
 Second, the observations are _conditionally independent_ $\eqref{eq:conditional_independence_equivalent}$ given the hidden states and only depend on the current state:
 $$
 \begin{equation} \label{eq:hmm_emission}
-p(Y_k \mid X_1, \ldots, X_k, Y_1, \ldots, Y_{k-1}) = p(Y_k \mid X_k), \quad \forall k \geq 1.
+\mathrm{P}(Y_k \mid X_1, \ldots, X_k, Y_1, \ldots, Y_{k-1}) = \mathrm{P}(Y_k \mid X_k), \quad \forall k \geq 1.
 \end{equation}
 $$
 We parameterize this distribution by the emission model
 $$
 \begin{equation} \label{eq:hmm_emission_model}
-M_{iy} = p(Y_k = y \mid X_k = i), \quad i \in S, \; y \in \mathcal{O}.
+M_{s_i, y_j} = \mathrm{P}(Y_k = y_j \mid X_k = s_i), \quad \forall k \geq 1, \; \forall s_i \in S, y_j \in \mathcal{Y}.
 \end{equation}
 $$
 Under these assumptions, the joint distribution over a state sequence $x_{1:n}$ and an observation sequence $y_{1:n}$ can be factorized as:
 $$
 \begin{equation} \label{eq:hmm_factorization}
-p(x_{1:n}, y_{1:n}) = \pi_{x_1} M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_k, y_k}.
+\operatorname{P}\left(X_{1: n}=x_{1: n}, Y_{1: n} = y_{1: n}\right) =\operatorname{P}\left(X_1=x_1\right) \prod_{k=2}^n \operatorname{P}\left(X_k=x_k \mid X_{k-1}=x_{k-1}\right) \prod_{k=1}^n \operatorname{P}\left(Y_k=y_k \mid X_k=x_k\right)
 \end{equation}
 $$
+where each term is a scalar probability from the model parameters $\lambda = (\pi, P, M)$.
 
 <details><summary>Proof of HMM Factorization</summary>
 
@@ -1390,39 +1391,26 @@ Applying the conditional independence assumption $\eqref{eq:hmm_emission}$, we c
 $$
 p(y_k \mid x_{1:k}, y_{1:k-1}) = p(y_k \mid x_k).
 $$
-Substituting these simplifications back into the chain rule expansion:
+Substituting these simplifications back into the chain rule expansion and we obtain the desired factorization:
 $$
-\begin{equation} \label{eq:hmm_factorization_proof}
-p(x_{1:n}, y_{1:n}) = p(x_1) p(y_1 \mid x_1) \prod_{k=2}^n \left [p(x_k \mid x_{k-1}) p(y_k \mid x_k)\right].
-\end{equation}
+p(x_{1:n}, y_{1:n}) = p(x_1) \prod_{k=2}^n p(x_k \mid x_{k-1}) \prod_{k=1}^n p(y_k \mid x_k).
 $$
-Finally, we map these probability terms to the model parameters:
-
-- $p(x_1) = \pi_{x_1}$ (initial distribution),
-- $p(x_k \mid x_{k-1}) = P_{x_{k-1}, x_k}$ (transition probabilities),
-- $p(y_k \mid x_k) = M_{x_k, y_k}$ (emission probabilities). Thus, we arrive at the factorized form that is consistent with $\eqref{eq:hmm_factorization}$:
-
 </details>
 
 <details><summary>HMM Example</summary>
 
 Suppose a robot moves in a hallway with 3 positions:
 $$
-S = \{1, 2, 3\}
+S = \{s_1, s_2, s_3\}
 $$
-where these are hidden states $X_k \in S$. The robot has a sensor that observes whether it is near a door or wall:
+The robot has a sensor that observes whether it is near a door or wall:
 $$
-\mathcal{O} = \{\text{door}, \text{wall}\}
+\mathcal{Y} = \{\text{door}, \text{wall}\}
 $$
-where these are observations $Y_k \in \mathcal{O}$.
 
 Assume robot starts in the middle with high probability:
 $$
-\pi_1 = 0.1, \quad \pi_2 = 0.8, \quad \pi_3 = 0.1,
-$$
-which can be written as a column vector:
-$$
-\pi = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}.
+\pi = \begin{bmatrix} \mathrm{P}(X_1 = s_1) \\ \mathrm{P}(X_1 = s_2) \\ \mathrm{P}(X_1 = s_3) \end{bmatrix} = \begin{bmatrix} 0.1 \\ 0.8 \\ 0.1 \end{bmatrix}.
 $$
 Suppose the robot has the following transition probabilities:
 $$
@@ -1432,22 +1420,21 @@ P=\left[\begin{array}{lll}
 0.0 & 0.3 & 0.7
 \end{array}\right]
 $$
-For example, $P_{12} = p(X_k = 2 \mid X_{k-1} = 1) = 0.3$ means that if the robot is at position 1 at time $k-1$, it has a 30% chance of moving to position 2 at time $k$.
 
 Suppose position 2 is near a door, position 1 and 3 are near walls, and the sensor is noisy with the following emission probabilities:
 $$
 \begin{array}{ll}
-M_{1, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=1\right)=0.9, & M_{1, \text { door }}=p\left(Y_k=\text { door } \mid X_k=1\right)=0.1, \\
-M_{2, \text { door }}=p\left(Y_k=\text { door } \mid X_k=2\right)=0.8, & M_{2, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=2\right)=0.2, \\
-M_{3, \text { wall }}=p\left(Y_k=\text { wall } \mid X_k=3\right)=0.9, & M_{3, \text { door }}=p\left(Y_k=\text { door } \mid X_k=3\right)=0.1 .
+M_{s_1, \text { door }} = \mathrm{P}(Y_k = \text{door} \mid X_k = s_1) = 0.1, & M_{s_1, \text { wall }} = \mathrm{P}(Y_k = \text{wall} \mid X_k = s_1) = 0.9, \\
+M_{s_2, \text { door }} = \mathrm{P}(Y_k = \text{door} \mid X_k = s_2) = 0.8, & M_{s_2, \text { wall }} = \mathrm{P}(Y_k = \text{wall} \mid X_k = s_2) = 0.2, \\
+M_{s_3, \text { door }} = \mathrm{P}(Y_k = \text{door} \mid X_k = s_3) = 0.1, & M_{s_3, \text { wall }} = \mathrm{P}(Y_k = \text{wall} \mid X_k = s_3) = 0.9.
 \end{array}
 $$
 Equivalently, we can write the emission model as a matrix:
 $$
 M=\left[\begin{array}{ll}
-M_{1, \text { door }} & M_{1, \text { wall }} \\
-M_{2, \text { door }} & M_{2, \text { wall }} \\
-M_{3, \text { door }} & M_{3, \text { wall }}
+M_{s_1, \text { door }} & M_{s_1, \text { wall }} \\
+M_{s_2, \text { door }} & M_{s_2, \text { wall }} \\
+M_{s_3, \text { door }} & M_{s_3, \text { wall }}
 \end{array}\right]=\left[\begin{array}{ll}
 0.1 & 0.9 \\
 0.8 & 0.2 \\
@@ -1489,7 +1476,7 @@ the central tasks can be formulated as the following inference problems:
     Given observations up to time $k$, compute the distribution of the state at time $k$:
     $$
     \begin{equation} \label{eq:hmm_filtering_problem}
-    p(x_k \mid y_{1:k}).
+    \text{Filtering: } p(x_k \mid y_{1:k}).
     \end{equation}
     $$
     This is the belief state at time $k$, which represents our uncertainty about the current state given all past observations. In robotics, this corresponds to estimating the robot’s current state as new sensor data arrives sequentially.
@@ -1497,7 +1484,7 @@ the central tasks can be formulated as the following inference problems:
     Given observations up to time $k$, compute the distribution of the state at anytime $j < k$:
     $$
     \begin{equation} \label{eq:hmm_smoothing_problem}
-    p(x_j \mid y_{1:k}) ,\quad j < k.
+    \text{Smoothing: } p(x_j \mid y_{1:k}) ,\quad j < k.
     \end{equation}
     $$
     We use both **past and future** observations (relative to time $j$) to improve the estimate of an earlier state. In robotics, smoothing is useful for offline analysis, mapping, or trajectory refinement after data collection.
@@ -1506,7 +1493,7 @@ the central tasks can be formulated as the following inference problems:
     Given observations up to time $k$, compute the distribution of the state at a time $j > k$:
     $$
     \begin{equation} \label{eq:hmm_prediction_problem}
-    p(x_j \mid y_{1:k}) ,\quad j > k.
+    \text{Prediction: } p(x_j \mid y_{1:k}) ,\quad j > k.
     \end{equation}
     $$
     This uses the system dynamics to project uncertainty forward in time beyond the last observation. In robotics, prediction is used for forecasting motion, planning, and anticipating future states of the system.
@@ -1514,7 +1501,7 @@ the central tasks can be formulated as the following inference problems:
     Given observations up to time $k$, find the most likely hidden state sequence:
     $$
     \begin{equation} \label{eq:hmm_decoding_problem}
-    x^*_{1:k} = \arg\max_{x_{1:k}} p(x_{1:k} \mid y_{1:k}).
+    \text{Decoding: } x^*_{1:k} = \arg\max_{x_{1:k}} p(x_{1:k} \mid y_{1:k}).
     \end{equation}
     $$
     This finds the single most probably trajectory of hidden states explaining the observations. In robotics and speech recognition, this corresponds to trajectory estimation or sequence labeling (typically solved by the Viterbi algorithm).
@@ -1522,7 +1509,7 @@ the central tasks can be formulated as the following inference problems:
     Given the observation trajectory $y_{1:k}$, compute the probability:
     $$
     \begin{equation} \label{eq:hmm_likelihood_problem}
-    p(y_{1:k}).
+    \text{Likelihood of Observations: } p(y_{1:k}).
     \end{equation}
     $$
     This measures how well the model explains the data.
@@ -1531,10 +1518,10 @@ These problems can be solved with forward-backward algorithms, Viterbi algorithm
 
 #### Forward Algorithm
 
-Given an observed sequence $y_{1:n}$, we define the **forward variable** $\alpha_k(i)$ as the joint probability of the observation sequence up to time $k$ and the state being $i$ at time $k$:
+Given an **observed** sequence $y_{1:n}$, we define the **forward variable** $\alpha_k(s)$ as the joint probability of the observation sequence up to time $k$ and the state being $s$ at time $k$:
 $$
 \begin{equation} \label{eq:forward_variable}
-\alpha_k(i) = p(Y_{1:k} = y_{1:k}, X_k = i).
+\alpha_k(s) = \mathrm{P}(Y_{1:k} = y_{1:k}, X_k = s).
 \end{equation}
 $$
 The algorithm proceeds recursively:
@@ -1542,19 +1529,19 @@ The algorithm proceeds recursively:
 1. **Base Case** ($k=1$): Using the definition of conditional probability $\eqref{eq:conditional_pmf}$:
    $$
    \begin{equation} \label{eq:forward_base_case}
-   \alpha_1(i) = p(y_1, X_1 = i) = p(y_1 \mid X_1 = i) p(X_1 = i) = M_{i, y_1} \pi_i.
+   \alpha_1(s) = \mathrm{P}(Y_1 = y_1, X_1 = s) = p(y_1 \mid s) p(s) = M_{s, y_1} \pi_s.
    \end{equation}
    $$
-2. **Recursive Case** ($k > 1$): We can express $\alpha_k(j)$ in terms of $\alpha_{k-1}(i)$:
+2. **Recursive Case** ($k > 1$): We can express $\alpha_k(s)$ in terms of $\alpha_{k-1}(s')$:
    $$
    \begin{equation} \label{eq:forward_recursive_case}
-   \alpha_k(j) = \left[ \sum_{i \in S} \alpha_{k-1}(i)P_{ij} \right] M_{j, y_k}.
+   \alpha_k(s) = \left[ \sum_{s' \in S} \alpha_{k-1}(s')P_{s', s} \right] M_{s, y_k}.
    \end{equation}
    $$
 3. **Termination**: The likelihood of the observation sequence is the sum of the forward variables at time $n$:
    $$
     \begin{equation} \label{eq:forward_termination}
-   p(y_{1:n}) = \sum_{i \in S} \alpha_n(i).
+    p(y_{1:n}) = \sum_{s \in S} \alpha_n(s).
     \end{equation}
    $$
 
@@ -1562,7 +1549,7 @@ The algorithm proceeds recursively:
 
 Following the previous HMM example:
 $$
-\mathcal{O} = \{\text{door}, \text{wall}\}, \quad S = \{1, 2, 3\}, \quad \lambda = (\pi, P, M),
+\mathcal{Y} = \{\text{door}, \text{wall}\}, \quad S = \{s_1, s_2, s_3\}, \quad \lambda = (\pi, P, M),
 $$
 with
 $$
@@ -1582,28 +1569,28 @@ y_{1:3} = (\text{door}, \text{wall}, \text{door}).
 $$
 We'll compute:
 $$
-\alpha_1(i), \alpha_2(i), \alpha_3(i) \quad \text{for } i = 1, 2, 3.
+\alpha_k(s) = \mathrm{P}(Y_{1:k} = y_{1:k}, X_k = s), \quad s \in S, \quad k = 1, 2, 3.
 $$
 We initialize with $k=1$ with $y_1 = \text{door}$ following $\eqref{eq:forward_base_case}$:
 $$
 \begin{align*}
-\alpha_1(1) &= M_{1, \text{door}} \pi_1 = 0.1 \cdot 0.1 = 0.01, \\
-\alpha_1(2) &= M_{2, \text{door}} \pi_2 = 0.8 \cdot 0.8 = 0.64, \\
-\alpha_1(3) &= M_{3, \text{door}} \pi_3 = 0.1 \cdot 0.1 = 0.01.
+\alpha_1(s_1) &= M_{s_1, \text{door}} \pi_{s_1} = 0.1 \cdot 0.1 = 0.01, \\
+\alpha_1(s_2) &= M_{s_2, \text{door}} \pi_{s_2} = 0.8 \cdot 0.8 = 0.64, \\
+\alpha_1(s_3) &= M_{s_3, \text{door}} \pi_{s_3} = 0.1 \cdot 0.1 = 0.01.
 \end{align*}
 $$
-Next, we compute $\alpha_2(j)$ for $j = 1, 2, 3$ with $y_2 = \text{wall}$ using $\eqref{eq:forward_recursive_case}$:
+Next, we compute $\alpha_2(s)$ with $y_2 = \text{wall}$ using $\eqref{eq:forward_recursive_case}$:
 $$
 \begin{align*}
-\alpha_2(1) &= \left[ \alpha_1(1)P_{11} + \alpha_1(2)P_{21} + \alpha_1(3)P_{31} \right] M_{1, \text{wall}}, \\
+\alpha_2(s_1) &= \left[ \alpha_1(s_1)P_{s_1, s_1} + \alpha_1(s_2)P_{s_2, s_1} + \alpha_1(s_3)P_{s_3, s_1} \right] M_{s_1, \text{wall}}, \\
 &= \left[ 0.01 \cdot 0.7 + 0.64 \cdot 0.2 + 0.01 \cdot 0.0 \right] \cdot 0.9 = 0.1215 \\
-\alpha_2(2) &= \left[ \alpha_1(1)P_{12} + \alpha_1(2)P_{22} + \alpha_1(3)P_{32} \right] M_{2, \text{wall}}, \\
+\alpha_2(s_2) &= \left[ \alpha_1(s_1)P_{s_1, s_2} + \alpha_1(s_2)P_{s_2, s_2} + \alpha_1(s_3)P_{s_3, s_2} \right] M_{s_2, \text{wall}}, \\
 &= \left[ 0.01 \cdot 0.3 + 0.64 \cdot 0.6 + 0.01 \cdot 0.3 \right] \cdot 0.2 = 0.078, \\
-\alpha_2(3) &= \left[ \alpha_1(1)P_{13} + \alpha_1(2)P_{23} + \alpha_1(3)P_{33} \right] M_{3, \text{wall}}, \\
+\alpha_2(s_3) &= \left[ \alpha_1(s_1)P_{s_1, s_3} + \alpha_1(s_2)P_{s_2, s_3} + \alpha_1(s_3)P_{s_3, s_3} \right] M_{s_3, \text{wall}}, \\
 &= \left[ 0.01 \cdot 0.0 + 0.64 \cdot 0.2 + 0.01 \cdot 0.7 \right] \cdot 0.9 = 0.1215.
 \end{align*}
 $$
-Finally we compute $\alpha_3(j)$ for $j = 1, 2, 3$ with $y_3 = \text{door}$ using the same recursive formula. Below is an example code snippet for computing forward variables in Python:
+Finally we compute $\alpha_3(s)$ with $y_3 = \text{door}$ using the same recursive formula. Below is an example code snippet for computing forward variables in Python:
 
 ```execute-python
 import numpy as np
@@ -1656,24 +1643,24 @@ print("\nLikelihood p(y_1:T):", likelihood)
 From the code execute, we get:
 $$
 \begin{align*}
-\alpha_3(1) &= 0.010065, \\
-\alpha_3(2) &= 0.09576, \\
-\alpha_3(3) &= 0.010065.
+\alpha_3(s_1) &= 0.010065, \\
+\alpha_3(s_2) &= 0.09576, \\
+\alpha_3(s_3) &= 0.010065.
 \end{align*}
 $$
 
 We can now compute the likelihood of the observation sequence following $\eqref{eq:forward_termination}$:
 $$
-p(y_{1:3}) = \alpha_3(1) + \alpha_3(2) + \alpha_3(3) = 0.11589.
+p(y_{1:3}) = \alpha_3(s_1) + \alpha_3(s_2) + \alpha_3(s_3) = 0.11589.
 $$
 
 We can format the forward variable matrix as follows:
 
 $$
 \alpha = \begin{bmatrix}
-\alpha_1(1) & \alpha_1(2) & \alpha_1(3) \\
-\alpha_2(1) & \alpha_2(2) & \alpha_2(3) \\
-\alpha_3(1) & \alpha_3(2) & \alpha_3(3)
+\alpha_1(s_1) & \alpha_1(s_2) & \alpha_1(s_3) \\
+\alpha_2(s_1) & \alpha_2(s_2) & \alpha_2(s_3) \\
+\alpha_3(s_1) & \alpha_3(s_2) & \alpha_3(s_3)
 \end{bmatrix} =
 \begin{bmatrix}
 0.01 & 0.64 & 0.01 \\
@@ -1686,10 +1673,10 @@ $$
 
 #### Backward Algorithm
 
-Given an observed sequence $y_{1:n}$, we define the **backward variable** $\beta_k(i)$ as the probability of the _future_ observations from time $k+1$ to $n$, conditioned on the state being $i$ at time $k$:
+Given an observed sequence $y_{1:n}$, we define the **backward variable** $\beta_k(s)$ as the probability of the _future_ observations from time $k+1$ to $n$, conditioned on the state being $s$ at time $k$:
 $$
 \begin{equation} \label{eq:backward_variable}
-\beta_k(i) = p(Y_{k+1:n} = y_{k+1:n} \mid X_k = i).
+\beta_k(s) = p(Y_{k+1:n} = y_{k+1:n} \mid X_k = s).
 \end{equation}
 $$
 The algorithm proceeds recursively:
@@ -1697,19 +1684,19 @@ The algorithm proceeds recursively:
 1. **Base Case** ($k=n$): There are no future observations, so we set:
    $$
    \begin{equation} \label{eq:backward_base_case}
-   \beta_n(i) = 1, \quad \forall i \in S.
+   \beta_n(s) = 1, \quad \forall s \in S.
    \end{equation}
    $$
-2. **Recursive Case** ($k < n$): We can express $\beta_k(i)$ in terms of $\beta_{k+1}(j)$:
+2. **Recursive Case** ($k < n$): We can express $\beta_k(s)$ in terms of $\beta_{k+1}(s')$:
    $$
     \begin{equation} \label{eq:backward_recursive_case}
-    \beta_k(i) = \sum_{j \in S} P_{ij} M_{j, y_{k+1}} \beta_{k+1}(j).
+    \beta_k(s) = \sum_{s' \in S} P_{s,s'} M_{s', y_{k+1}} \beta_{k+1}(s').
     \end{equation}
     $$
 3. **Termination**: The likelihood of the observation sequence can also be computed using the backward variables at time $1$:
    $$
     \begin{equation} \label{eq:backward_termination}
-    p(y_{1:n}) = \sum_{i \in S} \pi_i M_{i, y_1} \beta_1(i).
+    p(y_{1:n}) = \sum_{s \in S} \pi_s M_{s, y_1} \beta_1(s).
     \end{equation}
     $$
 
@@ -1717,7 +1704,7 @@ The algorithm proceeds recursively:
 
 Following the previous HMM example:
 $$
-\mathcal{O} = \{\text{door}, \text{wall}\}, \quad S = \{1, 2, 3\}, \quad \lambda = (\pi, P, M),
+\mathcal{Y} = \{\text{door}, \text{wall}\}, \quad S = \{s_1, s_2, s_3\}, \quad \lambda = (\pi, P, M),
 $$
 with
 $$
@@ -1737,25 +1724,25 @@ y_{1:3} = (\text{door}, \text{wall}, \text{door}).
 $$
 We'll compute:
 $$
-\beta_3(i), \beta_2(i), \beta_1(i) \quad \text{for } i = 1, 2, 3.
+\beta_3(s_1), \beta_2(s_2), \beta_1(s_3) \quad \text{for } s \in S.
 $$
 
 We initialize with $k=3$ following $\eqref{eq:backward_base_case}$:
 $$
-\beta_3(1) = \beta_3(2) = \beta_3(3) = 1.
+\beta_3(s_1) = \beta_3(s_2) = \beta_3(s_3) = 1.
 $$
-Next, we compute $\beta_2(i)$ for $i = 1, 2, 3$ with $y_3 = \text{door}$ using $\eqref{eq:backward_recursive_case}$:
+Next, we compute $\beta_2(s)$ with $y_3 = \text{door}$ using $\eqref{eq:backward_recursive_case}$:
 $$
 \begin{align*}
-\beta_2(1) &= P_{11}M_{1,\text{door}}\beta_3(1) + P_{12}M_{2,\text{door}}\beta_3(2) + P_{13}M_{3,\text{door}}\beta_3(3) \\
+\beta_2(s_1) &= P_{s_1,s_1}M_{s_1,\text{door}}\beta_3(s_1) + P_{s_1,s_2}M_{s_2,\text{door}}\beta_3(s_2) + P_{s_1,s_3}M_{s_3,\text{door}}\beta_3(s_3) \\
 &= 0.7\cdot 0.1 \cdot 1 + 0.3\cdot 0.8 \cdot 1 + 0.0\cdot 0.1 \cdot 1 = 0.31, \\
-\beta_2(2) &= P_{21}M_{1,\text{door}}\beta_3(1) + P_{22}M_{2,\text{door}}\beta_3(2) + P_{23}M_{3,\text{door}}\beta_3(3) \\
+\beta_2(s_2) &= P_{s_2,s_1}M_{s_1,\text{door}}\beta_3(s_1) + P_{s_2,s_2}M_{s_2,\text{door}}\beta_3(s_2) + P_{s_2,s_3}M_{s_3,\text{door}}\beta_3(s_3) \\
 &= 0.2\cdot 0.1 \cdot 1 + 0.6\cdot 0.8 \cdot 1 + 0.2\cdot 0.1 \cdot 1 = 0.52, \\
-\beta_2(3) &= P_{31}M_{1,\text{door}}\beta_3(1) + P_{32}M_{2,\text{door}}\beta_3(2) + P_{33}M_{3,\text{door}}\beta_3(3) \\
+\beta_2(s_3) &= P_{s_3,s_1}M_{s_1,\text{door}}\beta_3(s_1) + P_{s_3,s_2}M_{s_2,\text{door}}\beta_3(s_2) + P_{s_3,s_3}M_{s_3,\text{door}}\beta_3(s_3) \\
 &= 0.0\cdot 0.1 \cdot 1 + 0.3\cdot 0.8 \cdot 1 + 0.7\cdot 0.1 \cdot 1 = 0.31.
 \end{align*}
 $$
-Finally we compute $\beta_1(i)$ for $i = 1, 2, 3$ with $y_2 = \text{wall}$ using the same recursive formula using the following code snippet:
+Finally we compute $\beta_1(s)$ with $y_2 = \text{wall}$ using the same recursive formula using the following code snippet:
 
 ```execute-python
 import numpy as np
@@ -1800,22 +1787,22 @@ print("Likelihood:", likelihood)
 From the code execute, we get:
 $$
 \begin{align*}
-\beta_1(1) &= 0.2265, \\
-\beta_1(2) &= 0.174, \\
-\beta_1(3) &= 0.2265.
+\beta_1(s_1) &= 0.2265, \\
+\beta_1(s_2) &= 0.174, \\
+\beta_1(s_3) &= 0.2265.
 \end{align*}
 $$
 We can now compute the likelihood of the observation sequence following $\eqref{eq:backward_termination}$:
 $$
-p(y_{1:3}) = \sum_{i \in S} \pi_i M_{i, y_1} \beta_1(i) = 0.11589,
+p(y_{1:3}) = \sum_{s \in S} \pi_s M_{s, y_1} \beta_1(s) = 0.11589.
 $$
 which matches the likelihood computed from the forward algorithm, confirming the consistency of both methods. The backward variable matrix can be formatted as follows:
 
 $$
 \beta = \begin{bmatrix}
-\beta_1(1) & \beta_1(2) & \beta_1(3) \\
-\beta_2(1) & \beta_2(2) & \beta_2(3) \\
-\beta_3(1) & \beta_3(2) & \beta_3(3)
+\beta_1(s_1) & \beta_1(s_2) & \beta_1(s_3) \\
+\beta_2(s_1) & \beta_2(s_2) & \beta_2(s_3) \\
+\beta_3(s_1) & \beta_3(s_2) & \beta_3(s_3)
 \end{bmatrix} =
 \begin{bmatrix}
 0.2265 & 0.174 & 0.2265 \\
@@ -1828,138 +1815,83 @@ $$
 
 #### Solving Inference Problems
 
-Using the forward variables $\alpha_k(i)$ and backward variables $\beta_k(i)$, we can solve the filtering, smoothing, prediction, and likelihood problems efficiently.
+Using the forward variables $\alpha_k(s)$ and backward variables $\beta_k(s)$, we can solve the filtering, smoothing, prediction, and likelihood problems efficiently.
 
 - **Filtering** (online state estimation) $\eqref{eq:hmm_filtering_problem}$:
 
   The filtering distribution is obtained by normalizing the forward variables:
   $$
   \begin{equation} \label{eq:hmm_filtering_solution}
-  p(X_k = i \mid y_{1:k}) = \frac{\alpha_k(i)}{\sum_{j \in S} \alpha_k(j)}.
+  p(X_k = s \mid y_{1:k}) = \frac{\alpha_k(s)}{\sum_{s' \in S} \alpha_k(s')}.
   \end{equation}
   $$
-
-    <details><summary>Filtering Example</summary>
-
-    We use the same observation sequence as in the forward/backward examples:
-    $$
-    y_{1:3}=(\text{door},\text{wall},\text{door}).
-    $$
-    $$
-    \alpha = \begin{bmatrix}
-        0.01 & 0.64 & 0.01 \\
-        0.1215 & 0.078 & 0.1215 \\
-        0.010065 & 0.09576 & 0.010065
-        \end{bmatrix}.
-    $$
-
-    We follow $\eqref{eq:hmm_filtering_solution}$ to compute the filtering distribution at each time step:
-    $$
-    \begin{align*}
-    p(X_1 = i \mid y_{1:1}) &= \frac{\alpha_1(i)}{\sum_{j \in S} \alpha_1(j)} = \frac{\alpha_1(i)}{0.01 + 0.64 + 0.01} = \frac{\alpha_1(i)}{0.66}, \\
-    p(X_2 = i \mid y_{1:2}) &= \frac{\alpha_2(i)}{\sum_{j \in S} \alpha_2(j)} = \frac{\alpha_2(i)}{0.1215 + 0.078 + 0.1215} = \frac{\alpha_2(i)}{0.321}, \\
-    p(X_3 = i \mid y_{1:3}) &= \frac{\alpha_3(i)}{\sum_{j \in S} \alpha_3(j)} = \frac{\alpha_3(i)}{0.010065 + 0.09576 + 0.010065} = \frac{\alpha_3(i)}{0.11589}.
-    \end{align*}
-    $$
-    Now we can compute the filtering distributions explicitly:
-    $$
-    \begin{align*}
-    p(X_1 = 1 \mid y_{1:1}) &= \frac{0.01}{0.66} \approx 0.0152 & p(X_1 = 2 \mid y_{1:1}) &= \frac{0.64}{0.66} \approx 0.9697 & p(X_1 = 3 \mid y_{1:1}) &= \frac{0.01}{0.66} \approx 0.0152 \\
-    p(X_2 = 1 \mid y_{1:2}) &= \frac{0.1215}{0.321} \approx 0.3785 & p(X_2 = 2 \mid y_{1:2}) &= \frac{0.078}{0.321} \approx 0.2430 & p(X_2 = 3 \mid y_{1:2}) &= \frac{0.1215}{0.321} \approx 0.3785 \\
-    p(X_3 = 1 \mid y_{1:3}) &= \frac{0.0101}{0.1159} \approx 0.0868 & p(X_3 = 2 \mid y_{1:3}) &= \frac{0.0958}{0.1159} \approx 0.8263 & p(X_3 = 3 \mid y_{1:3}) &= \frac{0.0101}{0.1159} \approx 0.0868
-    \end{align*}
-    $$
-    Summarizing nicely into a table:
-
-    | Time $k$ | $p(X_k = 1 \mid y_{1:k})$ | $p(X_k = 2 \mid y_{1:k})$ | $p(X_k = 3 \mid y_{1:k})$ |
-    |-----------|-----------------------------|-----------------------------|-----------------------------|
-    | 1         | 0.0152                      | 0.9697                      | 0.0152                      |
-    | 2         | 0.37850                     | 0.24299                     | 0.37850                     |
-    | 3         | 0.08684                     | 0.82630                     | 0.08684                     |
-
-    </details>
 
 - **Smoothing** (offline state estimation) $\eqref{eq:hmm_smoothing_problem}$:
 
   Using both past and future observations, the smoothed marginal is:
   $$
   \begin{equation} \label{eq:hmm_smoothing_solution}
-  p(X_j = i \mid y_{1:n}) = \frac{\alpha_j(i)\,\beta_j(i)}{\sum_{l \in S} \alpha_j(l)\,\beta_j(l)}, \quad 1 \le j \le n.
+  p\left(X_j=s \mid y_{1: n}\right)=\frac{\alpha_j\left(s\right) \beta_j\left(s\right)}{\sum_{s' \in S} \alpha_j\left(s'\right) \beta_j\left(s'\right)} .
   \end{equation}
   $$
-  Since $\sum_{l \in S} \alpha_j(l)\beta_j(l) = p(y_{1:n})$, this can also be written as
-  $$
-  \begin{equation} \label{eq:hmm_smoothing_solution_alternative}
-  p(X_j = i \mid y_{1:n}) = \frac{\alpha_j(i)\,\beta_j(i)}{p(y_{1:n})}.
-  \end{equation}
-  $$
+  which can also be written as
+    $$
+    p\left(X_j=s \mid y_{1: n}\right)=\frac{\alpha_j\left(s\right) \beta_j\left(s\right)}{p\left(y_{1: n}\right)} .
+    $$
 
-    <details><summary>Smoothing Example</summary>
+    <details><summary>Three ways to compute joint probabilitiy of observations</summary>
 
-    We use the same observation sequence as in the forward/backward examples:
+    We have shown three ways to compute the likelihood of the observation sequence $p(y_{1:n})$ with $\eqref{eq:forward_termination}$, $\eqref{eq:backward_termination}$, and the denominator of $\eqref{eq:hmm_smoothing_solution}$. We show that they are equivalent.
+
+    We want to show that for any $j \in \{1, \ldots, n\}$,
     $$
-    y_{1:3}=(\text{door},\text{wall},\text{door}).
+    p(y_{1:n}) = \sum_{s \in S} \alpha_n(s) = \sum_{s \in S} \pi_{s} M_{s, y_1} \beta_1(s) = \sum_{s \in S} \alpha_j(s) \beta_j(s).
     $$
+
+    **Identity 1**: $p(y_{1:n}) = \sum_{s \in S} \alpha_n(s)$.
+
+    By the law of total probability, marginalizing over $X_n$:
     $$
-    \alpha = \begin{bmatrix}
-        0.01 & 0.64 & 0.01 \\
-        0.1215 & 0.078 & 0.1215 \\
-        0.010065 & 0.09576 & 0.010065
-        \end{bmatrix}, \quad
-    \beta = \begin{bmatrix}
-        0.2265 & 0.174 & 0.2265 \\
-        0.31 & 0.52 & 0.31 \\
-        1 & 1 & 1
-        \end{bmatrix}.
+    p(y_{1:n}) = \sum_{s \in S} \mathrm{P}(Y_{1:n} = y_{1:n},\, X_n = s) = \sum_{s \in S} \alpha_n(s),
     $$
-    We follow $\eqref{eq:hmm_smoothing_solution_alternative}$ to compute the smoothing distribution at each time step. Note that we have already computed
+    where the last equality uses the definition $\eqref{eq:forward_variable}$ of the forward variable.
+
+    **Identity 2**: $p(y_{1:n}) = \sum_{s \in S} \pi_s M_{s, y_1} \beta_1(s)$.
+
+    By the law of total probability, marginalizing over $X_1$:
     $$
-    p(y_{1:3}) = \sum_{i \in S} \alpha_3(i) = 0.11589.
+    p(y_{1:n}) = \sum_{s \in S} \mathrm{P}(Y_{1:n} = y_{1:n},\, X_1 = s).
     $$
-    Now we can compute the smoothing distributions explicitly:
+    Factoring each term using the chain rule $\eqref{eq:chain_rule}$ and conditional independence $\eqref{eq:hmm_emission}$:
     $$
     \begin{align*}
-    p(X_1 = 1 \mid y_{1:3}) &= \frac{0.01 \cdot 0.2265}{0.11589} \approx 0.0195 & p(X_1 = 2 \mid y_{1:3}) &= \frac{0.64 \cdot 0.174}{0.11589} \approx 0.9609 & p(X_1 = 3 \mid y_{1:3}) &= \frac{0.01 \cdot 0.2265}{0.11589} \approx 0.0195 \\
-    p(X_2 = 1 \mid y_{1:3}) &= \frac{0.1215 \cdot 0.31}{0.11589} \approx 0.3250 & p(X_2 = 2 \mid y_{1:3}) &= \frac{0.078 \cdot 0.52}{0.11589} \approx 0.3500 & p(X_2 = 3 \mid y_{1:3}) &= \frac{0.1215 \cdot 0.31}{0.11589} \approx 0.3250 \\
-    p(X_3 = 1 \mid y_{1:3}) &= \frac{0.0101 \cdot 1}{0.11589} \approx 0.0868 & p(X_3 = 2 \mid y_{1:3}) &= \frac{0.0958 \cdot 1}{0.11589} \approx 0.8263 & p(X_3 = 3 \mid y_{1:3}) &= \frac{0.0101 \cdot 1}{0.11589} \approx 0.0868
+    \mathrm{P}(Y_{1:n} = y_{1:n},\, X_1 = s)
+    &= \mathrm{P}(Y_1 = y_1 \mid X_1 = s)\,\mathrm{P}(Y_{2:n} = y_{2:n} \mid X_1 = s)\,\mathrm{P}(X_1 = s) \\
+    &= M_{s,\,y_1} \cdot \beta_1(s) \cdot \pi_s,
     \end{align*}
     $$
+    where $\mathrm{P}(Y_{2:n} = y_{2:n} \mid X_1 = s) = \beta_1(s)$ by definition $\eqref{eq:backward_variable}$. Summing over $s$ gives the result.
 
-    </details>
+    **Identity 3**: $p(y_{1:n}) = \sum_{s \in S} \alpha_j(s)\,\beta_j(s)$ for any $j \in \{1,\ldots,n\}$.
 
-    <details><summary>Proof of denominator in smoothing solution</summary>
+    By the law of total probability, marginalizing over $X_j$:
+    $$
+    p(y_{1:n}) = \sum_{s \in S} \mathrm{P}(Y_{1:n} = y_{1:n},\, X_j = s).
+    $$
+    Split the observations at time $j$ and apply the chain rule:
+    $$
+    \mathrm{P}(Y_{1:n} = y_{1:n},\, X_j = s) = \mathrm{P}(Y_{1:j} = y_{1:j},\, X_j = s)\cdot \mathrm{P}(Y_{j+1:n} = y_{j+1:n} \mid X_j = s,\, Y_{1:j} = y_{1:j}).
+    $$
+    By the Markov property $\eqref{eq:hmm_markov}$ and conditional independence $\eqref{eq:hmm_emission}$, given $X_j = s$ the future observations $Y_{j+1:n}$ are independent of the past $Y_{1:j}$:
+    $$
+    \mathrm{P}(Y_{j+1:n} = y_{j+1:n} \mid X_j = s,\, Y_{1:j} = y_{1:j}) = \mathrm{P}(Y_{j+1:n} = y_{j+1:n} \mid X_j = s) = \beta_j(s).
+    $$
+    Therefore:
+    $$
+    \mathrm{P}(Y_{1:n} = y_{1:n},\, X_j = s) = \alpha_j(s)\,\beta_j(s),
+    $$
+    and summing over $s \in S$ completes the proof.
 
-    We want to show:
-    $$
-    \sum_{l \in S} \alpha_j(l) \beta_j(l)=p\left(y_{1: n}\right)
-    $$
-    Recall the definitions of $\alpha_j(l)$ $\eqref{eq:forward_variable}$ and $\beta_j(l)$ $\eqref{eq:backward_variable}$:
-    $$
-    \begin{align*}
-    \alpha_j(i) &= p(Y_{1:j} = y_{1:j}, X_j = i), \\
-    \beta_j(i) &= p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i).
-    \end{align*}
-    $$
-    We multiply these two terms:
-    $$
-    \alpha_j(i) \beta_j(i) = p(Y_{1:j} = y_{1:j}, X_j = i) p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i)
-    $$
-    Since the probability of future observations $y_{j+1:n}$ depends only on the current state $X_j$, we can add past observations $y_{1:j}$ to the conditioning of the second term without changing its value:
-    $$
-    \alpha_j(i) \beta_j(i) = p(Y_{1:j} = y_{1:j}, X_j = i) p(Y_{j+1:n} = y_{j+1:n} \mid X_j = i, Y_{1:j} = y_{1:j})
-    $$
-    Now we combine the two terms using the chain rule $\eqref{eq:chain_rule}$:
-    $$
-    \alpha_j(i) \beta_j(i)  = p(Y_{1:j} = y_{1:j}, X_j = i, Y_{j+1:n} = y_{j+1:n}) = p(Y_{1:n} = y_{1:n}, X_j = i).
-    $$
-    Now sum over all possible states $i \in S$:
-    $$
-    \sum_{i \in S} \alpha_j(i) \beta_j(i)=\sum_{i \in S} p\left(X_j=i, Y_{1: n}=y_{1: n}\right)
-    $$
-    By the law of total probability $\eqref{eq:total_probability}$, we can sum over all states to get the marginal probability of the observation sequence:
-    $$
-    \sum_{i \in S} \alpha_j(i) \beta_j(i)=p\left(y_{1: n}\right).
-    $$
 
     </details>
 
@@ -1968,12 +1900,12 @@ Using the forward variables $\alpha_k(i)$ and backward variables $\beta_k(i)$, w
   First compute the filtering distribution at time $k$, then propagate it forward using the transition matrix. For $j > k$,
   $$
   \begin{equation} \label{eq:hmm_prediction_solution}
-  p(X_j = i \mid y_{1:k}) = \sum_{l \in S} (P^{\,j-k})_{l i}\; p(X_k = l \mid y_{1:k}),
+  p(X_j = s \mid y_{1:k}) = \sum_{s' \in S} (P^{\,j-k})_{s' s}\; p(X_k = s' \mid y_{1:k}),
   \end{equation}
   $$
   where $P^{\,j-k}$ denotes the $(j-k)$-step transition matrix. In particular, for one-step prediction ($j=k+1$):
   $$
-  p(X_{k+1} = i \mid y_{1:k}) = \sum_{l \in S} P_{l i}\; p(X_k = l \mid y_{1:k}).
+  p(X_{k+1} = s \mid y_{1:k}) = \sum_{s' \in S} P_{s' s}\; p(X_k = s' \mid y_{1:k}).
   $$
 
 - **Likelihood of Observations** $\eqref{eq:hmm_likelihood_problem}$:
@@ -1981,13 +1913,13 @@ Using the forward variables $\alpha_k(i)$ and backward variables $\beta_k(i)$, w
   The likelihood of the entire observation sequence can be computed either from the forward variables:
   $$
   \begin{equation} \label{eq:hmm_likelihood_solution_forward}
-  p(y_{1:n}) = \sum_{i \in S} \alpha_n(i),
+  p(y_{1:n}) = \sum_{s \in S} \alpha_n(s),
   \end{equation}
   $$
   or from the backward variables:
   $$
   \begin{equation} \label{eq:hmm_likelihood_solution_backward}
-  p(y_{1:n}) = \sum_{i \in S} \pi_i\, M_{i, y_1}\, \beta_1(i).
+  p(y_{1:n}) = \sum_{s \in S} \pi_s\, M_{s, y_1}\, \beta_1(s).
   \end{equation}
   $$
 
@@ -2015,44 +1947,44 @@ p(x_{1:n}, y_{1:n}) = \pi_{x_1}M_{x_1, y_1} \prod_{k=2}^n P_{x_{k-1}, x_k} M_{x_
 $$
 We can solve $\eqref{eq:hmm_decoding_problem_viterbi_equivalent}$ using dynamic programming.
 
-We define the **Viterbi (max-product) variable** $\delta_k(j)$ as the probability of the most _likely_ state path ending in state $j$ at time $k$, together with the observations up to $k$:
+We define the **Viterbi (max-product) variable** $\delta_k(s)$ as the probability of the most _likely_ state path ending in state $s$ at time $k$, together with the observations up to $k$:
 $$
 \begin{equation} \label{eq:viterbi_variable}
-\delta_k(j) = \max_{x_{1:k-1}} p(x_{1:k-1}, X_k = j, y_{1:k}).
+\delta_k(s) = \max_{x_{1:k-1}} p(x_{1:k-1}, X_k = s, y_{1:k}).
 \end{equation}
 $$
-We also store the **backpointer** $\psi_k(j)$, which records which previous state achieves the max:
+We also store the **backpointer** $\psi_k(s)$, which records which previous state achieves the max:
 $$
 \begin{equation} \label{eq:viterbi_backpointer}
-\psi_k(j) = \arg\max_{i \in S} \left[ \delta_{k-1}(i) P_{i j} \right], \quad k \geq 2.
+\psi_k(s) = \arg\max_{s' \in S} \left[ \delta_{k-1}(s') P_{s' s} \right], \quad k \geq 2.
 \end{equation}
 $$
 
 1. **Base Case** ($k=1$):
    $$
    \begin{equation} \label{eq:viterbi_base_case}
-   \delta_1(j) = \pi_j M_{j, y_1}, \quad \psi_1(j) = 0, \quad \forall j \in S.
+   \delta_1(s) = \pi_s M_{s, y_1}, \quad \psi_1(s) = 0, \quad \forall s \in S.
    \end{equation}
    $$
 2. **Recursive Case** ($k > 1$):
     $$
     \begin{equation} \label{eq:viterbi_recursive_case}
-    \delta_k(j) = \left[ \max_{i \in S} \delta_{k-1}(i) P_{i j} \right] M_{j, y_k}, \quad \forall j \in S
+    \delta_k(s) = \left[ \max_{s' \in S} \delta_{k-1}(s') P_{s' s} \right] M_{s, y_k}, \quad \forall s \in S
     \end{equation}
     $$
     $$
     \begin{equation} \label{eq:viterbi_backpointer_recursive_case}
-    \psi_k(j) = \arg\max_{i \in S} \left[ \delta_{k-1}(i) P_{i j} \right], \quad \forall j \in S
+    \psi_k(s) = \arg\max_{s' \in S} \left[ \delta_{k-1}(s') P_{s' s} \right], \quad \forall s \in S
     \end{equation}
     $$
 3. **Termination**:
    $$
    \begin{equation} \label{eq:viterbi_termination}
-   p^*= \max_{j \in S} \delta_n(j), \quad x_n^* = \arg\max_{j \in S} \delta_n(j),
+   p^*= \max_{s \in S} \delta_n(s), \quad x_n^* = \arg\max_{s \in S} \delta_n(s),
    \end{equation}
    $$
    where $p^*$ is the joint probability of the best path with the observations.
-4. **Path Backtracking**: After computing $\delta_n(j)$ and $\psi_k(j)$ for all $k$ and $j$, we can backtrack to find the optimal state sequence:
+4. **Path Backtracking**: After computing $\delta_n(s)$ and $\psi_k(s)$ for all $k$ and $s$, we can backtrack to find the optimal state sequence:
    $$
    \begin{equation} \label{eq:viterbi_backtracking}
    x_k^*= \psi_{k+1}(x_{k+1}^*), \quad k = n-1, n-2, \dots, 1.
