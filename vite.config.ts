@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { execSync } from "child_process";
+import fs from "fs";
 
 const getLastCommitDate = (filePath: string) => {
     try {
@@ -13,8 +14,25 @@ const getLastCommitDate = (filePath: string) => {
     }
 };
 
+function markdownHmrPlugin(): Plugin {
+    return {
+        name: "markdown-hmr",
+        handleHotUpdate({ file, server }) {
+            if (file.endsWith(".md")) {
+                const content = fs.readFileSync(file, "utf-8");
+                server.ws.send({
+                    type: "custom",
+                    event: "md-update",
+                    data: { file, content },
+                });
+                return [];
+            }
+        },
+    };
+}
+
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), markdownHmrPlugin()],
     assetsInclude: ["**/*.md"],
     define: {
         "import.meta.env.VITE_ML_COMMIT_DATE": JSON.stringify(
