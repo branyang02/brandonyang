@@ -83,6 +83,23 @@ const NotesBlogs = ({ type }: { type: string }) => {
         fetchNotes();
     }, [contentId, modules, type]);
 
+    useEffect(() => {
+        if (!import.meta.hot) return;
+        const handler = ({
+            file,
+            content,
+        }: {
+            file: string;
+            content: string;
+        }) => {
+            if (file.endsWith(`src/assets/${type}/${contentId}.md`)) {
+                setMarkdown(content);
+            }
+        };
+        import.meta.hot.on("md-update", handler);
+        return () => import.meta.hot!.off("md-update", handler);
+    }, [contentId, type]);
+
     const theme = useMemo(
         () => (darkMode ? "default dark" : "default"),
         [darkMode]
