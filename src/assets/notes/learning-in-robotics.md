@@ -3841,25 +3841,13 @@ p\left(x_k \mid y_1, \ldots, y_k\right) \approx \frac{1}{n} \sum_{i=1}^n \delta_
 $$
 If we have a particle $x$ that's supposed to approximate the target distribution, then we follow $\eqref{eq:importance_sampling_weights}$ to compute the unnormalized weight.
 $$
-\tilde{w}_{k+1|k+1}^{(i)} = \frac{
-p\left(x_{k+1} = x \mid y_1, \ldots, y_k\right)
-}{p\left(x_{k} = x \mid y_1, \ldots, y_k\right)}.
+\tilde{w}_{k+1|k+1}^{(i)} = \frac{p\left(x_{k+1} = x \mid y_1, \ldots, y_k\right)}{p\left(x_{k} = x \mid y_1, \ldots, y_k\right)}.
 $$
 First let's simplify the numerator:
 $$
 \begin{align}
-p\left(x_{k+1}=x \mid y_{1:k}\right)
-&=
-\int
-p\left(x_{k+1}=x \mid x_k=x', y_{1:k}\right)
-p\left(x_k=x' \mid y_{1:k}\right)
-\, dx'
-\quad \text{by } \eqref{eq:total_probability_conditioned}
-\\
-&\stackrel{\text { Markov }}{=} \int
-p\left(x_{k+1}=x \mid x_k=x', u=u_k\right)
-p\left(x_k=x' \mid y_{1:k}\right)
-\, dx' \\
+p\left(x_{k+1}=x \mid y_{1:k}\right) &= \int p\left(x_{k+1}=x \mid x_k=x', y_{1:k}\right) p\left(x_k=x' \mid y_{1:k}\right)\, dx' \quad \text{by } \eqref{eq:total_probability_conditioned}
+\\ &\stackrel{\text { Markov }}{=} \int p\left(x_{k+1}=x \mid x_k=x', u=u_k\right) p\left(x_k=x' \mid y_{1:k}\right) \, dx' \\
 &\approx \frac{1}{n} \int p\left(x_{k+1}=x \mid x_k=x', u=u_k\right) \left(\sum_{i=1}^n \delta_{x_{k|k}^{(i)}}(x')\right) \, dx' \quad \text{by } \eqref{eq:proposal_approximation} \\
 &\approx \frac{1}{n} \sum_{i=1}^n \int p\left(x_{k+1}=x \mid x_k=x^{\prime}, u=u_k\right) \delta_{x_{k \mid k}^{(i)}}\left(x^{\prime}\right) d x^{\prime} \\
 &\approx \frac{1}{n} \sum_{i=1}^n p\left(x_{k+1}=x \mid x_k=x_{k \mid k}^{(i)}, u=u_k\right) \quad \text{by } \eqref{eq:dirac_delta_property}
@@ -4739,6 +4727,116 @@ An Octree is a similar data structure for 3D occupancy grids, where each node ha
 \end{document}
 ```
 
+### Neural radiance field (NeRF)
+
+![](https://cdn.mathpix.com/snip/images/UazWpNpumlkmSQCcg1FblcwZFfHBUsc1B3EL5MrGTJg.original.fullsize.png)
+
+We can represent a 3D scene using a neural network that takes in a 3D coordinate and a viewing direction and outputs the color and density at that point in the scene. Given a 3D location $x \in \mathbb{R}^3$ and viewing direction $(\theta, \phi)$, we predict the color $c \in \mathbb{R}^3$ and density $\sigma \in \mathbb{R}$ of the scene at that location. In practice, we express the viewing direction as a unit vector $d \in \mathbb{R}^3$:
+$$
+\begin{equation} \label{eq:nerf_function}
+F_\Theta(x, d) = (c, \sigma).
+\end{equation}
+$$
+
+Although the viewing direction is sometimes written using two angles $(\theta,\phi)$, in practice it is often represented as a 3D unit vector $d$. This still corresponds to only two degrees of freedom, since rotating around the ray itself does not change the viewing direction. Thus, roll is irrelevant for a single ray direction.
+
+NeRF encourages multiview consistency by making the density depend only on position:
+$$
+\sigma = \sigma(x),
+$$
+while allowing the color to depend on both the position and the viewing direction:
+$$
+c = c(x,d).
+$$
+This is important because the geometry of the scene should not depend on the camera viewpoint, while the observed color may change with viewpoint due to view-dependent effects such as specular highlights.
+
+After predicting the color and density for points in the scene, we use **volume rendering** to render an image from a given camera pose. A camera ray is parameterized by
+$$
+\begin{equation} \label{eq:camera_ray}
+r(t) = o + td,
+\end{equation}
+$$
+where $o \in \mathbb{R}^3$ is the camera center, $d \in \mathbb{R}^3$ is the ray direction, and $t \in \mathbb{R}$ is the distance along the ray. The near and far bounds of the ray are denoted by $t_n$ and $t_f$.
+
+The expected color $C(r)$ of a ray is given by
+$$
+\begin{equation} \label{eq:volume_rendering}
+C(r) = \int_{t_n}^{t_f} T(t)\,\sigma(r(t))\,c(r(t), d)\,dt,
+\quad \text{where } 
+T(t) = \exp\left(-\int_{t_n}^{t} \sigma(r(s))\,ds\right).
+\end{equation}
+$$
+
+Here:
+
+- $r(t) \in \mathbb{R}^3$ is the 3D point sampled along the ray at depth $t$,
+- $\sigma(r(t)) \in \mathbb{R}$ is the density at that point,
+- $c(r(t), d) \in \mathbb{R}^3$ is the RGB color at that point when viewed from direction $d$,
+- $T(t) \in \mathbb{R}$ is the **transmittance**, which represents the probability that the ray has traveled from $t_n$ to $t$ without being absorbed earlier.
+
+Intuitively, the rendered color is obtained by accumulating the color contributions of all points along the ray, weighted by both how much density they have and how likely it is that the ray reaches them.
+
+Since the integral in $\eqref{eq:volume_rendering}$ is continuous, in practice NeRF approximates it using a finite set of sampled depths
+$$
+t_1, t_2, \dots, t_N
+$$
+along each ray. Let
+$$
+x_i = r(t_i) = o + t_i d
+$$
+denote the sampled 3D points. The network predicts
+$$
+(c_i, \sigma_i) = F_\Theta(x_i, d),
+$$
+where $c_i \in \mathbb{R}^3$ and $\sigma_i \in \mathbb{R}$.
+
+Define the distance between adjacent samples by
+$$
+\delta_i = t_{i+1} - t_i.
+$$
+Then the discrete volume rendering equation is
+$$
+\begin{equation} \label{eq:discrete_nerf_rendering}
+\hat{C}(r) = \sum_{i=1}^{N} w_i c_i,
+\end{equation}
+$$
+where the weight of the $i$-th sample is
+$$
+\begin{equation} \label{eq:nerf_weights}
+w_i = T_i \alpha_i,
+\end{equation}
+$$
+with
+$$
+\begin{equation} \label{eq:nerf_alpha}
+\alpha_i = 1 - \exp(-\sigma_i \delta_i),
+\end{equation}
+$$
+and
+$$
+\begin{equation} \label{eq:nerf_transmittance_discrete}
+T_i = \prod_{j=1}^{i-1} (1-\alpha_j).
+\end{equation}
+$$
+
+Here, $\alpha_i$ can be interpreted as the probability that the ray terminates at sample $i$, and $T_i$ is the probability that the ray has survived through all earlier samples. Therefore, $w_i$ is the probability that sample $i$ is the first point along the ray that contributes to the observed color.
+
+To train the model, we render the color $\hat{C}(r)$ for rays corresponding to pixels in the training images and compare them to the ground-truth pixel colors $C(r)$. The network parameters $\Theta$ are optimized by minimizing a reconstruction loss such as mean squared error:
+$$
+\begin{equation} \label{eq:nerf_loss}
+\mathcal{L}(\Theta) = \sum_{r \in \mathcal{R}} \left\| \hat{C}(r) - C(r) \right\|_2^2,
+\end{equation}
+$$
+where $\mathcal{R}$ is the set of rays sampled from the training images.
+
+A practical issue is that an MLP has difficulty representing high-frequency scene details when given raw coordinates directly. To address this, NeRF applies a **positional encoding** to both the spatial coordinates and the viewing directions before feeding them into the network. For a scalar input $p$, the positional encoding is
+$$
+\gamma(p) = \left(\sin(2^0\pi p), \cos(2^0\pi p), \sin(2^1\pi p), \cos(2^1\pi p), \dots, \sin(2^{L-1}\pi p), \cos(2^{L-1}\pi p)\right).
+$$
+Applying this elementwise to the components of $x$ and $d$ allows the network to represent fine spatial and angular variation much more effectively.
+
+In summary, NeRF learns a continuous function that maps a 3D point and viewing direction to a color and density, and then uses differentiable volume rendering to synthesize images. By training on posed images of a scene, the model learns both the geometry and appearance of the scene and can render novel views from unseen camera positions.
+
 
 ## Reinforcement Learning
 
@@ -4828,7 +4926,7 @@ $$
 Given the property
 $$
 \begin{equation} \label{eq:log_derivative_trick}
-\nabla_\theta \log p_\theta(\tau) = \frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)},
+\frac{d}{dx}\left( \log f(x) \right) = \frac{1}{f(x)} \frac{d}{dx} f(x) \implies \nabla_\theta \log p_\theta(\tau) = \frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)},
 \end{equation}
 $$
 we can rewrite the policy gradient as follows:
@@ -4868,6 +4966,7 @@ $$
 $$
 where $\tau^{(i)}$ is the $i$-th trajectory sampled from the current policy, and $N$ is the number of trajectories sampled. This is known as the REINFORCE algorithm.
 
+Monte Carlo returns are unbiased estimates of the expected return under the policy. However, because they depend on all future rewards, they can have very high variance, especially in long-horizon or stochastic environments. This is the primary limitation of vanilla policy gradient methods.
 
 ### Policy Gradient with Reward-to-Go
 
@@ -4926,7 +5025,7 @@ Note that term $\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t$ does not depend
 $$
 \sum_{h_t} \sum_{a_t} p_\theta(h_t, a_t) \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t.
 $$
-We rewrite $p_\theta(h_t, a_t)$ using the chain rule:
+We rewrite $p_\theta(h_t, a_t)$ using the chain rule $\eqref{eq:chain_rule}$:
 $$
 p_\theta(h_t, a_t) = p_\theta(h_t) p_\theta(a_t \mid h_t) = p_\theta(h_t) \pi_\theta(a_t \mid s_t).
 $$
@@ -4940,7 +5039,7 @@ $$
 $$
 Written in expectation form, we have:
 $$
-\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = \mathbb{E}_{h_t \sim p_\theta(h_t)}\left[B_t \mathbb{E}_{a_t \sim \pi_\theta(a_t \mid s_t)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t)\right]\right].
+\mathbb{E}_{h_t \sim p_\theta(h_t)}\left[B_t \mathbb{E}_{a_t \sim \pi_\theta(a_t \mid s_t)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t)\right]\right].
 $$
 We then compute the inner expectation:
 $$
@@ -4954,7 +5053,9 @@ $$
 $$
 Therefore, we have shown that
 $$
+\begin{equation} \label{eq:reward_to_go_unbiased}
 \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0,
+\end{equation}
 $$
 which means that the reward-to-go formulation has the exact same gradient as the original formulation, and is therefore an unbiased estimator of the policy gradient. 
 
@@ -4970,31 +5071,47 @@ $$
 $$
 Note that the baseline can be any function of the history $h_t$ up to time $t$, as long as it does not depend on the action at time $t$ or future actions.
 
+By stripping out the past rewards (which act as irrelevant noise for the current action), we significantly **lower the variance** of the gradient estimate, making your training process much more stable and sample-efficient.
+
+We may ask whether 
+$$
+b\left(s_t\right)=\mathbb{E}_{a \sim \pi_\theta\left(a \mid s_t\right)}\left[f\left(s_t, a\right)\right]
+$$ 
+is still a valid baseline. We can write it in the summation form:
+$$
+b(s_t) = \sum_{a} \pi_\theta(a \mid s_t) f(s_t, a). 
+$$
+Since we are marginalizing out the action, this baseline does not depend on the sampled action $a_t$, and is therefore a valid baseline that can be subtracted from the return without changing the expected value of the policy gradient.
+
+#### Variance Reduction with Baselines
+
+- Full-trajectory return uses $R(\tau)$. This has the most extra noise, because it includes rewards from before time $t$ and other unrelated variability.
+- Reward-to-go uses $G_t$. This already reduces variance relative to the full-trajectory return by removing rewards that happened before action $a_t$.
+- Reward-to-go with a baseline uses $G_t-b\left(h_t\right)$. This tries to reduce variance even further by subtracting a prediction of the expected future return, so that the estimator focuses on whether the outcome was better or worse than expected. 
+
+
 ### Value Functions and Advantage Functions
 
 The reward-to-go $G_t$ defined in $\eqref{eq:reward_to_go}$ is a sample-based quantity: for a particular trajectory, it gives the actual cumulative reward obtained from time $t$ onward. In RL, it is often useful to consider the _expected_ future return conditioned on the current state or action. This leads to the definitions of the state-value function, action-value function, and advantage function.
 
-#### State-Value Function
-
 The **state-value function** under policy $\pi$ measures the expected future return starting from state $s$ and then following policy $\pi$ thereafter:
 $$
 \begin{equation} \label{eq:state_value_reward_to_go}
-V^\pi(s_t) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[G_t \mid s_t\right].
+V^\pi(s_t) = \mathbb{E}_{\pi}\left[G_t \mid s_t\right].
 \end{equation}
 $$
-Thus, $G_t$ is a Monte Carlo sample of $V^\pi(s_t)$.
-
-#### Action-Value Function
 
 The **action-value function** under policy $\pi$ measures the expected future return starting from state $s$, taking action $a$, and then following policy $\pi$ thereafter:
 $$
 \begin{equation} \label{eq:action_value_reward_to_go}
-Q^\pi(s_t,a_t) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[G_t \mid s_t,\; a_t\right].
+Q^\pi(s_t,a_t) = \mathbb{E}_{\pi}\left[G_t \mid s_t,\; a_t\right].
 \end{equation}
 $$
-The difference between $V^\pi(s_t)$ and $Q^\pi(s_t,a_t)$ is that $V^\pi(s_t)$ averages over the action chosen by the policy, while $Q^\pi(s_t,a_t)$ conditions on a particular action being taken.
-
-#### Relationship Between $V^\pi$ and $Q^\pi$
+The difference between $V^\pi(s_t)$ and $Q^\pi(s_t,a_t)$ is that $V^\pi(s_t)$ averages over the action chosen by the policy, while $Q^\pi(s_t,a_t)$ conditions on a particular action being taken. In practice, we do not have access to this expectation. Instead, from a single trajectory we can compute the empirical return:
+$$
+\hat{Q}(s_t,a_t) = G_t,
+$$
+which means it is an unbiased estimator with high variance as it depends on the entire future trajectory.
 
 The state-value function is the expectation of the action-value function over the policy:
 $$
@@ -5010,7 +5127,13 @@ V^\pi(s_t) = \sum_{a} \pi_\theta(a \mid s_t) Q^\pi(s_t,a).
 $$
 This equation shows that $V^\pi(s)$ is the average quality of the actions available in state $s$, weighted by how likely the policy is to choose each action.
 
-#### Advantage Function
+We can also write $Q^\pi(s_t,a_t)$ in terms of $V^\pi(s)$:
+$$
+\begin{equation} \label{eq:q_from_v}
+Q^\pi(s_t,a_t) = r(s_t, a_t) + \gamma \mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)}\left[V^\pi(s_{t+1})\right].
+\end{equation}
+$$
+
 
 The **advantage function** compares the value of taking a particular action to the average value of the state:
 $$
@@ -5023,59 +5146,45 @@ It measures how much better or worse action $a$ is relative to the average actio
 - If $A^\pi(s,a) < 0$, then action $a$ is worse than average in state $s$.
 - If $A^\pi(s,a) = 0$, then action $a$ is exactly as good as the policy's average action in state $s$.
 
-Using $\eqref{eq:v_from_q}$, we can also see that the advantage has zero mean under the policy:
-$$
-\begin{align}
-\mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[A^\pi(s,a)\right]
-&= \mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[Q^\pi(s,a) - V^\pi(s)\right] \\
-&= \mathbb{E}_{a \sim \pi(\cdot \mid s)}\left[Q^\pi(s,a)\right] - V^\pi(s) \\
-&= V^\pi(s) - V^\pi(s) = 0. \label{eq:advantage_zero_mean}
-\end{align}
-$$
-This property is important because it explains why subtracting a value baseline does not change the expected policy gradient.
+#### Bias-Variance Tradeoff in Policy Gradients
 
-#### Advantage as a Baseline-Corrected Return
-
-From $\eqref{eq:policy_gradient_with_baseline}$, we showed that we may subtract any baseline $b(h_t)$ that does not depend on the sampled action $a_t$ without changing the expected value of the gradient. A particularly important choice is the state-value function:
+We use the policy gradient of the form:
 $$
-\begin{equation} \label{eq:value_baseline_choice}
-b(h_t) = V^\pi(s_t).
+\begin{equation} \label{eq:policy_gradient_with_psi}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \Psi_t\right],
 \end{equation}
 $$
-Substituting this into $\eqref{eq:policy_gradient_with_baseline}$ gives
-$$
-\begin{equation} \label{eq:policy_gradient_with_value_baseline}
-\nabla_\theta J(\theta)
-=
-\mathbb{E}_{\tau \sim p_\theta(\tau)}
-\left[
-\sum_{t=1}^T
-\nabla_\theta \log \pi_\theta(a_t \mid s_t)
-\left(G_t - V^\pi(s_t)\right)
-\right].
-\end{equation}
-$$
-The term
-$$
-\begin{equation} \label{eq:empirical_advantage}
-\hat{A}_t = G_t - V^\pi(s_t)
-\end{equation}
-$$
-can be interpreted as a sample-based estimate of the true advantage $A^\pi(s_t,a_t)$, since
-$$
-\begin{align}
-\mathbb{E}_{\tau \sim p_\pi(\tau)}\left[G_t - V^\pi(s_t) \mid s_t, a_t\right]
-&=
-\mathbb{E}_{\tau \sim p_\pi(\tau)}\left[G_t \mid s_t, a_t\right] - V^\pi(s_t) \\
-&=
-Q^\pi(s_t,a_t) - V^\pi(s_t) \\
-&=
-A^\pi(s_t,a_t). \label{eq:advantage_estimator_unbiased}
-\end{align}
-$$
-Therefore, $G_t - V^\pi(s_t)$ is an unbiased estimator of the advantage.
+where $\Psi_t$ is some estimator of the return. We have the following choices for $\Psi_t$:
 
-This gives a useful interpretation of the policy gradient update: actions whose realized return is larger than expected for the current state are encouraged, while actions whose realized return is smaller than expected are discouraged.
+- $\Psi_t=R(\tau)$ : This uses the full-trajectory return. It is an unbiased policy-gradient estimator, but it has the highest variance, since it includes rewards that occurred before time $t$ and other irrelevant trajectory noise.
+- $\Psi_t=G_t$ : This is the reward-to-go. It is also unbiased, and it typically has lower variance than $R(\tau)$ , because it removes rewards that happened before action $a_t$.
+- $\Psi_t=G_t-b\left(h_t\right)$ : This is reward-to-go with a baseline. It remains unbiased as long as $b\left(h_t\right)$ does not depend on the sampled action $a_t$. A good baseline can reduce variance further, often substantially.
+- $\Psi_t=Q^\pi\left(s_t, a_t\right)$ : This uses the state-action value. If $Q^\pi$ is exact, it gives an unbiased estimator and usually has lower variance than sampled returns such as $G_t$, because it averages over future randomness. In practice, $Q^\pi$ must be estimated, which can introduce bias.
+- $\Psi_t=A^\pi\left(s_t, a_t\right)$ : This uses the advantage function. If exact, it is also unbiased and is often preferred because it centers the signal relative to the state value, which typically reduces variance compared with using $Q^\pi\left(s_t, a_t\right)$ directly. In practice, estimating $A^\pi$ can introduce bias.
+- $\Psi_t=r_t+\gamma V^\pi\left(s_{t+1}\right)-V^\pi\left(s_t\right)$ : This is the TD error. If $V^\pi$ is exact, it is an unbiased one-step estimator of the advantage in expectation:
+    $$
+    \mathbb{E}\left[\delta_t \mid s_t, a_t\right]=A^\pi\left(s_t, a_t\right) .
+    $$
+    It is popular because it uses bootstrapping and often has lower variance than Monte Carlo returns, but if $V^\pi$ is approximate, it can introduce bias.
+
+We can compute exact $V^\pi$ and $Q^\pi$ with Bellman equations in small tabular MDPs:
+$$
+\begin{equation} \label{eq:bellman_equations}
+\begin{aligned}
+V^\pi\left(s_t\right)&=\mathbb{E}_{a_t \sim \pi\left(\cdot \mid s_t\right)}\left[r\left(s_t, a_t\right)+\gamma \mathbb{E}_{s_{t+1} \sim p\left(\cdot \mid s_t, a_t\right)}\left[V^\pi\left(s_{t+1}\right)\right]\right] \\
+&=\sum_a \pi(a \mid s)\left(r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right)\right) .
+\end{aligned}
+\end{equation}
+$$
+$$
+\begin{equation} \label{eq:bellman_equations_q}
+\begin{aligned}
+Q^\pi\left(s_t, a_t\right)&=r\left(s_t, a_t\right)+\gamma \mathbb{E}_{s_{t+1} \sim p\left(\cdot \mid s_t, a_t\right)}\left[V^\pi\left(s_{t+1}\right)\right] \\
+&=r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right) .
+\end{aligned}
+\end{equation}
+$$
+where $\gamma \in [0,1]$ is the discount factor that controls how much we care about future rewards. 
 
 ### Actor-Critic Methods
 
@@ -5084,28 +5193,513 @@ REINFORCE is unbiased, but it often has high variance because it uses full sampl
 - The **actor** is the policy $\pi_\theta(a \mid s)$
 - The **critic** is a function approximator $V_\phi(s)$
 
-Instead of using the Monte Carlo return $G_t - V^\pi(s_t)$ as the advantage estimator, we can use the critic's estimate of the value function to compute a lower-variance advantage estimator:
+In the advantage actor-critic method, we use the critic's estimate of the value function to compute an advantage estimator:
 $$
-\begin{equation} \label{eq:critic_advantage_estimator}
-\hat{A}_t \approx G_t - V_\phi(s_t).
+\Psi_t = \hat{A}(s_t,a_t) = \hat{Q}(s_t,a_t) - V_\phi(s_t), \quad \hat{Q}(s_t,a_t) = G_t
+$$
+Since we cannot compute the true $Q^\pi(s_t,a_t)$, we use the Monte Carlo return $G_t$ as an unbiased estimator of $Q^\pi(s_t,a_t)$.
+
+We can then perform the Monte Carlo policy gradient update using this advantage estimator:
+$$
+\begin{equation} \label{eq:actor_update_monte_carlo}
+\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \hat{A}(s_t^{(i)}, a_t^{(i)}).
 \end{equation}
 $$
-The actor update becomes
+We can now update actor parameters $\theta$ using gradient ascent:
 $$
-\begin{equation} \label{eq:actor_update}
-\nabla_\theta J(\theta) \approx \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \hat{A}_t\right].
+\begin{equation} \label{eq:actor_update_gradient_ascent}
+\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta),
 \end{equation}
 $$
-The critic is trained to minimize the mean squared error between its value estimates and the observed returns:
+And update critic parameters using gradient descent using the observed returns:
 $$
-\begin{equation} \label{eq:critic_loss}
-L(\phi) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \left(V_\phi(s_t) - G_t\right)^2\right].
+L(\phi) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2
+$$
+$$
+\phi \leftarrow \phi - \beta \nabla_\phi L(\phi).
+$$
+
+### Temporal Difference Learning
+
+The Monte Carlo return $G_t$ can have high variance because it depends on the entire future trajectory. Temporal Difference (TD) learning reduces this variance by using **bootstrapping**: instead of summing rewards all the way to the end of the trajectory, we stop early and use the critic’s current estimate $V_\phi$ to approximate the remaining return.
+
+Starting from the discounted return,
+$$
+\begin{equation} \label{eq:discounted_return_again}
+G_t = \sum_{t'=t}^{T} \gamma^{\,t'-t} r_{t'},
 \end{equation}
 $$
-The critic can be trained using gradient descent:
+we can split this into the first $k$ rewards and the remaining tail:
 $$
-\begin{equation} \label{eq:critic_update}
-\phi \leftarrow \phi - \beta \nabla_\phi L(\phi),
+\begin{equation} \label{eq:k_step_return_split}
+G_t
+=
+\sum_{j=0}^{k-1} \gamma^j r_{t+j}
++
+\gamma^k G_{t+k}.
 \end{equation}
 $$
-where $\beta$ is the learning rate for the critic.
+Since $G_{t+k}$ is the return from time $t+k$ onward, its conditional expectation given $s_{t+k}$ is the value function $\eqref{eq:state_value_reward_to_go}$:
+$$
+\begin{equation} \label{eq:value_as_expected_tail}
+V^\pi(s_{t+k}) = \mathbb{E}[G_{t+k} \mid s_{t+k}].
+\end{equation}
+$$
+Replacing the unknown value function $V^\pi$ with the critic $V_\phi$, we obtain the $k$-step bootstrapped estimate of the action-value:
+$$
+\begin{equation} \label{eq:k_step_q_estimate}
+\hat{Q}^{(k)}(s_t, a_t)
+=
+\sum_{j=0}^{k-1} \gamma^j r_{t+j}
++
+\gamma^k V_\phi(s_{t+k}).
+\end{equation}
+$$
+
+The simplest case is the **one-step** TD estimate, obtained by setting $k=1$:
+$$
+\begin{equation} \label{eq:one_step_q_estimate}
+\hat{Q}^{(1)}(s_t, a_t)
+=
+r_t + \gamma V_\phi(s_{t+1}).
+\end{equation}
+$$
+Using this one-step estimate, the corresponding advantage estimator is
+$$
+\begin{equation} \label{eq:one_step_advantage}
+\hat{A}(s_t, a_t)
+=
+\hat{Q}^{(1)}(s_t, a_t) - V_\phi(s_t)
+=
+r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t).
+\end{equation}
+$$
+This quantity is called the **TD error**, and is defined as
+$$
+\begin{equation} \label{eq:td_error}
+\delta_t = r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t).
+\end{equation}
+$$
+
+Thus, TD learning replaces the full Monte Carlo return with a bootstrapped target that depends only on a small number of future rewards, which typically gives a lower-variance estimate at the cost of introducing some bias through the critic.
+
+### Generalized Advantage Estimation (GAE)
+
+The $k$-step bootstrapped estimate $\hat{Q}^{(k)}$ provides a way to trade off bias and variance by choosing different values of $k$. (Higher $k$ reduces bias but increases variance, while lower $k$ increases bias but reduces variance.) Generalized Advantage Estimation (GAE) is a method that combines multiple $k$-step estimates to create a more flexible advantage estimator.
+$$
+\begin{align}
+\hat{A}^{\mathrm{GAE}(\gamma, \lambda)}(s_t, a_t) & = \frac{1}{\sum_{l} w_l}\sum_{l} w_l \delta_{t+l}, \quad \text{where } w_l = (\gamma \lambda)^{l-1} \\
+&= \sum_{l=0}^\infty (\gamma \lambda)^{l} \delta_{t+l}.
+\end{align}
+$$
+
+With $\lambda=0$, GAE reduces to the one-step TD error:
+$$
+\hat{A}^{\mathrm{GAE}(\gamma, 0)}(s_t, a_t) = \delta_t.
+$$
+With $\lambda=1$, GAE reduces to the full Monte Carlo return minus the value function:
+$$
+\hat{A}^{\mathrm{GAE}(\gamma, 1)}(s_t, a_t) = G_t - V_\phi(s_t).
+$$
+By tuning $\lambda \in [0, 1]$, we can find a sweet spot that balances bias and variance for our particular problem.
+
+### Trust Region Policy Optimization (TRPO)
+
+Instead of collecting fresh trajectories from the current policy $\pi_\theta$ for every update, we can sometimes reuse trajectories collected from an older policy $\pi_{\theta_{\text{old}}}$. However, since these trajectories were not sampled from the current policy, we must correct for the distribution mismatch, typically using importance sampling or a surrogate objective based on the probability ratio $\pi_\theta(a_t \mid s_t) / \pi_{\theta_{\text{old}}}(a_t \mid s_t)$.
+
+#### Surrogate Objective
+
+Importance sampling allows us to rewrite an expectation under one distribution using samples from another.
+Let $p(x)$ and $q(x)$ be PDFs such that $q(x) > 0$ whenever $p(x) > 0$. Then
+$$
+\begin{equation} \label{eq:importance_sampling}
+\mathbb{E}_{x \sim p(\cdot)}\left[f(x)\right] = \int p(x) f(x) dx = \int q(x) \frac{p(x)}{q(x)} f(x) dx = \mathbb{E}_{x \sim q(\cdot)}\left[\frac{p(x)}{q(x)} f(x)\right].
+\end{equation}
+$$
+The ratio 
+$$
+w(x) = \frac{p(x)}{q(x)}
+$$
+is called the **importance weight**.
+
+Starting with policy gradient $\eqref{eq:policy_gradient_final}$, we apply importance sampling $\eqref{eq:importance_sampling}$ to rewrite the expectation under the new policy $\pi_\theta$ using samples from the old policy $\pi_{\theta_{\text{old}}}$:
+$$
+\begin{align}
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\cdot)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
+&= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} \left(\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right].
+\end{align}
+$$
+Follow $\eqref{eq:trajectory_probability}$, we can write the importance weight as
+$$
+\begin{equation} \label{eq:importance_weight_trpo}
+w_\theta (\tau) = \frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} = \prod_{t=1}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)},
+\end{equation}
+$$
+since $p(s_1)$ and $p(s_{t+1} \mid s_t, a_t)$ do not depend on $\theta$ and cancel out in the ratio. Substituting this back into the policy gradient:
+$$
+\begin{align}
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) \left(\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right] \\
+&= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\nabla_\theta w_\theta(\tau) R(\tau)\right] \\
+&= \nabla_\theta \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) R(\tau)\right].
+\end{align}
+$$
+We define the gradient component above as the **surrogate objective**:
+$$
+\begin{equation} \label{eq:surrogate_objective_trpo}
+L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\left(\prod_{t=1}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}\right) R(\tau)\right].
+\end{equation}
+$$
+Therefore, we arrive at the following identity:
+$$
+\begin{equation} \label{eq:policy_gradient_surrogate_objective}
+\nabla_\theta J(\theta) = \nabla_\theta L(\theta).
+\end{equation}
+$$
+Suppose we evaluate at $\theta = \theta_{\text{old}}$, then the importance weight is 1, and the surrogate objective reduces to the expected return under the old policy:
+$$
+\begin{equation} \label{eq:surrogate_objective_at_old_policy}
+L(\theta_{\text{old}}) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[R(\tau)\right] = J(\theta_{\text{old}}).
+\end{equation}
+$$
+The surrogate objective $L(\theta)$ is a first-order approximation to the true expected return $J(\theta)$ around $\theta_{\text{old}}$. Therefore, we need to ensure that the new policy $\pi_\theta$ does not deviate too much from the old policy $\pi_{\theta_{\text{old}}}$, otherwise the surrogate objective may no longer be a good approximation to the true expected return, and we may end up with a policy update that actually decreases performance.
+
+Trusted Region Policy Optimization (TRPO) optimizes this surrogate objective while ensuring that the new policy does not deviate too much from the old policy by imposing a constraint on the KL divergence between the two policies. The **Constrained TRPO** optimization problem is:
+$$
+\begin{equation} \label{eq:trpo_constrained_optimization}
+\begin{aligned}
+\max_\theta \quad & L(\theta) \\
+\text{subject to} \quad & \mathbb{E}_{s \sim d^{\pi_{\theta_{\text{old}}}}}\left[D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right] \leq \delta, 
+\end{aligned}
+\end{equation}
+$$
+where $d^{\pi_{\theta_{\text{old}}}}$ denotes the states visited by the old policy, and $\delta$ is a hyperparameter that controls how much the new policy is allowed to deviate from the old policy. 
+
+The **Penalized TRPO** optimization problem is:
+$$
+\begin{equation} \label{eq:trpo_penalized_optimization}
+\max_\theta \quad L(\theta) - \beta \mathbb{E}_{s \sim d^{\pi_{\theta_{\text{old}}}}}\left[D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right],
+\end{equation}
+$$
+where $\beta > 0$ is a Lagrange multiplier that controls the strength of the penalty on KL divergence.
+
+We can also have a strict maximum KL constraint:
+$$
+\begin{equation} \label{eq:trpo_strict_kl_constraint}
+\begin{aligned}
+\max_\theta \quad & L(\theta) \\
+\text{subject to} \quad & D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right) \leq \delta, \quad \forall s.
+\end{aligned}
+\end{equation}
+$$
+TRPO is therefore a trust-region method because it performs the optimization in a local region around the old policy as given by the KL divergence constraint. 
+
+#### TRPO Algorithm
+
+1. Set $\theta_{\text{old}} \leftarrow \theta$.
+2. Collect a batch of trajectories using $\pi_{\theta_{\text{old}}}$.
+3. Compute advantage estimates $\hat{A}_t$ with critic $V_\phi$ using GAE.
+4. For each stored $(s_t, a_t)$, compute the weight ratio
+    $$
+    r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
+    $$
+    and then form the surrogate objective
+    $$
+    L(\theta) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T r_\theta^{(i)}(t)\,\hat{A}_t^{(i)}.
+    $$
+5. Estimate the average KL divergence between the old and new policies over the sampled states:
+    $$
+    \bar D_{\mathrm{KL}}(\theta)
+    =
+    \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T
+    D_{\mathrm{KL}}\!\left(
+    \pi_{\theta_{\text{old}}}(\cdot \mid s_t^{(i)})
+    \,\|\, 
+    \pi_\theta(\cdot \mid s_t^{(i)})
+    \right).
+    $$
+6. Update the actor parameters $\theta$ by maximizing the surrogate objective $L(\theta)$ subject to the trust-region constraint
+    $$
+    \bar D_{\mathrm{KL}}(\theta) \le \delta,
+    $$
+    while keeping $\theta_{\text{old}}$ fixed during this optimization.
+7. In practice, compute a single trust-region update direction using the gradient of $L(\theta)$ and the local curvature of the KL divergence, then use a line search to ensure that the updated policy both improves the surrogate objective and satisfies the KL constraint.
+8. Update the critic parameters $\phi$ by taking gradient descent steps on the value loss using
+    $$
+    \begin{aligned}
+    L(\phi) &= \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2 \\
+    \phi &\leftarrow \phi - \beta \nabla_\phi L(\phi).
+    \end{aligned}
+    $$
+9. After finishing optimization on that batch, set
+    $$
+    \theta_{\text{old}} \leftarrow \theta
+    $$
+    and repeat the entire process until convergence.
+
+
+### Proximal Policy Optimization (PPO)
+
+TRPO enforces a hard trust region via a KL constraint. PPO instead constructs a modified first-ordered objective that implicitly discourages large policy updates while remaining simple to implement.
+
+#### Clipped Surrogate Objective
+
+Given the surrogate objective:
+$$
+L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[ w_\theta(\tau) \hat{A}_\tau\right],
+$$
+PPO modifies this objective by clipping the importance weight $w_\theta(\tau)$ to be within a certain range around 1:
+$$
+\begin{equation} \label{eq:ppo_clipped_objective}
+L^{\mathrm{CLIP}}(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\min\left(w_\theta(\tau) \hat{A}_\tau, \operatorname{clip}(w_\theta(\tau), 1-\epsilon, 1+\epsilon) \hat{A}_\tau\right)\right].
+\end{equation}
+$$
+where $\epsilon$ is a hyperparameter that controls how much the new policy is allowed to deviate from the old policy. The clipping function $\operatorname{clip}(x, a, b)$ limits $x$ to be within the range $[a, b]$. 
+
+We denote a single timestep clipped surrogate objective as
+$$
+\ell_t(\theta) = \min\left(r_\theta(t) \hat{A}_t, \operatorname{clip}(r_\theta(t), 1-\epsilon, 1+\epsilon) \hat{A}_t\right),
+$$
+where $r_\theta(t)$ is defined as the importance weight at time $t$:
+$$
+r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
+$$
+
+We have the following cases for the clipped surrogate objective:
+| $$\hat A_t$$ | Best direction | Bad direction | Clipped side |
+|---|---|---|---|
+| $$\hat A_t> 0$$ | make $$r_\theta(t)$$ bigger | make $$r_\theta(t)$$ smaller | right side at $$1+\epsilon$$ |
+| $$\hat A_t< 0$$ | make $$r_\theta(t)$$ smaller | make $$r_\theta(t)$$ bigger | left side at $$1-\epsilon$$ |
+
+#### PPO Algorithm
+
+1. Set $\theta_{\text{old}} \leftarrow \theta$.
+2. Collect a batch of trajectories using $\pi_{\theta_{\text{old}}}$.
+3. Compute advantage estimates $\hat{A}_t$ with critic $V_\phi$ using GAE.
+4. For each stored $(s_t, a_t)$, compute the weight ratio
+    $$
+    r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
+    $$
+    and then compute the clipped surrogate objective
+    $$
+    \ell_t(\theta) = \min\left(r_\theta(t) \hat{A}_t, \operatorname{clip}(r_\theta(t), 1-\epsilon, 1+\epsilon) \hat{A}_t\right).
+    $$
+5. Form a batch PPO objective by averaging over all sampled timesteps:
+    $$
+    L^{\mathrm{CLIP}}(\theta) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \ell_t^{(i)}(\theta).
+    $$
+6. Update the actor parameters $\theta$ by taking gradient ascent steps on $L^{\mathrm{CLIP}}(\theta)$ while keeping $\theta_{\text{old}}$ fixed
+    $$
+    \theta \leftarrow \theta + \alpha \nabla_\theta L^{\mathrm{CLIP}}(\theta).
+    $$
+7. Update the critic parameters $\phi$ by taking gradient descent steps on the value loss using
+    $$
+    \begin{aligned}
+    L(\phi) & = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2 \\
+    \phi &\leftarrow \phi - \beta \nabla_\phi L(\phi).
+    \end{aligned}
+    $$
+8. Repeat actor and critic updates (step 4 - 7) for multiple epochs using the same batch of data.
+9. After finishing optimization on that batch, set 
+    $$
+    \theta_{\text{old}} \leftarrow \theta
+    $$
+    and repeat the entire process until convergence.
+
+#### KL-Based Control and Adaptive Updates
+
+In addition to clipping, we can also add a KL-penalty variant:
+$$
+\begin{equation} \label{eq:ppo_kl_penalty}
+L^{\text{KLPEN}}(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) \hat{A}_\tau - \beta D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right].
+\end{equation}
+$$
+where $\beta$ is a hyperparameter that controls the strength of the KL penalty, and it can be adaptively adjusted based on how close the new policy is to the old policy. We can add this term to the clipped objective to get a combined objective:
+$$
+\begin{equation} \label{eq:ppo_combined_objective}
+L^{\mathrm{COMBINED}}(\theta) = L^{\mathrm{CLIP}}(\theta) - \beta \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right].
+\end{equation} 
+$$
+
+### Model-Based RL
+
+In Model-free RL, we interact with the environment and learn a policy directly from experience without explicitly modeling the environment's dynamics. We use model-based RL because it can learn good behavior with much less real data by predicting the consequences of actions.
+
+In model-based RL, we learn a model of the environment's dynamics:
+$$
+s' \approx f(s, a),
+$$
+then use the learned model for planning or policy optimization.
+
+**Naive model learning**
+
+1. Collect data with a base policy.
+2. Fit $f_\phi(s, a)$ with the collected data.
+3. Plan through the learned model to get a new policy $\pi_\theta$.
+
+- Pros: simple
+- Cons: suffers from distribution mismatch
+
+**Iterative Model Learning**
+
+1. Collect data with current policy.
+2. Fit $f_\phi(s, a)$ with the collected data.
+3. Plan using $f_\phi(s, a)$ to get actions.
+4. Execute actions and add new data to the dataset.
+5. Repeat until convergence.
+
+- Pros: keep retraining on the distribution induced by the current controller.
+- Cons: long open-loop planning is fragile
+
+**Model Predictive Control (MPC)**
+
+1. Collect data with current policy.
+2. Fit $f_\phi(s, a)$ with the collected data.
+3. From current state, evalute candidate action sequences using $f_\phi(s, a)$ to predict future states and rewards.
+4. Execute the first action of the best sequence, then observe the new state and add it to the dataset.
+5. Repeat until convergence.
+
+- Pros: replanning corrects small model errors before they compound.
+- Cons: expensive at test time.
+
+**Backpropagate into the policy**
+
+1. Collect data with current policy.
+2. Fit $f_\phi(s, a)$ with the collected data.
+3. Backpropagate through $f_\phi(s, a)$ to optimize the policy $\pi_\theta$ directly.
+4. Run $\pi_\theta$ in the environment and add new data to the dataset.
+5. Repeat until convergence.
+
+- Pros: efficient at test time.
+- Cons: can be unstable if the model is inaccurate.
+
+### Value Learning and Q-Learning
+
+So far, we have focused on policy-based methods, which directly optimize the policy. Another class of methods are value-based methods, which learns a value function first, and then extracts a policy from it. 
+
+We have already defined state-value function $\eqref{eq:state_value_reward_to_go}$ and action-value function $\eqref{eq:action_value_reward_to_go}$, and their bellman forms $\eqref{eq:bellman_equations}, \eqref{eq:bellman_equations_q}$.
+
+#### Value Learning
+
+In a finite MDP with known transition dynamics $p(s' \mid s, a)$ and reward function $r(s, a)$, we can perform the following algorithm to learn the optimal value function $V^*(s)$:
+
+1. Initialize $V(s)$ arbitrarily for all states $s$.
+2. For each state $s$, compute the Bellman backup:
+    $$
+    V(s) \leftarrow \max_a \left(r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) V(s')\right).
+    $$
+3. Repeat step 2 until convergence.
+
+Once the value function has converged, we extract the greedy policy:
+$$
+\pi(s) = \arg \max_a \left(r(s, a) + \gamma \sum_{s'} p(s' \mid s, a) V(s')\right).
+$$
+
+#### Fitted Value Iteration (FVI)
+In large or continuous state spaces, we represent the value function with a function approximator $V_\phi(s)$:
+$$
+V_\phi(s) \approx V^*(s),
+$$
+
+1. Collect a dataset of states $\{s_i\}_{i=1}^N$ (using some policy or from a replay buffer).
+2. Compute targets $\{y_i\}_{i=1}^N$ for each state using the Bellman optimality equation with known transition dynamics $s' = f(s, a)$:
+    $$
+    y_i = \max_a \left(r(s_i, a) + \gamma V_\phi(f(s_i, a))\right).
+    $$
+3. Fit the value function $V_\phi$ by minimizing the mean squared error between the predicted values and the targets:
+    $$
+    L(\phi) = \frac{1}{N} \sum_{i=1}^N \left(V_\phi(s_i) - y_i\right)^2.
+    $$
+4. Update the value function parameters $\phi$ using gradient descent:
+    $$
+    \phi \leftarrow \phi - \beta \nabla_\phi L(\phi).
+    $$
+5. Repeat steps 2-4 until convergence.
+
+Once we have learned a $V_\phi(s)$, we can extract a policy by acting greedily with respect to the learned value function:
+$$
+\pi(s)=\arg \max _a\left(r(s, a)+\gamma V_\phi(f(s, a))\right).
+$$
+
+Limitations of FVI:
+- No convergence guarantees with function approximation.
+- Model-based: requires a model of the dynamics to compute targets.
+- We are not directly optimizing $J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\cdot)}\left[R(\tau)\right]$.
+
+#### Q-Learning
+
+Suppose we do not know the transition dynamics $p(s' \mid s, a)$, but we can interact with the environment and observe transitions. We can learn the action-value function $Q^\pi(s, a)$ directly:
+$$
+Q(s, a) \approx Q^*(s, a),
+$$
+
+1. Initialize $Q(s, a)$ arbitrarily for all states $s$ and actions $a$.
+2. Observe the current state $s_t$.
+3. Choose an action $a_t$ using an **exploration policy** (e.g., $\epsilon$-greedy).
+4. Execute $a_t$, observe reward $r_t$ and next state $s_{t+1}$.
+5. Update the Q-table using
+    $$
+    Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left(r_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t)\right).
+    $$
+6. Set $s_t \leftarrow s_{t+1}$ and repeat steps 3-5 until convergence.
+
+Once the Q-function has converged, we can extract the greedy policy:
+$$
+\pi(s) = \arg \max_a Q(s, a).
+$$
+
+Properties of Q-learning:
+- Model-free: does not require $p(s' \mid s, a)$.
+- Off-policy: can learn from data collected by any behavior policy.
+- Converges to the optimal action-value function $Q^*(s, a)$ under certain conditions (e.g., sufficient exploration, learning rate decay).
+
+#### Fitted Q-Iteration (FQI)
+
+For large or continuous state spaces, we parameterize the action-value function with a function approximator $Q_\phi(s, a)$:
+$$
+Q_\phi(s, a) \approx Q^*(s, a).
+$$
+
+1. Initialize $Q_\phi(s, a)$ with random parameters $\phi$.
+2. Collect data $\{(s_i, a_i, r_i, s_i')\}_{i=1}^N$ by interacting with the environment using some behavior policy (e.g., $\epsilon$-greedy).
+3. Compute targets for each transition using the Bellman optimality equation:
+    $$
+    y_i = r_i + \gamma \max_{a'} Q_\phi(s_i', a').
+    $$
+4. Fit the action-value function $Q_\phi$ by minimizing the mean squared error between the predicted Q-values and the targets:
+    $$
+    L(\phi) = \frac{1}{N} \sum_{i=1}^N \left(Q_\phi(s_i, a_i) - y_i\right)^2.
+    $$
+5. Update the parameters $\phi$ using gradient descent:
+    $$
+    \phi \leftarrow \phi - \beta \nabla_\phi L(\phi).
+    $$
+6. Repeat steps 2-5 until convergence.
+Once we have learned $Q_\phi(s, a)$, we can extract a policy by acting greedily with respect to the learned Q-function:
+$$
+\pi(s) = \arg \max_a Q_\phi(s, a).
+$$
+
+#### Exploration Policies
+
+When collecting data for Q-Learning, we need a policy.
+
+##### Epsilon-Greedy
+
+If $a^* = \arg \max_a Q(s, a)$ is the greedy action, then
+- with probability $1-\epsilon$, choose $a^*$.
+- with probability $\epsilon$, choose a random action uniformly from the action space.
+
+$\epsilon \in [0, 1]$ controls how much randomness:
+- small $\epsilon$: more exploitation, less exploration.
+- large $\epsilon$: more exploration, less exploitation.
+
+##### Boltzmann Exploration
+
+The policy is
+$$
+\pi(a \mid s) = \frac{\exp(Q(s, a) / \tau)}{\sum_{a'} \exp(Q(s, a') / \tau)}, \quad \tau > 0 
+$$
+
+$\tau$ is the temperature parameter that controls the randomness of the policy:
+- small $\tau$: more exploitation, less exploration (the policy becomes more deterministic).
+- large $\tau$: more exploration, less exploitation (the policy becomes more uniform).
