@@ -4845,7 +4845,7 @@ In summary, NeRF learns a continuous function that maps a 3D point and viewing d
 Let us denote the state of a robot by $x_k \in \mathcal{X} \subseteq \mathbb{R}^n$ at the $k^{\text{th}}$ time step. We can change this state using a control input $u_k \in \mathcal{U} \subseteq \mathbb{R}^p$. The state evolves according to a dynamics function
 $$
 \begin{equation} \label{eq:optimal_control_dynamics}
-x_{k+1} = f(x_k, u_k), \quad k = 0, 1, \ldots, N-1,
+x_{k+1} = f_k(x_k, u_k), \quad k = 0, 1, \ldots, T-1,
 \end{equation}
 $$
 for some initial state $x_0$. Suppose we have a cost function
@@ -4989,9 +4989,9 @@ We model $\eqref{eq:optimal_control_problem}$ as a shortest path problem in a di
 $$
 \mathrm{cost}(x_k, x_{k+1}) = q_k(x_k, u_k),
 $$
-where $u_k$ is the control input that causes the transition from $x_k$ to $x_{k+1}$. We create a artificial sink node denoted as $t$ and add edges from each node in the final layer (corresponding to time step $T$) to $t$ with cost $q_f(x_T)$. 
+where $u_k$ is the control input that causes the transition from $x_k$ to $x_{k+1}$. We create an artificial sink node denoted as $t$ and add edges from each node in the final layer (corresponding to time step $T$) to $t$ with cost $q_f(x_T)$. 
 
-We can now solve $\eqref{eq:optimal_control_problem}$ with a shortest path algorithm between the start node $x_0$ and the end node $x_T$.
+We can now solve $\eqref{eq:optimal_control_problem}$ with a shortest path algorithm between the start node $x_0$ and the sink node $t$.
 
 #### Dijkstra's Algorithm
 
@@ -5288,7 +5288,7 @@ Since we are working with a time-unrolled DAG, we can relax some of these assump
 
 </details>
 
-### Principal of Dynamic Programming
+### Principle of Dynamic Programming
 
 The principle of dynamic programming is a formalization of the idea behind running Dijkstra's algorithm backwards (from the sink to the source). The core concept is that the _remainder of the optimal path must itself be optimal_. 
 
@@ -5510,7 +5510,7 @@ print(f"Optimal Path: {path}")
 
 <details><summary>Curse of Dimensionality</summary>
 
-In the Dynamic Programming algorithm, the total complexity is $\mathcal{O}( T |\mathcal{X}| |\mathcal{U}| )$ since we are computing the optimal cost-to-go for each state at each time step, and for each state we are iterating over all possible actions. This complexity is linear in the time horizon $T$, but it is exponential in the dimension of the state space $\mathcal{X}$ and action space $\mathcal{U}$, since typically $|\mathcal{X}|$ and $|\mathcal{U}|$ grow exponentially with the number of state and action variables. 
+In the Dynamic Programming algorithm, the total complexity is $\mathcal{O}( T |\mathcal{X}| |\mathcal{U}| )$ since we are computing the optimal cost-to-go for each state at each time step, and for each state we are iterating over all possible controls. This complexity is linear in the time horizon $T$, but it is exponential in the dimension of the state space $\mathcal{X}$ and control space $\mathcal{U}$, since typically $|\mathcal{X}|$ and $|\mathcal{U}|$ grow exponentially with the number of state and control variables.
 
 This exponential growth in complexity is known as the **curse of dimensionality**, and it makes it infeasible to apply Dynamic Programming to problems with large state and action spaces. This is one of the main motivations for developing more scalable algorithms for Reinforcement Learning.
 
@@ -5518,7 +5518,7 @@ This exponential growth in complexity is known as the **curse of dimensionality*
 
 #### Q-Factor
 
-In the Dynamic Programming algorithm, we can also define the optimal Q-factor for each state-action pair at time step $k$ as follows:
+In the Dynamic Programming algorithm, we can also define the optimal Q-factor for each state–control pair at time step $k$ as follows:
 $$
 \begin{equation} \label{eq:q_factor_definition}
 Q^*_k(x, u) = q_k(x, u) + J^*_{k+1}(f_k(x, u)).
@@ -5528,9 +5528,9 @@ This is simply the expression inside the minimization in $\eqref{eq:dp_recursion
 $$
 J^*_k(x) = \min_{u_k \in \mathcal{U}} Q^*_k(x, u_k).
 $$
-The optimal Q-factor represents the total cost of taking action $u$ in state $x$ at time step $k$, and then following the optimal policy for the remaining time steps. Dynamic Programming written in terms of the Q-factor is as follows:
+The optimal Q-factor represents the total cost of applying control $u$ in state $x$ at time step $k$, and then following the optimal policy for the remaining time steps. Dynamic Programming written in terms of the Q-factor is as follows:
 
-1. Initialize the terminal cost for all states $x \in \mathcal{X}$:
+1. Initialize the terminal cost for all states $x \in \mathcal{X}$ and all controls $u \in \mathcal{U}$ (the terminal Q-factor is independent of $u$, since any control taken at the terminal step incurs the same cost $q_f(x)$):
     $$
     Q^*_T(x, u) = q_f(x)
     $$
