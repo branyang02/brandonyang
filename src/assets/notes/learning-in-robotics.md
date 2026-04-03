@@ -4838,6 +4838,775 @@ Applying this elementwise to the components of $x$ and $d$ allows the network to
 In summary, NeRF learns a continuous function that maps a 3D point and viewing direction to a color and density, and then uses differentiable volume rendering to synthesize images. By training on posed images of a scene, the model learns both the geometry and appearance of the scene and can render novel views from unseen camera positions.
 
 
+## Dynamic Programming
+
+### Optimal Control Problem
+
+Let us denote the state of a robot by $x_k \in \mathcal{X} \subseteq \mathbb{R}^n$ at the $k^{\text{th}}$ time step. We can change this state using a control input $u_k \in \mathcal{U} \subseteq \mathbb{R}^p$. The state evolves according to a dynamics function
+$$
+\begin{equation} \label{eq:optimal_control_dynamics}
+x_{k+1} = f(x_k, u_k), \quad k = 0, 1, \ldots, N-1,
+\end{equation}
+$$
+for some initial state $x_0$. Suppose we have a cost function
+$$
+\begin{equation} \label{eq:optimal_control_cost_function}
+q_k(x_k, u_k) \in \mathbb{R},
+\end{equation}
+$$
+which gives a scalar output for each state and control input at time step $k$. We also have a terminal cost function
+$$
+\begin{equation} \label{eq:optimal_control_terminal_cost}
+q_f(x_T) \in \mathbb{R},
+\end{equation}
+$$
+which gives a cost for the final state at time step $T$. $q_f(x_T)$ is high if the final state is undesirable (e.g. colliding with an obstacle) and low if the final state is desirable (e.g. reaching a goal).
+
+The optimal control problem is to find the sequence of control inputs $u_0, u_1, \ldots, u_{T-1}$ that minimizes the total cost of the trajectory:
+$$
+\begin{equation} \label{eq:optimal_control_problem}
+\begin{aligned}
+J(x_0; u_0, \ldots, u_{T-1}) &= q_f(x_T) + \sum_{k=0}^{T-1} q_k(x_k, u_k) \\
+J^*(x_0) &= \min_{u_0, \ldots, u_{T-1}} J(x_0; u_0, \ldots, u_{T-1})
+\end{aligned}
+\end{equation}
+$$
+where $J^*(x_0)$ is the optimal cost starting from state $x_0$. 
+
+If state space $\mathcal{X}$ and control space $\mathcal{U}$ are discrete, we can solve this problem with a shortest path algorithm such as Dijkstra's. 
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto]
+
+  % --- State Nodes ---
+  \begin{scope}[every node/.style={circle, draw, minimum size=0.9cm, inner sep=1pt}]
+      
+      % Start Node
+      \node (S) at (0, 0) {$x_0$};
+      
+      % Layer 1
+      \node (s11) at (3, 2.5) {$x_1^{(1)}$};
+      \node (s12) at (3, 0.5) {$x_1^{(2)}$};
+      \node (s13) at (3, -2.5) {$x_1^{(|\mathcal{X}|)}$};
+      
+      % Layer k
+      \node (sk1) at (7, 2.5) {$x_k^{(1)}$};
+      \node (sk2) at (7, 0.5) {$x_k^{(2)}$};
+      \node (sk3) at (7, -2.5) {$x_k^{(|\mathcal{X}|)}$};
+      
+      % Layer T-1
+      \node (sT1-1) at (11, 2.5) {$x_{T-1}^{(1)}$};
+      \node (sT1-2) at (11, 0.5) {$x_{T-1}^{(2)}$};
+      \node (sT1-3) at (11, -2.5) {$x_{T-1}^{(|\mathcal{X}|)}$};
+      
+      % Layer T (New full layer)
+      \node (sT1) at (14, 2.5) {$x_T^{(1)}$};
+      \node (sT2) at (14, 0.5) {$x_T^{(2)}$};
+      \node (sT3) at (14, -2.5) {$x_T^{(|\mathcal{X}|)}$};
+      
+      % Final Sink Node (Single node after Layer T)
+      \node (t) at (17, 0) {$t$};
+      
+  \end{scope}
+
+  % --- Text Labels and Ellipses ---
+  
+  % Start and Sink Labels
+  \node at (0, -3.5) {\small Start};
+  \node at (17, -3.5) {\small Sink};
+
+  % Vertical ellipses to represent |X| nodes per layer
+  \node at (3, -0.8) {$\vdots$};
+  \node at (7, -0.8) {$\vdots$};
+  \node at (11, -0.8) {$\vdots$};
+  \node at (14, -0.8) {$\vdots$};
+
+  % Layer Headers
+  \node at (3, 3.4) {\textbf{Stage $1$}};
+  
+  \node at (7, 3.4) {\textbf{Stage $k$}};
+  
+  \node at (11, 3.4) {\textbf{Stage $T-1$}};
+  
+  % New Stage T Header
+  \node at (14, 3.4) {\textbf{Stage $T$}};
+
+  % Horizontal dots representing intermediate stages
+  \node (d11) at (5, 2.5) {$\dots$};
+  \node (d12) at (5, 0.5) {$\dots$};
+  \node (d13) at (5, -2.5) {$\dots$};
+
+  \node (d21) at (9, 2.5) {$\dots$};
+  \node (d22) at (9, 0.5) {$\dots$};
+  \node (d23) at (9, -2.5) {$\dots$};
+
+  % --- Edges (Transitions) ---
+  
+  % Start to Layer 1 (Thick edges)
+  \draw[thick] (S) -- (s11);
+  \draw[thick] (S) -- (s12);
+  \draw[thick] (S) -- (s13);
+
+  % Layer 1 to Layer k through Intermediate Dots (thin, grey all-to-all mesh)
+  \begin{scope}[every path/.style={black!30, thin}]
+      % Layer 1 to Intermediate Dots
+      \draw (s11) -- (d11); \draw (s11) -- (d12); \draw (s11) -- (d13);
+      \draw (s12) -- (d11); \draw (s12) -- (d12); \draw (s12) -- (d13);
+      \draw (s13) -- (d11); \draw (s13) -- (d12); \draw (s13) -- (d13);
+      
+      % Intermediate Dots to Layer k
+      \draw (d11) -- (sk1); \draw (d11) -- (sk2); \draw (d11) -- (sk3);
+      \draw (d12) -- (sk1); \draw (d12) -- (sk2); \draw (d12) -- (sk3);
+      \draw (d13) -- (sk1); \draw (d13) -- (sk2); \draw (d13) -- (sk3);
+      
+      % Layer k to Intermediate Dots 2
+      \draw (sk1) -- (d21); \draw (sk1) -- (d22); \draw (sk1) -- (d23);
+      \draw (sk2) -- (d21); \draw (sk2) -- (d22); \draw (sk2) -- (d23);
+      \draw (sk3) -- (d21); \draw (sk3) -- (d22); \draw (sk3) -- (d23);
+      
+      % Intermediate Dots 2 to Layer T-1
+      \draw (d21) -- (sT1-1); \draw (d21) -- (sT1-2); \draw (d21) -- (sT1-3);
+      \draw (d22) -- (sT1-1); \draw (d22) -- (sT1-2); \draw (d22) -- (sT1-3);
+      \draw (d23) -- (sT1-1); \draw (d23) -- (sT1-2); \draw (d23) -- (sT1-3);
+
+      % Layer T-1 to Layer T (New full layer)
+      \draw (sT1-1) -- (sT1); \draw (sT1-1) -- (sT2); \draw (sT1-1) -- (sT3);
+      \draw (sT1-2) -- (sT1); \draw (sT1-2) -- (sT2); \draw (sT1-2) -- (sT3);
+      \draw (sT1-3) -- (sT1); \draw (sT1-3) -- (sT2); \draw (sT1-3) -- (sT3);
+  \end{scope}
+
+  % Layer T to Final Sink (Thick, annotated edges)
+  \draw[thick] (sT1) -- node[midway, above=0.3cm] {$q_f\left(x_T^{(1)}\right)$} (t);
+  \draw[thick] (sT2) -- node[midway, above=0.4cm, left=-0.6cm] {$q_f\left(x_T^{(2)}\right)$} (t);
+  \draw[thick] (sT3) -- node[midway, below=0.3cm] {$q_f\left(x_T^{(|\mathcal{X}|)}\right)$} (t);
+
+\end{tikzpicture}
+\end{document}
+```
+
+We model $\eqref{eq:optimal_control_problem}$ as a shortest path problem in a directed acyclic graph (DAG) where each node corresponds to a state at a particular time step, and edges correspond to the deterministic transitions defined by $\eqref{eq:optimal_control_dynamics}$. The cost of each edge is given by the cost function:
+$$
+\mathrm{cost}(x_k, x_{k+1}) = q_k(x_k, u_k),
+$$
+where $u_k$ is the control input that causes the transition from $x_k$ to $x_{k+1}$. We create a artificial sink node denoted as $t$ and add edges from each node in the final layer (corresponding to time step $T$) to $t$ with cost $q_f(x_T)$. 
+
+We can now solve $\eqref{eq:optimal_control_problem}$ with a shortest path algorithm between the start node $x_0$ and the end node $x_T$.
+
+#### Dijkstra's Algorithm
+
+Let $Q$ denote the set of unvisited nodes. Initially, every node in the graph is placed in $Q$, and the set of visited nodes $S$ is empty. For each node $x$, let $\operatorname{dist}(x)$ denote the current best-known cost of a path from the source node $x_0$ to $x$. We initialize
+$$
+\operatorname{dist}\left(x_0\right)=0, \quad \operatorname{dist}(x)=\infty \quad \text { for all } x \neq x_0 .
+$$
+At each iteration, we select the unvisited node $v \in Q$ with the smallest tentative distance $\operatorname{dist}(v)$. This node is then marked as visited by moving it from $Q$ into $S$. Intuitively, once $v$ is selected, we have found the minimum-cost path from $x_0$ to $v$.
+
+Next, we examine every neighbor $u$ of $v$ that can be reached by a directed edge from $v$. For each such neighbor, we check whether going through $v$ gives a cheaper path to $u$. That is, if
+$$
+\operatorname{dist}(u)>\operatorname{dist}(v)+\operatorname{cost}(v, u),
+$$
+then we update
+$$
+\operatorname{dist}(u) \leftarrow \operatorname{dist}(v)+\operatorname{cost}(v, u) .
+$$
+This step is called relaxing the edge $(v, u)$. If the inequality does not hold, then the current value of $\operatorname{dist}(u)$ is already better, so no update is made.
+
+The algorithm continues until all nodes have been visited, or until the destination node has been removed from $Q$. At termination, $\operatorname{dist}(x)$ contains the cost of the shortest path from $x_0$ to $x$. In particular, the value at the terminal node gives the optimal cost.
+
+<details><summary>Example of Optimal Control Problem with Dijkstra's Algorithm</summary>
+
+Suppose we have the following environment:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm]
+
+  % --- State Nodes ---
+  \tikzstyle{state}=[circle, draw, minimum size=1.2cm, inner sep=1pt]
+  \tikzstyle{mud}=[circle, draw, dashed, fill=orange!20, minimum size=1.2cm, inner sep=1pt]
+  
+  % Row 0
+  \node[state, very thick] (00) at (0, 0) {$x^{(0,0)}$};
+  \node[state] (01) at (3, 0) {$x^{(0,1)}$};
+  \node[state] (02) at (6, 0) {$x^{(0,2)}$};
+  
+  % Row 1
+  \node[state] (10) at (0, -3) {$x^{(1,0)}$};
+  \node[mud]   (11) at (3, -3) {$x^{(1,1)}$};
+  \node[state, very thick] (12) at (6, -3) {$x^{(1,2)}$};
+
+  % --- Labels ---
+  \node[above=0.2cm] at (00.north) {\textbf{Start}};
+  \node[below=0.2cm] at (11.south) {\textbf{Mud}};
+  \node[below=0.2cm] at (12.south) {\textbf{Goal}};
+
+  % --- Edges (Transitions) ---
+  % Horizontal Row 0
+  \draw[->] (00) to[bend left=15] node[above] {\scriptsize 1} (01);
+  \draw[->] (01) to[bend left=15] node[below] {\scriptsize 1} (00);
+  \draw[->] (01) to[bend left=15] node[above] {\scriptsize 1} (02);
+  \draw[->] (02) to[bend left=15] node[below] {\scriptsize 1} (01);
+
+  % Horizontal Row 1
+  \draw[->, red, thick] (10) to[bend left=15] node[above] {\scriptsize 5} (11); % Into mud
+  \draw[->] (11) to[bend left=15] node[below] {\scriptsize 1} (10); % Out of mud
+  \draw[->] (11) to[bend left=15] node[above] {\scriptsize 1} (12); % Out of mud
+  \draw[->, red, thick] (12) to[bend left=15] node[below] {\scriptsize 5} (11); % Into mud
+
+  % Vertical Col 0
+  \draw[->] (00) to[bend left=15] node[right] {\scriptsize 1} (10);
+  \draw[->] (10) to[bend left=15] node[left] {\scriptsize 1} (00);
+  
+  % Vertical Col 1
+  \draw[->, red, thick] (01) to[bend left=15] node[right] {\scriptsize 5} (11); % Into mud
+  \draw[->] (11) to[bend left=15] node[left] {\scriptsize 1} (01); % Out of mud
+
+  % Vertical Col 2
+  \draw[->] (02) to[bend left=15] node[right] {\scriptsize 1} (12);
+  \draw[->] (12) to[bend left=15] node[left] {\scriptsize 1} (02);
+
+\end{tikzpicture}
+\end{document}
+```
+
+In this environment, we have a grid of states with two rows and three columns. The agent starts at $x^{(0,0)}$ and wants to reach the goal state $x^{(1,2)}$. The agent can move horizontally or vertically between adjacent states. However, there is a mud state $x^{(1,1)}$ that incurs a high cost of 5 to enter. 
+
+We can model this as an optimal control problem with state space
+$$
+\mathcal{X} = \{x^{(0,0)}, x^{(0,1)}, x^{(0,2)}, x^{(1,0)}, x^{(1,1)}, x^{(1,2)}\},
+$$
+and control space
+$$
+\mathcal{U} = \{\text{up}, \text{down}, \text{left}, \text{right}\}.
+$$
+The dynamics function $f$ is defined by the transitions between states, and the cost function $q_k$ assigns a cost of 1 for normal transitions and a cost of 5 for transitions into the mud state. We have the initial and goal states:
+$$
+x_0 = x^{(0,0)}, \quad x_T = x^{(1,2)}.
+$$
+We set the terminal cost function $q_f\left(x_T^{(1,2)}\right) = 0$ for reaching the goal and $q_f(x) = \infty$ for all other states to ensure that only paths that end at the goal are considered valid.
+
+We can model this as a shortest path problem in a DAG:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto]
+
+  % --- Styling ---
+  \tikzstyle{state}=[circle, draw, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{mud}=[circle, draw, dashed, fill=orange!20, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{normal_edge}=[black!50, thin]
+  \tikzstyle{cost_edge}=[red, thick]
+  \tikzstyle{optimal_node}=[circle, draw=blue, very thick, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{optimal_edge}=[blue, very thick]
+  
+  % --- Stage k=0 ---
+  \node[optimal_node] (S) at (0, 0) {$x_0$};
+  \node[below=0.2cm] at (S.south) {\small Start ($0,0$)};
+  \node[above=0.2cm] at (0, 4.5) {\textbf{Stage $k=0$}};
+
+  % --- Stage k=1 ---
+  \node[state] (1_00) at (4, 4.5) {$x_1^{(0,0)}$};
+  \node[optimal_node] (1_01) at (4, 2.7) {$x_1^{(0,1)}$};
+  \node[state] (1_02) at (4, 0.9) {$x_1^{(0,2)}$};
+  \node[state] (1_10) at (4, -0.9) {$x_1^{(1,0)}$};
+  \node[mud]   (1_11) at (4, -2.7) {$x_1^{(1,1)}$};
+  \node[state] (1_12) at (4, -4.5) {$x_1^{(1,2)}$};
+  \node[above=0.2cm] at (1_00.north) {\textbf{Stage $k=1$}};
+
+  % --- Stage k=2 ---
+  \node[state] (2_00) at (9, 4.5) {$x_2^{(0,0)}$};
+  \node[state] (2_01) at (9, 2.7) {$x_2^{(0,1)}$};
+  \node[optimal_node] (2_02) at (9, 0.9) {$x_2^{(0,2)}$};
+  \node[state] (2_10) at (9, -0.9) {$x_2^{(1,0)}$};
+  \node[mud]   (2_11) at (9, -2.7) {$x_2^{(1,1)}$};
+  \node[state] (2_12) at (9, -4.5) {$x_2^{(1,2)}$};
+  \node[above=0.2cm] at (2_00.north) {\textbf{Stage $k=2$}};
+
+  % --- Stage k=3 (Terminal States) ---
+  \node[state] (3_00) at (14, 4.5) {$x_3^{(0,0)}$};
+  \node[state] (3_01) at (14, 2.7) {$x_3^{(0,1)}$};
+  \node[state] (3_02) at (14, 0.9) {$x_3^{(0,2)}$};
+  \node[state] (3_10) at (14, -0.9) {$x_3^{(1,0)}$};
+  \node[mud]   (3_11) at (14, -2.7) {$x_3^{(1,1)}$};
+  \node[optimal_node] (3_12) at (14, -4.5) {$x_3^{(1,2)}$};
+  \node[above=0.2cm] at (3_00.north) {\textbf{Stage $T=3$}};
+
+  % --- Final Sink Node ---
+  \node[optimal_node] (t) at (18, 0) {$t$};
+  \node[below=0.2cm] at (t.south) {\small Final Sink};
+
+  % --- Edges (Transitions) ---
+
+  % Stage 0 to Stage 1 (From 0,0 can only go Right or Down)
+  \draw[optimal_edge] (S) -- node[above left, text=blue] {\scriptsize \textbf{1}} (1_01);
+  \draw[thick] (S) -- node[below left] {\scriptsize 1} (1_10);
+
+  % Stage 1 to Stage 2
+  \begin{scope}[every path/.style={normal_edge}]
+      % From x_0,0
+      \draw (1_00) -- (2_01); \draw (1_00) -- (2_10);
+      % From x_0,1
+      \draw (1_01) -- (2_00);  
+      \draw[cost_edge] (1_01) -- node[pos=0.75, above right=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+      % From x_0,2
+      \draw (1_02) -- (2_01); \draw (1_02) -- (2_12);
+      % From x_1,0
+      \draw (1_10) -- (2_00); 
+      \draw[cost_edge] (1_10) -- node[pos=0.75, below left=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+      % From x_1,1 (Mud)
+      \draw (1_11) -- (2_01); \draw (1_11) -- (2_10); \draw (1_11) -- (2_12);
+      % From x_1,2
+      \draw (1_12) -- (2_02);
+      \draw[cost_edge] (1_12) -- node[pos=0.75, below right=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+  \end{scope}
+  % Stage 1 to Stage 2 (Optimal Path extracted from scope to render on top)
+  \draw[optimal_edge] (1_01) -- node[pos=0.25, above, text=blue] {\scriptsize \textbf{1}} (2_02);
+
+  % Stage 2 to Stage 3 (Identical grid dynamics)
+  \begin{scope}[every path/.style={normal_edge}]
+      % From x_0,0
+      \draw (2_00) -- (3_01); \draw (2_00) -- (3_10);
+      % From x_0,1
+      \draw (2_01) -- (3_00); \draw (2_01) -- (3_02); 
+      \draw[cost_edge] (2_01) -- node[pos=0.75, above right=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+      % From x_0,2
+      \draw (2_02) -- (3_01); 
+      % From x_1,0
+      \draw (2_10) -- (3_00); 
+      \draw[cost_edge] (2_10) -- node[pos=0.75, below left=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+      % From x_1,1 (Mud)
+      \draw (2_11) -- (3_01); \draw (2_11) -- (3_10); \draw (2_11) -- (3_12);
+      % From x_1,2
+      \draw (2_12) -- (3_02);
+      \draw[cost_edge] (2_12) -- node[pos=0.75, below right=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+  \end{scope}
+  % Stage 2 to Stage 3 (Optimal Path extracted from scope to render on top)
+  \draw[optimal_edge] (2_02) -- node[pos=0.25, above right=-2pt, text=blue] {\scriptsize \textbf{1}} (3_12);
+
+  % Stage 3 to Terminal Sink (t)
+  \begin{scope}[every path/.style={thick}]
+      \draw (3_00) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_01) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_02) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_10) -- node[pos=0.6, below, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_11) -- node[pos=0.6, below, sloped] {\scriptsize $\infty$} (t);
+  \end{scope}
+  % Stage 3 to Terminal Sink (Optimal Path extracted)
+  \draw[optimal_edge] (3_12) -- node[pos=0.6, below, sloped, text=blue] {\scriptsize \textbf{0}} (t);
+
+\end{tikzpicture}
+\end{document}
+```
+
+We can run Dijkstra's algorithm on this graph to find the shortest path from the start node $x_0$ to the goal node $x_T$. 
+
+```execute-python
+import heapq
+
+# 1. Dijkstra's Algorithm
+def dijkstra(graph, start, goal):
+    dist = {n: float('inf') for n in graph}
+    parent = {n: None for n in graph}
+
+    dist[start] = 0
+    pq = [(0, start)]
+    visited = set()
+
+    while pq:
+        d, u = heapq.heappop(pq)
+        if u == goal: break
+        if u in visited: continue
+        visited.add(u)
+
+        for v, cost in graph.get(u, []):
+            if d + cost < dist[v]:
+                dist[v], parent[v] = d + cost, u
+                heapq.heappush(pq, (dist[v], v))
+                
+    return dist, parent
+
+# 2. Layered Graph Building (Time-Unrolled DAG with Sink Node)
+ROWS, COLS, T = 2, 3, 3
+
+# Nodes are (time_step, row, col), plus a special sink node 't'
+START = (0, 0, 0)
+SINK = 't'
+TARGET_GRID_STATE = (1, 2)
+MUD = (1, 1)
+
+# Initialize graph for all valid states up to terminal stage T, and add sink
+graph = {(k, r, c): [] for k in range(T + 1) for r in range(ROWS) for c in range(COLS)}
+graph[SINK] = [] 
+
+# Add dynamics: Stage k to Stage k+1
+for k in range(T):
+    for r in range(ROWS):
+        for c in range(COLS):
+            u = (k, r, c)
+            
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]: # Up, Down, Left, Right
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < ROWS and 0 <= nc < COLS:
+                    v = (k + 1, nr, nc) # Edges strictly move FORWARD to next stage
+                    cost = 5 if (nr, nc) == MUD else 1
+                    graph[u].append((v, cost))
+
+# Add terminal costs: Stage T to Sink 't'
+for r in range(ROWS):
+    for c in range(COLS):
+        u = (T, r, c)
+        # q_f(x_T) is 0 if we reached the physical goal, infinity otherwise
+        terminal_cost = 0 if (r, c) == TARGET_GRID_STATE else float('inf')
+        graph[u].append((SINK, terminal_cost))
+
+# 3. Solve and Reconstruct Path
+dist, parent = dijkstra(graph, START, SINK)
+
+path, curr = [], SINK
+while curr is not None:
+    path.append(curr)
+    curr = parent[curr]
+
+print(f"Optimal Total Cost: {dist[SINK]}")
+print(f"Optimal Path: {path[::-1]}")
+```
+
+</details>
+
+<details><summary>Discussion of Dijkstra's Algorithm</summary>
+
+Standard Dijkstra assumes the following conditions:
+
+- Graphs can contain cycles.
+- Edge weights must be strictly non-negative (adding a step always increases the total cost).
+- A priority queue and a visited set are required to explore the cheapest paths safely without getting stuck in infinite loops.
+
+Since we are working with a time-unrolled DAG, we can relax some of these assumptions:
+- The graph is acyclic, so we do not need a visited set to prevent cycles.
+- We can have negative edge weights (e.g., if we had a reward instead of a cost) as long as there are no negative cycles, which is guaranteed by the DAG structure.
+- We can use a simple queue instead of a priority queue, since we can process nodes in topological order without worrying about revisiting nodes.
+
+</details>
+
+### Principal of Dynamic Programming
+
+The principle of dynamic programming is a formalization of the idea behind running Dijkstra's algorithm backwards (from the sink to the source). The core concept is that the _remainder of the optimal path must itself be optimal_. 
+
+We can prove this assertion by contradiction. Suppose we find the optimal control sequence $(u^*_0, u^*_1, \ldots, u^*_{T-1})$ for our optimal control problem. Because our system is deterministic, this control sequence results in a unique optimal sequence of states $(x_0, x^*_1, \ldots, x^*_T)$, where each successive state is $x^*_{k+1} = f_k(x^*_k, u^*_k)$. The principle of optimality states that if one starts from an intermediate state $x^*_k$ at time $k$ and wishes to minimize the remaining "cost-to-go":
+$$
+\text{Cost-to-go} = q_f(x_T) + q_k(x^*_k, u_k) + \sum_{i=k + 1}^{T-1} q_i(x_i, u_i)
+$$
+over the remaining sequence of controls $(u_k, u_{k+1}, \ldots, u_{T-1})$, the optimal control sequence for this truncated problem is exactly the tail end of our original solution: $(u^*_k, \ldots, u^*_{T-1})$.
+
+If this truncated sequence were not optimal starting from $x^*_k$, there would exist some other optimal sequence of controls for the truncated problem, say $(v^*_k, \ldots, v^*_{T-1})$. If we then took the original sequence for the first $k-1$ steps and spliced it with this new, better sequence for time-steps $k, \dots, T-1$, the overall trajectory would have a strictly lower total cost. This contradicts our initial premise that $(u^*_0, \ldots, u^*_{T-1})$ was the optimal sequence for the full problem.
+
+The essence of dynamic programming is to solve the larger, original problem by sequentially solving these truncated sub-problems from the end to the beginning. At each iteration, we construct the optimal cost-to-go functions:
+$$
+J^*_T(x_T), J^*_{T-1}(x_{T-1}), \ldots, J^*_0(x_0)
+$$
+starting from $J^*_T$ and proceeding backwards. Mathematically, this algorithm looks as follows:
+
+1. Initialize the terminal cost for all states $x \in \mathcal{X}$:
+    $$
+    J^*_T(x) = q_f(x)
+    $$
+2. Iterate backwards for $k = T-1, \ldots, 0$, setting:
+    $$
+    \begin{equation} \label{eq:dp_recursion}
+    J^*_k(x) = \min_{u_k \in \mathcal{U}} \left[ q_k(x, u_k) + J^*_{k+1}(f_k(x, u_k)) \right]
+    \end{equation}
+    $$
+    for all $x \in \mathcal{X}$.
+    
+After running this algorithm, we obtain the optimal cost-to-go $J^*_0(x)$ for each state $x \in \mathcal{X}$. Specifically, $J^*_0(x_0)$ gives us the optimal cost for our initial state. If we simply record the minimizer $u^*_k$ that satisfied the equation at each step $k$, we also recover the optimal control sequence $(u^*_0, u^*_1, \ldots, u^*_{T-1})$.
+
+<details><summary>Example of Dynamic Programming</summary>
+
+Following the same environment as before, we can solve for the optimal cost-to-go functions using dynamic programming starting from the terminal stage $T=3$:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, ->, auto]
+
+  % --- Styling ---
+  \tikzstyle{state}=[circle, draw, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{mud}=[circle, draw, dashed, fill=orange!20, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{normal_edge}=[black!50, thin]
+  \tikzstyle{cost_edge}=[red, thick]
+  \tikzstyle{optimal_node}=[circle, draw=blue, very thick, minimum size=0.9cm, inner sep=1pt]
+  \tikzstyle{optimal_edge}=[blue, very thick]
+  \tikzset{j_val/.style={text=violet, font=\bfseries}}
+
+  
+  % --- Stage k=0 ---
+  \node[optimal_node, label={[j_val]above:$\mathbf{J^*_0=3}$}] (S) at (0, 0) {$x_0$};
+  \node[below=0.2cm] at (S.south) {\small Start ($0,0$)};
+  \node[above=0.6cm] at (0, 4.5) {\textbf{Stage $k=0$}};
+
+  % --- Stage k=1 (With DP Cost-to-go values) ---
+  \node[state, label={[j_val]above:$J^*_1=\infty$}] (1_00) at (4, 4.5) {$x_1^{(0,0)}$};
+  \node[optimal_node, label={[j_val]above:$\mathbf{J^*_1=2}$}] (1_01) at (4, 2.7) {$x_1^{(0,1)}$};
+  \node[state, label={[j_val]above:$J^*_1=\infty$}] (1_02) at (4, 0.9) {$x_1^{(0,2)}$};
+  \node[state, label={[j_val]above:$\mathbf{J^*_1=6}$}] (1_10) at (4, -0.9) {$x_1^{(1,0)}$};
+  \node[mud, label={[j_val]above:$J^*_1=\infty$}]   (1_11) at (4, -2.7) {$x_1^{(1,1)}$};
+  \node[state, label={[j_val]above:$\mathbf{J^*_1=2}$}] (1_12) at (4, -4.5) {$x_1^{(1,2)}$};
+  \node[above=0.6cm] at (1_00.north) {\textbf{Stage $k=1$}};
+
+  % --- Stage k=2 (With DP Cost-to-go values) ---
+  \node[state, label={[j_val]above:$J^*_2=\infty$}] (2_00) at (9, 4.5) {$x_2^{(0,0)}$};
+  \node[state, label={[j_val]above:$J^*_2=\infty$}] (2_01) at (9, 2.7) {$x_2^{(0,1)}$};
+  \node[optimal_node, label={[j_val]above:$\mathbf{J^*_2=1}$}] (2_02) at (9, 0.9) {$x_2^{(0,2)}$};
+  \node[state, label={[j_val]above:$J^*_2=\infty$}] (2_10) at (9, -0.9) {$x_2^{(1,0)}$};
+  \node[mud, label={[j_val]above:$\mathbf{J^*_2=1}$}]   (2_11) at (9, -2.7) {$x_2^{(1,1)}$};
+  \node[state, label={[j_val]above:$J^*_2=\infty$}] (2_12) at (9, -4.5) {$x_2^{(1,2)}$};
+  \node[above=0.6cm] at (2_00.north) {\textbf{Stage $k=2$}};
+
+  % --- Stage k=3 (Terminal States with DP Cost-to-go values) ---
+  \node[state, label={[j_val]above:$J^*_3=\infty$}] (3_00) at (14, 4.5) {$x_3^{(0,0)}$};
+  \node[state, label={[j_val]above:$J^*_3=\infty$}] (3_01) at (14, 2.7) {$x_3^{(0,1)}$};
+  \node[state, label={[j_val]above:$J^*_3=\infty$}] (3_02) at (14, 0.9) {$x_3^{(0,2)}$};
+  \node[state, label={[j_val]above:$J^*_3=\infty$}] (3_10) at (14, -0.9) {$x_3^{(1,0)}$};
+  \node[mud, label={[j_val]above:$J^*_3=\infty$}]   (3_11) at (14, -2.7) {$x_3^{(1,1)}$};
+  \node[optimal_node, label={[j_val]above:$\mathbf{J^*_3=0}$}] (3_12) at (14, -4.5) {$x_3^{(1,2)}$};
+  \node[above=0.6cm] at (3_00.north) {\textbf{Stage $T=3$}};
+
+  % --- Final Sink Node ---
+  \node[optimal_node] (t) at (18, 0) {$t$};
+  \node[below=0.2cm] at (t.south) {\small Final Sink};
+
+  % --- Edges (Transitions) ---
+
+  % Stage 0 to Stage 1 (From 0,0 can only go Right or Down)
+  \draw[optimal_edge] (S) -- node[above left, text=blue] {\scriptsize \textbf{1}} (1_01);
+  \draw[thick] (S) -- node[below left] {\scriptsize 1} (1_10);
+
+  % Stage 1 to Stage 2
+  \begin{scope}[every path/.style={normal_edge}]
+      % From x_0,0
+      \draw (1_00) -- (2_01); \draw (1_00) -- (2_10);
+      % From x_0,1
+      \draw (1_01) -- (2_00);  
+      \draw[cost_edge] (1_01) -- node[pos=0.75, above right=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+      % From x_0,2
+      \draw (1_02) -- (2_01); \draw (1_02) -- (2_12);
+      % From x_1,0
+      \draw (1_10) -- (2_00); 
+      \draw[cost_edge] (1_10) -- node[pos=0.75, below left=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+      % From x_1,1 (Mud)
+      \draw (1_11) -- (2_01); \draw (1_11) -- (2_10); \draw (1_11) -- (2_12);
+      % From x_1,2
+      \draw (1_12) -- (2_02);
+      \draw[cost_edge] (1_12) -- node[pos=0.75, below right=-2pt, inner sep=1pt] {\scriptsize 5} (2_11); % Into mud
+  \end{scope}
+  % Stage 1 to Stage 2 (Optimal Path extracted from scope to render on top)
+  \draw[optimal_edge] (1_01) -- node[pos=0.25, above, text=blue] {\scriptsize \textbf{1}} (2_02);
+
+  % Stage 2 to Stage 3 (Identical grid dynamics)
+  \begin{scope}[every path/.style={normal_edge}]
+      % From x_0,0
+      \draw (2_00) -- (3_01); \draw (2_00) -- (3_10);
+      % From x_0,1
+      \draw (2_01) -- (3_00); \draw (2_01) -- (3_02); 
+      \draw[cost_edge] (2_01) -- node[pos=0.75, above right=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+      % From x_0,2
+      \draw (2_02) -- (3_01); 
+      % From x_1,0
+      \draw (2_10) -- (3_00); 
+      \draw[cost_edge] (2_10) -- node[pos=0.75, below left=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+      % From x_1,1 (Mud)
+      \draw (2_11) -- (3_01); \draw (2_11) -- (3_10); \draw (2_11) -- (3_12);
+      % From x_1,2
+      \draw (2_12) -- (3_02);
+      \draw[cost_edge] (2_12) -- node[pos=0.75, below right=-2pt, inner sep=1pt] {\scriptsize 5} (3_11); % Into mud
+  \end{scope}
+  % Stage 2 to Stage 3 (Optimal Path extracted from scope to render on top)
+  \draw[optimal_edge] (2_02) -- node[pos=0.25, above right=-2pt, text=blue] {\scriptsize \textbf{1}} (3_12);
+
+  % Stage 3 to Terminal Sink (t)
+  \begin{scope}[every path/.style={thick}]
+      \draw (3_00) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_01) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_02) -- node[pos=0.6, above, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_10) -- node[pos=0.6, below, sloped] {\scriptsize $\infty$} (t);
+      \draw (3_11) -- node[pos=0.6, below, sloped] {\scriptsize $\infty$} (t);
+  \end{scope}
+  % Stage 3 to Terminal Sink (Optimal Path extracted)
+  \draw[optimal_edge] (3_12) -- node[pos=0.6, below, sloped, text=blue] {\scriptsize \textbf{0}} (t);
+
+\end{tikzpicture}
+\end{document}
+```
+
+We can see that the optimal cost-to-go values are correctly computed at each stage, and the optimal path is consistent with the one we found using Dijkstra's algorithm. In fact this is exactly what Dijkstra's algorithm is doing under the hood, but in a more efficient way by only exploring the necessary states and transitions.
+
+```execute-python
+# 1. Grid World & DAG Setup
+ROWS, COLS, T = 2, 3, 3
+
+START = (0, 0, 0)
+TARGET_GRID_STATE = (1, 2)
+MUD = (1, 1)
+
+# Actions: Up, Down, Left, Right
+ACTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+# J will store our optimal cost-to-go values: J[(k, r, c)] = optimal_cost
+J = {}
+# parent will store the best NEXT state to take (to reconstruct the path)
+next_state = {}
+
+# 2. Stage T: Initialize Terminal Costs (q_f)
+for r in range(ROWS):
+    for c in range(COLS):
+        # 0 if it's the goal, infinity otherwise
+        J[(T, r, c)] = 0 if (r, c) == TARGET_GRID_STATE else float('inf')
+
+# 3. Dynamic Programming: Backward Induction (Stages T-1 down to 0)
+for k in range(T - 1, -1, -1):
+    for r in range(ROWS):
+        for c in range(COLS):
+            current_node = (k, r, c)
+            best_cost = float('inf')
+            best_next = None
+            
+            # Check all possible actions u_k
+            for dr, dc in ACTIONS:
+                nr, nc = r + dr, c + dc
+                
+                # If the action keeps us inside the grid bounds
+                if 0 <= nr < ROWS and 0 <= nc < COLS:
+                    # Immediate transition cost q_k(x_k, u_k)
+                    transition_cost = 5 if (nr, nc) == MUD else 1
+                    
+                    # Bellman Equation: cost = q_k + J_{k+1}(x_{k+1})
+                    total_cost = transition_cost + J[(k + 1, nr, nc)]
+                    
+                    # Track the minimum cost and the action that caused it
+                    if total_cost < best_cost:
+                        best_cost = total_cost
+                        best_next = (k + 1, nr, nc)
+            
+            # Store the optimal values for this state
+            J[current_node] = best_cost
+            next_state[current_node] = best_next
+
+# 4. Extract the Optimal Path (Forward pass)
+path = []
+curr = START
+
+# Follow the optimal next states until we reach stage T
+while curr is not None:
+    path.append(curr)
+    curr = next_state.get(curr)
+
+# Add the final sink node to match the previous output format
+path.append('t')
+
+print(f"Optimal Total Cost J_0(Start): {J[START]}")
+print(f"Optimal Path: {path}")
+```
+
+</details>
+
+<details><summary>Curse of Dimensionality</summary>
+
+In the Dynamic Programming algorithm, the total complexity is $\mathcal{O}( T |\mathcal{X}| |\mathcal{U}| )$ since we are computing the optimal cost-to-go for each state at each time step, and for each state we are iterating over all possible actions. This complexity is linear in the time horizon $T$, but it is exponential in the dimension of the state space $\mathcal{X}$ and action space $\mathcal{U}$, since typically $|\mathcal{X}|$ and $|\mathcal{U}|$ grow exponentially with the number of state and action variables. 
+
+This exponential growth in complexity is known as the **curse of dimensionality**, and it makes it infeasible to apply Dynamic Programming to problems with large state and action spaces. This is one of the main motivations for developing more scalable algorithms for Reinforcement Learning.
+
+</details>
+
+#### Q-Factor
+
+In the Dynamic Programming algorithm, we can also define the optimal Q-factor for each state-action pair at time step $k$ as follows:
+$$
+\begin{equation} \label{eq:q_factor_definition}
+Q^*_k(x, u) = q_k(x, u) + J^*_{k+1}(f_k(x, u)).
+\end{equation}
+$$
+This is simply the expression inside the minimization in $\eqref{eq:dp_recursion}$:
+$$
+J^*_k(x) = \min_{u_k \in \mathcal{U}} Q^*_k(x, u_k).
+$$
+The optimal Q-factor represents the total cost of taking action $u$ in state $x$ at time step $k$, and then following the optimal policy for the remaining time steps. Dynamic Programming written in terms of the Q-factor is as follows:
+
+1. Initialize the terminal cost for all states $x \in \mathcal{X}$:
+    $$
+    Q^*_T(x, u) = q_f(x)
+    $$
+2. Iterate backwards for $k = T-1, \ldots, 0$, setting:
+    $$
+    \begin{equation} \label{eq:q_factor_dp_recursion}
+    Q^*_k(x, u) = q_k(x, u) + \min_{u' \in \mathcal{U}} Q^*_{k+1}(f_k(x, u), u')
+    \end{equation}
+    $$
+    for all $x \in \mathcal{X}$ and $u \in \mathcal{U}$.
+
+
+<details><summary>Example of Q-Factor Dynamic Programming</summary>
+
+```execute-python
+# 1. Grid World Setup
+ROWS, COLS, T = 2, 3, 3
+
+START = (0, 0, 0)
+TARGET_GRID_STATE = (1, 2)
+MUD = (1, 1)
+
+# Actions: Up, Down, Left, Right
+ACTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+# Q will store our optimal cost-to-go for state-action pairs
+# Structure: Q[(k, r, c, action)] = total_cost
+Q = {}
+
+# 2. Dynamic Programming: Backward Induction with Q-Factors
+for k in range(T - 1, -1, -1):
+    for r in range(ROWS):
+        for c in range(COLS):
+            
+            # Evaluate every possible action from this state
+            for dr, dc in ACTIONS:
+                nr, nc = r + dr, c + dc
+                
+                # Default cost is infinity if the action is invalid (hits a wall)
+                Q[(k, r, c, (dr, dc))] = float('inf')
+                
+                if 0 <= nr < ROWS and 0 <= nc < COLS:
+                    # Immediate cost q_k(x, u)
+                    transition_cost = 5 if (nr, nc) == MUD else 1
+                    
+                    # Next state's optimal value J_{k+1}(x') 
+                    if k + 1 == T:
+                        # Terminal cost q_f
+                        next_J = 0 if (nr, nc) == TARGET_GRID_STATE else float('inf')
+                    else:
+                        # J_{k+1}(x') is simply the minimum of its available Q-factors
+                        next_J = min(Q[(k + 1, nr, nc, a)] for a in ACTIONS)
+                        
+                    # Q-Factor Recursion
+                    Q[(k, r, c, (dr, dc))] = transition_cost + next_J
+
+# 3. Extract the Optimal Path (Forward pass via ArgMin)
+path = [START]
+curr_r, curr_c = START[1], START[2]
+
+for k in range(T):
+    # Argmin: Find the action that yields the lowest Q-factor
+    best_action = min(ACTIONS, key=lambda a: Q[(k, curr_r, curr_c, a)])
+    
+    # Apply the action to transition to the next state
+    curr_r += best_action[0]
+    curr_c += best_action[1]
+    path.append((k + 1, curr_r, curr_c))
+
+path.append('t')
+
+print(f"Optimal Path: {path}")
+```
+
+</details>
+
 ## Reinforcement Learning
 
 Let $S$ denote the state space, $A$ denote the action space, we define a trajectory to be
@@ -5083,13 +5852,6 @@ b(s_t) = \sum_{a} \pi_\theta(a \mid s_t) f(s_t, a).
 $$
 Since we are marginalizing out the action, this baseline does not depend on the sampled action $a_t$, and is therefore a valid baseline that can be subtracted from the return without changing the expected value of the policy gradient.
 
-#### Variance Reduction with Baselines
-
-- Full-trajectory return uses $R(\tau)$. This has the most extra noise, because it includes rewards from before time $t$ and other unrelated variability.
-- Reward-to-go uses $G_t$. This already reduces variance relative to the full-trajectory return by removing rewards that happened before action $a_t$.
-- Reward-to-go with a baseline uses $G_t-b\left(h_t\right)$. This tries to reduce variance even further by subtracting a prediction of the expected future return, so that the estimator focuses on whether the outcome was better or worse than expected. 
-
-
 ### Value Functions and Advantage Functions
 
 The reward-to-go $G_t$ defined in $\eqref{eq:reward_to_go}$ is a sample-based quantity: for a particular trajectory, it gives the actual cumulative reward obtained from time $t$ onward. In RL, it is often useful to consider the _expected_ future return conditioned on the current state or action. This leads to the definitions of the state-value function, action-value function, and advantage function.
@@ -5116,13 +5878,13 @@ which means it is an unbiased estimator with high variance as it depends on the 
 The state-value function is the expectation of the action-value function over the policy:
 $$
 \begin{equation} \label{eq:v_from_q}
-V^\pi(s_t) = \mathbb{E}_{a \sim \pi_\theta(\cdot \mid s_t)}\left[Q^\pi(s_t,a_t)\right].
+V^\pi(s_t) = \mathbb{E}_{a_t \sim \pi_\theta(\cdot \mid s_t)}\left[Q^\pi(s_t,a_t)\right].
 \end{equation}
 $$
 For discrete action spaces, this can be written explicitly as
 $$
 \begin{equation} \label{eq:v_from_q_discrete}
-V^\pi(s_t) = \sum_{a} \pi_\theta(a \mid s_t) Q^\pi(s_t,a).
+V^\pi(s_t) = \sum_{a_t} \pi_\theta(a_t \mid s_t) Q^\pi(s_t,a_t).
 \end{equation}
 $$
 This equation shows that $V^\pi(s)$ is the average quality of the actions available in state $s$, weighted by how likely the policy is to choose each action.
@@ -5172,19 +5934,97 @@ $$
 \begin{equation} \label{eq:bellman_equations}
 \begin{aligned}
 V^\pi\left(s_t\right)&=\mathbb{E}_{a_t \sim \pi\left(\cdot \mid s_t\right)}\left[r\left(s_t, a_t\right)+\gamma \mathbb{E}_{s_{t+1} \sim p\left(\cdot \mid s_t, a_t\right)}\left[V^\pi\left(s_{t+1}\right)\right]\right] \\
-&=\sum_a \pi(a \mid s)\left(r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right)\right) .
+V^\pi(s)&=\sum_a \pi(a \mid s)\left(r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right)\right) \\
+V^\pi\left(s_t\right)&=\mathbb{E}_{a_t \sim \pi\left(\cdot \mid s_t\right)}\left[Q^\pi\left(s_t, a_t\right)\right] \\
+V^\pi(s)&=\sum_a \pi(a \mid s) Q^\pi(s, a)
 \end{aligned}
 \end{equation}
 $$
 $$
 \begin{equation} \label{eq:bellman_equations_q}
 \begin{aligned}
+Q^\pi\left(s_t, a_t\right)&=r\left(s_t, a_t\right)+\gamma \mathbb{E}_{s_{t+1} \sim p\left(\cdot \mid s_t, a_t\right)}\left[\mathbb{E}_{a_{t+1} \sim \pi\left(\cdot \mid s_{t+1}\right)}\left[Q^\pi\left(s_{t+1}, a_{t+1}\right)\right]\right] \\
+Q^\pi(s, a)&=r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) \sum_{a^{\prime}} \pi\left(a^{\prime} \mid s^{\prime}\right) Q^\pi\left(s^{\prime}, a^{\prime}\right) \\
 Q^\pi\left(s_t, a_t\right)&=r\left(s_t, a_t\right)+\gamma \mathbb{E}_{s_{t+1} \sim p\left(\cdot \mid s_t, a_t\right)}\left[V^\pi\left(s_{t+1}\right)\right] \\
-&=r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right) .
+Q^\pi(s, a)&=r(s, a)+\gamma \sum_{s^{\prime}} p\left(s^{\prime} \mid s, a\right) V^\pi\left(s^{\prime}\right) .
 \end{aligned}
 \end{equation}
 $$
 where $\gamma \in [0,1]$ is the discount factor that controls how much we care about future rewards. 
+
+<details><summary>Derivation of the Bellman equations</summary>
+
+From $\eqref{eq:state_value_reward_to_go}$, we have
+$$
+\begin{aligned}
+V^\pi(s_t) &= \mathbb{E}_{\pi}\left[G_t \mid s_t\right] \\
+&= \mathbb{E}_{\pi}\left[r(s_t, a_t) + \gamma G_{t+1} \mid s_t\right].
+\end{aligned}
+$$
+Using the law of total expectation:
+$$
+\begin{aligned}
+\mathbb{E}[X] &= \mathbb{E}[\mathbb{E}[X \mid Y]] \\
+\mathbb{E}[X \mid Z] &= \mathbb{E}[\mathbb{E}[X \mid Y, Z] \mid Z].
+\end{aligned}
+$$
+We can apply the law of total expectation with extra conditioning on $a_t$:
+$$
+\begin{aligned}
+V^\pi(s_t) &= \mathbb{E}_{\pi}\left[\mathbb{E}_{\pi}\left[r(s_t, a_t) + \gamma G_{t+1} \mid s_t, a_t\right] \mid s_t\right] \\
+&=\mathbb{E}_{a_t \sim \pi(\cdot \mid s_t)}\left[\mathbb{E}_{\pi}\left[r(s_t, a_t) + \gamma G_{t+1} \mid s_t, a_t\right]\right] \\
+&=\mathbb{E}_{a_t \sim \pi(\cdot \mid s_t)}\left[r(s_t, a_t) + \gamma\mathbb{E}_{\pi}\left[ G_{t+1} \mid s_t, a_t\right]\right] \\
+\end{aligned}
+$$
+We can apply the law of total expectation with extra conditioning on $s_{t+1}$ on the inner expectation:
+$$
+\begin{aligned}
+\mathbb{E}_{\pi}\left[ G_{t+1} \mid s_t, a_t\right] &= \mathbb{E}_{\pi} \left[\mathbb{E}_{\pi}\left[ G_{t+1} \mid s_{t+1}, s_t, a_t\right] \mid s_t, a_t\right] \\
+&= \mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)} \left[\mathbb{E}_{\pi}\left[ G_{t+1} \mid s_{t+1}, s_t, a_t\right]\right] \\
+&= \mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)} \left[\mathbb{E}_{\pi}\left[ G_{t+1} \mid s_{t+1}\right]\right] \\
+&= \mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)} \left[V^\pi(s_{t+1})\right]
+\end{aligned}
+$$
+Substituting back into the original equation to get $\eqref{eq:bellman_equations}$:
+$$
+\begin{aligned}
+V^\pi(s_t) &=\mathbb{E}_{a_t \sim \pi(\cdot \mid s_t)}\left[r(s_t, a_t) + \gamma\mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)} \left[V^\pi(s_{t+1})\right]\right] 
+\end{aligned}
+$$
+
+From $\eqref{eq:action_value_reward_to_go}$, we have
+$$
+\begin{aligned}
+Q^\pi(s_t, a_t) &= \mathbb{E}_{\pi}\left[G_t \mid s_t, a_t\right] \\
+&= \mathbb{E}_{\pi}\left[r(s_t, a_t) + \gamma G_{t+1} \mid s_t, a_t\right] \\
+&= r(s_t, a_t) + \gamma \mathbb{E}_{\pi}\left[G_{t+1} \mid s_t, a_t\right].
+\end{aligned}
+$$
+Applying the law of total expectation with extra conditioning on $s_{t+1}$ in the second term:
+$$
+\begin{aligned}
+\mathbb{E}_{\pi}\left[G_{t+1} \mid s_t, a_t\right] &= \mathbb{E}_{\pi}\left[\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}, s_t, a_t\right] \mid s_t, a_t\right] \\
+ &= \mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)}\left[\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}\right] \right].
+\end{aligned}
+$$
+Applying the law of total expectation with extra conditioning on $a_{t+1}$ in the inner expectation:
+$$
+\begin{aligned}
+\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}\right] &= \mathbb{E}_{\pi}\left[\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}, a_{t+1}\right] \mid s_{t+1}\right] \\
+&= \mathbb{E}_{a_{t+1} \sim \pi(\cdot \mid s_{t+1})}\left[\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}, a_{t+1}\right]\right] \\
+&= \mathbb{E}_{a_{t+1} \sim \pi(\cdot \mid s_{t+1})}\left[Q^\pi(s_{t+1}, a_{t+1})\right].
+\end{aligned}
+$$
+Substituting back into the original equation to get $\eqref{eq:bellman_equations_q}$:
+$$
+\begin{aligned}
+Q^\pi(s_t, a_t) &= r(s_t, a_t) + \gamma\mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)}\left[\mathbb{E}_{\pi}\left[G_{t+1} \mid s_{t+1}\right] \right] \\
+&= r(s_t, a_t) + \gamma\mathbb{E}_{s_{t+1} \sim p(\cdot \mid s_t, a_t)}\left[ \mathbb{E}_{a_{t+1} \sim \pi(\cdot \mid s_{t+1})}\left[Q^\pi(s_{t+1}, a_{t+1})\right] \right] \\
+\end{aligned}
+$$
+
+
+</details>
 
 ### Actor-Critic Methods
 
