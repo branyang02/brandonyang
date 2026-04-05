@@ -5661,7 +5661,7 @@ $$
 u_k(x): \mathcal{X} \to \mathcal{U}
 \end{equation}
 $$
-Now, the robot can observe its current state at each time step and apply the appropriate control action according to this function. We will denote the space of all feedback controls $u_k(\cdot)$ that depend on the state as:
+Now, the robot can observe its current state at each time step and apply the appropriate control according to this function. We will denote the space of all feedback controls $u_k(\cdot)$ that depend on the state as:
 $$
 u_k(\cdot) \in \mathcal{U}(\mathcal{X})
 $$ 
@@ -5803,22 +5803,24 @@ Similar to the finite-horizon case, we can also write the infinite-horizon value
 The algorithm proceeds iteratively to maintain a sequence of approximations $Q^{(0)}(x, u), Q^{(1)}(x, u), Q^{(2)}(x, u), \dots$ to the optimal Q-factor $Q^*(x, u)$.
 
 1. Initialize the Q-factor estimate for all state-control pairs $x \in \mathcal{X}$ and $u \in \mathcal{U}$:
-$$
-Q^{(0)}(x, u) = 0
-$$
-At each iteration $i = 0, 1, 2, \dots$, update the Q-factors for all $x \in \mathcal{X}$ and $u \in \mathcal{U}$ using the Bellman equation:
-$$
-Q^{(i+1)}(x, u) = q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ \min_{u' \in \mathcal{U}} Q^{(i)}(f(x, u) + \epsilon, u') \right]
-$$
-Continue this process until the Q-factors converge, meaning the maximum change across all state-control pairs is below a small tolerance threshold $\delta$:
-$$
-\max_{x \in \mathcal{X}, u \in \mathcal{U}} \left| Q^{(i+1)}(x, u) - Q^{(i)}(x, u) \right| < \delta
-$$
-Once converged to the optimal Q-factor $Q^{(N)}(x, u) \approx Q^*(x, u)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the control that minimizes the Q-factor for each state:
-$$
-u^*(x) = \arg\min_{u \in \mathcal{U}} Q^{(N)}(x, u)
-$$
-for all $x \in \mathcal{X}$.
+    $$
+    Q^{(0)}(x, u) = 0
+    $$
+
+2. At each iteration $i = 0, 1, 2, \dots$, update the Q-factors for all $x \in \mathcal{X}$ and $u \in \mathcal{U}$ using the Bellman equation:
+    $$
+    Q^{(i+1)}(x, u) = q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ \min_{u' \in \mathcal{U}} Q^{(i)}(f(x, u) + \epsilon, u') \right]
+    $$
+    Continue this process until the Q-factors converge, meaning the maximum change across all state-control pairs is below a small tolerance threshold $\delta$:
+    $$
+    \max_{x \in \mathcal{X}, u \in \mathcal{U}} \left| Q^{(i+1)}(x, u) - Q^{(i)}(x, u) \right| < \delta
+    $$
+
+3. Once converged to the optimal Q-factor $Q^{(N)}(x, u) \approx Q^*(x, u)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the control that minimizes the Q-factor for each state:
+    $$
+    u^*(x) = \arg\min_{u \in \mathcal{U}} Q^{(N)}(x, u)
+    $$
+    for all $x \in \mathcal{X}$.
 
 </blockquote>
 
@@ -5839,7 +5841,7 @@ and the goal state $x^{(2,3)}$ is at the bottom-right, and it is a terminal stat
 $$
 q(x^{(2,3)}, u) = 0 \quad \forall u \in \mathcal{U}
 $$
-Suppose we have  mud states $x^{(1,2)}$ and $x^{(2,1)}$. Stepping into the mud costs $5$, and all other states have a cost of $1$ for any action. We also assume that we have deterministic dynamics, and we use a discount factor of $\gamma = 1$. 
+Suppose we have mud states $x^{(1,2)}$ and $x^{(2,1)}$. Stepping into the mud costs $5$, and all other states have a cost of $1$ for any control. We also assume that we have deterministic dynamics, and we use a discount factor of $\gamma = 1$. 
 
 Following the Value Iteration algorithm, we set $J^{(0)}(x) = 0$ for all states:
 
@@ -6035,7 +6037,7 @@ while delta > tolerance:
 print(f"\nConverged to optimal value function in {iteration} iterations!")
 ```
 
-Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal action for each state. There may be multiple optimal actions for a state.
+Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal control for each state. There may be multiple optimal controls for a state.
 
 ```tikz
 \begin{document}
@@ -6052,15 +6054,15 @@ Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal act
   \node[n] (03) at (7.5, 0) {$\downarrow$};
   
   % Row 1
-  % State (1,0) has two optimal actions: Up and Right
+  % State (1,0) has two optimal controls: Up and Right
   \node[n] (10) at (0, -2.5) {$\uparrow \ \rightarrow$}; 
   \node[n] (11) at (2.5, -2.5) {$\uparrow$}; 
-  % State (1,2) has two optimal actions: Right and Down
+  % State (1,2) has two optimal controls: Right and Down
   \node[m] (12) at (5, -2.5) {$\rightarrow \ \downarrow$}; 
   \node[n] (13) at (7.5, -2.5) {$\downarrow$};
   
   % Row 2
-  % State (2,0) has two optimal actions: Up and Right
+  % State (2,0) has two optimal controls: Up and Right
   \node[n] (20) at (0, -5) {$\uparrow \ \rightarrow$}; 
   \node[m] (21) at (2.5, -5) {$\rightarrow$}; 
   \node[n] (22) at (5, -5) {$\rightarrow$}; 
