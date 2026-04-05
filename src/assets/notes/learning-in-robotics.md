@@ -5540,7 +5540,7 @@ print(f"Optimal Path: {path}")
 
 In the Dynamic Programming algorithm, the total complexity is $\mathcal{O}( T |\mathcal{X}| |\mathcal{U}| )$ since we are computing the optimal cost-to-go for each state at each time step, and for each state we are iterating over all possible controls. This complexity is linear in the time horizon $T$, but it is exponential in the dimension of the state space $\mathcal{X}$ and control space $\mathcal{U}$, since typically $|\mathcal{X}|$ and $|\mathcal{U}|$ grow exponentially with the number of state and control variables.
 
-This exponential growth in complexity is known as the **curse of dimensionality**, and it makes it infeasible to apply Dynamic Programming to problems with large state and action spaces. This is one of the main motivations for developing more scalable algorithms for Reinforcement Learning.
+This exponential growth in complexity is known as the **curse of dimensionality**, and it makes it infeasible to apply Dynamic Programming to problems with large state and control spaces. This is one of the main motivations for developing more scalable algorithms for Reinforcement Learning.
 
 </details>
 
@@ -5590,7 +5590,7 @@ MUD = (1, 1)
 # Actions: Up, Down, Left, Right
 ACTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-# Q will store our optimal cost-to-go for state-action pairs
+# Q will store our optimal cost-to-go for state-control pairs
 # Structure: Q[(k, r, c, action)] = total_cost
 Q = {}
 
@@ -5649,13 +5649,13 @@ $$
 x_{k+1} = f_k\left(x_k, u_k \right) + \epsilon_k
 \end{equation}
 $$
-We assume $\epsilon_k$ is a random variable drawn from some known distribution. In this case, a sequence of control signals $(u_0, \ldots u_{T-1})$ will lead to different trajectories $(x_0; x_1, \dots, x_T)$ depending on realizations of $\epsilon_k$. Therefore, we modify $\eqref{eq:optimal_control_problem}$ to minimize the expected value of the cost over all possible state-trajectories
+We assume $\epsilon_k$ is a random variable drawn from some known distribution. In this case, a sequence of control signals $(u_0, \ldots, u_{T-1})$ will lead to different trajectories $(x_0; x_1, \dots, x_T)$ depending on realizations of $\epsilon_k$. Therefore, we modify $\eqref{eq:optimal_control_problem}$ to minimize the expected value of the cost over all possible state-trajectories
 $$
 \begin{equation} \label{eq:optimal_control_problem_stochastic_initial}
 J(x_0; u_0, \ldots, u_{T-1}) = \mathbb{E}_{\epsilon} \left[ q_f(x_T) + \sum_{k=0}^{T-1} q_k(x_k, u_k) \right]
 \end{equation}
 $$
-However, as the robot starts executing its trajectory, the realizations of noise might cause it to deviate far from the expected trajectory. Therefore, instead of computing a single optimal control sequence at the beginning, we can use **feedback control**. Formally, instead of seeking an optimal control sequence $u^*$, we find a function that maps state to action:
+However, as the robot starts executing its trajectory, the realizations of noise might cause it to deviate far from the expected trajectory. Therefore, instead of computing a single optimal control sequence at the beginning, we can use **feedback control**. Formally, instead of seeking an optimal control sequence $u^*$, we find a function that maps state to control:
 $$
 \begin{equation}
 u_k(x): \mathcal{X} \to \mathcal{U}
@@ -5689,7 +5689,7 @@ where $J^*(x_0)$ is the optimal cost starting from state $x_0$.
 
 </blockquote>
 
-Dijkstra's algorithm no longer work as the edges in the graph are no longer deterministic. However, we can still apply the principle of dynamic programming to solve this problem. 
+Dijkstra's algorithm no longer works as the edges in the graph are no longer deterministic. However, we can still apply the principle of dynamic programming to solve this problem. 
 
 <blockquote class="algorithm">
 
@@ -5702,7 +5702,7 @@ Dijkstra's algorithm no longer work as the edges in the graph are no longer dete
 2. Iterate backwards for $k = T-1, \ldots, 0$, setting:
     $$
     \begin{equation} \label{eq:dp_recursion_stochastic}
-    J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(X)}\left\{q_k\left(x, u_k(x)\right)+\underset{\epsilon_k}{\mathbb{E}}\left[J_{k+1}^*\left(f_k\left(x, u_k(x)\right)+\epsilon_k\right)\right]\right\}
+    J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(\mathcal{X})}\left\{q_k\left(x, u_k(x)\right)+\underset{\epsilon_k}{\mathbb{E}}\left[J_{k+1}^*\left(f_k\left(x, u_k(x)\right)+\epsilon_k\right)\right]\right\}
     \end{equation}
     $$
     for all $x \in \mathcal{X}$.
@@ -5712,10 +5712,10 @@ Dijkstra's algorithm no longer work as the edges in the graph are no longer dete
 Alternatively, we can write $\eqref{eq:dp_recursion_stochastic}$ in the form of a transition matrix:
 $$
 \begin{equation} \label{eq:dp_recursion_stochastic_transition_matrix}
-J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(X)}\left\{q_k\left(x, u_k(x)\right)+{\mathbb{E}_{x' \sim \mathrm{P}\left(\cdot \mid x_k, u_k(x_k)\right)}}\left[J_{k+1}^*\left(x'  \right)\right]\right\}
+J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(\mathcal{X})}\left\{q_k\left(x, u_k(x)\right)+{\mathbb{E}_{x' \sim \mathrm{P}\left(\cdot \mid x_k, u_k(x_k)\right)}}\left[J_{k+1}^*\left(x'  \right)\right]\right\}
 \end{equation}
 $$
-Therefore, each subproblem performs an additional expectation over the next state $x'$ compared to the deterministic case, which brings the total complexity to $\mathcal{O}( T |\mathcal{X}|^2 |\mathcal{U}| )$ since we need to compute the expected cost for each state-action pair by summing over all possible next states. 
+Therefore, each subproblem performs an additional expectation over the next state $x'$ compared to the deterministic case, which brings the total complexity to $\mathcal{O}( T |\mathcal{X}|^2 |\mathcal{U}| )$ since we need to compute the expected cost for each state-control pair by summing over all possible next states. 
 
 ### Infinite-Horizon Problems
 
@@ -5753,7 +5753,7 @@ $$
 q(x, u) = 0 \quad \forall x \in \mathcal{X}_\mathrm{term}, \forall u \in \mathcal{U}.
 \end{equation}
 $$
-One such example could be a grid-world example. Suppose we have a starting state and a known terminal state, we would like to solve for the optimal trajectory in an unknwon number of steps. 
+One such example could be a grid-world example. Suppose we have a starting state and a known terminal state, we would like to solve for the optimal trajectory in an unknown number of steps. 
 
 #### Value Iteration
 
@@ -5781,7 +5781,7 @@ The algorithm proceeds iteratively to maintain a sequence of approximations $J^{
     \max_{x \in \mathcal{X}} \left| J^{(i+1)}(x) - J^{(i)}(x) \right| < \delta
     $$
     
-3. Once converged to the optimal value function $J^{(N)}(x) \approx J^*(x)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the action that minimizes the right-hand side:
+3. Once converged to the optimal value function $J^{(N)}(x) \approx J^*(x)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the control that minimizes the right-hand side:
     $$
     \begin{equation} \label{eq:optimal_policy_extraction}
     u^*(x) = \arg\min_{u \in \mathcal{U}} \left\{ q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(N)}(f(x, u) + \epsilon) \right] \right\}
@@ -5802,7 +5802,7 @@ Similar to the finite-horizon case, we can also write the infinite-horizon value
 
 The algorithm proceeds iteratively to maintain a sequence of approximations $Q^{(0)}(x, u), Q^{(1)}(x, u), Q^{(2)}(x, u), \dots$ to the optimal Q-factor $Q^*(x, u)$.
 
-1. Initialize the Q-factor estimate for all state-action pairs $x \in \mathcal{X}$ and $u \in \mathcal{U}$:
+1. Initialize the Q-factor estimate for all state-control pairs $x \in \mathcal{X}$ and $u \in \mathcal{U}$:
 $$
 Q^{(0)}(x, u) = 0
 $$
@@ -5810,11 +5810,11 @@ At each iteration $i = 0, 1, 2, \dots$, update the Q-factors for all $x \in \mat
 $$
 Q^{(i+1)}(x, u) = q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ \min_{u' \in \mathcal{U}} Q^{(i)}(f(x, u) + \epsilon, u') \right]
 $$
-Continue this process until the Q-factors converge, meaning the maximum change across all state-action pairs is below a small tolerance threshold $\delta$:
+Continue this process until the Q-factors converge, meaning the maximum change across all state-control pairs is below a small tolerance threshold $\delta$:
 $$
 \max_{x \in \mathcal{X}, u \in \mathcal{U}} \left| Q^{(i+1)}(x, u) - Q^{(i)}(x, u) \right| < \delta
 $$
-Once converged to the optimal Q-factor $Q^{(N)}(x, u) \approx Q^*(x, u)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the action that minimizes the Q-factor for each state:
+Once converged to the optimal Q-factor $Q^{(N)}(x, u) \approx Q^*(x, u)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the control that minimizes the Q-factor for each state:
 $$
 u^*(x) = \arg\min_{u \in \mathcal{U}} Q^{(N)}(x, u)
 $$
@@ -5904,7 +5904,7 @@ Similarly, for state $x^{(1,1)}$, we have
 $$
 J^{(2)}(x^{(1,1)}) = \min \left\{
 \begin{aligned}
-q(x^{(1,1)}, \text{up}) + J^{(1,1)}(x^{(0,1)}) = 1 + 1 = 2 \\
+q(x^{(1,1)}, \text{up}) + J^{(1)}(x^{(0,1)}) = 1 + 1 = 2 \\
 q(x^{(1,1)}, \text{down}) + J^{(1)}(x^{(2,1)}) = 5 + 1 = 6 \\
 q(x^{(1,1)}, \text{left}) + J^{(1)}(x^{(1,0)}) = 1 + 1 = 2 \\
 q(x^{(1,1)}, \text{right}) + J^{(1)}(x^{(1,2)}) = 5 + 1 = 6 \\
