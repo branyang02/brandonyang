@@ -4862,7 +4862,10 @@ q_f(x_T) \in \mathbb{R},
 $$
 which gives a cost for the final state at time step $T$. $q_f(x_T)$ is high if the final state is undesirable (e.g. colliding with an obstacle) and low if the final state is desirable (e.g. reaching a goal).
 
-The optimal control problem is to find the sequence of control inputs $u_0, u_1, \ldots, u_{T-1}$ that minimizes the total cost of the trajectory:
+
+<blockquote class="definition">
+
+The **optimal control problem** is to find the sequence of control inputs $u_0, u_1, \ldots, u_{T-1}$ that minimizes the total cost of the trajectory:
 $$
 \begin{equation} \label{eq:optimal_control_problem}
 \begin{aligned}
@@ -4872,6 +4875,8 @@ J^*(x_0) &= \min_{u_0, \ldots, u_{T-1}} J(x_0; u_0, \ldots, u_{T-1})
 \end{equation}
 $$
 where $J^*(x_0)$ is the optimal cost starting from state $x_0$. 
+
+</blockquote>
 
 If state space $\mathcal{X}$ and control space $\mathcal{U}$ are discrete, we can solve this problem with a shortest path algorithm such as Dijkstra's. 
 
@@ -4995,23 +5000,40 @@ We can now solve $\eqref{eq:optimal_control_problem}$ with a shortest path algor
 
 #### Dijkstra's Algorithm
 
-Let $Q$ denote the set of unvisited nodes. Initially, every node in the graph is placed in $Q$, and the set of visited nodes $S$ is empty. For each node $x$, let $\operatorname{dist}(x)$ denote the current best-known cost of a path from the source node $x_0$ to $x$. We initialize
-$$
-\operatorname{dist}\left(x_0\right)=0, \quad \operatorname{dist}(x)=\infty \quad \text { for all } x \neq x_0 .
-$$
-At each iteration, we select the unvisited node $v \in Q$ with the smallest tentative distance $\operatorname{dist}(v)$. This node is then marked as visited by moving it from $Q$ into $S$. Intuitively, once $v$ is selected, we have found the minimum-cost path from $x_0$ to $v$.
+<blockquote class="algorithm">
 
-Next, we examine every neighbor $u$ of $v$ that can be reached by a directed edge from $v$. For each such neighbor, we check whether going through $v$ gives a cheaper path to $u$. That is, if
-$$
-\operatorname{dist}(u)>\operatorname{dist}(v)+\operatorname{cost}(v, u),
-$$
-then we update
-$$
-\operatorname{dist}(u) \leftarrow \operatorname{dist}(v)+\operatorname{cost}(v, u) .
-$$
-This step is called relaxing the edge $(v, u)$. If the inequality does not hold, then the current value of $\operatorname{dist}(u)$ is already better, so no update is made.
+**Dijkstra's Algorithm**
 
-The algorithm continues until all nodes have been visited, or until the destination node has been removed from $Q$. At termination, $\operatorname{dist}(x)$ contains the cost of the shortest path from $x_0$ to $x$. In particular, the value at the terminal node gives the optimal cost.
+Let $Q$ be the set of unvisited nodes and $S$ the set of visited nodes. For each node $x$, define $\operatorname{dist}(x)$ to be the current tentative distance from the source node $x_0$ to $x$. The algorithm proceeds as follows:
+
+1. Initialize
+
+    $$
+    \operatorname{dist}(x_0) = 0, \quad \operatorname{dist}(x) = \infty \text{ for all } x \neq x_0,
+    $$
+    and set $Q$ to contain all nodes and $S$ to be empty.
+
+2. At each iteration, choose the unvisited node $v \in Q$ with minimum $\operatorname{dist}(v)$:
+
+    $$
+    v = \arg\min_{x \in Q} \operatorname{dist}(x).
+    $$
+    Remove $v$ from $Q$ and add it to $S$. $\operatorname{dist}(v)$ now represents the shortest path from $x_0$ to $v$.
+
+3. For every neighbor $u$ of $v$ reachable by a directed edge $(v, u)$, perform the relaxation step:
+
+    $$
+    \begin{aligned}
+    \text{if } \operatorname{dist}(u) > \operatorname{dist}(v) + \operatorname{cost}(v, u): \\
+    \operatorname{dist}(u) \leftarrow \operatorname{dist}(v) + \operatorname{cost}(v, u).
+    \end{aligned}
+    $$
+
+4. Continue this procedure until all nodes have been visited, or until the destination node has been removed from $Q$.
+
+</blockquote>
+
+At termination, $\operatorname{dist}(x)$ gives the shortest-path cost from $x_0$ to $x$ for each node $x$. In particular, the value at the terminal node yields the optimal cost.
 
 <details><summary>Example of Optimal Control Problem with Dijkstra's Algorithm</summary>
 
@@ -5306,6 +5328,10 @@ J^*_T(x_T), J^*_{T-1}(x_{T-1}), \ldots, J^*_0(x_0)
 $$
 starting from $J^*_T$ and proceeding backwards. Mathematically, this algorithm looks as follows:
 
+<blockquote class="algorithm">
+
+**Optimal Control Dynamic Programming**
+
 1. Initialize the terminal cost for all states $x \in \mathcal{X}$:
     $$
     J^*_T(x) = q_f(x)
@@ -5317,6 +5343,8 @@ starting from $J^*_T$ and proceeding backwards. Mathematically, this algorithm l
     \end{equation}
     $$
     for all $x \in \mathcal{X}$.
+
+</blockquote>
     
 After running this algorithm, we obtain the optimal cost-to-go $J^*_0(x)$ for each state $x \in \mathcal{X}$. Specifically, $J^*_0(x_0)$ gives us the optimal cost for our initial state. If we simply record the minimizer $u^*_k$ that satisfied the equation at each step $k$, we also recover the optimal control sequence $(u^*_0, u^*_1, \ldots, u^*_{T-1})$.
 
@@ -5530,6 +5558,10 @@ J^*_k(x) = \min_{u_k \in \mathcal{U}} Q^*_k(x, u_k).
 $$
 The optimal Q-factor represents the total cost of applying control $u$ in state $x$ at time step $k$, and then following the optimal policy for the remaining time steps. Dynamic Programming written in terms of the Q-factor is as follows:
 
+<blockquote class="algorithm">
+
+**Optimal Control Dynamic Programming with Q-Factors**
+
 1. Initialize the terminal cost for all states $x \in \mathcal{X}$ and all controls $u \in \mathcal{U}$ (the terminal Q-factor is independent of $u$, since any control taken at the terminal step incurs the same cost $q_f(x)$):
     $$
     Q^*_T(x, u) = q_f(x)
@@ -5541,6 +5573,8 @@ The optimal Q-factor represents the total cost of applying control $u$ in state 
     \end{equation}
     $$
     for all $x \in \mathcal{X}$ and $u \in \mathcal{U}$.
+
+</blockquote>
 
 
 <details><summary>Example of Q-Factor Dynamic Programming</summary>
@@ -5603,6 +5637,447 @@ for k in range(T):
 path.append('t')
 
 print(f"Optimal Path: {path}")
+```
+
+</details>
+
+### Stochastic Dynamic Programming
+
+Instead of having deterministic dynamics $\eqref{eq:optimal_control_dynamics}$, we can model a dynamical system with stochastic dynamics as follows:
+$$
+\begin{equation} \label{eq:stochastic_dynamics}
+x_{k+1} = f_k\left(x_k, u_k \right) + \epsilon_k
+\end{equation}
+$$
+We assume $\epsilon_k$ is a random variable drawn from some known distribution. In this case, a sequence of control signals $(u_0, \ldots u_{T-1})$ will lead to different trajectories $(x_0; x_1, \dots, x_T)$ depending on realizations of $\epsilon_k$. Therefore, we modify $\eqref{eq:optimal_control_problem}$ to minimize the expected value of the cost over all possible state-trajectories
+$$
+\begin{equation} \label{eq:optimal_control_problem_stochastic_initial}
+J(x_0; u_0, \ldots, u_{T-1}) = \mathbb{E}_{\epsilon} \left[ q_f(x_T) + \sum_{k=0}^{T-1} q_k(x_k, u_k) \right]
+\end{equation}
+$$
+However, as the robot starts executing its trajectory, the realizations of noise might cause it to deviate far from the expected trajectory. Therefore, instead of computing a single optimal control sequence at the beginning, we can use **feedback control**. Formally, instead of seeking an optimal control sequence $u^*$, we find a function that maps state to action:
+$$
+\begin{equation}
+u_k(x): \mathcal{X} \to \mathcal{U}
+\end{equation}
+$$
+Now, the robot can observe its current state at each time step and apply the appropriate control action according to this function. We will denote the space of all feedback controls $u_k(\cdot)$ that depend on the state as:
+$$
+u_k(\cdot) \in \mathcal{U}(\mathcal{X})
+$$ 
+
+We define a **control policy** as a sequence of feedback control functions:
+$$
+\begin{equation} \label{eq:control_policy}
+\pi = \left( u_0(\cdot), u_1(\cdot), \ldots, u_{T-1}(\cdot) \right).
+\end{equation}
+$$
+And now, we define the stochastic optimal control problem.
+
+<blockquote class="definition">
+
+The **stochastic optimal control problem** is to find the sequence of feedback controls $(u_0(\cdot), u_1(\cdot), \ldots, u_{T-1}(\cdot))$ that minimizes:
+$$
+\begin{equation} \label{eq:optimal_control_problem_stochastic}
+\begin{aligned}
+J(x_0; u_0(\cdot), \ldots, u_{T-1}(\cdot)) &= \mathbb{E}_{\epsilon} \left[ q_f(x_T) + \sum_{k=0}^{T-1} q_k\left(x_k, u_k(x_k)\right) \right] \\
+J^*(x_0) &= \min_{u_k(\cdot) \in \mathcal{U}(\mathcal{X})} J(x_0; u_0(\cdot), \ldots, u_{T-1}(\cdot))
+\end{aligned}
+\end{equation}
+$$
+where $J^*(x_0)$ is the optimal cost starting from state $x_0$. 
+
+</blockquote>
+
+Dijkstra's algorithm no longer work as the edges in the graph are no longer deterministic. However, we can still apply the principle of dynamic programming to solve this problem. 
+
+<blockquote class="algorithm">
+
+**Finite-Horizon Dynamic Programming for Stochastic Systems**
+
+1. Initialize the terminal cost for all states $x \in \mathcal{X}$:
+    $$
+    J^*_T(x) = q_f(x)
+    $$
+2. Iterate backwards for $k = T-1, \ldots, 0$, setting:
+    $$
+    \begin{equation} \label{eq:dp_recursion_stochastic}
+    J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(X)}\left\{q_k\left(x, u_k(x)\right)+\underset{\epsilon_k}{\mathbb{E}}\left[J_{k+1}^*\left(f_k\left(x, u_k(x)\right)+\epsilon_k\right)\right]\right\}
+    \end{equation}
+    $$
+    for all $x \in \mathcal{X}$.
+
+</blockquote>
+
+Alternatively, we can write $\eqref{eq:dp_recursion_stochastic}$ in the form of a transition matrix:
+$$
+\begin{equation} \label{eq:dp_recursion_stochastic_transition_matrix}
+J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(X)}\left\{q_k\left(x, u_k(x)\right)+{\mathbb{E}_{x' \sim \mathrm{P}\left(\cdot \mid x_k, u_k(x_k)\right)}}\left[J_{k+1}^*\left(x'  \right)\right]\right\}
+\end{equation}
+$$
+Therefore, each subproblem performs an additional expectation over the next state $x'$ compared to the deterministic case, which brings the total complexity to $\mathcal{O}( T |\mathcal{X}|^2 |\mathcal{U}| )$ since we need to compute the expected cost for each state-action pair by summing over all possible next states. 
+
+### Infinite-Horizon Problems
+
+In real-world problems, the time horizon $T$ is often not fixed and can be infinite. In this case, we assume at any time-step, the length of the trajectory remaining for the robot to traverse is infinite. We will assume that the system is time-invariant, meaning that the cost function and dynamics do not change over time:
+$$
+\begin{aligned}
+q(x, u) &= q_k(x, u) \quad \forall k \\
+f(x, u) &= f_k(x, u) \quad \forall k
+\end{aligned}
+$$
+If the system is stochastic, we also require the noise distribution to be time-invariant, meaning that the distribution of $\epsilon_k$ does not change with $k$. In this case, we can define the infinite-horizon optimal control problem as follows:
+
+<blockquote class="definition">
+
+The **infinite-horizon optimal control problem** is to find a control policy $\pi = \left( u_0(\cdot), u_1(\cdot), \ldots \right)$ that minimizes the expected discounted cost:
+$$
+\begin{equation} \label{eq:optimal_control_problem_infinite_horizon}
+\begin{aligned}
+J(x_0; \pi) &= \lim_{T \to \infty} \mathbb{E}_{\epsilon} \left[\sum_{k=0}^{T-1} \gamma^k q(x_k, u_k(x_k)) \right] \\
+J^*(x_0) &= \min_{\pi} J(x_0; \pi)
+\end{aligned}
+\end{equation}
+$$
+where $\gamma \in (0, 1)$ is a discount factor that ensures the infinite sum converges, and $J^*(x_0)$ is the optimal cost starting from state $x_0$.
+
+</blockquote>
+
+The discount factor $\gamma$ puts more emphasis on costs incurred earlier in the trajectory than later ones, and thereby encourages the length of the trajectory to be small. Note that we dropped the dependency on $k$ for $J(\cdot)$, since the system is time-invariant and the cost function does not change with time.
+
+#### Stochastic Shortest Path Problem
+
+A special case of the infinite-horizon optimal control problem is the **stochastic shortest path problem**, where we set $\gamma = 1$ and have a set of terminal states $\mathcal{X}_\mathrm{term} \subseteq \mathcal{X}$ such that once the robot reaches any state in $\mathcal{X}_\mathrm{term}$, it incurs zero cost for all future time steps. Formally, we have
+$$
+\begin{equation} \label{eq:stochastic_shortest_path_terminal_cost}
+q(x, u) = 0 \quad \forall x \in \mathcal{X}_\mathrm{term}, \forall u \in \mathcal{U}.
+\end{equation}
+$$
+One such example could be a grid-world example. Suppose we have a starting state and a known terminal state, we would like to solve for the optimal trajectory in an unknwon number of steps. 
+
+#### Value Iteration
+
+To solve for the optimal cost function $\eqref{eq:optimal_control_problem_infinite_horizon}$, we can use Value Iteration which is a dynamic programming algorithm that iteratively computes the optimal value function until it converges to the optimal value function $J^*(x)$.
+
+<blockquote class="algorithm">
+
+**Value Iteration**
+
+The algorithm proceeds iteratively to maintain a sequence of approximations $J^{(0)}(x), J^{(1)}(x), J^{(2)}(x), \dots$ to the optimal value function $J^*(x)$.
+
+1. Initialize the value function estimate for all states $x \in \mathcal{X}$:
+    $$
+    J^{(0)}(x) = 0
+    $$
+
+2. At each iteration $i = 0, 1, 2, \dots$, update the value function for all $x \in \mathcal{X}$ using the Bellman equation:
+    $$
+    \begin{equation} \label{eq:value_iteration_update}
+    J^{(i+1)}(x) = \min_{u \in \mathcal{U}} \left\{ q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(i)}(f(x, u) + \epsilon) \right] \right\}
+    \end{equation}
+    $$
+    Continue this process until the value function converges, meaning the maximum change across all states is below a small tolerance threshold $\delta$:
+    $$
+    \max_{x \in \mathcal{X}} \left| J^{(i+1)}(x) - J^{(i)}(x) \right| < \delta
+    $$
+    
+3. Once converged to the optimal value function $J^{(N)}(x) \approx J^*(x)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the action that minimizes the right-hand side:
+    $$
+    \begin{equation} \label{eq:optimal_policy_extraction}
+    u^*(x) = \arg\min_{u \in \mathcal{U}} \left\{ q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(N)}(f(x, u) + \epsilon) \right] \right\}
+    \end{equation}
+    $$
+    for all $x \in \mathcal{X}$.
+
+</blockquote>
+
+<details><summary>Q-Value Iteration</summary>
+
+Similar to the finite-horizon case, we can also write the infinite-horizon value iteration algorithm in terms of Q-factors.
+
+
+<blockquote class="algorithm">
+
+**Q-Value Iteration**
+
+The algorithm proceeds iteratively to maintain a sequence of approximations $Q^{(0)}(x, u), Q^{(1)}(x, u), Q^{(2)}(x, u), \dots$ to the optimal Q-factor $Q^*(x, u)$.
+
+1. Initialize the Q-factor estimate for all state-action pairs $x \in \mathcal{X}$ and $u \in \mathcal{U}$:
+$$
+Q^{(0)}(x, u) = 0
+$$
+At each iteration $i = 0, 1, 2, \dots$, update the Q-factors for all $x \in \mathcal{X}$ and $u \in \mathcal{U}$ using the Bellman equation:
+$$
+Q^{(i+1)}(x, u) = q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ \min_{u' \in \mathcal{U}} Q^{(i)}(f(x, u) + \epsilon, u') \right]
+$$
+Continue this process until the Q-factors converge, meaning the maximum change across all state-action pairs is below a small tolerance threshold $\delta$:
+$$
+\max_{x \in \mathcal{X}, u \in \mathcal{U}} \left| Q^{(i+1)}(x, u) - Q^{(i)}(x, u) \right| < \delta
+$$
+Once converged to the optimal Q-factor $Q^{(N)}(x, u) \approx Q^*(x, u)$, extract the optimal stationary policy $\pi^* = (u^*(\cdot), u^*(\cdot), \ldots)$ by choosing the action that minimizes the Q-factor for each state:
+$$
+u^*(x) = \arg\min_{u \in \mathcal{U}} Q^{(N)}(x, u)
+$$
+for all $x \in \mathcal{X}$.
+
+</blockquote>
+
+</details>
+
+
+<details><summary>Example of Value Iteration</summary>
+
+Suppose we are in a 3x4 grid world environment with the following states:
+$$
+\begin{matrix}
+x^{(0,0)} & x^{(0,1)} & x^{(0,2)} & x^{(0,3)} \\
+x^{(1,0)} & x^{(1,1)} & \textcolor{orange}{x^{(1,2)}} & x^{(1,3)} \\
+x^{(2,0)} & \textcolor{orange}{x^{(2,1)}} & x^{(2,2)} & \textcolor{green}{x^{(2,3)}} \\
+\end{matrix}
+$$
+and the goal state $x^{(2,3)}$ is at the bottom-right, and it is a terminal state that incurs zero cost for all future time steps. 
+$$
+q(x^{(2,3)}, u) = 0 \quad \forall u \in \mathcal{U}
+$$
+Suppose we have  mud states $x^{(1,2)}$ and $x^{(2,1)}$. Stepping into the mud costs $5$, and all other states have a cost of $1$ for any action. We also assume that we have deterministic dynamics, and we use a discount factor of $\gamma = 1$. 
+
+Following the Value Iteration algorithm, we set $J^{(0)}(x) = 0$ for all states:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{n}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=white]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[n] (00) at (0, 0) {0.0}; \node[n] (01) at (2.5, 0) {0.0}; \node[n] (02) at (5, 0) {0.0}; \node[n] (03) at (7.5, 0) {0.0};
+  % Row 1
+  \node[n] (10) at (0, -2.5) {0.0}; \node[n] (11) at (2.5, -2.5) {0.0}; \node[m] (12) at (5, -2.5) {0.0}; \node[n] (13) at (7.5, -2.5) {0.0};
+  % Row 2
+  \node[n] (20) at (0, -5) {0.0}; \node[m] (21) at (2.5, -5) {0.0}; \node[n] (22) at (5, -5) {0.0}; \node[g] (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+Since $J^{(0)}$ is $0$ everywhere, the second term in $\eqref{eq:value_iteration_update}$ drops out. For the first iteration, the value of a state is simply the cheapest immediate step you can take:
+$$
+J^{(1)}(x) = \min_{u \in \mathcal{U}} q(x, u)
+$$
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{n}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[n] (00) at (0, 0) {1.0}; \node[n] (01) at (2.5, 0) {1.0}; \node[n] (02) at (5, 0) {1.0}; \node[n] (03) at (7.5, 0) {1.0};
+  % Row 1
+  \node[n] (10) at (0, -2.5) {1.0}; \node[n] (11) at (2.5, -2.5) {1.0}; \node[m] (12) at (5, -2.5) {1.0}; \node[n] (13) at (7.5, -2.5) {1.0};
+  % Row 2
+  \node[n] (20) at (0, -5) {1.0}; \node[m] (21) at (2.5, -5) {1.0}; \node[n] (22) at (5, -5) {1.0}; \node[g] (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+We now follow $\eqref{eq:value_iteration_update}$ to compute $J^{(2)}$. For example, for state $x^{(2,2)}$, we have
+$$
+J^{(2)}(x^{(2,2)}) = \min \left\{
+\begin{aligned}
+q(x^{(2,2)}, \text{up}) + J^{(1)}(x^{(1,2)}) = 5 + 1 = 6 \\
+q(x^{(2,2)}, \text{left}) + J^{(1)}(x^{(2,1)}) = 5 + 1 = 6 \\
+q(x^{(2,2)}, \text{right}) + J^{(1)}(x^{(2,3)}) = 1 + 0 = 1 \\
+\end{aligned}
+\right\}
+$$
+Similarly, for state $x^{(1,1)}$, we have
+$$
+J^{(2)}(x^{(1,1)}) = \min \left\{
+\begin{aligned}
+q(x^{(1,1)}, \text{up}) + J^{(1,1)}(x^{(0,1)}) = 1 + 1 = 2 \\
+q(x^{(1,1)}, \text{down}) + J^{(1)}(x^{(2,1)}) = 5 + 1 = 6 \\
+q(x^{(1,1)}, \text{left}) + J^{(1)}(x^{(1,0)}) = 1 + 1 = 2 \\
+q(x^{(1,1)}, \text{right}) + J^{(1)}(x^{(1,2)}) = 5 + 1 = 6 \\
+\end{aligned}
+\right\}
+$$
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{c1}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{c2}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!20]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[c2] (00) at (0, 0) {2.0}; \node[c2] (01) at (2.5, 0) {2.0}; \node[c2] (02) at (5, 0) {2.0}; \node[c2] (03) at (7.5, 0) {2.0};
+  % Row 1
+  \node[c2] (10) at (0, -2.5) {2.0}; \node[c2] (11) at (2.5, -2.5) {2.0}; \node[m] (12) at (5, -2.5) {2.0}; \node[c1] (13) at (7.5, -2.5) {1.0};
+  % Row 2
+  \node[c2] (20) at (0, -5) {2.0}; \node[m] (21) at (2.5, -5) {2.0}; \node[c1] (22) at (5, -5) {1.0}; \node[g] (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+We can continue this process until convergence, and we will find that the optimal value function is as follows:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  % Define node styles with progressive shading for higher values
+  \tikzstyle{c1}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{c2}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!20]
+  \tikzstyle{c3}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!30]
+  \tikzstyle{c4}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!40]
+  \tikzstyle{c5}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!50]
+  \tikzstyle{c6}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!60]
+  \tikzstyle{c7}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!70]
+  
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[c5] (00) at (0, 0) {5.0}; 
+  \node[c4] (01) at (2.5, 0) {4.0}; 
+  \node[c3] (02) at (5, 0) {3.0}; 
+  \node[c2] (03) at (7.5, 0) {2.0};
+  
+  % Row 1
+  \node[c6] (10) at (0, -2.5) {6.0}; 
+  \node[c5] (11) at (2.5, -2.5) {5.0}; 
+  \node[m]  (12) at (5, -2.5) {2.0}; 
+  \node[c1] (13) at (7.5, -2.5) {1.0};
+  
+  % Row 2
+  \node[c7] (20) at (0, -5) {7.0}; 
+  \node[m]  (21) at (2.5, -5) {2.0}; 
+  \node[c1] (22) at (5, -5) {1.0}; 
+  \node[g]  (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { 
+      \draw[<->, gray!40] (\y0) -- (\y1); 
+      \draw[<->, gray!40] (\y1) -- (\y2); 
+      \draw[<->, gray!40] (\y2) -- (\y3); 
+  }
+  \foreach \x in {0, 1, 2, 3} { 
+      \draw[<->, gray!40] (0\x) -- (1\x); 
+      \draw[<->, gray!40] (1\x) -- (2\x); 
+  }
+\end{tikzpicture}
+\end{document}
+```
+
+The equivalent code to compute the optimal value function using Value Iteration is as follows:
+
+```execute-python
+R, C = 3, 4
+goal = (2, 3)
+mud = {(1, 2), (2, 1)}
+
+# Initialize grid with 0s
+J = [[0.0] * C for _ in range(R)]
+
+tolerance = 1e-5
+delta = float('inf')
+iteration = 0
+
+while delta > tolerance:
+    J_new = [[0.0] * C for _ in range(R)]
+    delta = 0.0 # Reset max change for this iteration
+    
+    for r in range(R):
+        for c in range(C):
+            if (r, c) == goal: 
+                continue # Goal stays 0
+            
+            # Find min( cost + J[next_state] ) across all 4 moves
+            min_val = float('inf')
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nr, nc = r + dr, c + dc
+                
+                # Stay in place if move hits a wall
+                if not (0 <= nr < R and 0 <= nc < C): 
+                    nr, nc = r, c 
+                
+                # Cost is 5 if stepping INTO mud, else 1
+                cost = 5.0 if (nr, nc) in mud else 1.0
+                min_val = min(min_val, cost + J[nr][nc])
+                
+            J_new[r][c] = min_val
+            
+            # Track the maximum change across the entire grid
+            state_delta = abs(J_new[r][c] - J[r][c])
+            delta = max(delta, state_delta)
+            
+    J = J_new # Update grid
+    iteration += 1
+    
+    print(f"\n--- Iteration {iteration} (Max Delta: {delta:.1f}) ---")
+    for row in J: 
+        print([round(val, 1) for val in row])
+
+print(f"\nConverged to optimal value function in {iteration} iterations!")
+```
+
+Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal action for each state. There may be multiple optimal actions for a state.
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  % Define node styles
+  \tikzstyle{n}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=white]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=green!10]
+
+  % Row 0 (Path routes along the top to avoid mud)
+  \node[n] (00) at (0, 0) {$\rightarrow$}; 
+  \node[n] (01) at (2.5, 0) {$\rightarrow$}; 
+  \node[n] (02) at (5, 0) {$\rightarrow$}; 
+  \node[n] (03) at (7.5, 0) {$\downarrow$};
+  
+  % Row 1
+  % State (1,0) has two optimal actions: Up and Right
+  \node[n] (10) at (0, -2.5) {$\uparrow \ \rightarrow$}; 
+  \node[n] (11) at (2.5, -2.5) {$\uparrow$}; 
+  % State (1,2) has two optimal actions: Right and Down
+  \node[m] (12) at (5, -2.5) {$\rightarrow \ \downarrow$}; 
+  \node[n] (13) at (7.5, -2.5) {$\downarrow$};
+  
+  % Row 2
+  % State (2,0) has two optimal actions: Up and Right
+  \node[n] (20) at (0, -5) {$\uparrow \ \rightarrow$}; 
+  \node[m] (21) at (2.5, -5) {$\rightarrow$}; 
+  \node[n] (22) at (5, -5) {$\rightarrow$}; 
+  \node[g] (23) at (7.5, -5) {$\star$}; % Goal state is terminal
+
+  % Edges connecting the grid
+  \foreach \y in {0, 1, 2} { 
+      \draw[<->, gray!40] (\y0) -- (\y1); 
+      \draw[<->, gray!40] (\y1) -- (\y2); 
+      \draw[<->, gray!40] (\y2) -- (\y3); 
+  }
+  \foreach \x in {0, 1, 2, 3} { 
+      \draw[<->, gray!40] (0\x) -- (1\x); 
+      \draw[<->, gray!40] (1\x) -- (2\x); 
+  }
+\end{tikzpicture}
+\end{document}
 ```
 
 </details>
