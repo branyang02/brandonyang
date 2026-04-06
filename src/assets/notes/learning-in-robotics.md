@@ -5900,7 +5900,7 @@ q(x^{(2,2)}, \text{up}) + J^{(1)}(x^{(1,2)}) = 5 + 1 = 6 \\
 q(x^{(2,2)}, \text{left}) + J^{(1)}(x^{(2,1)}) = 5 + 1 = 6 \\
 q(x^{(2,2)}, \text{right}) + J^{(1)}(x^{(2,3)}) = 1 + 0 = 1 \\
 \end{aligned}
-\right\}
+\right\} = 1
 $$
 Similarly, for state $x^{(1,1)}$, we have
 $$
@@ -5911,7 +5911,7 @@ q(x^{(1,1)}, \text{down}) + J^{(1)}(x^{(2,1)}) = 5 + 1 = 6 \\
 q(x^{(1,1)}, \text{left}) + J^{(1)}(x^{(1,0)}) = 1 + 1 = 2 \\
 q(x^{(1,1)}, \text{right}) + J^{(1)}(x^{(1,2)}) = 5 + 1 = 6 \\
 \end{aligned}
-\right\}
+\right\} = 2
 $$
 
 ```tikz
