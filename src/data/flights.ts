@@ -163,4 +163,8 @@ export const flights = [
   { from: "PHL", to: "SFO", date: "2026-01-29", airline: "AAL" },
   { from: "SFO", to: "PHL", date: "2026-02-01", airline: "AAL" },
   { from: "PHL", to: "SFO", date: "2026-03-05", airline: "AAL" },
+  { from: "PHL", to: "ORD", date: "2026-03-26", airline: "UAL" },
+  { from: "MDW", to: "PHL", date: "2026-03-29", airline: "WN" },
+  { from: "PHL", to: "LAS", date: "2026-04-03", airline: "AAL" },
+  { from: "LAS", to: "EWR", date: "2026-04-05", airline: "UAL" },
 ];
