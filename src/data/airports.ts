@@ -27,6 +27,8 @@ export const airports: Record<string, { lat: number; lng: number; name: string }
   NRT: { lat: 35.7647, lng: 140.3864, name: "Tokyo Narita" },
   IAD: { lat: 38.9531, lng: -77.4565, name: "Washington Dulles" },
   ORD: { lat: 41.9742, lng: -87.9073, name: "Chicago" },
+  MDW: { lat: 41.7868, lng: -87.7522, name: "Chicago Midway" },
+  LAS: { lat: 36.084, lng: -115.1537, name: "Las Vegas" },
   EWR: { lat: 40.6895, lng: -74.1745, name: "Newark" },
   AMS: { lat: 52.3105, lng: 4.7683, name: "Amsterdam" },
   BCN: { lat: 41.2974, lng: 2.0833, name: "Barcelona" },
