@@ -5759,7 +5759,7 @@ One such example could be a grid-world example. Suppose we have a starting state
 
 To solve for the optimal cost function $\eqref{eq:optimal_control_problem_infinite_horizon}$, we can use Value Iteration which is a dynamic programming algorithm that iteratively computes the optimal value function until it converges to the optimal value function $J^*(x)$.
 
-<blockquote class="algorithm">
+<blockquote class="algorithm" id="def:value-iteration">
 
 **Value Iteration**
 
@@ -5796,7 +5796,7 @@ The algorithm proceeds iteratively to maintain a sequence of approximations $J^{
 Similar to the finite-horizon case, we can also write the infinite-horizon value iteration algorithm in terms of Q-factors.
 
 
-<blockquote class="algorithm">
+<blockquote class="algorithm" id="def:q-value-iteration">
 
 **Q-Value Iteration**
 
@@ -5843,7 +5843,7 @@ q(x^{(2,3)}, u) = 0 \quad \forall u \in \mathcal{U}
 $$
 Suppose we have mud states $x^{(1,2)}$ and $x^{(2,1)}$. Stepping into the mud costs $5$, and all other states have a cost of $1$ for any control. We also assume that we have deterministic dynamics, and we use a discount factor of $\gamma = 1$. 
 
-Following the Value Iteration algorithm, we set $J^{(0)}(x) = 0$ for all states:
+Following [Value Iteration](#bqref-def:value-iteration), we set $J^{(0)}(x) = 0$ for all states:
 
 ```tikz
 \begin{document}
