@@ -5105,7 +5105,7 @@ The dynamics function $f$ is defined by the transitions between states, and the 
 $$
 x_0 = x^{(0,0)}, \quad x_T = x^{(1,2)}.
 $$
-We set the terminal cost function $q_f\left(x_T^{(1,2)}\right) = 0$ for reaching the goal and $q_f(x) = \infty$ for all other states to ensure that only paths that end at the goal are considered valid.
+We set the terminal cost function $q_f\left(x_T^{(1,2)}\right) = 0$ for reaching the goal and $q_f(x_T^{(i, j)}) = \infty$ for all other states to ensure that only paths that end at the goal are considered valid.
 
 We can model this as a shortest path problem in a DAG:
 
@@ -5793,7 +5793,7 @@ The algorithm proceeds iteratively to maintain a sequence of approximations $J^{
 
 <details><summary>Q-Value Iteration</summary>
 
-Similar to the finite-horizon case, we can also write the infinite-horizon value iteration algorithm in terms of Q-factors.
+Similar to the finite-horizon case, we can also write the infinite-horizon value iteration algorithm in terms of Q-factors $\eqref{eq:q_factor_definition}$, which is known as Q-value iteration.
 
 
 <blockquote class="algorithm" id="def:q-value-iteration">
