@@ -6125,7 +6125,7 @@ that converges to the optimal policy $\pi^*$.
 
 1. Initialize stationary policy $u^{(0)}(\cdot)$ arbitrarily for all states $x \in \mathcal{X}$. At each iteration $k = 0, 1, 2, \ldots$, We perform policy evaluation and policy improvement.
 2. **Policy Evaluation**: 
-    Intialize $J^{(i)}(x) = 0$ for all states $x \in \mathcal{X}$. For each iteration $i = 1, 2, \ldots$, update the cost-to-go function for all states $x \in \mathcal{X}$ using the Bellman equation:
+    Initialize $J^{(i)}(x) = 0$ for all states $x \in \mathcal{X}$. For each iteration $i = 1, 2, \ldots$, update the cost-to-go function for all states $x \in \mathcal{X}$ using the Bellman equation:
     $$
     \begin{equation} \label{eq:policy_evaluation_update}
     J^{(i + 1)}(x) = q(x, u^{(k)}(x)) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(i)}(f(x, u^{(k)}(x)) + \epsilon) \right]
