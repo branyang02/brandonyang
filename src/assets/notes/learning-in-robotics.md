@@ -5712,7 +5712,7 @@ Dijkstra's algorithm no longer works as the edges in the graph are no longer det
 Alternatively, we can write $\eqref{eq:dp_recursion_stochastic}$ in the form of a transition matrix:
 $$
 \begin{equation} \label{eq:dp_recursion_stochastic_transition_matrix}
-J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(\mathcal{X})}\left\{q_k\left(x, u_k(x)\right)+{\mathbb{E}_{x' \sim \mathrm{P}\left(\cdot \mid x_k, u_k(x_k)\right)}}\left[J_{k+1}^*\left(x'  \right)\right]\right\}
+J_k^*(x)=\min_{u_k(\cdot) \in \mathcal{U}(\mathcal{X})}\left\{q_k\left(x, u_k(x)\right)+{\mathbb{E}_{x' \sim \mathrm{P}\left(\cdot \mid x, u_k(x)\right)}}\left[J_{k+1}^*\left(x'  \right)\right]\right\}
 \end{equation}
 $$
 Therefore, each subproblem performs an additional expectation over the next state $x'$ compared to the deterministic case, which brings the total complexity to $\mathcal{O}( T |\mathcal{X}|^2 |\mathcal{U}| )$ since we need to compute the expected cost for each state-control pair by summing over all possible next states. 
@@ -5744,6 +5744,11 @@ where $\gamma \in (0, 1)$ is a discount factor that ensures the infinite sum con
 </blockquote>
 
 The discount factor $\gamma$ puts more emphasis on costs incurred earlier in the trajectory than later ones, and thereby encourages the length of the trajectory to be small. Note that we dropped the dependency on $k$ for $J(\cdot)$, since the system is time-invariant and the cost function does not change with time.
+
+We typically restrict our search for the optimal policy to be **stationary**, meaning that the same feedback control function is applied at every time step:
+$$
+\pi = \left( u(\cdot), u(\cdot), \ldots \right).
+$$
 
 #### Stochastic Shortest Path Problem
 
@@ -5788,6 +5793,22 @@ The algorithm proceeds iteratively to maintain a sequence of approximations $J^{
     \end{equation}
     $$
     for all $x \in \mathcal{X}$.
+
+</blockquote>
+
+<blockquote class="note">
+
+In the case that the cost function depends on the random outcome of the next state:
+$$
+q(x, u, x'), \quad\text{where } x' = f(x, u) + \epsilon
+$$
+Then we move the cost term inside the expectation in $\eqref{eq:value_iteration_update}$ and $\eqref{eq:optimal_policy_extraction}$:
+$$
+\begin{aligned}
+J^{(i+1)}(x) &= \min_{u \in \mathcal{U}} \mathbb{E}_{x' \sim \mathrm{P}(\cdot|x, u)} \left[ q(x, u, x') + \gamma J^{(i)}(x') \right] \\
+u^*(x) &= \arg\min_{u \in \mathcal{U}} \mathbb{E}_{x' \sim \mathrm{P}(\cdot|x, u)} \left[ q(x, u, x') + \gamma J^{(N)}(x') \right]
+\end{aligned}
+$$
 
 </blockquote>
 
@@ -6083,6 +6104,369 @@ Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal con
 ```
 
 </details>
+
+Given any initial value function estimate $J^{(0)}(x)$, Value Iteration will converge to the optimal value function $J^*(x)$, and the optimal policy can be extracted from the optimal value function. 
+$$
+J^*(x) = \lim_{N \to \infty} J^{(N)}(x), \quad \forall x \in \mathcal{X}.
+$$
+Note that we can have multiple optimal policies that achieve the same optimal value function, because there may be multiple controls that minimize the right-hand side of $\eqref{eq:optimal_policy_extraction}$ for a given state.
+
+#### Policy Iteration
+
+Suppose we have a stationary policy $\pi = (u(\cdot), u(\cdot), \ldots)$, we can compute the cost-to-go function $J^\pi(x)$ for this policy. This is known as **policy evaluation**. We can then improve this policy by choosing the controls that minimize the right-hand side of the Bellman equation using $J^\pi(x)$, which is known as **policy improvement**. We can repeat this process until convergence, which is known as **policy iteration**.
+
+<blockquote class="algorithm" id="def:policy-iteration">
+
+The algorithm proceeds iteratively to maintain a sequence of policies
+$$
+\pi^{(k)} = \left(u^{(k)}(\cdot), u^{(k)}(\cdot), \ldots \right)
+$$
+that converges to the optimal policy $\pi^*$.
+
+1. Initialize stationary policy $u^{(0)}(\cdot)$ arbitrarily for all states $x \in \mathcal{X}$. At each iteration $k = 0, 1, 2, \ldots$, We perform policy evaluation and policy improvement.
+2. **Policy Evaluation**: 
+    Intialize $J^{(i)}(x) = 0$ for all states $x \in \mathcal{X}$. For each iteration $i = 1, 2, \ldots$, update the cost-to-go function for all states $x \in \mathcal{X}$ using the Bellman equation:
+    $$
+    \begin{equation} \label{eq:policy_evaluation_update}
+    J^{(i + 1)}(x) = q(x, u^{(k)}(x)) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(i)}(f(x, u^{(k)}(x)) + \epsilon) \right]
+    \end{equation}
+    $$
+    Continue this process until the cost-to-go function converges, meaning the maximum change across all states is below a small tolerance threshold $\delta$:
+    $$
+    \max_{x \in \mathcal{X}} \left| J^{(i + 1)}(x) - J^{(i)}(x) \right| < \delta
+    $$
+    After convergence, denote the final evaluated cost-to-go function as
+    $$
+    J^{\pi^{(k)}}(x) \approx J^{(N)}(x),
+    $$
+    where $N$ is the number of policy-evaluation iterations.
+3. **Policy Improvement**: Update the policy for all states $x \in \mathcal{X}$ using the cost-to-go function $J^{\pi^{(k)}}$:
+    $$
+    \begin{equation} \label{eq:policy_improvement_update}
+    u^{(k + 1)}(x) = \arg\min_{u \in \mathcal{U}} \left\{ q(x, u) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{\pi^{(k)}}(f(x, u) + \epsilon) \right] \right\}
+    \end{equation}
+    $$
+    for all $x \in \mathcal{X}$, and then we compute the new stationary policy
+    $$
+    \pi^{(k + 1)} = \left(u^{(k + 1)}(\cdot), u^{(k + 1)}(\cdot), \ldots \right).
+    $$
+4. Continue this process until the policy converges, meaning the controller does not change for any state:
+    $$
+    u^{(k + 1)}(x) = u^{(k)}(x) \quad \forall x \in \mathcal{X}.
+    $$
+
+</blockquote>
+
+<details><summary>Policy Evaluation as a Linear System of Equations</summary>
+
+In a finite-space setting, instead of solving the policy evaluation update $\eqref{eq:policy_evaluation_update}$ iteratively, we can also directly solve for the cost-to-go function $J^{\pi^{(k)}}$ by treating it as a linear system of equations.
+
+We can write the cost-to-go function for a given policy $\pi$ as a large vector:
+$$
+\mathbf{J}^\pi = \begin{bmatrix}J^\pi(x_1) \\ J^\pi(x_2) \\ \vdots \\ J^\pi(x_n)\end{bmatrix} \in \mathbb{R}^{n},
+$$
+where $n$ is the number of states in the state space $\mathcal{X}$. We create a similar vector for the run-time cost term:
+$$
+\mathbf{q}^\pi = \begin{bmatrix}q(x_1, u(x_1)) \\ q(x_2, u(x_2)) \\ \vdots \\ q(x_n, u(x_n))\end{bmatrix} \in \mathbb{R}^{n}.
+$$
+We also define a transition matrix $\mathbf{P}^\pi \in \mathbb{R}^{n \times n}$, where the entry at the $i$-th row and $j$-th column is defined as
+$$
+\mathbf{P}^\pi_{ij} = \mathrm{P}(x_j \mid x_i, u(x_i)),
+$$
+which is the probability of transitioning to state $x_j$ given that we are in state $x_i$ and take the control specified by policy $\pi$. With these definitions, we can rewrite the policy evaluation update $\eqref{eq:policy_evaluation_update}$ as follows:
+$$
+\begin{align}
+\mathbf{J}^\pi &= \mathbf{q}^\pi + \gamma \mathbf{P}^\pi \mathbf{J}^\pi \\
+\Rightarrow (\mathbf{I} - \gamma \mathbf{P}^\pi) \mathbf{J}^\pi &= \mathbf{q}^\pi \\
+\Rightarrow \mathbf{J}^\pi &= (\mathbf{I} - \gamma \mathbf{P}^\pi)^{-1} \mathbf{q}^\pi \label{eq:policy_evaluation_linear_system}
+\end{align}
+$$
+where $\mathbf{I}$ is the identity matrix. Therefore, we can directly compute the cost-to-go function for a given policy $\pi$ by solving this linear system of equations, which can be more efficient than performing iterative updates, especially when the state space is not too large.
+
+</details>
+
+Similar to value iteration, policy iteration will also converge to the optimal policy $\pi^*$, and the optimal value function can be obtained by evaluating the optimal policy.
+$$
+\pi^* = \lim_{k \to \infty} \pi^{(k)}, \quad J^*(x) = J^{\pi^*}(x), \quad \forall x \in \mathcal{X}.
+$$
+
+<details><summary>Policy Iteration Example</summary>
+
+Suppose we are in a 3x4 grid world environment with the following states:
+$$
+\begin{matrix}
+x^{(0,0)} & x^{(0,1)} & x^{(0,2)} & x^{(0,3)} \\
+x^{(1,0)} & x^{(1,1)} & \textcolor{orange}{x^{(1,2)}} & x^{(1,3)} \\
+x^{(2,0)} & \textcolor{orange}{x^{(2,1)}} & x^{(2,2)} & \textcolor{green}{x^{(2,3)}} \\
+\end{matrix}
+$$
+and the goal state $x^{(2,3)}$ is at the bottom-right, and it is a terminal state that incurs zero cost for all future time steps. 
+$$
+q(x^{(2,3)}, u) = 0 \quad \forall u \in \mathcal{U}
+$$
+Suppose we have mud states $x^{(1,2)}$ and $x^{(2,1)}$. Stepping into the mud costs $5$, and all other states have a cost of $1$ for any control. We also assume that we have deterministic dynamics. Unlike the value iteration example, we use a discount factor $\gamma = 0.9$.
+
+We begin Policy Iteration by choosing the arbitrary initial stationary policy $\pi^{(0)}$ of always moving Right ($\rightarrow$).
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{n}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=white]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=green!10]
+
+  % Row 0
+  \node[n] (00) at (0, 0) {$\rightarrow$}; \node[n] (01) at (2.5, 0) {$\rightarrow$}; \node[n] (02) at (5, 0) {$\rightarrow$}; \node[n] (03) at (7.5, 0) {$\rightarrow$};
+  % Row 1
+  \node[n] (10) at (0, -2.5) {$\rightarrow$}; \node[n] (11) at (2.5, -2.5) {$\rightarrow$}; \node[m] (12) at (5, -2.5) {$\rightarrow$}; \node[n] (13) at (7.5, -2.5) {$\rightarrow$};
+  % Row 2
+  \node[n] (20) at (0, -5) {$\rightarrow$}; \node[m] (21) at (2.5, -5) {$\rightarrow$}; \node[n] (22) at (5, -5) {$\rightarrow$}; \node[g] (23) at (7.5, -5) {$\star$}; 
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+**Policy Evaluation**: We initialize our estimate at step $i=1$ to zero everywhere: 
+$$
+J^{(1)}(x) = 0.0.
+$$
+Following the policy evaluation update $\eqref{eq:policy_evaluation_update}$, we can compute the cost-to-go function for this policy iteratively until convergence. At iteration $i=2$, we have
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{c1}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{c3}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!30]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[c1] (00) at (0, 0) {1.0}; 
+  \node[c1] (01) at (2.5, 0) {1.0}; 
+  \node[c1] (02) at (5, 0) {1.0}; 
+  \node[c1] (03) at (7.5, 0) {1.0};
+  
+  % Row 1
+  \node[c1] (10) at (0, -2.5) {1.0}; 
+  \node[c3] (11) at (2.5, -2.5) {5.0}; 
+  \node[m]  (12) at (5, -2.5) {1.0}; 
+  \node[c1] (13) at (7.5, -2.5) {1.0};
+  
+  % Row 2
+  \node[c3] (20) at (0, -5) {5.0}; 
+  \node[m]  (21) at (2.5, -5) {1.0}; 
+  \node[c1] (22) at (5, -5) {1.0}; 
+  \node[g]  (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+At iteration $i=3$, we have
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{c1}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{c3}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!30]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[c1] (00) at (0, 0) {1.9}; 
+  \node[c1] (01) at (2.5, 0) {1.9}; 
+  \node[c1] (02) at (5, 0) {1.9}; 
+  \node[c1] (03) at (7.5, 0) {1.9};
+  
+  % Row 1
+  \node[c3] (10) at (0, -2.5) {5.5}; 
+  \node[c3] (11) at (2.5, -2.5) {5.9}; 
+  \node[m]  (12) at (5, -2.5) {1.9}; 
+  \node[c1] (13) at (7.5, -2.5) {1.9};
+  
+  % Row 2
+  \node[c3] (20) at (0, -5) {5.9}; 
+  \node[m]  (21) at (2.5, -5) {1.9}; 
+  \node[c1] (22) at (5, -5) {1.0}; 
+  \node[g]  (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+At convergence, we have
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{c1}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!10]
+  \tikzstyle{c4}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!40]
+  \tikzstyle{c6}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!60]
+  \tikzstyle{c8}=[circle, draw, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=blue!80]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.2cm, inner sep=1pt, font=\small\bfseries, fill=green!10]
+
+  % Row 0
+  \node[c6] (00) at (0, 0) {10.0}; 
+  \node[c6] (01) at (2.5, 0) {10.0}; 
+  \node[c6] (02) at (5, 0) {10.0}; 
+  \node[c6] (03) at (7.5, 0) {10.0};
+  
+  % Row 1
+  \node[c8] (10) at (0, -2.5) {13.6}; 
+  \node[c8] (11) at (2.5, -2.5) {14.0}; 
+  \node[m]  (12) at (5, -2.5) {10.0}; 
+  \node[c6] (13) at (7.5, -2.5) {10.0};
+  
+  % Row 2
+  \node[c4] (20) at (0, -5) {6.71}; 
+  \node[m]  (21) at (2.5, -5) {1.9}; 
+  \node[c1] (22) at (5, -5) {1.0}; 
+  \node[g]  (23) at (7.5, -5) {0.0};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+**Policy Improvement**: Using the cost-to-go function $J^{\pi^{(0)}}$, we can update the policy improvement update $\eqref{eq:policy_improvement_update}$. For example, for state $x^{(2,2)}$, we have
+$$
+\begin{aligned}
+u^{(1)}(x^{(2,2)}) &= \arg\min_{u \in \mathcal{U}} \begin{cases}
+q(x^{(2,2)}, \text{up}) + \gamma J^{\pi^{(0)}}(x^{(1,2)}) = 5 + 0.9 \cdot 10 = 14 \\
+q(x^{(2,2)}, \text{down}) + \gamma J^{\pi^{(0)}}(x^{(2,3)}) = 1 + 0.9 \cdot 1 = 1.9 \\
+q(x^{(2,2)}, \text{left}) + \gamma J^{\pi^{(0)}}(x^{(2,1)}) = 5 + 0.9 \cdot 1.9 = 6.71 \\
+q(x^{(2,2)}, \text{right}) + \gamma J^{\pi^{(0)}}(x^{(2,3)}) = 1 + 0.9 \cdot 0 = 1
+\end{cases} \\
+&= \text{right}
+\end{aligned}
+$$
+We do this for all states, and get a new policy $\pi^{(1)}$. We can then perform this policy evaluation and policy improvement process again until convergence.
+
+```execute-python
+R, C = 3, 4
+goal = (2, 3)
+mud = {(1, 2), (2, 1)}
+gamma = 0.9
+tol = 1e-5
+
+actions = {
+    "U": (-1, 0),
+    "R": (0, 1),
+    "D": (1, 0),
+    "L": (0, -1),
+}
+
+
+def get_next_state_and_cost(r, c, action):
+    dr, dc = actions[action]
+    nr, nc = r + dr, c + dc
+
+    # If action hits wall, stay in same state
+    if not (0 <= nr < R and 0 <= nc < C):
+        nr, nc = r, c
+
+    # Cost depends on the cell you land in
+    cost = 5.0 if (nr, nc) in mud else 1.0
+    return nr, nc, cost
+
+
+def policy_evaluation(policy):
+    J = [[0.0 for _ in range(C)] for _ in range(R)]
+    iteration = 0
+
+    while True:
+        J_new = [[0.0 for _ in range(C)] for _ in range(R)]
+        delta = 0.0
+
+        for r in range(R):
+            for c in range(C):
+                if (r, c) == goal:
+                    continue
+
+                action = policy[r][c]
+                nr, nc, cost = get_next_state_and_cost(r, c, action)
+
+                J_new[r][c] = cost + gamma * J[nr][nc]
+                delta = max(delta, abs(J_new[r][c] - J[r][c]))
+
+        J = J_new
+        iteration += 1
+
+        if delta < tol:
+            return J
+
+
+def policy_improvement(J):
+    new_policy = [["" for _ in range(C)] for _ in range(R)]
+
+    for r in range(R):
+        for c in range(C):
+            if (r, c) == goal:
+                new_policy[r][c] = "G"
+                continue
+
+            best_action = None
+            best_value = float("inf")
+
+            for action in actions:
+                nr, nc, cost = get_next_state_and_cost(r, c, action)
+                value = cost + gamma * J[nr][nc]
+
+                if value < best_value:
+                    best_value = value
+                    best_action = action
+
+            new_policy[r][c] = best_action
+
+    return new_policy
+
+
+def main():
+    # Start with all-Right policy
+    policy = [["R" for _ in range(C)] for _ in range(R)]
+    policy[goal[0]][goal[1]] = "G"
+
+    policy_iteration = 0
+
+    while True:
+        cost_to_go = policy_evaluation(policy)
+        new_policy = policy_improvement(cost_to_go)
+        policy_iteration += 1
+
+        if new_policy == policy:
+            break
+
+        policy = new_policy
+
+    print(f"Policy iteration converged in {policy_iteration} iterations")
+
+    print("\nFinal cost-to-go J:")
+    for row in cost_to_go:
+        print([round(v, 2) for v in row])
+
+    print("\nFinal policy:")
+    for row in policy:
+        print(row)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+If we run value iteration using the same setup, we also arrive at the same optimal policy and optimal value function.
+
+</details>
+
 
 ## Reinforcement Learning
 
