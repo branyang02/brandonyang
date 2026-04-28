@@ -21,8 +21,7 @@ export const DarkModeProvider: React.FC<{ children: ReactNode }> = ({
     const [darkMode, setDarkMode] = useState<boolean>(() => {
         const savedMode = localStorage.getItem("darkMode");
         if (savedMode === null) {
-            const currentHour = new Date().getHours();
-            return currentHour >= 18 || currentHour < 6;
+            return false;
         }
         return savedMode === "true";
     });

@@ -6012,50 +6012,54 @@ The equivalent code to compute the optimal value function using Value Iteration 
 R, C = 3, 4
 goal = (2, 3)
 mud = {(1, 2), (2, 1)}
+gamma = 1.0
+tol = 1e-5
 
-# Initialize grid with 0s
+actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+
+def get_next_state_and_cost(r, c, action):
+    dr, dc = action
+    nr, nc = r + dr, c + dc
+
+    # If action hits wall, stay in same state
+    if not (0 <= nr < R and 0 <= nc < C):
+        nr, nc = r, c
+
+    # Cost depends on the cell you land in
+    cost = 5.0 if (nr, nc) in mud else 1.0
+    return nr, nc, cost
+
+
 J = [[0.0] * C for _ in range(R)]
-
-tolerance = 1e-5
-delta = float('inf')
+delta = float("inf")
 iteration = 0
 
-while delta > tolerance:
+while delta > tol:
     J_new = [[0.0] * C for _ in range(R)]
-    delta = 0.0 # Reset max change for this iteration
-    
+    delta = 0.0
+
     for r in range(R):
         for c in range(C):
-            if (r, c) == goal: 
-                continue # Goal stays 0
-            
-            # Find min( cost + J[next_state] ) across all 4 moves
-            min_val = float('inf')
-            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                nr, nc = r + dr, c + dc
-                
-                # Stay in place if move hits a wall
-                if not (0 <= nr < R and 0 <= nc < C): 
-                    nr, nc = r, c 
-                
-                # Cost is 5 if stepping INTO mud, else 1
-                cost = 5.0 if (nr, nc) in mud else 1.0
-                min_val = min(min_val, cost + J[nr][nc])
-                
-            J_new[r][c] = min_val
-            
-            # Track the maximum change across the entire grid
-            state_delta = abs(J_new[r][c] - J[r][c])
-            delta = max(delta, state_delta)
-            
-    J = J_new # Update grid
-    iteration += 1
-    
-    print(f"\n--- Iteration {iteration} (Max Delta: {delta:.1f}) ---")
-    for row in J: 
-        print([round(val, 1) for val in row])
+            if (r, c) == goal:
+                continue
 
-print(f"\nConverged to optimal value function in {iteration} iterations!")
+            best = float("inf")
+            for action in actions:
+                nr, nc, cost = get_next_state_and_cost(r, c, action)
+                best = min(best, cost + gamma * J[nr][nc])
+
+            J_new[r][c] = best
+            delta = max(delta, abs(J_new[r][c] - J[r][c]))
+
+    J = J_new
+    iteration += 1
+
+print(f"Value iteration converged in {iteration} iterations")
+
+print("\nOptimal cost-to-go J*:")
+for row in J:
+    print([round(v, 2) for v in row])
 ```
 
 Now, we follow $\eqref{eq:optimal_policy_extraction}$ to extract the optimal control for each state. There may be multiple optimal controls for a state.
@@ -6117,7 +6121,9 @@ Suppose we have a stationary policy $\pi = (u(\cdot), u(\cdot), \ldots)$, we can
 
 <blockquote class="algorithm" id="def:policy-iteration">
 
-The algorithm proceeds iteratively to maintain a sequence of policies
+**Policy Iteration**
+
+The algorithm proceeds iteratively to maintain a sequence of policies:
 $$
 \pi^{(k)} = \left(u^{(k)}(\cdot), u^{(k)}(\cdot), \ldots \right)
 $$
@@ -6125,7 +6131,7 @@ that converges to the optimal policy $\pi^*$.
 
 1. Initialize stationary policy $u^{(0)}(\cdot)$ arbitrarily for all states $x \in \mathcal{X}$. At each iteration $k = 0, 1, 2, \ldots$, We perform policy evaluation and policy improvement.
 2. **Policy Evaluation**: 
-    Initialize $J^{(i)}(x) = 0$ for all states $x \in \mathcal{X}$. For each iteration $i = 1, 2, \ldots$, update the cost-to-go function for all states $x \in \mathcal{X}$ using the Bellman equation:
+    Initialize $J^{(0)}(x) = 0$ for all states $x \in \mathcal{X}$. For each iteration $i = 0, 1, 2, \ldots$, update the cost-to-go function for all states $x \in \mathcal{X}$ using the Bellman equation:
     $$
     \begin{equation} \label{eq:policy_evaluation_update}
     J^{(i + 1)}(x) = q(x, u^{(k)}(x)) + \gamma \underset{\epsilon}{\mathbb{E}} \left[ J^{(i)}(f(x, u^{(k)}(x)) + \epsilon) \right]
@@ -6185,10 +6191,30 @@ where $\mathbf{I}$ is the identity matrix. Therefore, we can directly compute th
 
 </details>
 
+
+
 Similar to value iteration, policy iteration will also converge to the optimal policy $\pi^*$, and the optimal value function can be obtained by evaluating the optimal policy.
 $$
 \pi^* = \lim_{k \to \infty} \pi^{(k)}, \quad J^*(x) = J^{\pi^*}(x), \quad \forall x \in \mathcal{X}.
 $$
+
+<details><summary>Why Policy Improvement Always Improves the Policy</summary>
+
+We claim that each round of policy improvement is monotone: for all $x \in \mathcal{X}$,
+$$
+J^{\pi^{(k+1)}}(x) \leq J^{\pi^{(k)}}(x).
+$$
+By the policy improvement update $\eqref{eq:policy_improvement_update}$, $u^{(k+1)}(x)$ is the $\arg\min$ of $q(x, u) + \gamma\, \mathbb{E}_\epsilon[J^{\pi^{(k)}}(f(x,u)+\epsilon)]$, so it does at least as well as the choice $u^{(k)}(x)$:
+$$
+q(x, u^{(k+1)}(x)) + \gamma\, \mathbb{E}_\epsilon\!\left[J^{\pi^{(k)}}(f(x, u^{(k+1)}(x)) + \epsilon)\right] \;\leq\; q(x, u^{(k)}(x)) + \gamma\, \mathbb{E}_\epsilon\!\left[J^{\pi^{(k)}}(f(x, u^{(k)}(x)) + \epsilon)\right] \;=\; J^{\pi^{(k)}}(x).
+$$
+The right-hand side equals $J^{\pi^{(k)}}(x)$ by the Bellman equation for the policy $\pi^{(k)}$. Unrolling the left-hand side by repeatedly applying $u^{(k+1)}$, every step of the expansion only decreases the bound further, and in the limit it equals $J^{\pi^{(k+1)}}(x)$. Therefore $J^{\pi^{(k+1)}}(x) \leq J^{\pi^{(k)}}(x)$ for all $x$, giving the monotone chain
+$$
+\cdots \leq J^{\pi^{(2)}}(x) \leq J^{\pi^{(1)}}(x) \leq J^{\pi^{(0)}}(x).
+$$
+Since the cost-to-go is bounded below by $J^*$, this monotone sequence converges, and the fixed point of the improvement step satisfies the Bellman optimality equation, so $\pi^{(k)} \to \pi^*$.
+
+</details>
 
 <details><summary>Policy Iteration Example</summary>
 
@@ -6229,11 +6255,11 @@ We begin Policy Iteration by choosing the arbitrary initial stationary policy $\
 \end{document}
 ```
 
-**Policy Evaluation**: We initialize our estimate at step $i=1$ to zero everywhere: 
+**Policy Evaluation**: We initialize our estimate at step $i=0$ to zero everywhere: 
 $$
-J^{(1)}(x) = 0.0.
+J^{(0)}(x) = 0.0.
 $$
-Following the policy evaluation update $\eqref{eq:policy_evaluation_update}$, we can compute the cost-to-go function for this policy iteratively until convergence. At iteration $i=2$, we have
+Following the policy evaluation update $\eqref{eq:policy_evaluation_update}$, we can compute the cost-to-go function for this policy iteratively until convergence. At iteration $i=1$, we have
 
 ```tikz
 \begin{document}
@@ -6268,7 +6294,7 @@ Following the policy evaluation update $\eqref{eq:policy_evaluation_update}$, we
 \end{document}
 ```
 
-At iteration $i=3$, we have
+At iteration $i=2$, we have
 
 ```tikz
 \begin{document}
@@ -6350,7 +6376,30 @@ q(x^{(2,2)}, \text{right}) + \gamma J^{\pi^{(0)}}(x^{(2,3)}) = 1 + 0.9 \cdot 0 =
 &= \text{right}
 \end{aligned}
 $$
-We do this for all states, and get a new policy $\pi^{(1)}$. We can then perform this policy evaluation and policy improvement process again until convergence.
+We do this for all states, and get a new policy $\pi^{(1)}$:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{n}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=white]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=orange!20]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.4cm, inner sep=1pt, font=\Large\bfseries, fill=green!10]
+
+  % Row 0
+  \node[n] (00) at (0, 0) {$\uparrow$}; \node[n] (01) at (2.5, 0) {$\uparrow$}; \node[n] (02) at (5, 0) {$\uparrow$}; \node[n] (03) at (7.5, 0) {$\uparrow$};
+  % Row 1
+  \node[n] (10) at (0, -2.5) {$\downarrow$}; \node[n] (11) at (2.5, -2.5) {$\downarrow$}; \node[m] (12) at (5, -2.5) {$\downarrow$}; \node[n] (13) at (7.5, -2.5) {$\downarrow$};
+  % Row 2
+  \node[n] (20) at (0, -5) {$\rightarrow$}; \node[m] (21) at (2.5, -5) {$\rightarrow$}; \node[n] (22) at (5, -5) {$\rightarrow$}; \node[g] (23) at (7.5, -5) {$\star$};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+Note that in row $0$, all four controls (up, right, left, and staying due to the wall) yield the same value $1 + 0.9 \cdot 10 = 10$, since $J^{\pi^{(0)}}$ is uniform across that row; the $\arg\min$ resolves these ties by picking up ($\uparrow$) first. We can then perform this policy evaluation and policy improvement process again until convergence.
 
 ```execute-python
 R, C = 3, 4
@@ -6382,7 +6431,6 @@ def get_next_state_and_cost(r, c, action):
 
 def policy_evaluation(policy):
     J = [[0.0 for _ in range(C)] for _ in range(R)]
-    iteration = 0
 
     while True:
         J_new = [[0.0 for _ in range(C)] for _ in range(R)]
@@ -6393,14 +6441,11 @@ def policy_evaluation(policy):
                 if (r, c) == goal:
                     continue
 
-                action = policy[r][c]
-                nr, nc, cost = get_next_state_and_cost(r, c, action)
-
+                nr, nc, cost = get_next_state_and_cost(r, c, policy[r][c])
                 J_new[r][c] = cost + gamma * J[nr][nc]
                 delta = max(delta, abs(J_new[r][c] - J[r][c]))
 
         J = J_new
-        iteration += 1
 
         if delta < tol:
             return J
@@ -6416,14 +6461,14 @@ def policy_improvement(J):
                 continue
 
             best_action = None
-            best_value = float("inf")
+            best = float("inf")
 
             for action in actions:
                 nr, nc, cost = get_next_state_and_cost(r, c, action)
                 value = cost + gamma * J[nr][nc]
 
-                if value < best_value:
-                    best_value = value
+                if value < best:
+                    best = value
                     best_action = action
 
             new_policy[r][c] = best_action
@@ -6431,39 +6476,131 @@ def policy_improvement(J):
     return new_policy
 
 
-def main():
-    # Start with all-Right policy
-    policy = [["R" for _ in range(C)] for _ in range(R)]
-    policy[goal[0]][goal[1]] = "G"
+# Start with all-Right policy
+policy = [["R" for _ in range(C)] for _ in range(R)]
+policy[goal[0]][goal[1]] = "G"
 
-    policy_iteration = 0
+iteration = 0
+while True:
+    cost_to_go = policy_evaluation(policy)
+    new_policy = policy_improvement(cost_to_go)
+    iteration += 1
 
-    while True:
-        cost_to_go = policy_evaluation(policy)
-        new_policy = policy_improvement(cost_to_go)
-        policy_iteration += 1
+    if new_policy == policy:
+        break
 
-        if new_policy == policy:
-            break
+    policy = new_policy
 
-        policy = new_policy
+print(f"Policy iteration converged in {iteration} iterations")
 
-    print(f"Policy iteration converged in {policy_iteration} iterations")
+print("\nOptimal cost-to-go J*:")
+for row in cost_to_go:
+    print([round(v, 2) for v in row])
 
-    print("\nFinal cost-to-go J:")
-    for row in cost_to_go:
-        print([round(v, 2) for v in row])
-
-    print("\nFinal policy:")
-    for row in policy:
-        print(row)
-
-
-if __name__ == "__main__":
-    main()
+print("\nOptimal policy pi*:")
+for row in policy:
+    print(row)
 ```
 
-If we run value iteration using the same setup, we also arrive at the same optimal policy and optimal value function.
+The final optimal policy $\pi^*$ and optimal cost-to-go $J^*$ are visualized below:
+
+```tikz
+\begin{document}
+\begin{tikzpicture}[>=stealth, auto, node distance=2.5cm, thick]
+  \tikzstyle{c1}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\small\bfseries, fill=blue!10, align=center]
+  \tikzstyle{c4}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\small\bfseries, fill=blue!40, align=center]
+  \tikzstyle{c6}=[circle, draw, minimum size=1.4cm, inner sep=1pt, font=\small\bfseries, fill=blue!60, align=center]
+  \tikzstyle{m}=[circle, draw, dashed, minimum size=1.4cm, inner sep=1pt, font=\small\bfseries, fill=orange!20, align=center]
+  \tikzstyle{g}=[circle, draw=green!60!black, very thick, minimum size=1.4cm, inner sep=1pt, font=\small\bfseries, fill=green!10, align=center]
+
+  % Row 0
+  \node[c4] (00) at (0, 0) {$\rightarrow$ \\ 4.10};
+  \node[c4] (01) at (2.5, 0) {$\rightarrow$ \\ 3.44};
+  \node[c1] (02) at (5, 0) {$\rightarrow$ \\ 2.71};
+  \node[c1] (03) at (7.5, 0) {$\downarrow$ \\ 1.90};
+
+  % Row 1
+  \node[c6] (10) at (0, -2.5) {$\uparrow$ \\ 4.69};
+  \node[c4] (11) at (2.5, -2.5) {$\uparrow$ \\ 4.10};
+  \node[m]  (12) at (5, -2.5) {$\rightarrow$ \\ 1.90};
+  \node[c1] (13) at (7.5, -2.5) {$\downarrow$ \\ 1.00};
+
+  % Row 2
+  \node[c6] (20) at (0, -5) {$\uparrow$ \\ 5.22};
+  \node[m]  (21) at (2.5, -5) {$\rightarrow$ \\ 1.90};
+  \node[c1] (22) at (5, -5) {$\rightarrow$ \\ 1.00};
+  \node[g]  (23) at (7.5, -5) {$\star$ \\ 0.00};
+
+  % Edges
+  \foreach \y in {0, 1, 2} { \draw[<->, gray!40] (\y0) -- (\y1); \draw[<->, gray!40] (\y1) -- (\y2); \draw[<->, gray!40] (\y2) -- (\y3); }
+  \foreach \x in {0, 1, 2, 3} { \draw[<->, gray!40] (0\x) -- (1\x); \draw[<->, gray!40] (1\x) -- (2\x); }
+\end{tikzpicture}
+\end{document}
+```
+
+If we run just value iteration using the same setup, we also arrive at the same optimal $J^*$ and $\pi^*$.
+
+<details><summary>Verifying with Value Iteration</summary>
+
+We can run [Value Iteration](#bqref-def:value-iteration) on the same grid world with discount factor $\gamma = 0.9$ and confirm that we get the same optimal cost-to-go $J^*$.
+
+```execute-python
+R, C = 3, 4
+goal = (2, 3)
+mud = {(1, 2), (2, 1)}
+gamma = 0.9
+tol = 1e-5
+
+actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+
+def get_next_state_and_cost(r, c, action):
+    dr, dc = action
+    nr, nc = r + dr, c + dc
+
+    # If action hits wall, stay in same state
+    if not (0 <= nr < R and 0 <= nc < C):
+        nr, nc = r, c
+
+    # Cost depends on the cell you land in
+    cost = 5.0 if (nr, nc) in mud else 1.0
+    return nr, nc, cost
+
+
+J = [[0.0] * C for _ in range(R)]
+delta = float("inf")
+iteration = 0
+
+while delta > tol:
+    J_new = [[0.0] * C for _ in range(R)]
+    delta = 0.0
+
+    for r in range(R):
+        for c in range(C):
+            if (r, c) == goal:
+                continue
+
+            best = float("inf")
+            for action in actions:
+                nr, nc, cost = get_next_state_and_cost(r, c, action)
+                best = min(best, cost + gamma * J[nr][nc])
+
+            J_new[r][c] = best
+            delta = max(delta, abs(J_new[r][c] - J[r][c]))
+
+    J = J_new
+    iteration += 1
+
+print(f"Value iteration converged in {iteration} iterations")
+
+print("\nOptimal cost-to-go J*:")
+for row in J:
+    print([round(v, 2) for v in row])
+```
+
+This matches the $J^*$ obtained from policy iteration above. We also see that policy iteration converges after 6 iterations, while value iteration converges after 8 iterations. This is consistent with the fact that policy iteration typically converges faster than value iteration, since it performs a full policy evaluation at each iteration, while value iteration only performs a single update.
+
+</details>
 
 </details>
 
