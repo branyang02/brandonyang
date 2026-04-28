@@ -5328,7 +5328,7 @@ J^*_T(x_T), J^*_{T-1}(x_{T-1}), \ldots, J^*_0(x_0)
 $$
 starting from $J^*_T$ and proceeding backwards. Mathematically, this algorithm looks as follows:
 
-<blockquote class="algorithm">
+<blockquote class="algorithm" id="def:dp_algorithm">
 
 **Optimal Control Dynamic Programming**
 
@@ -6601,6 +6601,339 @@ for row in J:
 This matches the $J^*$ obtained from policy iteration above. We also see that policy iteration converges after 6 iterations, while value iteration converges after 8 iterations. This is consistent with the fact that policy iteration typically converges faster than value iteration, since it performs a full policy evaluation at each iteration, while value iteration only performs a single update.
 
 </details>
+
+</details>
+
+## Linear Quadratic Regulator (LQR)
+
+### Discrete-time LQR
+
+A deterministic, linear dynamical system is given by
+$$
+\begin{equation} \label{eq:lqr-dynamics}
+x_{k + 1} = A x_k + B u_k,
+\end{equation}
+$$
+where $x_k \in \mathbb{R}^d$ and $u_k \in \mathbb{R}^m$ are the state and control at time step $k$, and $A \in \mathbb{R}^{d \times d}$ and $B \in \mathbb{R}^{d \times m}$ are the system dynamics matrices. We are interested in calculating a feedback control $u_k = u(x_k)$ for such a system, and we want to pick the control which leads to a trajectory that achieves a minimum of some cost function. We assume both run-time and terminal costs are _quadratic_ in the state and control input:
+$$
+\begin{equation} \label{eq:lqr-cost}
+q(x, u) = \frac{1}{2} x^\top Q x + \frac{1}{2} u^\top R u,
+\end{equation}
+$$
+where $Q \in \mathbb{R}^{d \times d}$ and $R \in \mathbb{R}^{m \times m}$ are symmetric, positive semi-definite matrices
+$$
+Q = Q^\top \succeq 0, \quad R = R^\top \succeq 0.
+$$
+We require $Q$ and $R$ to be positive semi-definite to ensure that the cost is non-negative for all states and controls. 
+
+<details><summary>Double Integrator Example</summary>
+
+Suppose we have $\ddot{z}(t) = u(t)$, which is a double integrator system. We can choose the state as:
+$$
+x(t) = \begin{bmatrix}
+z(t) \\ \dot{z}(t)
+\end{bmatrix},
+$$
+where $z(t)$ is the position and $\dot{z}(t)$ is the velocity, and we apply an acceleration control $u(t) = \ddot{z}(t)$. We can derive the dynamics of this system as follows:
+$$
+x_{k+1} = \begin{bmatrix}
+1 & \Delta t \\
+0 & 1
+\end{bmatrix} x_k + \begin{bmatrix}
+0 \\ \Delta t
+\end{bmatrix} u_k,
+$$
+which is equivalent to 
+$$
+\begin{aligned}
+z_{k+1} &= z_k + \Delta t \dot{z}_k \\
+\dot{z}_{k+1} &= \dot{z}_k + \Delta t u_k.
+\end{aligned}
+$$
+Our goal is to bring the object back to position zero, or 
+$$
+x \rightarrow 0 \implies z \rightarrow 0, \dot{z} \rightarrow 0.
+$$
+Suppose we have a controller
+$$
+u = -z - \dot{z},
+$$
+and initial conditions $z(0) = 1, \dot{z}(0) = 0$, we can simulate the system and see that the state converges to zero over time. 
+
+```execute-python
+def simulate(dt=0.01, tol=1e-3, max_iters=100000):
+    z = 1.0
+    zdot = 0.0
+
+    for k in range(max_iters):
+        u = -z - zdot
+
+        z_next = z + dt * zdot
+        zdot_next = zdot + dt * u
+
+        z = z_next
+        zdot = zdot_next
+
+        if abs(z) < tol and abs(zdot) < tol:
+            return k + 1, z, zdot
+
+    return max_iters, z, zdot
+
+
+iterations, z_final, zdot_final = simulate()
+
+print("Iterations:", iterations)
+print("Final z:", z_final)
+print("Final zdot:", zdot_final)
+```
+
+We can try a more aggressive controller:
+$$
+u = -5z - 5\dot{z},
+$$
+and we can see that the system converges to zero much faster.
+
+```execute-python
+def simulate(dt=0.01, tol=1e-3, max_iters=100000):
+    z = 1.0
+    zdot = 0.0
+
+    for k in range(max_iters):
+        u = -5.0 * z - 5.0 * zdot
+
+        z_next = z + dt * zdot
+        zdot_next = zdot + dt * u
+
+        z = z_next
+        zdot = zdot_next
+
+        if abs(z) < tol and abs(zdot) < tol:
+            return k + 1, z, zdot
+
+    return max_iters, z, zdot
+
+
+iterations, z_final, zdot_final = simulate()
+
+print("Iterations:", iterations)
+print("Final z:", z_final)
+print("Final zdot:", zdot_final)
+```
+
+However, the trade-off is that the control input $u$ is much larger in the second case, which may not be desirable in practice. This motivates us to consider a cost function that penalizes large control inputs, but still encourages the system to converge to zero. This is where the quadratic cost function comes in, as it allows us to balance the trade-off between state error and control effort.
+
+We modify the cost to:
+$$
+J = \sum_{k=0}^{T-1} \left(\left\|x_k \right\|^2 + \rho \left\|u_k \right\|^2 \right),
+$$
+where the first term $\left\|x_k \right\|^2$ penalizes the state from being large, and the second term $\rho \left\|u_k \right\|^2$ penalizes large control inputs, with $\rho > 0$ being a hyperparameter that controls the trade-off between these two objectives. This is the same as setting $Q = I$ and $R = \rho I$ in the quadratic cost function $\eqref{eq:lqr-cost}$.
+
+</details>
+
+We formulate the Linear-Quadratic-Regulator (LQR) problem which is simply dynamic programming for a linear dynamical system with quadratic runtime cost. 
+
+Suppose we have state $x \in \mathbb{R}^d$ and control $u \in \mathbb{R}^m$, and a terminal cost function
+$$
+\begin{equation} \label{eq:lqr-terminal-cost}
+q_f(x) = \frac{1}{2} x^\top Q_f x,
+\end{equation}
+$$
+where $Q_f \in \mathbb{R}^{d \times d}$ is a symmetric, positive semi-definite matrix. We define the LQR problem as follows:
+
+<blockquote class="definition">
+
+The **Finite Time-horizon LQR** problem is to find a sequence of control inputs
+$$
+\left(u_0, u_1, \ldots, u_{T-1} \right)
+$$
+such that the function 
+$$
+\begin{equation} \label{eq:lqr-objective}
+J(x_0; u_0, \ldots, u_{T-1}) = \frac{1}{2} x_T^\top Q_f x_T + \frac{1}{2} \sum_{k=0}^{T-1} \left(x_k^\top Q x_k + u_k^\top R u_k\right)
+\end{equation}
+$$
+is minimized under the constraint that $x_{k+1} = A x_k + B u_k$ for $k = 0, \ldots, T-1$, and given an initial state $x_0$.
+
+</blockquote>
+
+We can solve this problem using the Principle of Dynamic Programming [principle of dynamic programming](#bqref-def:dp_algorithm). We first set the terminal cost-to-go function at time $T$ and iterate backwards in time:
+$$
+J_T^*(x) = \frac{1}{2} x^\top Q_f x.
+$$
+Using the principle of dynamic programming, the cost-to-go $J_{T-1}$ is given by
+$$
+\begin{align}
+J_{T-1}^*(x_{T-1}) &= \min_u \left\{ \frac{1}{2} \left(x_{T-1}^\top Q x_{T-1} + u^\top R u\right) + J_T^*(A x_{T-1} + B u) \right\} \\
+&= \min_u \left\{ \frac{1}{2} \left(x_{T-1}^\top Q x_{T-1} + u^\top R u\right) + \frac{1}{2} (A x_{T-1} + B u)^\top Q_f (A x_{T-1} + B u) \right\} \label{eq:lqr-dp-backward}
+\end{align}
+$$
+We take derivative w.r.t. $u$ in $\eqref{eq:lqr-dp-backward}$ and set it to zero. We denote the function inside as 
+$$
+F(u)=\frac{1}{2} x^{\top} Q x+\frac{1}{2} u^{\top} R u+\frac{1}{2}(A x+B u)^{\top} Q_f(A x+B u).
+$$
+We are interested in computing $\nabla_u F(u)$. The first term drops out since it does not depend on $u$. For the second term, using the fact that $\frac{d}{dx} \left( x^\top A x \right) = (A + A^\top) x$, and the fact that $R$ is symmetric, we have
+$$
+\nabla_u \frac{1}{2} u^\top R u = \frac{1}{2} \left( R + R^\top \right) u = R u.
+$$
+For the third term, we use the vector chain rule to compute the gradient. Let $y = A x + B u$, we have
+$$
+\begin{aligned}
+\nabla_u \frac{1}{2} y^\top Q_f y &= \left(\frac{\partial y}{\partial u} \right)^\top \nabla_y \frac{1}{2} y^\top Q_f y  \\
+&= B^\top Q_f (A x + B u).
+\end{aligned}
+$$
+Putting everything together, we have
+$$
+\begin{aligned}
+0 &= Ru + B^\top Q_f (A x + B u) \\
+&= Ru + B^\top Q_f A x + B^\top Q_f B u \\
+&= \left(R + B^\top Q_f B \right) u + B^\top Q_f A x \\
+\implies u^*_{T-1} &= -\left(R + B^\top Q_f B \right)^{-1} B^\top Q_f A x_{T-1}.
+\end{aligned}
+$$
+We rewrite this with variable $K$:
+$$
+\begin{equation} \label{eq:lqr-optimal-control}
+\begin{aligned}
+u^*_{T-1} &= -K_{T-1} x_{T-1}, \\
+\text{where } K_{T-1} &= \left(R + B^\top Q_f B \right)^{-1} B^\top Q_f A.
+\end{aligned}
+\end{equation}
+$$
+We can now plug $\eqref{eq:lqr-optimal-control}$ back into $\eqref{eq:lqr-dp-backward}$ to get the optimal cost-to-go at time $T-1$:
+$$
+\begin{align}
+J_{T-1}^*(x_{T-1})  &= \frac{1}{2} \left(x_{T-1}^\top Q x_{T-1} + u^{*\top}_{T-1} R u^*_{T-1}\right) + \frac{1}{2} (A x_{T-1} + B u^*_{T-1})^\top Q_f (A x_{T-1} + B u^*_{T-1}) \\
+&= \frac{1}{2}  x_{T-1}^\top \cdot \left\{Q + K_{T-1}^\top R K_{T-1} + (A - B K_{T-1})^\top Q_f (A - B K_{T-1}) \right\} \cdot x_{T-1} \\
+&= \frac{1}{2} x_{T-1}^\top P_{T-1} x_{T-1}.
+\end{align}
+$$
+We defined $P$ to be the matrix inside the curly braces. We can then repeat this process iteratively to compute $J_{T-2}^*, J_{T-3}^*, \ldots, J_0^*$, and we can also compute the optimal control at each time step.
+
+<blockquote class="algorithm" id="def:lqr-dp-algorithm">
+
+**Discrete-time LQR Dynamic Programming Algorithm**
+
+Starting with $k = T-1$ and iterating backwards to $k = 0$, we compute the optimal cost-to-go and optimal control at each time step as follows:
+$$
+\begin{equation} \label{eq:lqr-dp-algorithm-formula}
+J_k^*(x) = \frac{1}{2} x^\top P_k x,
+\end{equation}
+$$
+where
+$$
+\begin{align}
+P_T &= Q_f \label{eq:lqr-dp-algorithm-terminal} \\
+K_k &= \left(R + B^\top P_{k+1} B \right)^{-1} B^\top P_{k+1} A \label{eq:lqr-dp-algorithm-control} \\
+P_k &= Q + K_k^\top R K_k + (A - B K_k)^\top P_{k+1} (A - B K_k) \label{eq:lqr-dp-algorithm-cost-to-go}
+\end{align}
+$$
+The optimal control at time step $k$ is given by
+$$
+\begin{equation} \label{eq:lqr-dp-algorithm-optimal-control}
+u_k^* = -K_k x_k.
+\end{equation}
+$$
+
+</blockquote>
+
+The two matrices $P_k$ and $K_k$ have clean intuitive meanings:
+
+- $P_k$ is the **cost-to-go matrix**. The optimal cost-to-go from any state $x$ at time $k$ is $J_k^*(x) = \frac{1}{2} x^\top P_k x$, so $P_k$ plays the role of the value function in the LQR setting. It is symmetric and positive semi-definite. The recursion runs *backwards* from $P_T = Q_f$, accumulating one stage's cost ($Q, R$) at each step, so $P_k$ generally grows as $k$ decreases (more remaining steps to pay for).
+
+- $K_k$ is the **optimal feedback gain**. The optimal control is the linear, time-varying policy $u_k^* = -K_k x_k$. Since $K_k$ is computed from $P_{k+1}$, it answers the question "given how costly the future is, how should I react to the current state?" At the very last step $K_{T-1}$ is myopic — it only weights what $u_{T-1}$ can directly affect within a single step. Earlier $K_k$'s blend the immediate dynamics with the accumulated future cost.
+
+For a *time-invariant* problem ($A, B, Q, R$ constant) with a sufficiently long horizon, both $P_k$ and $K_k$ approach fixed points as $k$ moves backwards in time. These fixed points are the solution of the *discrete-time algebraic Riccati equation* (DARE) and the corresponding steady-state feedback gain — the controller used in the *infinite-horizon* LQR problem. In a finite-horizon problem, the mid-range values of $P_k$ and $K_k$ are nearly constant, and only deviate near $k = T$ where the terminal cost $Q_f$ still dominates the recursion.
+
+<details><summary>Discrete-Time LQR Example</summary>
+
+We revisit the double integrator $\ddot{z} = u$ from the start of this section, but now solve for the *optimal* controller using LQR. With state $x = [z, \dot{z}]^\top$ and discretization step $\Delta t = 0.1$, the dynamics matrices are
+$$
+A = \begin{bmatrix} 1 & 0.1 \\ 0 & 1 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 0.1 \end{bmatrix}.
+$$
+We choose
+$$
+Q = I, \quad Q_f = I, \quad R = \rho, \quad T = 500, \quad x_0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix},
+$$
+where the scalar $\rho > 0$ is the control-effort weight: small $\rho$ produces an aggressive controller (cheap control), large $\rho$ produces a conservative one. Plugging these choices into the LQR objective $\eqref{eq:lqr-objective}$ gives the cost
+$$
+J(x_0; u_0, \ldots, u_{T-1}) = \frac{1}{2}\,\|x_T\|^2 + \frac{1}{2} \sum_{k=0}^{T-1} \left( \|x_k\|^2 + \rho\, u_k^2 \right),
+$$
+where $\|x_k\|^2 = z_k^2 + \dot{z}_k^2$ measures how far the state is from the origin and $\rho\, u_k^2$ penalizes how hard the controller pushes.
+
+**Backward pass.** We initialize $P_T = Q_f = I$. At $k = T - 1 = 499$, applying $\eqref{eq:lqr-dp-algorithm-control}$ with $\rho = 1$:
+$$
+\begin{aligned}
+R + B^\top P_T B &= 1 + 0.01 = 1.01, \\
+B^\top P_T A &= \begin{bmatrix} 0 & 0.1 \end{bmatrix} \begin{bmatrix} 1 & 0.1 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 0 & 0.1 \end{bmatrix}, \\
+K_{T-1} &= \frac{1}{1.01} \begin{bmatrix} 0 & 0.1 \end{bmatrix} \approx \begin{bmatrix} 0 & 0.099 \end{bmatrix}.
+\end{aligned}
+$$
+At the very last step the controller only weights $\dot{z}$ — this is because $u_{T-1}$ has no effect on $z_T$ within a single step (it only enters $\dot{z}_T$). We then update $P_{T-1}$ via $\eqref{eq:lqr-dp-algorithm-cost-to-go}$ and continue the recursion backwards through $k = 498, 497, \ldots, 0$ in code below.
+
+```execute-python
+import numpy as np
+
+dt = 0.1
+A = np.array([[1.0, dt],
+              [0.0, 1.0]])
+B = np.array([[0.0],
+              [dt]])
+Q = np.eye(2)
+Q_f = np.eye(2)
+T = 500
+x0 = np.array([[1.0], [0.0]])
+
+
+def lqr_dp(rho):
+    R = np.array([[rho]])
+
+    # Backward pass: compute P_k and K_k for k = T-1, ..., 0
+    P = [None] * (T + 1)
+    K = [None] * T
+    P[T] = Q_f
+
+    for k in range(T - 1, -1, -1):
+        S = R + B.T @ P[k + 1] @ B
+        K[k] = np.linalg.solve(S, B.T @ P[k + 1] @ A)
+        P[k] = Q + K[k].T @ R @ K[k] + (A - B @ K[k]).T @ P[k + 1] @ (A - B @ K[k])
+
+    # Forward pass: simulate the optimal trajectory
+    xs = [x0]
+    us = []
+    for k in range(T):
+        u = -K[k] @ xs[k]
+        us.append(u)
+        xs.append(A @ xs[k] + B @ u)
+
+    cost = 0.5 * (xs[T].T @ Q_f @ xs[T]).item()
+    for k in range(T):
+        cost += 0.5 * (xs[k].T @ Q @ xs[k] + us[k].T @ R @ us[k]).item()
+
+    return K, xs, us, cost
+
+
+for rho in [0.01, 1.0, 100.0]:
+    K, xs, us, cost = lqr_dp(rho)
+    max_u = max(abs(u.item()) for u in us)
+    settle = next(k for k, x in enumerate(xs) if abs(x[0, 0]) < 0.01 and abs(x[1, 0]) < 0.01)
+    print(f"rho = {rho}")
+    print(f"  K_0      = {K[0].flatten()}")
+    print(f"  J(x_0)   = {cost:.4f}")
+    print(f"  max |u|  = {max_u:.4f}")
+    print(f"  settle   = {settle} steps")
+    print()
+```
+
+The output makes the trade-off between $\rho$ and convergence concrete:
+
+| $\rho$ | $K_0$ | settle | max $\lvert u\rvert$ | $J(x_0)$ |
+|---|---|---|---|---|
+| $0.01$ | $\approx[5.89,\,7.12]$ | 48 | $5.89$ | $6.04$ |
+| $1$ | $\approx[0.92,\,1.68]$ | 53 | $0.92$ | $9.17$ |
+| $100$ | $\approx[0.10,\,0.46]$ | 210 | $0.10$ | $23.42$ |
+
+Small $\rho$ (cheap control) produces large gains and fast convergence: with $\rho = 0.01$ the state settles in $48$ steps, but the controller fires up to $\lvert u\rvert \approx 5.9$. Large $\rho$ (expensive control) does the opposite: with $\rho = 100$ the gains shrink to $\approx [0.10, 0.46]$, the controller stays gentle ($\lvert u\rvert \le 0.1$), but the system now needs $210$ steps to settle. The middle case $\rho = 1$ strikes a balance. LQR turns the hand-tuning trade-off from earlier ($u = -z - \dot{z}$ vs $u = -5z - 5\dot{z}$) into a principled choice via the single hyperparameter $\rho$.
 
 </details>
 
