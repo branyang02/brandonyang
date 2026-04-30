@@ -6606,6 +6606,8 @@ This matches the $J^*$ obtained from policy iteration above. We also see that po
 
 ## Linear Quadratic Regulator (LQR)
 
+The dynamic programming framework above is completely general, but in most problems the Bellman recursion is too expensive to solve exactly. A particularly important special case is when the dynamics are **linear** and the costs are **quadratic**. In this setting, the value function takes a quadratic form, the Bellman equation simplifies dramatically, and the optimal policy can be written as a linear feedback controller. This special case is called the **Linear Quadratic Regulator (LQR)**.
+
 ### Discrete-time LQR
 
 A deterministic, linear dynamical system is given by
@@ -6742,17 +6744,20 @@ where $Q_f \in \mathbb{R}^{d \times d}$ is a symmetric, positive semi-definite m
 
 <blockquote class="definition">
 
-The **Finite Time-horizon LQR** problem is to find a sequence of control inputs
+The **Finite Time-horizon LQR** problem is
 $$
-\left(u_0, u_1, \ldots, u_{T-1} \right)
+\begin{aligned}
+\min_{u_0, \ldots, u_{T-1}} \quad & J(x_0; u_0, \ldots, u_{T-1}) \\
+\text{subject to} \quad & x_{k+1} = A x_k + B u_k, \qquad k = 0, \ldots, T-1,
+\end{aligned}
 $$
-such that the function 
+where
 $$
 \begin{equation} \label{eq:lqr-objective}
 J(x_0; u_0, \ldots, u_{T-1}) = \frac{1}{2} x_T^\top Q_f x_T + \frac{1}{2} \sum_{k=0}^{T-1} \left(x_k^\top Q x_k + u_k^\top R u_k\right)
 \end{equation}
 $$
-is minimized under the constraint that $x_{k+1} = A x_k + B u_k$ for $k = 0, \ldots, T-1$, and given an initial state $x_0$.
+and the initial state $x_0$ is given.
 
 </blockquote>
 
@@ -6937,6 +6942,386 @@ Small $\rho$ (cheap control) produces large gains and fast convergence: with $\r
 
 </details>
 
+### Continuous-time LQR
+
+A continuous-time dynamical system is given by
+$$
+\begin{equation} \label{eq:lqr-continuous-dynamics}
+\dot{x} = f(x, u), \quad x(0) = x_0,
+\end{equation}
+$$
+where $x(t) \in \mathbb{R}^d$ and $u(t) \in \mathbb{R}^m$ are the state and control at time $t$, and $f: \mathbb{R}^d \times \mathbb{R}^m \to \mathbb{R}^d$ is the system dynamics function. We consider the case when we want to find control sequences that minimize the integral of the cost along the trajectory that stops at some fixed terminal time $T$:
+$$
+q_f\left( x(T)\right) + \int_0^T q\left(x(t), u(t)\right) \mathrm{d}t.
+$$
+
+<blockquote class="definition" id="def:lqr-continuous">
+
+The **Continuous-time LQR** problem is
+$$
+\begin{aligned}
+\min_{u(\cdot)} \quad & J(x_0; u(\cdot)) \\
+\text{subject to} \quad & \dot{x}(t) = f(x(t), u(t)), \qquad t \in [0, T], \\
+& x(0) = x_0,
+\end{aligned}
+$$
+where
+$$
+\begin{equation} \label{eq:lqr-continuous-objective}
+J(x_0; u(\cdot)) = q_f\left( x(T)\right) + \int_0^T q\left(x(t), u(t)\right) \mathrm{d}t
+\end{equation}
+$$
+and the initial state $x_0$ is given.
+
+</blockquote>
+
+Similar to the discrete-time case, we can solve this problem using the principle of dynamic programming. We define the cost-to-go function at time $t$ as
+$$
+\begin{equation} \label{eq:lqr-continuous-cost-to-go}
+J^*(x, t) = \min_{u(s), t \leq s \leq T} \left\{ q_f\left( x(T)\right) + \int_t^T q\left(x(s), u(s)\right) \mathrm{d}s \right\},
+\end{equation}
+$$
+where the final condition is $J^*(x, T) = q_f(x)$. Following the principle of dynamic programming, we have
+$$
+\begin{align}
+J^*(x, t) &= \min_{u(s), t \leq s \leq T} \left\{ q_f\left( x(T)\right) + \int_t^T q\left(x(s), u(s)\right) \mathrm{d}s \right\} \\
+&= \min_{u(s), t \leq s \leq T} \left\{ \textcolor{blue}{q_f\left( x(T)\right)} + \int_t^{t + \Delta t} q\left(x(s), u(s)\right) \mathrm{d}s  + \textcolor{blue}{\int_{t + \Delta t}^T q\left(x(s), u(s)\right) \mathrm{d}s} \right\} \\
+&= \min_{u(s), t \leq s \leq t + \Delta t} \left\{ \textcolor{blue}{J^*\left(x(t + \Delta t) , t + \Delta t\right)} + \int_t^{t + \Delta t} q\left(x(s), u(s)\right) \mathrm{d}s \right\}. \label{eq:lqr-continuous-dp}
+\end{align}
+$$
+For small $\Delta t$, we can approximate the integral term as
+$$
+\begin{equation} \label{eq:lqr-continuous-integral-approx}
+\int_t^{t+\Delta t} q\left(x(s), u(s)\right) \mathrm{d}s
+\approx
+q\left(x(t), u(t)\right)\Delta t.
+\end{equation}
+$$
+
+We now take a first-order Taylor expansion of $J^*\left(x(t+\Delta t), t+\Delta t\right)$ around $\left(x(t), t\right)$. Since $x$ is a vector, we write the derivative with respect to state as $\nabla_x J^*$:
+$$
+\begin{equation} \label{eq:lqr-continuous-taylor}
+J^*(x+\Delta x, t+\Delta t) \approx J^*(x,t) + \nabla_x J^*(x,t)^\top \Delta x + \partial_t J^*(x,t)\Delta t.
+\end{equation}
+$$
+Here, the change in state is
+$$
+\Delta x = x(t+\Delta t) - x(t).
+$$
+Plugging this into $\eqref{eq:lqr-continuous-taylor}$ gives
+$$
+\begin{equation}
+J^*\left(x(t+\Delta t), t+\Delta t\right) \approx J^*\left(x, t\right) + \nabla_x J^*\left(x, t\right)^\top \left(x(t+\Delta t)-x(t)\right) + \partial_t J^*\left(x, t\right)\Delta t.
+\end{equation}
+$$
+Now subtract $J^*(x, t)$ from both sides:
+$$
+\begin{equation}
+J^*\left(x(t+\Delta t), t+\Delta t\right) - J^*\left(x, t\right) \approx \nabla_x J^*\left(x, t\right)^\top \left(x(t+\Delta t)-x(t)\right) + \partial_t J^*\left(x, t\right)\Delta t.
+\end{equation}
+$$
+
+Since the dynamics satisfy
+$$
+\dot{x}(t) = f\left(x(t), u(t)\right),
+$$
+we have
+$$
+x(t+\Delta t)-x(t) \approx f\left(x(t), u(t)\right)\Delta t.
+$$
+Substituting this into the previous line yields
+$$
+\begin{align} 
+J^*\left(x(t+\Delta t), t+\Delta t\right) - J^*\left(x, t\right) &\approx \nabla_x J^*\left(x, t\right)^\top f\left(x(t), u(t)\right)\Delta t + \partial_t J^*\left(x, t\right)\Delta t. \label{eq:lqr-continuous-taylor-dynamics} \\
+\end{align}
+$$
+
+Substituting $\eqref{eq:lqr-continuous-taylor-dynamics}$ and $\eqref{eq:lqr-continuous-integral-approx}$ back into $\eqref{eq:lqr-continuous-dp}$ gives
+$$
+\begin{equation}
+J^*(x,t) = \min_{u(t)} \left\{ J^*(x,t) + \left[ q(x,u) + \nabla_x J^*(x,t)^\top f(x,u) + \partial_t J^*(x,t) \right]\Delta t \right\}.
+\end{equation}
+$$
+
+Canceling $J^*(x,t)$ from both sides and dividing by $\Delta t$, we get
+$$
+\begin{equation} \label{eq:hjb-equation}
+0 = \partial_t J^*(x,t) + \min_{u \in \mathcal{U}} \left\{ q(x,u) + \nabla_x J^*(x,t)^\top f(x,u) \right\}.
+\end{equation}
+$$
+
+This is called the **Hamilton-Jacobi-Bellman (HJB) equation**. It is the continuous-time analogue of the discrete-time Bellman equation. The terminal condition is
+$$
+\begin{equation} \label{eq:hjb-terminal-condition}
+J^*(x,T)=q_f(x).
+\end{equation}
+$$
+
+Suppose we specialize to linear dynamics and quadratic costs in [](#bqref-def:lqr-continuous):
+$$
+\begin{equation} \label{eq:continuous-lqr-specialization}
+\dot{x}=Ax+Bu, \quad x(0)=x_0,
+\end{equation}
+$$
+$$
+\begin{equation} \label{eq:continuous-lqr-costs}
+q(x,u)=\frac{1}{2}x^\top Qx+\frac{1}{2}u^\top Ru,
+\qquad
+q_f(x)=\frac{1}{2}x^\top Q_f x.
+\end{equation}
+$$
+From our intuition from the discrete-time case where the optimal cost-to-go $\eqref{eq:lqr-dp-algorithm-formula}$ has a term $P_k$ that evolves based on time $k$, we have something similar in the continuous-time case, where we assume that the optimal cost-to-go has the form
+$$
+\begin{equation} \label{eq:continuous-lqr-cost-to-go}
+J^*(x,t) = \frac{1}{2} x(t)^\top P(t) x(t),
+\end{equation}
+$$
+where $P(t)$ is a time-varying, symmetric, positive semi-definite matrix. We can then plug this into the HJB equation $\eqref{eq:hjb-equation}$ and solve for $P(t)$:
+$$
+\begin{align}
+0 &= \textcolor{blue}{\partial_t \left[ \frac{1}{2} x^\top P(t) x \right]} + \min_u \left\{ \frac{1}{2} x^\top Q x + \frac{1}{2} u^\top R u + \textcolor{red}{\nabla_x \left[ \frac{1}{2} x^\top P(t) x \right]^\top} (A x + B u) \right\} \\
+0 &= \textcolor{blue}{\frac{1}{2} x^\top \dot{P}(t) x} + \min_u \left\{ \frac{1}{2} x^\top Q x + \frac{1}{2} u^\top R u + \textcolor{red}{x^\top P(t)} (A x + B u) \right\} \label{eq:continuous-lqr-hjb}
+\end{align}
+$$
+We can take the gradient w.r.t. $u$ for the RHS and set it to zero to get the optimal control:
+$$
+\begin{equation} \label{eq:continuous-lqr-optimal-control}
+u^*(t) = -R^{-1} B^\top P(t) x(t).
+\end{equation}
+$$
+For brevity, we now drop the explicit time dependence from $x(t)$, $u(t)$, and $P(t)$. Plugging $\eqref{eq:continuous-lqr-optimal-control}$ back into $\eqref{eq:continuous-lqr-hjb}$ gives
+$$
+\begin{align}
+0 &= \frac{1}{2} x^\top \dot{P} x + \frac{1}{2} x^\top Q x + \frac{1}{2} \textcolor{red}{u^{*\top}} R \textcolor{red}{u^*} + x^\top P A x + x^\top P B \textcolor{red}{u^*} \\
+&= \frac{1}{2} x^\top \dot{P} x + \frac{1}{2} x^\top Q x + \frac{1}{2} \textcolor{red}{\left(-R^{-1} B^\top P x\right)^\top} R \textcolor{red}{\left(-R^{-1} B^\top P x\right)} + x^\top P A x + x^\top P B \textcolor{red}{\left(-R^{-1} B^\top P x\right)} \\
+&= \frac{1}{2} x^\top \dot{P} x + \frac{1}{2} x^\top Q x + \frac{1}{2} x^\top P B R^{-1} B^\top P x + x^\top P A x - x^\top P B R^{-1} B^\top P x \\
+&= \frac{1}{2} x^\top \dot{P} x + \frac{1}{2} x^\top Q x + x^\top P A x - \frac{1}{2} x^\top P B R^{-1} B^\top P x.
+\end{align}
+$$
+Since $P$ is symmetric, we can rewrite the middle term as
+$$
+x^\top P A x = \frac{1}{2} x^\top \left(PA + A^\top P\right) x.
+$$
+Therefore,
+$$
+\begin{align}
+0 &= \frac{1}{2} x^\top \dot{P} x + \frac{1}{2} x^\top Q x + \frac{1}{2} x^\top \left(PA + A^\top P\right) x - \frac{1}{2} x^\top P B R^{-1} B^\top P x \\
+&= \frac{1}{2} x^\top \left(\dot{P} + PA + A^\top P + Q - P B R^{-1} B^\top P\right) x.
+\end{align}
+$$
+Since this holds for all $x$, we must have
+$$
+\dot{P} + PA + A^\top P + Q - P B R^{-1} B^\top P = 0,
+$$
+or equivalently
+$$
+\begin{equation} \label{eq:continuous-lqr-riccati}
+-\dot{P} = PA + A^\top P + Q - P B R^{-1} B^\top P.
+\end{equation}
+$$
+This is the continuous-time Riccati differential equation, where we have the terminal condition 
+$$
+\begin{equation} \label{eq:continuous-lqr-riccati-terminal}
+P(T) = Q_f.
+\end{equation}
+$$
+The optimal control $\eqref{eq:continuous-lqr-optimal-control}$ can be written as
+$$
+u^*(t) = -K(t)x(t), \qquad K(t) = R^{-1} B^\top P(t).
+$$
+
+<blockquote class="algorithm" id="def:continuous-lqr-algorithm">
+
+**Continuous-time LQR Dynamic Programming Algorithm**
+
+For each time $t \in [0, T]$, the optimal cost-to-go has the form
+$$
+\begin{equation} \label{eq:continuous-lqr-algorithm-formula}
+J^*(x,t) = \frac{1}{2} x^\top P(t) x,
+\end{equation}
+$$
+where $P(t)$ is computed by integrating the Riccati differential equation *backwards in time* from the terminal condition:
+$$
+\begin{align}
+P(T) &= Q_f \label{eq:continuous-lqr-algorithm-terminal} \\
+-\dot{P}(t) &= P(t)A + A^\top P(t) + Q - P(t) B R^{-1} B^\top P(t). \label{eq:continuous-lqr-algorithm-riccati}
+\end{align}
+$$
+Then the optimal feedback gain and control at time $t$ are
+$$
+\begin{align}
+K(t) &= R^{-1} B^\top P(t) \label{eq:continuous-lqr-algorithm-control} \\
+u^*(t) &= -K(t)x(t). \label{eq:continuous-lqr-algorithm-optimal-control}
+\end{align}
+$$
+
+</blockquote>
+
+This is the continuous-time analogue of the discrete-time LQR recursion. Instead of stepping backwards through the matrices $P_k$, we solve a matrix differential equation backwards from $t=T$ to $t=0$, and then use the resulting time-varying gain $K(t)$ in the forward system dynamics.
+
+#### Infinite-Horizon LQR 
+
+In the infinite-horizon case, the cost-to-go becomes time-invariant:
+$$
+J^*(x)=\frac{1}{2}x^\top P x.
+$$
+So $P(t)$ converges to a constant matrix $P$, and the Riccati differential equation becomes the algebraic Riccati equation
+$$
+0 = PA + A^\top P + Q - PBR^{-1}B^\top P.
+$$
+To compute $P$, we solve this continuous-time algebraic Riccati equation directly. Equivalently, $P$ is the steady-state limit of the finite-horizon Riccati differential equation as the horizon tends to infinity.
+The optimal controller is then the constant linear feedback law
+$$
+u^* = -Kx, \qquad K = R^{-1}B^\top P.
+$$
+
+### Stochastic LQR
+
+A stochastic linear dynamical system is given by
+$$
+\begin{equation} \label{eq:lqr-stochastic-dynamics}
+\dot{x}(t) = Ax(t) + Bu(t) + B_\epsilon \epsilon(t), \quad x(0) = x_0,
+\end{equation}
+$$
+where $\epsilon(t)$ is standard Gaussian noise uncorrelated with time. The cost is the same as the deterministic case:
+$$
+\begin{equation} \label{eq:lqr-stochastic-cost}
+q(x,u) = \frac{1}{2} x^\top Q x + \frac{1}{2} u^\top R u, \qquad q_f(x) = \frac{1}{2} x^\top Q_f x.
+\end{equation}
+$$
+The goal is to find a control policy that minimizes the expected cost:
+$$
+\begin{equation} \label{eq:lqr-stochastic-objective}
+J^*(x_0) = \min_{u(\cdot)} \mathbb{E}_{\epsilon(t) : t \in [0, T]}\left[ q_f\left( x(T)\right) + \int_0^T q\left(x(t), u(t)\right) \mathrm{d}t \right].
+\end{equation}
+$$
+It turns out that the optimal control policy for this problem is the same as the deterministic case in [](#bqref-def:continuous-lqr-algorithm). This is a special property of LQR and does not hold for general nonlinear stochastic control problems, or even for linear-quadratic problems with non-Gaussian noise. 
+
+### Linear Quadratic Gaussian (LQG)
+
+In the LQG problem, we have the same stochastic linear dynamics and quadratic costs as in the stochastic LQR problem, but we do not have access to the full state $x(t)$. Instead, we estimate the state using a Kalman filter. In short, we have the following assumptions for the LQG problem:
+- The system dynamics are linear and stochastic as in $\eqref{eq:lqr-stochastic-dynamics}$.
+- The cost is quadratic as in $\eqref{eq:lqr-stochastic-cost}$.
+- The state dynamics and observations are linear as in $\eqref{eq:kalman_filter_dynamical_system}$.
+- The state is estimated with $\hat{x}(t) \sim \mathcal{N}(\mu(t), \Sigma(t))$, where $\mu(t)$ and $\Sigma(t)$ are computed by a [Kalman-Bucy filter](https://stengel.mycpanel.princeton.edu/MAE546Seminar19.pdf).
+
+Since we do not have access to the full state, we cannot simply use $\eqref{eq:continuous-lqr-algorithm-optimal-control}$. Instead, we can use the mean of the state estimate $\mu(t)$ in place of the true state $x(t)$:
+$$
+\begin{equation} \label{eq:lqg-optimal-control}
+u^*(t) = -K(t)\mu(t).
+\end{equation}
+$$
+This is the optimal control policy for the LQG problem. 
+
+### Iterative LQR (iLQR)
+
+This is analogous to going from Kalman Filter to Extended Kalman Filter, where we extend the Kalman Filter problem to nonlinear dynamics and observation models $\eqref{eq:ekf_dynamical_system}$.
+
+Instead of linear dynamics and quadratic costs in $\eqref{eq:continuous-lqr-specialization}$, $\eqref{eq:continuous-lqr-costs}$, we have general nonlinear dynamics:
+$$
+\begin{equation} \label{eq:ilqr-nonlinear-dynamics}
+\dot{x}(t) = f(x(t), u(t)), \quad x(0) = x_0,
+\end{equation}
+$$
+and nonlinear terminal and runtime costs
+$$
+J(x_0) = q_f\left( x(T) \right) + \int_0^T q\left(x(t), u(t)\right) \mathrm{d}t.
+$$
+We can solve this problem using an iterative procedure. At iteration $k$, assume we are given a nominal control trajectory 
+$$
+\begin{equation} \label{eq:ilqr-control-trajectory}
+u^{(k)}(\cdot) = \{u^{(k)}(t) : t \in [0, T]\},
+\end{equation}
+$$
+and the corresponding nominal state trajectory
+$$
+\begin{equation} \label{eq:ilqr-state-trajectory}
+\dot{x}^{(k)}(t) = f\left(x^{(k)}(t), u^{(k)}(t)\right), \quad x^{(k)}(0) = x_0,
+\end{equation}
+$$
+We define perturbations around the nominal trajectory by
+$$
+\begin{equation} \label{eq:ilqr-perturbations}
+z(t) = x(t) - x^{(k)}(t), \quad v(t) = u(t) - u^{(k)}(t).
+\end{equation}
+$$
+Or equivalently
+$$
+\begin{equation} \label{eq:ilqr-perturbations-inverse}
+x(t) = x^{(k)}(t) + z(t), \quad u(t) = u^{(k)}(t) + v(t).
+\end{equation}
+$$
+Since the initial condition is fixed, we have $z(0) = 0$. 
+
+We substitute $\eqref{eq:ilqr-perturbations-inverse}$ into $\eqref{eq:ilqr-nonlinear-dynamics}$ and expand the dynamics around the nominal trajectory using a first-order Taylor expansion:
+$$
+\begin{equation} \label{eq:ilqr-dynamics-expansion}
+f\left( x^{(k)} + z, u^{(k)} + v \right) \approx f \left( x^{(k)}, u^{(k)} \right) + A^{(k)}(t) z + B^{(k)}(t) v,
+\end{equation}
+$$
+where $A^{(k)}(t), B^{(k)}(t)$ are the Jacobian matrices of $f$ with respect to $x$ and $u$ evaluated at the nominal trajectory:
+$$
+\begin{align}
+A^{(k)}(t) &= \left. \frac{\partial f}{\partial x} \right|_{x = x^{(k)}(t), u = u^{(k)}(t)} \\
+B^{(k)}(t) &= \left. \frac{\partial f}{\partial u} \right|_{x = x^{(k)}(t), u = u^{(k)}(t)}.
+\end{align}
+$$
+Given that $x^{(k)}$ satisfies the nominal dynamics $\eqref{eq:ilqr-state-trajectory}$, we have
+$$
+\begin{equation} \label{eq:ilqr-perturbation-dynamics}
+\dot{z}(t) = A^{(k)}(t) z(t) + B^{(k)}(t) v(t), \quad z(0) = 0.
+\end{equation}
+$$
+Next, given that the terminal cost is $q_f(x(T))$, we substitute
+$$
+x(T) = x^{(k)}(T) + z(T)
+$$
+and take a second-order Taylor expansion around $x^{(k)}(T)$:
+$$
+\begin{equation} \label{eq:ilqr-terminal-cost-expansion}
+q_f(x(T)) = q_f\left(x^{(k)}(T)+z(T)\right) \approx q_f\left(x^{(k)}(T)\right) + q_{f,x}^{(k)\top}z(T) + \frac{1}{2}z(T)^\top Q_f^{(k)}z(T),
+\end{equation}
+$$
+where
+$$
+\begin{equation} \label{eq:ilqr-terminal-cost-derivatives}
+q_{f,x}^{(k)} = \left. \frac{\partial q_f}{\partial x} \right|_{x=x^{(k)}(T)}, \qquad Q_f^{(k)}  = \left. \frac{\partial^2 q_f}{\partial x^2} \right|_{x=x^{(k)}(T)}.
+\end{equation}
+$$
+Here, $Q_f^{(k)}$ is not an assumed quadratic cost matrix. It is the Hessian of the nonlinear terminal cost evaluated at the current terminal state $x^{(k)}(T)$.
+
+Similarly, for the running cost, we substitute $\eqref{eq:ilqr-perturbations-inverse}$ into $q(x,u)$ and take a second-order Taylor expansion around the nominal trajectory
+$$
+\begin{aligned}
+q\left(x(t),u(t)\right) &= q\left(x^{(k)}(t)+z(t),u^{(k)}(t)+v(t)\right) \\
+&\approx q\left(x^{(k)}(t),u^{(k)}(t)\right) \\
+&\quad + q_x^{(k)}(t)^\top z(t) + q_u^{(k)}(t)^\top v(t) \\
+&\quad + \frac{1}{2}z(t)^\top Q^{(k)}(t)z(t) + \frac{1}{2}v(t)^\top R^{(k)}(t)v(t),
+\end{aligned}
+$$
+where
+$$
+\begin{align}
+q_x^{(k)}(t) &= \left. \frac{\partial q}{\partial x} \right|_{x=x^{(k)}(t),\,u=u^{(k)}(t)} \\[4pt]
+q_u^{(k)}(t) &= \left. \frac{\partial q}{\partial u} \right|_{x=x^{(k)}(t),\,u=u^{(k)}(t)} \\[4pt]
+Q^{(k)}(t) &= \left. \frac{\partial^2 q}{\partial x^2} \right|_{x=x^{(k)}(t),\,u=u^{(k)}(t)} \\[4pt]
+R^{(k)}(t) &= \left. \frac{\partial^2 q}{\partial u^2} \right|_{x=x^{(k)}(t),\,u=u^{(k)}(t)}
+\end{align}
+$$
+Again, $Q^{(k)}(t)$ and $R^{(k)}(t)$ are not assumed to come from a globally quadratic cost. They are the local Hessians of the nonlinear running cost along the current trajectory.
+
+We can now solve the following LQR problem to get the optimal perturbation control $v^*(t)$:
+$$
+\begin{aligned} 
+\min _{v(\cdot)} & q_{f, x}^{(k) \top} z(T)+\frac{1}{2} z(T)^{\top} Q_f^{(k)} z(T) \\ & +\int_0^T\left[q_x^{(k)}(t)^{\top} z(t)+q_u^{(k)}(t)^{\top} v(t)+\frac{1}{2} z(t)^{\top} Q^{(k)}(t) z(t)+\frac{1}{2} v(t)^{\top} R^{(k)}(t) v(t)\right] \mathrm{d} t \\ \text { subject to } & \dot{z}(t)=A^{(k)}(t) z(t)+B^{(k)}(t) v(t), \\ & z(0)=0 .
+\end{aligned}
+$$
+This is a standard LQR problem, and we can solve it using the algorithm in [](#bqref-def:continuous-lqr-algorithm). We then update the control trajectory by
+$$
+\begin{equation} \label{eq:ilqr-control-update}
+u^{(k+1)}(t) = u^{(k)}(t) + v^*(t).
+\end{equation}
+$$
 
 ## Reinforcement Learning
 
