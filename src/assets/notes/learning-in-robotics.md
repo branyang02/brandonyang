@@ -18,20 +18,20 @@ and the event of getting at least one head would be:
 $$
 A = \{HH, HT, TH\}.
 $$
-The _probability measure_ $P$ assigns a probability to each event, satisfying the axioms of probability:
+The _probability measure_ $\mathrm{P}$ assigns a probability to each event, satisfying the axioms of probability:
 
-1. Non-negativity: $P(A) \geq 0$ for all events $A$.
-2. Normalization: $P(\Omega) = 1$.
+1. Non-negativity: $\mathrm{P}(A) \geq 0$ for all events $A$.
+2. Normalization: $\mathrm{P}(\Omega) = 1$.
 3. Additivity: If two events $A$ and $B$ are mutually exclusive (i.e., $A \cap B = \emptyset$), then
 
 $$
-P(A \cup B) = P(A) + P(B).
+\mathrm{P}(A \cup B) = \mathrm{P}(A) + \mathrm{P}(B).
 $$
 
-The _conditional probability_ of an event $A$ given another event $B$ with $P(B) > 0$ is defined as:
+The _conditional probability_ of an event $A$ given another event $B$ with $\mathrm{P}(B) > 0$ is defined as:
 $$
 \begin{equation} \label{eq:conditional_probability}
-P(A \mid B) = \frac{P(A \cap B)}{P(B)}.
+\mathrm{P}(A \mid B) = \frac{\mathrm{P}(A \cap B)}{\mathrm{P}(B)}.
 \end{equation}
 $$
 The law of total probability states that if a finite number of events $B_1, B_2, \ldots, B_n$ form a partition of the sample space $\Omega$, i.e.,
@@ -41,13 +41,13 @@ $$
 then for any event $A$,
 $$
 \begin{equation} \label{eq:total_probability}
-P(A) = \sum_{i=1}^n P(A \mid B_i) P(B_i).
+\mathrm{P}(A) = \sum_{i=1}^n \mathrm{P}(A \mid B_i) \mathrm{P}(B_i).
 \end{equation}
 $$
 
 An event $A$ is said to be _independent_ of event $B$ if:
 $$
-P(A \cap B) = P(A) P(B).
+\mathrm{P}(A \cap B) = \mathrm{P}(A) \mathrm{P}(B).
 $$
 This implies that the occurrence of event $B$ does not affect the probability of event $A$.
 
@@ -96,34 +96,34 @@ Let $\Omega = \{1, 2, 3\}$.
 
 ### Bayes' Theorem
 
-Suppose we have $A_1, A_2, \ldots, A_n$, and their respective probabilities $P(A_1), P(A_2), \ldots, P(A_n)$, we can compute the conditional probability $P(B \mid A_i)$ with $\eqref{eq:conditional_probability}$.
+Suppose we have $A_1, A_2, \ldots, A_n$, and their respective probabilities $\mathrm{P}(A_1), \mathrm{P}(A_2), \ldots, \mathrm{P}(A_n)$, we can compute the conditional probability $\mathrm{P}(B \mid A_i)$ with $\eqref{eq:conditional_probability}$.
 $$
 \begin{equation} \label{eq:bayes1}
-P(B \mid A_i) = \frac{P(A_i \cap B)}{P(A_i)}.
+\mathrm{P}(B \mid A_i) = \frac{\mathrm{P}(A_i \cap B)}{\mathrm{P}(A_i)}.
 \end{equation}
 $$
-Suppose we now want to compute the reverse conditional probability $P(A_i \mid B)$, we can use $\eqref{eq:conditional_probability}$ again:
+Suppose we now want to compute the reverse conditional probability $\mathrm{P}(A_i \mid B)$, we can use $\eqref{eq:conditional_probability}$ again:
 $$
 \begin{equation} \label{eq:bayes2}
-P(A_i \mid B) = \frac{P(A_i \cap B)}{P(B)}.
+\mathrm{P}(A_i \mid B) = \frac{\mathrm{P}(A_i \cap B)}{\mathrm{P}(B)}.
 \end{equation}
 $$
-Since $P(A_i \cap B) = P(B \mid A_i) P(A_i)$ from $\eqref{eq:bayes1}$, we can substitute it into $\eqref{eq:bayes2}$ to obtain the Bayes Theorem:
+Since $\mathrm{P}(A_i \cap B) = \mathrm{P}(B \mid A_i) \mathrm{P}(A_i)$ from $\eqref{eq:bayes1}$, we can substitute it into $\eqref{eq:bayes2}$ to obtain the Bayes Theorem:
 $$
 \begin{equation} \label{eq:bayes_theorem}
-P(A_i \mid B) = \frac{P(B \mid A_i) P(A_i)}{P(B)}.
+\mathrm{P}(A_i \mid B) = \frac{\mathrm{P}(B \mid A_i) \mathrm{P}(A_i)}{\mathrm{P}(B)}.
 \end{equation}
 $$
-$\eqref{eq:bayes_theorem}$ holds true for all events $A_i$ and $B$ with $P(A_i) > 0$ and $P(B) > 0$.
+$\eqref{eq:bayes_theorem}$ holds true for all events $A_i$ and $B$ with $\mathrm{P}(A_i) > 0$ and $\mathrm{P}(B) > 0$.
 
-Suppose we assume $A_1, A_2, \ldots, A_n$ form a partition of the sample space $\Omega$, we can use the law of total probability to compute $P(B)$. Using the law of total probability $\eqref{eq:total_probability}$, we can express $P(B)$ as:
+Suppose we assume $A_1, A_2, \ldots, A_n$ form a partition of the sample space $\Omega$, we can use the law of total probability to compute $\mathrm{P}(B)$. Using the law of total probability $\eqref{eq:total_probability}$, we can express $\mathrm{P}(B)$ as:
 $$
-P(B) = \sum_{j=1}^n P(B \mid A_j) P(A_j).
+\mathrm{P}(B) = \sum_{j=1}^n \mathrm{P}(B \mid A_j) \mathrm{P}(A_j).
 $$
 Substituting this back into $\eqref{eq:bayes_theorem}$, we obtain the extended form of Bayes' Theorem:
 $$
 \begin{equation} \label{eq:bayes_theorem_extended}
-P(A_i \mid B) = \frac{P(B \mid A_i) P(A_i)}{\sum_{j=1}^n P(B \mid A_j) P(A_j)}.
+\mathrm{P}(A_i \mid B) = \frac{\mathrm{P}(B \mid A_i) \mathrm{P}(A_i)}{\sum_{j=1}^n \mathrm{P}(B \mid A_j) \mathrm{P}(A_j)}.
 \end{equation}
 $$
 
@@ -131,17 +131,17 @@ $$
 
 Suppose a robot operates in two distinct zones: **Indoor** ($Z_{in}$) and **Outdoor** ($Z_{out}$). Based on its deployment schedule, the probability of the robot being in each zone is:
 $$
-P(Z_{in}) = 0.8, \quad P(Z_{out}) = 0.2.
+\mathrm{P}(Z_{in}) = 0.8, \quad \mathrm{P}(Z_{out}) = 0.2.
 $$
 Let $E$ be the event that the robot's GPS signal is **Lost**. The probability of losing the signal depends on the zone:
 
-- Indoors, the signal is lost frequently: $P(E \mid Z_{in}) = 0.9$.
-- Outdoors, the signal is lost rarely: $P(E \mid Z_{out}) = 0.05$.
+- Indoors, the signal is lost frequently: $\mathrm{P}(E \mid Z_{in}) = 0.9$.
+- Outdoors, the signal is lost rarely: $\mathrm{P}(E \mid Z_{out}) = 0.05$.
 
 Using the **Law of Total Probability**, we can find the overall probability that the robot has lost its GPS signal:
 $$
 \begin{align*}
-P(E) &= P(E \mid Z_{in}) P(Z_{in}) + P(E \mid Z_{out}) P(Z_{out}) \\
+\mathrm{P}(E) &= \mathrm{P}(E \mid Z_{in}) \mathrm{P}(Z_{in}) + \mathrm{P}(E \mid Z_{out}) \mathrm{P}(Z_{out}) \\
      &= (0.9)(0.8) + (0.05)(0.2) \\
      &= 0.72 + 0.01 \\
      &= 0.73.
@@ -162,7 +162,7 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
 1. **Discrete Random Variables**: These take on a countable number of distinct values. The probability mass function (PMF) $p_X(x)$ gives the probability that the random variable $X$ takes on the value $x$:
    $$
    \begin{equation} \label{eq:pmf}
-   p_X(x) = P(X = x) = P(\{\omega \in \Omega : X(\omega) = x\}).
+   p_X(x) = \mathrm{P}(X = x) = \mathrm{P}(\{\omega \in \Omega : X(\omega) = x\}).
     \end{equation}
    $$
    The PMF satisfies:
@@ -171,7 +171,7 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
 
     A cumulative distribution function (CDF) $F_X(x)$ gives the probability that the random variable $X$ is less than or equal to $x$:
     $$  
-    F_X(x) = P(X \leq x) = \sum_{t \leq x} p_X(t).
+    F_X(x) = \mathrm{P}(X \leq x) = \sum_{t \leq x} p_X(t).
     $$
     The CDF $F_X(x)$ satisfies:
     - $F_X(x)$ is non-decreasing.
@@ -188,9 +188,9 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
     $$
     The possible values of $X$ are $\{0, 1, 2\}$. The PMF $p_X(x)$ is given by:
 
-    - $p_X(0) = P(X = 0) = P(\{TT\}) = \frac{1}{4}$,
-    - $p_X(1) = P(X = 1) = P(\{HT, TH\}) = \frac{1}{2}$,
-    - $p_X(2) = P(X = 2) = P(\{HH\}) = \frac{1}{4}$.
+    - $p_X(0) = \mathrm{P}(X = 0) = \mathrm{P}(\{TT\}) = \frac{1}{4}$,
+    - $p_X(1) = \mathrm{P}(X = 1) = \mathrm{P}(\{HT, TH\}) = \frac{1}{2}$,
+    - $p_X(2) = \mathrm{P}(X = 2) = \mathrm{P}(\{HH\}) = \frac{1}{4}$.
 
     Thus, the PMF can be summarized as:
     $$
@@ -214,15 +214,15 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
     - $\omega_k=(\underbrace{T, T, \ldots, T}_{k-1 \text { times }}, H)$.
     Therefore, the equation for measurement of each outcome is:
     $$
-    P(Y= k) = P(\{\omega_k\}).
+    \mathrm{P}(Y= k) = \mathrm{P}(\{\omega_k\}).
     $$
-    Assuming independent trials with $P(H) = p$ and $P(T) = 1 - p$, we can compute the probability of each outcome as:
+    Assuming independent trials with $\mathrm{P}(H) = p$ and $\mathrm{P}(T) = 1 - p$, we can compute the probability of each outcome as:
     $$
-    P(\{\omega_k\}) = (1 - p)^{k-1} p.
+    \mathrm{P}(\{\omega_k\}) = (1 - p)^{k-1} p.
     $$
     Thus, the PMF of $Y$ is:
     $$
-    p_Y(k) = P(Y = k) = (1 - p)^{k-1} p, \quad k = 1, 2, 3, \ldots
+    p_Y(k) = \mathrm{P}(Y = k) = (1 - p)^{k-1} p, \quad k = 1, 2, 3, \ldots
     $$
     This is also known as the geometric distribution.
 
@@ -231,12 +231,12 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
 1. **Continuous Random Variables**: These take on an uncountable number of values, typically real numbers within an interval. The probability density function (PDF) is defined to be
     $$
     \begin{equation} \label{eq:pdf}
-    P(a \leq X \leq b) = \int_{a}^{b} f_X(x) \, dx.
+    \mathrm{P}(a \leq X \leq b) = \int_{a}^{b} f_X(x) \, dx.
     \end{equation}
     $$
     We also have the following relationship between the PDF and CDF:
     $$
-    P(-\infty < X \leq x) = F_X(x) = \int_{-\infty}^{x} f_X(t) \, dt.
+    \mathrm{P}(-\infty < X \leq x) = F_X(x) = \int_{-\infty}^{x} f_X(t) \, dt.
     $$
     The PDF satisfies:
     - $f_X(x) \geq 0$ for all $x$.
@@ -275,43 +275,42 @@ if the set $\{\omega \in \Omega : X(\omega) \leq x\} \in \mathcal{F}$ for every 
 The Expectation (or mean) of a random variable $X$ is defined as:
 $$
 \begin{equation} \label{eq:expectation_discrete}
-E[X] = \sum_{x} x \, p_X(x) \quad \text{(Discrete)},
+\mathbb{E}[X] = \sum_{x} x \, p_X(x) \quad \text{(Discrete)},
 \end{equation}
 $$
 $$
 \begin{equation} \label{eq:expectation_continuous}
-E[X] = \int_{-\infty}^{\infty} x \, f_X(x) \, dx \quad \text{(Continuous)}.
+\mathbb{E}[X] = \int_{-\infty}^{\infty} x \, f_X(x) \, dx \quad \text{(Continuous)}.
 \end{equation}
 $$
 Properties of Expectation:
 $$
 \begin{align}
-E[aX + b] & = a E[X] + b, \\
-E[X + Y] & = E[X] + E[Y], \\
-E[XY] & = E[X] E[Y] \quad \text{(if independent)}, \\
-E[g(X)] & = \sum_{x} g(x) \, p_X(x) \quad \text{or} \quad \int g(x) f_X(x) dx. \label{eq:function_expectation}
+\mathbb{E}[aX + b] & = a \mathbb{E}[X] + b, \\
+\mathbb{E}[X + Y] & = \mathbb{E}[X] + \mathbb{E}[Y], \\
+\mathbb{E}[XY] & = \mathbb{E}[X] \mathbb{E}[Y] \quad \text{(if independent)}, \\
+\mathbb{E}[g(X)] & = \sum_{x} g(x) \, p_X(x) \quad \text{or} \quad \int g(x) f_X(x) dx. \label{eq:function_expectation}
 \end{align}
 $$
 
-The Variance measures the spread of $X$ from its mean $\mu = E[X]$. It is defined generally as $Var(X) = E[(X - \mu)^2]$, or computationally as:
+The variance measures the spread of $X$ from its mean $\mu = \mathbb{E}[X]$. It is defined generally as
 $$
-\begin{equation} \label{eq:variance_calc}
-Var(X) = E[X^2] - (E[X])^2.
+\begin{equation}
+\mathrm{Var}(X) = \mathbb{E}[(X - \mu)^2],
 \end{equation}
 $$
-The specific formulas are:
+or computationally as:
 $$
-\begin{align}
-Var(X) &= \sum_{x} (x - \mu)^2 \, p_X(x) & \text{(Discrete)} \label{eq:variance_discrete} \\
-Var(X) &= \int_{-\infty}^{\infty} (x - \mu)^2 \, f_X(x) \, dx & \text{(Continuous)} \label{eq:variance_continuous}
-\end{align}
+\begin{equation} \label{eq:variance_calc}
+\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2.
+\end{equation}
 $$
 Properties of Variance:
 $$
 \begin{align}
-Var(aX + b) & = a^2 Var(X), \\
-Var(X + Y) & = Var(X) + Var(Y) \quad \text{(if independent)} \\
-Var(X + Y) & = Var(X) + Var(Y) + 2 \mathrm{Cov}(X, Y) \quad \text{(general case)}.
+\mathrm{Var}(aX + b) & = a^2 \mathrm{Var}(X), \\
+\mathrm{Var}(X + Y) & = \mathrm{Var}(X) + \mathrm{Var}(Y) \quad \text{(if independent)} \\
+\mathrm{Var}(X + Y) & = \mathrm{Var}(X) + \mathrm{Var}(Y) + 2 \mathrm{Cov}(X, Y) \quad \text{(general case)}.
 \end{align}
 $$
 
@@ -328,19 +327,19 @@ $$
     $$
     The expectation of $X$ is:
     $$
-    E[X] = \sum_{x=1}^{6} x \cdot \frac{1}{6} = \frac{1 + 2 + 3 + 4 + 5 + 6}{6} = 3.5.
+    \mathbb{E}[X] = \sum_{x=1}^{6} x \cdot \frac{1}{6} = \frac{1 + 2 + 3 + 4 + 5 + 6}{6} = 3.5.
     $$
     The variance of $X$ is:
     $$
-    Var(X) = E[X^2] - (E[X])^2,
+    \mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2,
     $$
     where
     $$
-    E[X^2] = \sum_{x=1}^{6} x^2 \cdot \frac{1}{6} = \frac{1^2 + 2^2 + 3^2 + 4^2 + 5^2 + 6^2}{6} = \frac{91}{6}.
+    \mathbb{E}[X^2] = \sum_{x=1}^{6} x^2 \cdot \frac{1}{6} = \frac{1^2 + 2^2 + 3^2 + 4^2 + 5^2 + 6^2}{6} = \frac{91}{6}.
     $$
     Thus,
     $$
-    Var(X) = \frac{91}{6} - (3.5)^2 = \frac{35}{12} \approx 2.9167.
+    \mathrm{Var}(X) = \frac{91}{6} - (3.5)^2 = \frac{35}{12} \approx 2.9167.
     $$
 2. **Continuous RV Example**
     Consider a random variable $Y$ that follows a uniform distribution over the interval $[0, 1]$. The PDF is:
@@ -352,19 +351,19 @@ $$
     $$
     The expectation of $Y$ is:
     $$
-    E[Y] = \int_{0}^{1} y \cdot 1 \, dy = \left[ \frac{y^2}{2} \right]_{0}^{1} = \frac{1}{2}.
+    \mathbb{E}[Y] = \int_{0}^{1} y \cdot 1 \, dy = \left[ \frac{y^2}{2} \right]_{0}^{1} = \frac{1}{2}.
     $$
     The variance of $Y$ is:
     $$
-    Var(Y) = E[Y^2] - (E[Y])^2,
+    \mathrm{Var}(Y) = \mathbb{E}[Y^2] - (\mathbb{E}[Y])^2,
     $$
     where
     $$
-    E[Y^2] = \int_{0}^{1} y^2 \cdot 1 \, dy = \left[ \frac{y^3}{3} \right]_{0}^{1} = \frac{1}{3}.
+    \mathbb{E}[Y^2] = \int_{0}^{1} y^2 \cdot 1 \, dy = \left[ \frac{y^3}{3} \right]_{0}^{1} = \frac{1}{3}.
     $$
     Thus,
     $$
-    Var(Y) = \frac{1}{3} - \left(\frac{1}{2}\right)^2 = \frac{1}{12}.
+    \mathrm{Var}(Y) = \frac{1}{3} - \left(\frac{1}{2}\right)^2 = \frac{1}{12}.
     $$
 
 </details>
@@ -376,12 +375,12 @@ For two random variables $X$ and $Y$, the joint distribution characterizes their
 The Joint PMF $p_{X,Y}(x,y)$ and Joint CDF $F_{X,Y}(x,y)$ are defined as:
 $$
 \begin{equation} \label{eq:joint_pmf}
-p_{X,Y}(x,y) = P(X = x, Y = y),
+p_{X,Y}(x,y) = \mathrm{P}(X = x, Y = y),
 \end{equation}
 $$
 $$
 \begin{equation} \label{eq:joint_cdf}
-F_{X,Y}(x,y) = P(X \leq x, Y \leq y) = \sum_{t \leq x} \sum_{s \leq y} p_{X,Y}(t,s).
+F_{X,Y}(x,y) = \mathrm{P}(X \leq x, Y \leq y) = \sum_{t \leq x} \sum_{s \leq y} p_{X,Y}(t,s).
 \end{equation}
 $$
 Marginal PMFs are obtained by summing the joint PMF over the other variable:
@@ -399,7 +398,7 @@ $$
 
 The Joint PDF $f_{X,Y}(x,y)$ satisfies:
 $$
-P(X \in A, Y \in B) = \int_{B} \int_{A} f_{X,Y}(x,y) \, dx \, dy.
+\mathrm{P}(X \in A, Y \in B) = \int_{B} \int_{A} f_{X,Y}(x,y) \, dx \, dy.
 $$
 Marginal PDFs are obtained by integrating out the other variable:
 $$
@@ -417,50 +416,50 @@ $$
 Expectations can be computed over joint, marginal, or conditional distributions. The Joint Expectation of a function $g(X, Y)$ is:
 $$
 \begin{align}
-E[g(X, Y)] &= \sum_{x} \sum_{y} g(x, y) \, p_{X,Y}(x,y) \\
-E[g(X, Y)] &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x, y) \, f_{X,Y}(x,y) \, dx \, dy
+\mathbb{E}[g(X, Y)] &= \sum_{x} \sum_{y} g(x, y) \, p_{X,Y}(x,y) \\
+\mathbb{E}[g(X, Y)] &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x, y) \, f_{X,Y}(x,y) \, dx \, dy
 \end{align}
 $$
-The Conditional Expectation $E[X \mid Y=y]$ is computed using the conditional distribution:
+The Conditional Expectation $\mathbb{E}[X \mid Y=y]$ is computed using the conditional distribution:
 $$
 \begin{align}
-E[X \mid Y=y] &= \sum_{x} x \, p_{X \mid Y}(x \mid y) \\
-E[X \mid Y=y] &= \int_{-\infty}^{\infty} x \, f_{X \mid Y}(x \mid y) \, dx
+\mathbb{E}[X \mid Y=y] &= \sum_{x} x \, p_{X \mid Y}(x \mid y) \\
+\mathbb{E}[X \mid Y=y] &= \int_{-\infty}^{\infty} x \, f_{X \mid Y}(x \mid y) \, dx
 \end{align}
 $$
-Marginal expectations $E[X]$ and variances $Var(X)$ follow the standard single-variable formulas using the derived marginal PMFs or PDFs.
+Marginal expectations $\mathbb{E}[X]$ and variances $\mathrm{Var}(X)$ follow the standard single-variable formulas using the derived marginal PMFs or PDFs.
 
 The covariance between two random variables $X$ and $Y$ is defined as:
 $$
 \begin{equation} \label{eq:covariance}
-Cov(X, Y) = E[(X - E[X])(Y - E[Y])] = E[XY] - E[X]E[Y].
+\mathrm{Cov}(X, Y) = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]
 \end{equation}
 $$
 An equivalent and often more convenient form is:
 $$
 \begin{equation} \label{eq:covariance_alternative}
-Cov(X, Y) = E[XY] - E[X]E[Y].
+\mathrm{Cov}(X, Y) = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].
 \end{equation}
 $$
 In the discrete case:
 $$
 \begin{equation} \label{eq:covariance_discrete}
-Cov(X, Y) = \sum_{x} \sum_{y} (x - E[X])(y - E[Y]) p_{X,Y}(x,y)
+\mathrm{Cov}(X, Y) = \sum_{x} \sum_{y} (x - \mathbb{E}[X])(y - \mathbb{E}[Y]) p_{X,Y}(x,y)
 \end{equation}
 $$
 and in the continuous case:
 $$
 \begin{equation} \label{eq:covariance_continuous}
-Cov(X, Y) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} (x - E[X])(y - E[Y]) f_{X,Y}(x,y) \, dx \, dy
+\mathrm{Cov}(X, Y) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} (x - \mathbb{E}[X])(y - \mathbb{E}[Y]) f_{X,Y}(x,y) \, dx \, dy
 \end{equation}
 $$
 The variance is a special case of covariance:
 $$
 \begin{equation} \label{eq:variance_covariance}
-Var(X) = Cov(X, X).
+\mathrm{Var}(X) = \mathrm{Cov}(X, X).
 \end{equation}
 $$
-If $X$ and $Y$ are independent, then $Cov(X, Y) = 0$, but the converse is not necessarily true.
+If $X$ and $Y$ are independent, then $\mathrm{Cov}(X, Y) = 0$, but the converse is not necessarily true.
 
 ### Multivariate Distributions
 
@@ -469,11 +468,11 @@ We generalize the concept of joint distributions to a sequence or set of $N$ ran
 To maintain generality for both discrete (PMF) and continuous (PDF) variables, we denote the joint distribution simply as:
 $$
 \begin{equation} \label{eq:general_joint}
-p(x_1, \ldots, x_N) = p(X_1 = x_1, \ldots, X_N = x_N).
+p(x_1, \ldots, x_N)
 \end{equation}
 $$
 
-Any joint distribution can be factorized into a product of conditional probabilities. By repeatedly applying the definition of conditional probability, we obtain the **Chain Rule**:
+Any joint distribution can be factorized into a product of conditional probabilities. By repeatedly applying the definition of conditional probability $\eqref{eq:conditional_pmf}$, we obtain the **Chain Rule**:
 $$
 \begin{equation} \label{eq:chain_rule}
 \begin{aligned}
@@ -485,7 +484,7 @@ $$
 
 We perform marginalization to recover the distribution of a subset of variables from a joint distribution.
 
-For example, to find the marginal distribution of $X_1$ from the joint distribution $p(x_1, \ldots, x_N)$, we sum over all possible values of $X_2, \ldots, X_N$:
+For example, to find the marginal distribution of $X_1$ from the joint distribution $p(x_1, \ldots, x_N)$, we sum over all possible values of $X_2, \ldots, X_N$ simlar to $\eqref{eq:marginal_pmf}$:
 $$
 \begin{equation} \label{eq:general_marginal}
 p(x_1) = \sum_{x_2} \cdots \sum_{x_N} p(x_1, \ldots, x_N).
@@ -527,28 +526,28 @@ By repeating this process for $N$ random variables, we arrive at the chain rule 
 
 For an $N$-dimensional random vector $X = (X_1, \ldots, X_N)^\top$, the expectation is defined component-wise:
 $$
-E[X] =
+\mathbb{E}[X] =
 \begin{bmatrix}
-E[X_1] \\
+\mathbb{E}[X_1] \\
 \vdots \\
-E[X_N]
+\mathbb{E}[X_N]
 \end{bmatrix}.
 $$
 Expectations are linear. In particular, for random vectors $X, Y \in \mathbb{R}^N$,
 $$
 \begin{equation} \label{eq:multivariate_expectation_addition}
-E[X + Y] = E[X] + E[Y].
+\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y].
 \end{equation}
 $$
 More generally, for scalars $a, b \in \mathbb{R}$,
 $$
-E[aX + bY] = aE[X] + bE[Y].
+\mathbb{E}[aX + bY] = a\mathbb{E}[X] + b\mathbb{E}[Y].
 $$
 
 The **covariance matrix** of an $N$-dimensional random vector $X$ is defined as:
 $$
 \begin{equation} \label{eq:covariance_matrix_def}
-\operatorname{Cov}(X) = \Sigma = E\!\left[(X - E[X])(X - E[X])^\top\right],
+\operatorname{Cov}(X) = \Sigma = \mathbb{E}\!\left[(X - \mathbb{E}[X])(X - \mathbb{E}[X])^\top\right],
 \end{equation}
 $$
 where $\Sigma \in \mathbb{R}^{N \times N}$ is an $N \times N$ matrix.
@@ -556,7 +555,7 @@ where $\Sigma \in \mathbb{R}^{N \times N}$ is an $N \times N$ matrix.
 The $(i,j)$-th entry of this matrix is the covariance between $X_i$ and $X_j$:
 $$
 \begin{equation} \label{eq:covariance_entries}
-\Sigma_{ij} = \operatorname{Cov}(X)_{ij} = \operatorname{Cov}(X_i, X_j) = E\!\left[(X_i - E[X_i])(X_j - E[X_j])\right].
+\Sigma_{ij} = \operatorname{Cov}(X)_{ij} = \operatorname{Cov}(X_i, X_j) = \mathbb{E}\!\left[(X_i - \mathbb{E}[X_i])(X_j - \mathbb{E}[X_j])\right].
 \end{equation}
 $$
 In particular, the diagonal entries are the variances:
@@ -566,7 +565,7 @@ $$
 An equivalent and often useful expression for the covariance matrix is:
 $$
 \begin{equation} \label{eq:covariance_alt}
-\Sigma = \operatorname{Cov}(X) = E[XX^\top] - E[X]E[X]^\top.
+\Sigma = \operatorname{Cov}(X) = \mathbb{E}[XX^\top] - \mathbb{E}[X]\mathbb{E}[X]^\top.
 \end{equation}
 $$
 If the components $X_i$ and $X_j$ are independent, then $\Sigma_{ij} = \operatorname{Cov}(X_i, X_j) = 0$, though the converse is not necessarily true.
@@ -579,10 +578,20 @@ $$
 \operatorname{Cov}(aX) = a^2 \operatorname{Cov}(X).
 \end{equation}
 $$
-For any two random vectors $X, Y \in \mathbb{R}^N$, we have
+For any random vector $X \in \mathbb{R}^N$ and $Y \in \mathbb{R}^M$, we can define the cross-covariance matrix between $X$ and $Y$ as:
+$$
+\begin{equation} \label{eq:cross_covariance}
+\operatorname{Cov}(X, Y) = \Sigma_{X Y} = \mathbb{E}\!\left[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])^\top\right],
+\end{equation}
+$$
+where $\Sigma_{X Y} \in \mathbb{R}^{N \times M}$ is an $N \times M$ matrix. The cross-covariance matrix $\Sigma_{X Y}$ captures the covariance between each component of $X$ and each component of $Y$. We also have 
+$$
+\Sigma_{Y X} = \operatorname{Cov}(Y, X) = \Sigma_{X Y}^\top.
+$$
+For $X, Y \in \mathbb{R}^N$, the covariance of their sum is given by
 $$
 \begin{align}
-\operatorname{Cov}(X + Y) &= \operatorname{Cov}(X) + \operatorname{Cov}(Y) + \operatorname{Cov}(X, Y) + \operatorname{Cov}(Y, X). \label{eq:covariance_addition} \\
+\operatorname{Cov}(X + Y) &= \operatorname{Cov}(X) + \operatorname{Cov}(Y) + \Sigma_{X Y} + \Sigma_{Y X} \label{eq:covariance_addition} \\
 \operatorname{Cov}(X + Y) &= \operatorname{Cov}(X) + \operatorname{Cov}(Y), \quad \text{if } X \text{ and } Y \text{ are independent} \label{eq:covariance_addition_independent}
 \end{align}
 $$
@@ -617,7 +626,11 @@ $$
 
 <details><summary>Multivariate Gaussian Distribution</summary>
 
-The multivariate $d$-dimensional Gaussian distribution with mean $\mu \in \mathbb{R}^d$ and covariance matrix $\Sigma \in \mathbb{R}^{d \times d}$ is defined by the PDF:
+The multivariate $d$-dimensional Gaussian distribution with mean $\mu \in \mathbb{R}^d$ and covariance matrix $\Sigma \in \mathbb{R}^{d \times d}$
+$$
+X \sim \mathcal{N}(\mu, \Sigma), \quad X \in \mathbb{R}^d
+$$
+is defined by the PDF:
 $$
 \begin{equation} \label{eq:gaussian_pdf}
 f_X(x) = \frac{1}{\sqrt{\operatorname{det}(2\pi\Sigma)}} \exp\left(-\frac{1}{2}(x - \mu)^\top \Sigma^{-1} (x - \mu)\right), \quad x \in \mathbb{R}^d.
@@ -638,13 +651,13 @@ $$
 $$
 This ensures that the PDF integrates to 1 over $\mathbb{R}^d$.
 
-Given two Gaussian RV $X, Y \in \mathbb{R}^d$ and $Z = X + Y$, we have
+Given two Gaussian RV $X, Y \in \mathbb{R}^d$ and $Z = X + Y$, we follow $\eqref{eq:multivariate_expectation_addition}$ to compute the expectation of $Z$:
 $$
 \begin{equation} \label{eq:gaussian_sum}
 E[Z] = E[X + Y] = E[X] + E[Y]
 \end{equation}
 $$
-with covariance
+We follow $\eqref{eq:covariance_addition}$ to compute the covariance of $Z$:
 $$
 \begin{equation} \label{eq:gaussian_sum_covariance}
 \operatorname{Cov}(Z)=\Sigma_Z=\Sigma_X+\Sigma_Y+\Sigma_{X Y}+\Sigma_{Y X}
@@ -667,9 +680,19 @@ $$
 Then $Y$ is also Gaussian:
 $$
 \begin{equation}\label{eq:gaussian_linear_transform}
-Y = AX,\; X \sim \mathcal{N}(\mu_X,\Sigma_X)\;\Longrightarrow\; Y \sim \mathcal{N}\!\big(A\mu_X,\;A\Sigma_XA^\top\big).
+Y = AX,\; X \sim \mathcal{N}(\mu_X,\Sigma_X)\;\Longrightarrow\; Y \sim \mathcal{N}\!\big(A\mu_X,\;A\Sigma_XA^\top\big),
 \end{equation}
 $$
+with
+$$
+\begin{equation} \label{eq:gaussian_linear_transform_mean}
+\begin{aligned}
+\mu_Y &= A \mu_X, \quad \mu_Y \in \mathbb{R}^m, \\
+\Sigma_Y &= A \Sigma_X A^\top, \quad \Sigma_Y \in \mathbb{R}^{m \times m}.
+\end{aligned}
+\end{equation}
+$$
+This is a **VERY IMPORTANT** property that we will use in Kalman Filters.
 
 </details>
 
