@@ -196,7 +196,10 @@ const LogisticRegression = () => {
 
     return (
         <Paper sx={{ padding: 2, borderRadius: 3 }} elevation={3}>
-            <Box component="div" sx={{ marginBottom: 2, fontSize: 18, fontWeight: "bold" }}>
+            <Box
+                component="div"
+                sx={{ marginBottom: 2, fontSize: 18, fontWeight: "bold" }}
+            >
                 Logistic Regression Visualization
             </Box>
             <Button
@@ -235,7 +238,9 @@ const LogisticRegression = () => {
                     max={1}
                     valueLabelDisplay="auto"
                 />
-                <Box component="div">Learning Rate: {learningRate.toFixed(2)}</Box>
+                <Box component="div">
+                    Learning Rate: {learningRate.toFixed(2)}
+                </Box>
                 <Box component="div">Step Count: {stepCount}</Box>
                 <Box component="div">Loss: {loss.toFixed(4)}</Box>
             </Box>

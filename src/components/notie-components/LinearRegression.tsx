@@ -304,7 +304,9 @@ const LinearRegression = () => {
                     />
                 </ResponsiveChartContainer>
             </Paper>
-            <Box component="div" sx={{ marginTop: 2 }}>Mean Squared Error: {mseValue} </Box>
+            <Box component="div" sx={{ marginTop: 2 }}>
+                Mean Squared Error: {mseValue}{" "}
+            </Box>
         </Paper>
     );
 };

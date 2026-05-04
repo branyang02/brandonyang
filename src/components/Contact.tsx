@@ -1,4 +1,8 @@
-import { faGithub, faGoogleScholar, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import {
+    faGithub,
+    faGoogleScholar,
+    faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, majorScale, Pane, Text, minorScale } from "evergreen-ui";
