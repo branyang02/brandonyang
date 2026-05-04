@@ -1,4 +1,4 @@
-import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faGoogleScholar, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, majorScale, Pane, Text, minorScale } from "evergreen-ui";
@@ -22,6 +22,11 @@ const Contact = () => {
             icon: faLinkedin,
             href: "https://linkedin.com/in/byang02",
             text: "in/byang02",
+        },
+        {
+            icon: faGoogleScholar,
+            href: "https://scholar.google.com/citations?user=dZny9s0AAAAJ&hl=en",
+            text: "Google Scholar",
         },
     ];
 
