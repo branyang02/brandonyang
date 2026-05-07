@@ -7346,54 +7346,132 @@ u^{(k+1)}(t) = u^{(k)}(t) + v^*(t).
 \end{equation}
 $$
 
-## Reinforcement Learning
+## Imitation Learning
 
-Let $S$ denote the state space, $A$ denote the action space, we define a trajectory to be
+In Imitation Learning, we are interested in the _behavior cloning_ problem, where the goal is to learn a policy that mimics the behavior of an expert. Suppose we are given a dataset of expert trajectories
 $$
-\tau = (s_1, a_2, \ldots, s_T, a_T),
+\mathcal{D} = \left\{\left(x_t^{(i)}, u_t^{(i)}\right) : i = 1, \ldots, N, t = 0, \ldots, T\right\},
 $$
-which is a sequence of states and actions. We define a reward function $r: S \times A \to \mathbb{R}$, which gives us a reward for taking action $a$ in state $s$. We define the return of a trajectory to be
+where $x_t^{(i)}$ and $u_t^{(i)}$ are the state and action at time $t$ for the $i$-th expert trajectory. We would like to learn a deterministic feedback control for the robot that is parameterized by parameters $\theta$:
 $$
-\begin{equation} \label{eq:lr-total-return}
-R(\tau) = \sum_{t=1}^T r(s_t, a_t)
+u_\theta(x): \mathcal{X} \to \mathcal{U}.
+$$
+We can learn the parameters $\theta$ by minimizing the mean squared error between the expert actions and the predicted actions:
+$$
+\begin{equation} \label{eq:behavior_cloning_objective}
+\theta^* = \arg\min_\theta \sum_{i=1}^N \sum_{t=0}^T \left\|u_\theta\left(x_t^{(i)}\right) - u_t^{(i)}\right\|^2.
 \end{equation}
 $$
-which is the total reward accumulated along the trajectory. We define a policy
+We can optimize this objective using gradient descent. This is a supervised learning problem, and we can use standard techniques from supervised learning to solve it.
+
+We can also consider a stochastic controller:
+$$
+u \sim u_\theta( \cdot \mid x) = \mathrm{P}(u \mid x; \theta),
+$$
+where $u_\theta( \cdot \mid x)$ is a probability distribution over actions given the current state, parameterized by $\theta$. In this case, we can learn the parameters $\theta$ by maximizing the log-likelihood of the expert actions:
+$$
+\begin{equation} \label{eq:behavior_cloning_log_likelihood}
+\theta^* = \arg\max_\theta \sum_{i=1}^N \sum_{t=0}^T \log u_\theta\left(u_t^{(i)} \mid x_t^{(i)}\right).
+\end{equation}
+$$
+This is also a supervised learning problem, and we can optimize it using gradient ascent.
+
+<details><summary>Gaussian Policy Example</summary>
+
+Suppose our stochastic policy is a Gaussian distribution
+$$
+u \sim u_\theta(\cdot \mid x) = \mathcal{N}\left(\mu_\theta(x), \sigma_\theta^2 I \right),
+$$
+where $\mu_\theta(x)$ is the mean of the Gaussian and $\sigma_\theta^2 \in \mathbb{R}$ is the variance. The log-likelihood of the expert action $u_t^{(i)}$ given the state $x_t^{(i)}$ is
+$$
+\begin{align}
+\log u_\theta\left(u_t^{(i)} \mid x_t^{(i)}\right) &= \log \mathcal{N}\left( \mu_\theta\left(x_t^{(i)}\right), \sigma_\theta^2 I\right) \\
+&= -\frac{1}{2\sigma_\theta^2} \left\|u_t^{(i)} - \mu_\theta\left(x_t^{(i)}\right)\right\|^2 + \text{const}.
+\end{align}
+$$
+Therefore, maximizing the log-likelihood is equivalent to minimizing the mean squared error between the expert actions and the predicted mean actions:
+$$
+\begin{equation}
+\theta^* = \arg\min_\theta \sum_{i=1}^N \sum_{t=0}^T \left\|u_t^{(i)} - \mu_\theta\left(x_t^{(i)}\right)\right\|^2.
+\end{equation}
+$$
+
+</details>
+
+We can also use KL divergence to measure the distance between the expert policy and the learned policy. Let $\pi_E(u \mid x)$ denote the expert policy, and $\pi_\theta(u \mid x)$ denote the learned policy. We can minimize the KL divergence between these two policies:
+$$
+\begin{equation} \label{eq:behavior_cloning_kl_divergence}
+\theta^* = \arg\min_\theta \sum_{i=1}^N \sum_{t=0}^T D_{\mathrm{KL}}\left(\pi_E(\cdot \mid x_t^{(i)}) \| \pi_\theta(\cdot \mid x_t^{(i)})\right).
+\end{equation}
+$$
+We can also minimize the joint KL divergence between the expert trajectory distribution and the learned trajectory distribution:
+$$
+\begin{equation} \label{eq:behavior_cloning_trajectory_kl_divergence}
+\theta^* = \arg\min_\theta D_{\mathrm{KL}}\left(p_E(\tau) \| p_\theta(\tau)\right),
+\end{equation}
+$$
+where $p_E(\tau)$ is the trajectory distribution under the expert policy and $p_\theta(\tau)$ is the trajectory distribution under the learned policy.
+
+<details><summary>KL Divergence</summary>
+
+The KL divergence between two probability distributions $P$ and $Q$ is defined as
+$$
+D_{\mathrm{KL}}(P \| Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}.
+$$
+It measures how different the two distributions are. The KL divergence is always non-negative, and it is zero if and only if $P$ and $Q$ are the same distribution. 
+
+Note that minimizing the KL divergence $D_{\mathrm{KL}}(P \| Q)$ is not the same as minimizing $D_{\mathrm{KL}}(Q \| P)$. The KL divergence is not symmetric. In the context of imitation learning, we typically want to minimize $D_{\mathrm{KL}}(\pi_E \| \pi_\theta)$, which encourages the learned policy to cover all the modes of the expert policy. If we were to minimize $D_{\mathrm{KL}}(\pi_\theta \| \pi_E)$ instead, it would encourage the learned policy to focus on a single mode of the expert policy, which can lead to mode collapse.
+
+</details>
+
+## Reinforcement Learning
+
+Let $\mathcal{S}$ denote the state space, $\mathcal{A}$ denote the action space, we define a trajectory to be
+$$
+\tau = (s_0, a_0, \ldots, s_T, a_T),
+$$
+which is a sequence of states and actions with $s_t \in \mathcal{S}$ and $a_t \in \mathcal{A}$. We define a reward function $r: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$, which gives us a reward for taking action $a$ in state $s$. We define the return of a trajectory to be
+$$
+\begin{equation} \label{eq:lr-total-return}
+R(\tau) = \sum_{t=0}^T r(s_t, a_t)
+\end{equation}
+$$
+which is the total reward accumulated along the trajectory. A policy is given by
 $$
 \pi_\theta(a_t \mid s_t)
 $$
 which is a probability distribution over actions given the current state, parameterized by $\theta$. We define the **trajectory distribution** under policy $\pi_\theta$ to be
 $$
 \begin{equation} \label{eq:trajectory_probability}
-p_\theta(\tau) = p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t)
+p_\theta(\tau) = p(s_0) \prod_{t=0}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t)
 \end{equation}
 $$
-where $p(s_1)$ is the initial state distribution and $p(s_{t+1}\mid s_t, a_t)$ is the transition probability of going to state $s_{t+1}$ given that we are in state $s_t$ and take action $a_t$. 
+where $p(s_0)$ is the initial state distribution and $p(s_{t+1}\mid s_t, a_t)$ is the transition probability of going to state $s_{t+1}$ given that we are in state $s_t$ and take action $a_t$. 
 
 <details><summary>Factorization of the trajectory distribution</summary>
 
 By definition, the trajectory distribution is defined as:
 $$
-p_\theta(\tau) = p(s_1, a_2, \ldots, s_T, a_T).
+p_\theta(\tau) = p(s_0, a_0, \ldots, s_T, a_T).
 $$
 Using the chain rule $\eqref{eq:chain_rule}$, we can factorize this joint distribution as follows:
 $$
 \begin{aligned}
-p_\theta(\tau) &= p(s_1, a_2, \ldots, s_T, a_T) \\
-&= p(s_1) p(a_2\mid s_1) p(s_2 \mid s_1, a_2) p(a_3 \mid s_1, a_2, s_2) \cdots
+p_\theta(\tau) &= p(s_0, a_0, \ldots, s_T, a_T) \\
+&= p(s_0) p(a_0\mid s_0) p(s_1 \mid s_0, a_0) p(a_1 \mid s_0, a_0, s_1) \cdots
 \end{aligned}
 $$
 We are working in a Markov Decision Process (MDP) setting, which means that the transition probability only depends on the current state and action
 $$
-p(s_{t+1} \mid s_1, a_2, \ldots, s_t, a_t) = p(s_{t+1} \mid s_t, a_t).
+p(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t) = p(s_{t+1} \mid s_t, a_t).
 $$
 and the policy only depends on the current state
 $$
-\pi_\theta(a_t \mid s_1, a_2, \ldots, s_t) = \pi_\theta(a_t \mid s_t).
+\pi_\theta(a_t \mid s_0, a_0, \ldots, s_t) = \pi_\theta(a_t \mid s_t).
 $$
 Therefore, we can simplify the factorization of the trajectory distribution to be:
 $$
-p_\theta(\tau) = p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t),
+p_\theta(\tau) = p(s_0) \prod_{t=0}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t),
 $$
 which is the expression given in $\eqref{eq:trajectory_probability}$.
 
@@ -7429,7 +7507,9 @@ J(\theta) = \sum_\tau p_\theta(\tau) R(\tau).
 $$
 Since the $R(\tau)$ term does not depend on $\theta$, we can take the gradient w.r.t. $\theta$ and move it inside the summation:
 $$
+\begin{equation} \label{eq:policy_gradient_initial}
 \nabla_\theta J(\theta) = \sum_\tau  \nabla_\theta p_\theta(\tau) R(\tau).
+\end{equation}
 $$
 Given the property
 $$
@@ -7437,7 +7517,7 @@ $$
 \frac{d}{dx}\left( \log f(x) \right) = \frac{1}{f(x)} \frac{d}{dx} f(x) \implies \nabla_\theta \log p_\theta(\tau) = \frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)},
 \end{equation}
 $$
-we can rewrite the policy gradient as follows:
+we can rewrite $\eqref{eq:policy_gradient_initial}$ as follows:
 $$
 \begin{align}
 \nabla_\theta J(\theta) &= \sum_\tau p_\theta(\tau) \nabla_\theta \log p_\theta(\tau) R(\tau)  \\
@@ -7447,32 +7527,61 @@ $$
 We expand $\nabla_\theta \log p_\theta(\tau)$ using the factorization of the trajectory distribution $\eqref{eq:trajectory_probability}$, and the fact that $\log(ab) = \log a + \log b$:
 $$
 \begin{aligned}
-\nabla_\theta \log p_\theta(\tau) &= \nabla_\theta \log \left( p(s_1) \prod_{t=1}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t) \right) \\
+\nabla_\theta \log p_\theta(\tau) &= \nabla_\theta \log \left( p(s_0) \prod_{t=0}^T \pi_\theta(a_t \mid s_t) p(s_{t+1}\mid s_t, a_t) \right) \\
 &= \nabla_\theta \left( 
-    \log p(s_1) + \sum_{t=1}^T \log \pi_\theta(a_t \mid s_t) + \sum_{t=1}^T \log p(s_{t+1}\mid s_t, a_t)
+    \log p(s_0) + \sum_{t=0}^T \log \pi_\theta(a_t \mid s_t) + \sum_{t=0}^T \log p(s_{t+1}\mid s_t, a_t)
 \right) \\
-&= \nabla_\theta \log p(s_1) + \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) + \sum_{t=1}^T \nabla_\theta \log p(s_{t+1}\mid s_t, a_t).
+&= \nabla_\theta \log p(s_0) + \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) + \sum_{t=0}^T \nabla_\theta \log p(s_{t+1}\mid s_t, a_t).
 \end{aligned}
 $$
-The term $\nabla_\theta \log p(s_1)$ is zero since the initial state distribution does not depend on $\theta$. The term $\nabla_\theta \log p(s_{t+1}\mid s_t, a_t)$ is also zero since the transition probability does not depend on $\theta$. Therefore, we have
+The term $\nabla_\theta \log p(s_0)$ is zero since the initial state distribution does not depend on $\theta$. The term $\nabla_\theta \log p(s_{t+1}\mid s_t, a_t)$ is also zero since the transition probability does not depend on $\theta$. Therefore, we have
 $$
 \begin{equation} \label{eq:log_trajectory_gradient}
-\nabla_\theta \log p_\theta(\tau) = \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t).
+\nabla_\theta \log p_\theta(\tau) = \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t).
 \end{equation}
 $$
 Substituting back into the policy gradient $\eqref{eq:policy_gradient_before_expansion}$:
 $$
 \begin{equation} \label{eq:policy_gradient_final}
-\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right]
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right]
 \end{equation}
 $$
 This is the policy gradient, which gives us a way to compute the gradient of the expected return w.r.t. the policy parameters $\theta$ using samples from the trajectory distribution. In practice, we can estimate this policy gradient using **Monte Carlo sampling** by generating trajectories using the current policy and computing the empirical return for each trajectory:
 $$
 \begin{equation} \label{eq:monte_carlo_policy_gradient_estimate}
-\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \right) R(\tau^{(i)}),
+\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \right) R(\tau^{(i)}),
 \end{equation}
 $$
 where $\tau^{(i)}$ is the $i$-th trajectory sampled from the current policy, and $N$ is the number of trajectories sampled. This is known as the REINFORCE algorithm.
+
+<blockquote class="algorithm" id="def:reinforce">
+
+**REINFORCE**
+
+The algorithm proceeds iteratively to maintain a sequence of policy parameters $\theta^{(0)}, \theta^{(1)}, \theta^{(2)}, \ldots$ that converges to the optimal parameters $\theta^*$ defined in $\eqref{eq:rl-objective}$.
+
+1. Initialize policy parameters $\theta^{(0)}$ arbitrarily.
+2. At each iteration $k = 0, 1, 2, \ldots$, perform the following steps:
+
+    a. **Roll Out**: Sample $N$ trajectories $\{\tau^{(i)}\}_{i=1}^N$ from the current policy $\pi_{\theta^{(k)}}$, where each trajectory is 
+    $$
+    \tau^{(i)} = (s_0^{(i)}, a_0^{(i)}, \ldots, s_T^{(i)}, a_T^{(i)}).
+    $$
+
+    b. **Return Estimation**: For each trajectory $i$, compute the empirical return $R(\tau^{(i)}) = \sum_{t=0}^T r(s_t^{(i)}, a_t^{(i)})$.
+
+    c. **Policy Gradient Estimate**: Estimate the policy gradient using the Monte Carlo estimator $\eqref{eq:monte_carlo_policy_gradient_estimate}$:
+    $$
+    \nabla_\theta J(\theta^{(k)}) \approx \frac{1}{N} \sum_{i=1}^N \left( \sum_{t=0}^T \nabla_\theta \log \pi_{\theta^{(k)}}(a_t^{(i)} \mid s_t^{(i)}) \right) R(\tau^{(i)}).
+    $$
+
+    d. **Policy Update**: Update the policy parameters via gradient ascent:
+        $$
+        \theta^{(k+1)} = \theta^{(k)} + \alpha \nabla_\theta J(\theta^{(k)}).
+        $$
+3. Continue until the policy parameters converge.
+
+</blockquote>
 
 Monte Carlo returns are unbiased estimates of the expected return under the policy. However, because they depend on all future rewards, they can have very high variance, especially in long-horizon or stochastic environments. This is the primary limitation of vanilla policy gradient methods.
 
@@ -7491,27 +7600,27 @@ which is the cumulative reward from time $t$ onwards. Note that $G_t$ depends on
 We can rewrite the policy gradient using reward-to-go:
 $$
 \begin{equation} \label{eq:policy_gradient_reward_to_go}
-\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \, G_t\right].
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \, G_t\right].
 \end{equation}
 $$
 
 We show that the reward-to-go formulation is still an unbiased estimator of the policy gradient. First, we can split $\eqref{eq:lr-total-return}$ into $B_t$ and $G_t$:
 $$
 \begin{equation} \label{eq:return_split}
-R(\tau) = B_t + G_t, \quad \text{where } B_t = \sum_{t'=1}^{t-1} r(s_{t'}, a_{t'}), \quad G_t = \sum_{t'=t}^T r(s_{t'}, a_{t'}).
+R(\tau) = B_t + G_t, \quad \text{where } B_t = \sum_{t'=0}^{t-1} r(s_{t'}, a_{t'}), \quad G_t = \sum_{t'=t}^T r(s_{t'}, a_{t'}).
 \end{equation}
 $$
 Substituting this back into the original policy gradient $\eqref{eq:policy_gradient_final}$:
 $$
 \begin{align}
-\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
-&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) (B_t + G_t)\right] \\
-&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] + \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) G_t\right] \\
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
+&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) (B_t + G_t)\right] \\
+&= \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] + \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) G_t\right] \\
 \end{align}
 $$
 We want to show that 
 $$
-\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0.
+\mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) B_t\right] = 0.
 $$
 Given linearity of expectation, we can show that each term in the summation is zero:
 $$
@@ -7523,7 +7632,7 @@ $$
 $$
 We split the trajectory $\tau$ into three parts: the part before time $t$, the part at time $t$, and the part after time $t$:
 $$
-\tau = (h_t, a_t, f_t), \quad \text{where } h_t = (s_1, a_1, \ldots, s_t), f_t = (s_{t+1}, a_{t+1}, \ldots, s_T, a_T).
+\tau = (h_t, a_t, f_t), \quad \text{where } h_t = (s_0, a_0, \ldots, s_t), f_t = (s_{t+1}, a_{t+1}, \ldots, s_T, a_T).
 $$
 We can now split the summation over $\tau$ into three summations over $h_t, a_t, f_t$:
 $$
@@ -7569,15 +7678,15 @@ which means that the reward-to-go formulation has the exact same gradient as the
 
 In general, a baseline defined as
 $$
-b(h_t), \quad \text{where } h_t = (s_1, a_1, \ldots, s_t)
+b(h_t), \quad \text{where } h_t = (s_0, a_0, \ldots, s_t)
 $$
 can be subtracted from the return without changing the expected value of the policy gradient:
 $$
 \begin{equation} \label{eq:policy_gradient_with_baseline}
-\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \left(G_t - b(h_t)\right)\right].
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \left(G_t - b(h_t)\right)\right].
 \end{equation}
 $$
-Note that the baseline can be any function of the history $h_t$ up to time $t$, as long as it does not depend on the action at time $t$ or future actions.
+Note that the baseline can be any function of the history $h_t$ up to time $t$, as long as it does not depend on $a_t$ or future actions.
 
 By stripping out the past rewards (which act as irrelevant noise for the current action), we significantly **lower the variance** of the gradient estimate, making your training process much more stable and sample-efficient.
 
@@ -7652,7 +7761,7 @@ It measures how much better or worse action $a$ is relative to the average actio
 We use the policy gradient of the form:
 $$
 \begin{equation} \label{eq:policy_gradient_with_psi}
-\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \Psi_t\right],
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}\left[\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \Psi_t\right],
 \end{equation}
 $$
 where $\Psi_t$ is some estimator of the return. We have the following choices for $\Psi_t$:
@@ -7767,40 +7876,93 @@ $$
 
 ### Actor-Critic Methods
 
-REINFORCE is unbiased, but it often has high variance because it uses full sampled returns. Actor-critic methods reduce this variance by introducing a learned critic, which estimates either the state-value function $V^\pi(s)$, the action-value function $Q^\pi(s,a)$, or the advantage function $A^\pi(s,a)$. The actor updates the policy, while the critic provides a lower-variance training signal. We have the following two components in an actor-critic method:
+REINFORCE is unbiased, but it often has high variance because it uses full sampled returns. Actor-critic methods reduce this variance by introducing a learned **critic**, which estimates either the state-value function $V^\pi(s)$, the action-value function $Q^\pi(s,a)$, or the advantage function $A^\pi(s,a)$. The **actor** updates the policy using a training signal $\Psi_t$ supplied (in part or in whole) by the critic. We have the following two components in an actor-critic method:
 
-- The **actor** is the policy $\pi_\theta(a \mid s)$
-- The **critic** is a function approximator $V_\phi(s)$
+- The **actor** is the policy $\pi_\theta(a \mid s)$.
+- The **critic** is a function approximator $f_\phi$ — typically $V_\phi(s)$ or $Q_\phi(s,a)$ — trained by regression toward a target $y_t$.
 
-In the advantage actor-critic method, we use the critic's estimate of the value function to compute an advantage estimator:
-$$
-\Psi_t = \hat{A}(s_t,a_t) = \hat{Q}(s_t,a_t) - V_\phi(s_t), \quad \hat{Q}(s_t,a_t) = G_t
-$$
-Since we cannot compute the true $Q^\pi(s_t,a_t)$, we use the Monte Carlo return $G_t$ as an unbiased estimator of $Q^\pi(s_t,a_t)$.
+Different actor-critic algorithms correspond to different choices of the actor signal $\Psi_t$ (from the menu in $\eqref{eq:policy_gradient_with_psi}$) and the critic target $y_t$. We first state the algorithm in its generic form, then show how specific algorithms instantiate it.
 
-We can then perform the Monte Carlo policy gradient update using this advantage estimator:
+<blockquote class="algorithm" id="def:generic-actor-critic">
+
+**Generic Actor-Critic**
+
+The algorithm proceeds iteratively to maintain a sequence of actor parameters $\theta^{(k)}$ and critic parameters $\phi^{(k)}$ that jointly converge to the optimal policy $\pi^*$ and the corresponding value function.
+
+1. Initialize actor parameters $\theta^{(0)}$ and critic parameters $\phi^{(0)}$ arbitrarily.
+2. At each iteration $k = 0, 1, 2, \ldots$, perform the following steps:
+
+    a. **Roll Out**: Sample $N$ trajectories $\{\tau^{(i)}\}_{i=1}^N$ from the current policy $\pi_{\theta^{(k)}}$.
+
+    b. **Signal Estimation**: For each trajectory $i$ and each time step $t$, compute
+    - the **actor signal** $\Psi_t^{(i)}$, chosen from $\eqref{eq:policy_gradient_with_psi}$ (possibly using the current critic $f_{\phi^{(k)}}$), and
+    - the **critic target** $y_t^{(i)}$ that the critic will regress toward.
+
+    c. **Actor Update**: Update the actor parameters via gradient ascent on the policy objective:
+    $$
+    \begin{equation} \label{eq:actor_update_gradient_ascent}
+    \theta^{(k+1)} = \theta^{(k)} + \alpha \nabla_\theta J(\theta^{(k)}),
+    \end{equation}
+    $$
+    where the policy gradient is estimated as
+    $$
+    \begin{equation} \label{eq:actor_update_monte_carlo}
+    \nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \, \Psi_t^{(i)}.
+    \end{equation}
+    $$
+
+    d. **Critic Update**: Update the critic parameters via gradient descent on the regression loss:
+    $$
+    \begin{equation} \label{eq:critic_update_gradient_descent}
+    \phi^{(k+1)} = \phi^{(k)} - \beta \nabla_\phi L(\phi^{(k)}),
+    \end{equation}
+    $$
+    where
+    $$
+    L(\phi) = \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \left(f_\phi\!\left(s_t^{(i)}, a_t^{(i)}\right) - y_t^{(i)}\right)^2.
+    $$
+3. Continue until the actor and critic parameters converge.
+
+</blockquote>
+
+Specific actor-critic algorithms are obtained by fixing the critic $f_\phi$, the actor signal $\Psi_t$, and the critic target $y_t$ in the generic algorithm above. We give three examples.
+
+#### Monte Carlo Actor-Critic
+
+The actor signal is the Monte Carlo return, and the critic regresses toward the same return:
 $$
-\begin{equation} \label{eq:actor_update_monte_carlo}
-\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}) \hat{A}(s_t^{(i)}, a_t^{(i)}).
-\end{equation}
+\begin{align}
+\Psi_t &= G_t \\
+f_\phi(s_t, a_t) &= V_\phi(s_t), \qquad y_t = G_t.
+\end{align}
 $$
-We can now update actor parameters $\theta$ using gradient ascent:
+Since $G_t$ does not depend on the critic, the actor update reduces to the REINFORCE estimator $\eqref{eq:monte_carlo_policy_gradient_estimate}$. The critic plays no role in shaping the actor signal here — it is trained only to predict returns, which can later be repurposed (e.g. as a baseline).
+
+#### Q Actor-Critic
+
+The actor signal is the critic's own estimate of the action-value, and we use the Monte Carlo return as a regression target for $Q_\phi$:
 $$
-\begin{equation} \label{eq:actor_update_gradient_ascent}
-\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta),
-\end{equation}
+\begin{align}
+\Psi_t &= Q_{\phi^{(k)}}(s_t, a_t) \\
+f_\phi(s_t, a_t) &= Q_\phi(s_t, a_t), \qquad y_t = G_t.
+\end{align}
 $$
-And update critic parameters using gradient descent using the observed returns:
+This replaces the high-variance sampled return in the actor update with the (lower-variance) critic estimate, at the cost of bias from $Q_\phi \neq Q^\pi$.
+
+#### Advantage Actor-Critic
+
+The actor signal is the advantage estimate, formed by subtracting the critic from the Monte Carlo return, and the critic regresses toward the return:
 $$
-L(\phi) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2
+\begin{align}
+\Psi_t &= \hat{A}(s_t, a_t) = G_t - V_{\phi^{(k)}}(s_t) \\
+f_\phi(s_t, a_t) &= V_\phi(s_t), \qquad y_t = G_t.
+\end{align}
 $$
-$$
-\phi \leftarrow \phi - \beta \nabla_\phi L(\phi).
-$$
+Centering the return by $V_{\phi^{(k)}}(s_t)$ acts as a state-dependent baseline (see $\eqref{eq:policy_gradient_with_baseline}$), which keeps the estimator unbiased while typically reducing variance compared with Monte Carlo Actor-Critic.
 
 ### Temporal Difference Learning
 
-The Monte Carlo return $G_t$ can have high variance because it depends on the entire future trajectory. Temporal Difference (TD) learning reduces this variance by using **bootstrapping**: instead of summing rewards all the way to the end of the trajectory, we stop early and use the critic’s current estimate $V_\phi$ to approximate the remaining return.
+The Monte Carlo return $G_t$ $\eqref{eq:reward_to_go}$ can have high variance because it depends on the entire future trajectory. Temporal Difference (TD) learning reduces this variance by using **bootstrapping**: instead of summing rewards all the way to the end of the trajectory, we stop early and use the critic’s current estimate $V_\phi$ to approximate the remaining return.
 
 Starting from the discounted return,
 $$
@@ -7811,11 +7973,7 @@ $$
 we can split this into the first $k$ rewards and the remaining tail:
 $$
 \begin{equation} \label{eq:k_step_return_split}
-G_t
-=
-\sum_{j=0}^{k-1} \gamma^j r_{t+j}
-+
-\gamma^k G_{t+k}.
+G_t = \sum_{j=0}^{k-1} \gamma^j r_{t+j} + \gamma^k G_{t+k}.
 \end{equation}
 $$
 Since $G_{t+k}$ is the return from time $t+k$ onward, its conditional expectation given $s_{t+k}$ is the value function $\eqref{eq:state_value_reward_to_go}$:
@@ -7826,31 +7984,20 @@ V^\pi(s_{t+k}) = \mathbb{E}[G_{t+k} \mid s_{t+k}].
 $$
 Replacing the unknown value function $V^\pi$ with the critic $V_\phi$, we obtain the $k$-step bootstrapped estimate of the action-value:
 $$
-\begin{equation} \label{eq:k_step_q_estimate}
-\hat{Q}^{(k)}(s_t, a_t)
-=
-\sum_{j=0}^{k-1} \gamma^j r_{t+j}
-+
-\gamma^k V_\phi(s_{t+k}).
-\end{equation}
+\begin{align}
+\hat{Q}^{(k)}(s_t, a_t) = \sum_{j=0}^{k-1} \gamma^j r_{t+j} + \gamma^k V_\phi(s_{t+k}) \label{eq:kkk_step_qqq_estimate}
+\end{align}
 $$
-
 The simplest case is the **one-step** TD estimate, obtained by setting $k=1$:
 $$
 \begin{equation} \label{eq:one_step_q_estimate}
-\hat{Q}^{(1)}(s_t, a_t)
-=
-r_t + \gamma V_\phi(s_{t+1}).
+\hat{Q}^{(1)}(s_t, a_t) = r_t + \gamma V_\phi(s_{t+1}).
 \end{equation}
 $$
 Using this one-step estimate, the corresponding advantage estimator is
 $$
 \begin{equation} \label{eq:one_step_advantage}
-\hat{A}(s_t, a_t)
-=
-\hat{Q}^{(1)}(s_t, a_t) - V_\phi(s_t)
-=
-r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t).
+\hat{A}(s_t, a_t) = \hat{Q}^{(1)}(s_t, a_t) - V_\phi(s_t) = r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t).
 \end{equation}
 $$
 This quantity is called the **TD error**, and is defined as
@@ -7862,15 +8009,45 @@ $$
 
 Thus, TD learning replaces the full Monte Carlo return with a bootstrapped target that depends only on a small number of future rewards, which typically gives a lower-variance estimate at the cost of introducing some bias through the critic.
 
+TD Actor-Critic is an actor-critic algorithm that follows [](#bqref-def:generic-actor-critic) with the advantage estimated using $\eqref{eq:one_step_advantage}$:
+$$
+\begin{align}
+\Psi_t &= \hat{A}(s_t, a_t) = r_t + \gamma V_{\phi^{(k)}}(s_{t+1}) - V_{\phi^{(k)}}(s_t) \\
+f_\phi(s_t, a_t) &= V_\phi(s_t), \qquad y_t = r_t + \gamma V_{\phi^{(k)}}(s_{t+1}). \label{eq:td_actor_critic_advantage}
+\end{align}
+$$
+
+#### Q-V Actor Critic
+
+We can use $\eqref{eq:kkk_step_qqq_estimate}$ as a target for an estimated $Q_\phi(s_t, a_t)$. In this case we will have two critics with their own parameters:
+$$
+Q_\phi\left(s_t, a_t\right), \quad V_\psi\left(s_t\right)
+$$
+Then, we can estimate the advantage as follows:
+$$
+\Psi_t = \hat{A}\left(s_t, a_t\right) = Q_\phi\left(s_t, a_t\right) - V_\psi\left(s_t\right).
+$$
+We have the following update rules for the two critics:
+$$
+\begin{align}
+L(\phi) &= \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \left( Q_\phi(s_t^{(i)}, a_t^{(i)}) - \mathrm{stopgrad}\left[r_t^{(i)} + \gamma V_\psi\left(s_{t+1}^{(i)}\right) \right] \right)^2 \\
+\phi^{(k+1)} &= \phi^{(k)} - \alpha \nabla_\phi L(\phi) \\
+L(\psi) &= \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T  \left( V_\psi(s_t^{(i)}) - \mathrm{stopgrad}\left[ \mathbb{E}_{a \sim \pi_{\theta} \left(\cdot \mid s_t^{(i)} \right) } Q_\phi\left(s_{t}^{(i)}, a \right) \right] \right)^2 \\
+\psi^{(k+1)} &= \psi^{(k)} - \beta \nabla_\psi L(\psi)
+\end{align}
+$$
+We used the one-step TD estimate $\eqref{eq:one_step_q_estimate}$ as the target for $Q_\phi$, and we used the policy-weighted version of $\eqref{eq:v_from_q}$ as the target for $V_\psi$.
+
 ### Generalized Advantage Estimation (GAE)
 
 The $k$-step bootstrapped estimate $\hat{Q}^{(k)}$ provides a way to trade off bias and variance by choosing different values of $k$. (Higher $k$ reduces bias but increases variance, while lower $k$ increases bias but reduces variance.) Generalized Advantage Estimation (GAE) is a method that combines multiple $k$-step estimates to create a more flexible advantage estimator.
 $$
 \begin{align}
 \hat{A}^{\mathrm{GAE}(\gamma, \lambda)}(s_t, a_t) & = \frac{1}{\sum_{l} w_l}\sum_{l} w_l \delta_{t+l}, \quad \text{where } w_l = (\gamma \lambda)^{l-1} \\
-&= \sum_{l=0}^\infty (\gamma \lambda)^{l} \delta_{t+l}.
+&= \sum_{l=0}^\infty (\gamma \lambda)^{l} \delta_{t+l},
 \end{align}
 $$
+where $\delta_{t}$ is the one-step TD error defined in $\eqref{eq:td_error}$.
 
 With $\lambda=0$, GAE reduces to the one-step TD error:
 $$
@@ -7882,9 +8059,18 @@ $$
 $$
 By tuning $\lambda \in [0, 1]$, we can find a sweet spot that balances bias and variance for our particular problem.
 
+To use GAE in an actor-critic algorithm, we can set the actor signal to be the GAE advantage estimator:
+$$
+\Psi_t = \hat{A}^{\mathrm{GAE}(\gamma, \lambda)}(s_t, a_t).
+$$
+And we can train the critic to regress toward the value function target that corresponds to the GAE advantage:
+$$
+f_\phi(s_t, a_t) = V_\phi(s_t), \qquad y_t = \hat{A}^{\mathrm{GAE}(\gamma, \lambda)}(s_t, a_t) + V_{\phi^{(k)}}(s_t).
+$$
+
 ### Trust Region Policy Optimization (TRPO)
 
-Instead of collecting fresh trajectories from the current policy $\pi_\theta$ for every update, we can sometimes reuse trajectories collected from an older policy $\pi_{\theta_{\text{old}}}$. However, since these trajectories were not sampled from the current policy, we must correct for the distribution mismatch, typically using importance sampling or a surrogate objective based on the probability ratio $\pi_\theta(a_t \mid s_t) / \pi_{\theta_{\text{old}}}(a_t \mid s_t)$.
+Instead of collecting fresh trajectories from the current policy $\pi_\theta$ for every update, we can sometimes reuse trajectories collected from an older policy $\pi_{\theta_{\text{old}}}$. However, since these trajectories were not sampled from the current policy, we must correct for the distribution mismatch, typically using _importance sampling_ or a _surrogate objective_.
 
 #### Surrogate Objective
 
@@ -7904,25 +8090,45 @@ is called the **importance weight**.
 Starting with policy gradient $\eqref{eq:policy_gradient_final}$, we apply importance sampling $\eqref{eq:importance_sampling}$ to rewrite the expectation under the new policy $\pi_\theta$ using samples from the old policy $\pi_{\theta_{\text{old}}}$:
 $$
 \begin{align}
-\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\cdot)}\left[\left( \sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
-&= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} \left(\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right].
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_\theta(\cdot)}\left[\left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) \right) R(\tau)\right] \\
+&= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} \left(\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right].
 \end{align}
 $$
 Follow $\eqref{eq:trajectory_probability}$, we can write the importance weight as
 $$
 \begin{equation} \label{eq:importance_weight_trpo}
-w_\theta (\tau) = \frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} = \prod_{t=1}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)},
+w_\theta (\tau) = \frac{p_\theta(\tau)}{p_{\theta_{\text{old}}}(\tau)} = \prod_{t=0}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)},
 \end{equation}
 $$
-since $p(s_1)$ and $p(s_{t+1} \mid s_t, a_t)$ do not depend on $\theta$ and cancel out in the ratio. Substituting this back into the policy gradient:
+since $p(s_0)$ and $p(s_{t+1} \mid s_t, a_t)$ do not depend on $\theta$ and cancel out in the ratio. Substituting this back into the policy gradient:
 $$
 \begin{align}
-\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) \left(\sum_{t=1}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right] \\
-&= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\nabla_\theta w_\theta(\tau) R(\tau)\right] \\
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) \left(\sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t)\right) R(\tau)\right] \label{eq:policy_gradient_importance_sampling}
+\end{align}
+$$
+We use the log trick $\eqref{eq:log_derivative_trick}$ and apply it on the importance weight $w_\theta(\tau)$:
+$$
+\begin{align}
+\nabla_\theta w_\theta(\tau) &= w_\theta(\tau) \nabla_\theta \log w_\theta(\tau) \\
+&= w_\theta(\tau) \nabla_\theta \log \left(\prod_{t=0}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)} \right) \\
+&= w_\theta(\tau) \nabla_\theta \left( \sum_{t=0}^T \log \pi_\theta(a_t \mid s_t) - \sum_{t=0}^T \log \pi_{\theta_{\text{old}}}(a_t \mid s_t) \right) \\
+&= w_\theta(\tau) \left( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t) - \sum_{t=0}^T \nabla_\theta \log \pi_{\theta_{\text{old}}}(a_t \mid s_t) \right) \label{eq:log_derivative_trick_importance_weight}
+\end{align}
+$$
+the second term in $\eqref{eq:log_derivative_trick_importance_weight}$ is zero since $\pi_{\theta_{\text{old}}}$ does not depend on $\theta$. Therefore, we have
+$$
+\begin{align}
+\nabla_\theta w_\theta(\tau) &= w_\theta(\tau) \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t \mid s_t). \label{eq:importance_weight_gradient}
+\end{align}
+$$
+Substituting the RHS of $\eqref{eq:importance_weight_gradient}$ back into $\eqref{eq:policy_gradient_importance_sampling}$, we get
+$$
+\begin{align}
+\nabla_\theta J(\theta) &= \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\nabla_\theta w_\theta(\tau) R(\tau)\right] \\
 &= \nabla_\theta \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) R(\tau)\right].
 \end{align}
 $$
-We define the gradient component above as the **surrogate objective**:
+We define this gradient component above as the **surrogate objective**:
 $$
 \begin{equation} \label{eq:surrogate_objective_trpo}
 L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\left(\prod_{t=1}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}\right) R(\tau)\right].
