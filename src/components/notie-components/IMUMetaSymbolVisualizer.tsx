@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDarkMode } from "../../context/DarkModeContext";
 import {
     Button,
@@ -375,7 +375,7 @@ export default function IMUMetaSymbolVisualizer() {
         trajectoryModeRef.current = trajectoryMode;
     }, [trajectoryMode]);
 
-    const resetSimulation = () => {
+    const resetSimulation = useCallback(() => {
         const truth0 = groundTruthAt(0, trajectoryMode);
         simRef.current = {
             simTime: 0,
@@ -397,14 +397,11 @@ export default function IMUMetaSymbolVisualizer() {
         accumulatorRef.current = 0;
         lastRef.current = null;
         forceRender((n) => n + 1);
-    };
+    }, [trajectoryMode]);
 
     useEffect(() => {
         resetSimulation();
-    }, []);
-    useEffect(() => {
-        resetSimulation();
-    }, [trajectoryMode]);
+    }, [resetSimulation]);
 
     useEffect(() => {
         const stepSimulation = (dt: number) => {
