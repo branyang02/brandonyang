@@ -8131,7 +8131,7 @@ $$
 We define this gradient component above as the **surrogate objective**:
 $$
 \begin{equation} \label{eq:surrogate_objective_trpo}
-L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\left(\prod_{t=1}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}\right) R(\tau)\right].
+L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\left(\prod_{t=0}^T \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}\right) R(\tau)\right].
 \end{equation}
 $$
 Therefore, we arrive at the following identity:
@@ -8146,9 +8146,8 @@ $$
 L(\theta_{\text{old}}) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[R(\tau)\right] = J(\theta_{\text{old}}).
 \end{equation}
 $$
-The surrogate objective $L(\theta)$ is a first-order approximation to the true expected return $J(\theta)$ around $\theta_{\text{old}}$. Therefore, we need to ensure that the new policy $\pi_\theta$ does not deviate too much from the old policy $\pi_{\theta_{\text{old}}}$, otherwise the surrogate objective may no longer be a good approximation to the true expected return, and we may end up with a policy update that actually decreases performance.
 
-Trusted Region Policy Optimization (TRPO) optimizes this surrogate objective while ensuring that the new policy does not deviate too much from the old policy by imposing a constraint on the KL divergence between the two policies. The **Constrained TRPO** optimization problem is:
+Trust Region Policy Optimization (TRPO) optimizes this surrogate objective while ensuring that the new policy does not deviate too much from the old policy by imposing a constraint on the KL divergence between the two policies. The **Constrained TRPO** optimization problem is:
 $$
 \begin{equation} \label{eq:trpo_constrained_optimization}
 \begin{aligned}
@@ -8180,128 +8179,234 @@ TRPO is therefore a trust-region method because it performs the optimization in 
 
 #### TRPO Algorithm
 
-1. Set $\theta_{\text{old}} \leftarrow \theta$.
-2. Collect a batch of trajectories using $\pi_{\theta_{\text{old}}}$.
-3. Compute advantage estimates $\hat{A}_t$ with critic $V_\phi$ using GAE.
-4. For each stored $(s_t, a_t)$, compute the weight ratio
+<blockquote class="algorithm" id="def:trpo">
+
+**Trust Region Policy Optimization (TRPO)**
+
+TRPO follows the actor-critic template with actor $\pi_\theta$ and critic $V_\phi$. 
+
+1. Initialize actor parameters $\theta^{(0)}$ and critic parameters $\phi^{(0)}$ arbitrarily.
+2. At each iteration $k = 0, 1, 2, \ldots$, perform the following steps:
+
+    a. **Roll Out**: Set $\theta_{\text{old}} \leftarrow \theta^{(k)}$ and sample $N$ trajectories $\{\tau^{(i)}\}_{i=1}^N$ from the current policy $\pi_{\theta_{\text{old}}}$. Let $\mathcal{D}_k = \{(i,t) : s_t^{(i)}, a_t^{(i)} \text{ are in the sampled batch}\}$, and let $|\mathcal{D}_k|$ be the number of sampled timesteps.
+
+    b. **Signal Estimation**: For each trajectory $i$ and each time step $t$, compute the GAE actor signal
     $$
-    r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
+    \Psi_t^{(i)} = \hat{A}_t^{(i)} = \hat{A}_{\phi^{(k)}}^{\mathrm{GAE}(\gamma,\lambda)}(s_t^{(i)}, a_t^{(i)}),
     $$
-    and then form the surrogate objective
+    and the critic target
     $$
-    L(\theta) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T r_\theta^{(i)}(t)\,\hat{A}_t^{(i)}.
+    y_t^{(i)} = \hat{A}_t^{(i)} + V_{\phi^{(k)}}(s_t^{(i)}).
     $$
-5. Estimate the average KL divergence between the old and new policies over the sampled states:
+
+    c. **Actor Update**: For each sampled tuple, compute the single-step likelihood ratio
     $$
-    \bar D_{\mathrm{KL}}(\theta)
+    r_\theta^{(i)}(t) = \frac{\pi_\theta(a_t^{(i)} \mid s_t^{(i)})}{\pi_{\theta_{\text{old}}}(a_t^{(i)} \mid s_t^{(i)})}.
+    $$
+    Then form the sampled TRPO surrogate objective
+    $$
+    \hat{L}_k(\theta)
     =
-    \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T
+    \frac{1}{|\mathcal{D}_k|}
+    \sum_{(i,t) \in \mathcal{D}_k}
+    r_\theta^{(i)}(t)\,\hat{A}_t^{(i)}.
+    $$
+    Estimate the average KL divergence over the sampled states:
+    $$
+    \hat{D}_{\mathrm{KL},k}(\theta)
+    =
+    \frac{1}{|\mathcal{D}_k|}
+    \sum_{(i,t) \in \mathcal{D}_k}
     D_{\mathrm{KL}}\!\left(
     \pi_{\theta_{\text{old}}}(\cdot \mid s_t^{(i)})
     \,\|\, 
     \pi_\theta(\cdot \mid s_t^{(i)})
     \right).
     $$
-6. Update the actor parameters $\theta$ by maximizing the surrogate objective $L(\theta)$ subject to the trust-region constraint
-    $$
-    \bar D_{\mathrm{KL}}(\theta) \le \delta,
-    $$
-    while keeping $\theta_{\text{old}}$ fixed during this optimization.
-7. In practice, compute a single trust-region update direction using the gradient of $L(\theta)$ and the local curvature of the KL divergence, then use a line search to ensure that the updated policy both improves the surrogate objective and satisfies the KL constraint.
-8. Update the critic parameters $\phi$ by taking gradient descent steps on the value loss using
+    Update the actor by solving the trust-region problem
     $$
     \begin{aligned}
-    L(\phi) &= \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2 \\
-    \phi &\leftarrow \phi - \beta \nabla_\phi L(\phi).
+    \theta^{(k+1)}
+    =
+    \arg\max_\theta \quad & \hat{L}_k(\theta) \\
+    \text{subject to} \quad & \hat{D}_{\mathrm{KL},k}(\theta) \leq \delta,
     \end{aligned}
     $$
-9. After finishing optimization on that batch, set
+    while keeping $\theta_{\text{old}}$ fixed. In practice, this constrained problem is approximated using the gradient of $\hat{L}_k(\theta)$, the local curvature of the KL divergence, and a line search that keeps the update inside the trust region.
+
+    d. **Critic Update**: Update the critic parameters via gradient descent on the value regression loss:
     $$
-    \theta_{\text{old}} \leftarrow \theta
+    \phi^{(k+1)} = \phi^{(k)} - \beta \nabla_\phi L_k(\phi^{(k)}),
     $$
-    and repeat the entire process until convergence.
+    where
+    $$
+    L_k(\phi)
+    =
+    \frac{1}{|\mathcal{D}_k|}
+    \sum_{(i,t) \in \mathcal{D}_k}
+    \left(V_\phi(s_t^{(i)}) - y_t^{(i)}\right)^2.
+    $$
+3. Continue until the actor and critic parameters converge.
+
+</blockquote>
 
 
 ### Proximal Policy Optimization (PPO)
 
-TRPO enforces a hard trust region via a KL constraint. PPO instead constructs a modified first-ordered objective that implicitly discourages large policy updates while remaining simple to implement.
+TRPO enforces a hard trust region by solving a constrained optimization problem. Proximal Policy Optimization (PPO) keeps the same old-policy sampling setup, but replaces the constrained actor update with a clipped first-order objective. During optimization on a collected batch, the old policy $\pi_{\theta_{\text{old}}}$, the advantage estimates, and the critic targets are held fixed.
 
 #### Clipped Surrogate Objective
 
-Given the surrogate objective:
+For a sampled timestep $(s_t,a_t)$ collected from $\pi_{\theta_{\text{old}}}$, define the single-step likelihood ratio
 $$
-L(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[ w_\theta(\tau) \hat{A}_\tau\right],
-$$
-PPO modifies this objective by clipping the importance weight $w_\theta(\tau)$ to be within a certain range around 1:
-$$
-\begin{equation} \label{eq:ppo_clipped_objective}
-L^{\mathrm{CLIP}}(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[\min\left(w_\theta(\tau) \hat{A}_\tau, \operatorname{clip}(w_\theta(\tau), 1-\epsilon, 1+\epsilon) \hat{A}_\tau\right)\right].
+\begin{equation} \label{eq:ppo_likelihood_ratio}
+r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
 \end{equation}
 $$
-where $\epsilon$ is a hyperparameter that controls how much the new policy is allowed to deviate from the old policy. The clipping function $\operatorname{clip}(x, a, b)$ limits $x$ to be within the range $[a, b]$. 
+The unclipped surrogate objective uses this ratio to reweight the advantage estimate:
+$$
+\begin{align}
+L^{\mathrm{PG}}(\theta)
+=
+\mathbb{E}_{(s_t,a_t) \sim \pi_{\theta_{\text{old}}}}
+\left[
+r_\theta(t)\hat{A}_t
+\right].
+\end{align}
+$$
+PPO modifies this objective by clipping the ratio to the interval $[1-\epsilon, 1+\epsilon]$ inside the surrogate:
+$$
+\ell_t^{\mathrm{CLIP}}(\theta)
+=
+\min\left(
+r_\theta(t)\hat{A}_t,
+\operatorname{clip}(r_\theta(t), 1-\epsilon, 1+\epsilon)\hat{A}_t
+\right).
+$$
+Given a sampled batch $\mathcal{D}_k$, the batch objective is
+$$
+\begin{equation} \label{eq:ppo_clipped_objective}
+\hat{L}_k^{\mathrm{CLIP}}(\theta)
+=
+\frac{1}{|\mathcal{D}_k|}
+\sum_{(i,t) \in \mathcal{D}_k}
+\ell_t^{(i),\mathrm{CLIP}}(\theta).
+\end{equation}
+$$
+Here $\epsilon$ controls how far the new policy can move from the old policy before the objective stops rewarding additional movement in the same direction.
 
-We denote a single timestep clipped surrogate objective as
-$$
-\ell_t(\theta) = \min\left(r_\theta(t) \hat{A}_t, \operatorname{clip}(r_\theta(t), 1-\epsilon, 1+\epsilon) \hat{A}_t\right),
-$$
-where $r_\theta(t)$ is defined as the importance weight at time $t$:
-$$
-r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
-$$
+The clipping behavior depends on the sign of the advantage:
 
-We have the following cases for the clipped surrogate objective:
-| $$\hat A_t$$ | Best direction | Bad direction | Clipped side |
-|---|---|---|---|
-| $$\hat A_t> 0$$ | make $$r_\theta(t)$$ bigger | make $$r_\theta(t)$$ smaller | right side at $$1+\epsilon$$ |
-| $$\hat A_t< 0$$ | make $$r_\theta(t)$$ smaller | make $$r_\theta(t)$$ bigger | left side at $$1-\epsilon$$ |
+| $$\hat A_t$$ | Helpful policy change | PPO stops rewarding |
+|---|---|---|
+| $$\hat A_t > 0$$ | Increase $$\pi_\theta(a_t \mid s_t)$$ | Ratios above $$1+\epsilon$$ |
+| $$\hat A_t < 0$$ | Decrease $$\pi_\theta(a_t \mid s_t)$$ | Ratios below $$1-\epsilon$$ |
 
 #### PPO Algorithm
 
-1. Set $\theta_{\text{old}} \leftarrow \theta$.
-2. Collect a batch of trajectories using $\pi_{\theta_{\text{old}}}$.
-3. Compute advantage estimates $\hat{A}_t$ with critic $V_\phi$ using GAE.
-4. For each stored $(s_t, a_t)$, compute the weight ratio
+<blockquote class="algorithm" id="def:ppo">
+
+**Proximal Policy Optimization (PPO)**
+
+PPO follows the actor-critic template with actor $\pi_\theta$ and critic $V_\phi$. Unlike TRPO, PPO does not solve a constrained KL problem. Instead, it takes several first-order gradient steps on a clipped surrogate objective while keeping the old policy fixed for the current batch.
+
+1. Initialize actor parameters $\theta^{(0)}$ and critic parameters $\phi^{(0)}$ arbitrarily.
+2. At each iteration $k = 0, 1, 2, \ldots$, perform the following steps:
+
+    a. **Roll Out**: Set $\theta_{\text{old}} \leftarrow \theta^{(k)}$ and sample $N$ trajectories $\{\tau^{(i)}\}_{i=1}^N$ from the current policy $\pi_{\theta_{\text{old}}}$. Let $\mathcal{D}_k = \{(i,t) : s_t^{(i)}, a_t^{(i)} \text{ are in the sampled batch}\}$, and let $|\mathcal{D}_k|$ be the number of sampled timesteps.
+
+    b. **Signal Estimation**: For each trajectory $i$ and each time step $t$, compute the GAE actor signal
     $$
-    r_\theta(t) = \frac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_{\text{old}}}(a_t \mid s_t)}.
+    \Psi_t^{(i)} = \hat{A}_t^{(i)} = \hat{A}_{\phi^{(k)}}^{\mathrm{GAE}(\gamma,\lambda)}(s_t^{(i)}, a_t^{(i)}),
     $$
-    and then compute the clipped surrogate objective
+    and the critic target
     $$
-    \ell_t(\theta) = \min\left(r_\theta(t) \hat{A}_t, \operatorname{clip}(r_\theta(t), 1-\epsilon, 1+\epsilon) \hat{A}_t\right).
+    y_t^{(i)} = \hat{A}_t^{(i)} + V_{\phi^{(k)}}(s_t^{(i)}).
     $$
-5. Form a batch PPO objective by averaging over all sampled timesteps:
+
+    c. **Actor Update**: Initialize $\tilde{\theta} \leftarrow \theta^{(k)}$. For one or more epochs, sample minibatches $\mathcal{B} \subset \mathcal{D}_k$. For each minibatch, compute
     $$
-    L^{\mathrm{CLIP}}(\theta) = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \ell_t^{(i)}(\theta).
+    r_{\tilde{\theta}}^{(i)}(t)
+    =
+    \frac{\pi_{\tilde{\theta}}(a_t^{(i)} \mid s_t^{(i)})}{\pi_{\theta_{\text{old}}}(a_t^{(i)} \mid s_t^{(i)})},
     $$
-6. Update the actor parameters $\theta$ by taking gradient ascent steps on $L^{\mathrm{CLIP}}(\theta)$ while keeping $\theta_{\text{old}}$ fixed
+    and the minibatch clipped objective
     $$
-    \theta \leftarrow \theta + \alpha \nabla_\theta L^{\mathrm{CLIP}}(\theta).
+    \hat{L}_{\mathcal{B}}^{\mathrm{CLIP}}(\tilde{\theta})
+    =
+    \frac{1}{|\mathcal{B}|}
+    \sum_{(i,t) \in \mathcal{B}}
+    \min\left(
+    r_{\tilde{\theta}}^{(i)}(t)\hat{A}_t^{(i)},
+    \operatorname{clip}(r_{\tilde{\theta}}^{(i)}(t), 1-\epsilon, 1+\epsilon)\hat{A}_t^{(i)}
+    \right).
     $$
-7. Update the critic parameters $\phi$ by taking gradient descent steps on the value loss using
+    Update the actor by gradient ascent:
     $$
-    \begin{aligned}
-    L(\phi) & = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \left(V_\phi(s_t^{(i)}) - G_t^{(i)}\right)^2 \\
-    \phi &\leftarrow \phi - \beta \nabla_\phi L(\phi).
-    \end{aligned}
+    \tilde{\theta}
+    \leftarrow
+    \tilde{\theta}
+    +
+    \alpha \nabla_{\tilde{\theta}}\hat{L}_{\mathcal{B}}^{\mathrm{CLIP}}(\tilde{\theta}),
     $$
-8. Repeat actor and critic updates (step 4 - 7) for multiple epochs using the same batch of data.
-9. After finishing optimization on that batch, set 
+    while keeping $\theta_{\text{old}}$ fixed. After the PPO epochs are complete, set $\theta^{(k+1)} \leftarrow \tilde{\theta}$.
+
+    d. **Critic Update**: Update the critic parameters via gradient descent on the value regression loss. For a minibatch $\mathcal{B} \subset \mathcal{D}_k$, use
     $$
-    \theta_{\text{old}} \leftarrow \theta
+    L_{\mathcal{B}}(\phi)
+    =
+    \frac{1}{|\mathcal{B}|}
+    \sum_{(i,t) \in \mathcal{B}}
+    \left(V_\phi(s_t^{(i)}) - y_t^{(i)}\right)^2.
     $$
-    and repeat the entire process until convergence.
+    After one or more value-function gradient steps, set the resulting critic parameters to $\phi^{(k+1)}$.
+3. Continue until the actor and critic parameters converge.
+
+</blockquote>
 
 #### KL-Based Control and Adaptive Updates
 
-In addition to clipping, we can also add a KL-penalty variant:
+PPO does not require an explicit KL constraint, but implementations often monitor the sampled average KL divergence
+$$
+\hat{D}_{\mathrm{KL},k}(\theta)
+=
+\frac{1}{|\mathcal{D}_k|}
+\sum_{(i,t) \in \mathcal{D}_k}
+D_{\mathrm{KL}}\!\left(
+\pi_{\theta_{\text{old}}}(\cdot \mid s_t^{(i)})
+\,\|\, 
+\pi_\theta(\cdot \mid s_t^{(i)})
+\right).
+$$
+This can be used for early stopping when the update moves too far from $\pi_{\theta_{\text{old}}}$.
+
+We can also use a KL-penalized PPO objective:
 $$
 \begin{equation} \label{eq:ppo_kl_penalty}
-L^{\text{KLPEN}}(\theta) = \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[w_\theta(\tau) \hat{A}_\tau - \beta D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right].
+\hat{L}_k^{\mathrm{KLPEN}}(\theta)
+=
+\frac{1}{|\mathcal{D}_k|}
+\sum_{(i,t) \in \mathcal{D}_k}
+\left[
+r_\theta^{(i)}(t)\hat{A}_t^{(i)}
+-
+\beta
+D_{\mathrm{KL}}\!\left(
+\pi_{\theta_{\text{old}}}(\cdot \mid s_t^{(i)})
+\,\|\, 
+\pi_\theta(\cdot \mid s_t^{(i)})
+\right)
+\right].
 \end{equation}
 $$
-where $\beta$ is a hyperparameter that controls the strength of the KL penalty, and it can be adaptively adjusted based on how close the new policy is to the old policy. We can add this term to the clipped objective to get a combined objective:
+where $\beta > 0$ controls the strength of the KL penalty. We can also add this penalty to the clipped objective:
 $$
 \begin{equation} \label{eq:ppo_combined_objective}
-L^{\mathrm{COMBINED}}(\theta) = L^{\mathrm{CLIP}}(\theta) - \beta \mathbb{E}_{\tau \sim p_{\theta_{\text{old}}}(\cdot)}\left[D_{\mathrm{KL}}\left(\pi_{\theta_{\text{old}}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)\right)\right].
+\hat{L}_k^{\mathrm{COMBINED}}(\theta)
+=
+\hat{L}_k^{\mathrm{CLIP}}(\theta)
+-
+\beta \hat{D}_{\mathrm{KL},k}(\theta).
 \end{equation} 
 $$
 
