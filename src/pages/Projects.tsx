@@ -64,10 +64,10 @@ const Projects = () => {
     const projects = [
         {
             image: "https://branyang02.github.io/images/notie.png",
-            title: "Notie",
+            title: "notie-markdown",
             description:
-                "A markdown renderer for the web that features live coding and running, TikZ, and LaTeX support. This is what I use to write my blogs and notes on this website! I actually love this project so much! Makes me appreciate the art of math equations and visualizations even more!",
-            link: "https://github.com/branyang02/Notie",
+                "A markdown rendering web app with support for equation previewing, graphing, code running, and more. This is what I use to write my blogs and notes on this website.",
+            link: "https://notie-markdown.vercel.app/",
             metaLinks: [
                 {
                     name: "GitHub",
@@ -98,7 +98,7 @@ const Projects = () => {
                 },
             ],
             description:
-                "GLOMA is a diffusion based text-image editing model for robotic agents to generate goal images for manipulation tasks. GLOMA uses a ViT and LLM to extract corresponding objects from the image based on the text prompt, and then generates a goal image through image diffusion. GitHub",
+                "A zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and behavioral cloning.",
             link: "https://branyang02.github.io/images/gloma.png",
             metaLinks: [
                 {
@@ -110,9 +110,9 @@ const Projects = () => {
         },
         {
             image: "https://branyang02.github.io/images/franka.gif",
-            title: "Collaborative Centralized Multi-Agent RL",
+            title: "Centralized Multi-Agent RL for Collaborative Tasks",
             description:
-                "Multi-Agent Reinforcement Learning (MARL) in IsaacGym for Panda Robots.",
+                "Long-horizon on/offline centralized MARL for robotic bolt-screwing tasks in IsaacGym.",
             link: "https://github.com/branyang02/PandaFactory/tree/main",
             metaLinks: [
                 {
@@ -125,7 +125,7 @@ const Projects = () => {
 
         {
             image: "https://branyang02.github.io/images/smart_oh.png",
-            title: "Smart OH (VTHacks)",
+            title: "SmartOH",
             authors: [
                 {
                     name: "Edward Wei",
@@ -145,27 +145,15 @@ const Projects = () => {
                 },
             ],
             description:
-                "AI powered office hour queue system that streamlines the process of office hours.",
-            link: "https://github.com/ewei2406/SmartOH",
+                "A queue management system designed for office hours, featuring real-time queue updates, notifications, and analytics.",
+            link: "https://github.com/branyang02/smart-oh",
             metaLinks: [
                 {
                     name: "GitHub",
-                    link: "https://github.com/ewei2406/SmartOH",
-                },
-                {
-                    name: "DevPost",
-                    link: "https://devpost.com/software/smartoh",
+                    link: "https://github.com/branyang02/smart-oh",
                 },
             ],
-            techStack: [
-                "Python",
-                "TypeScript",
-                "JavaScript",
-                "PyTorch",
-                "React",
-                "Express",
-                "FastAPI",
-            ],
+            techStack: ["Python", "TypeScript", "React", "FastAPI"],
         },
         {
             image: "https://branyang02.github.io/images/ai-calendar.png",
