@@ -8,7 +8,7 @@ Date: 2/20/2024 | Author: Brandon Y. Yang
 
 There are **_a lot_** of resources out there that explain transformers[^1], but I wanted to write my own blog post to explain transformers in a way that I understand.
 
-All provided codes in this blog post are available in the [GitHub repository](https://github.com/branyang02/personal_website/tree/main/src/pages/blog/blogs/Transformers/transformers-code).
+All provided code snippets in this blog post are maintained with the [website source](https://github.com/branyang02/brandonyang/blob/main/src/assets/blog/transformer.md).
 
 **This blog post is NOT**:
 

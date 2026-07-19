@@ -71,7 +71,7 @@ const Projects = () => {
             metaLinks: [
                 {
                     name: "GitHub",
-                    link: "https://github.com/branyang02/Notie",
+                    link: "https://github.com/branyang02/notie",
                 },
                 {
                     name: "Live Demo",
