@@ -8,7 +8,7 @@ Date: 2/20/2024 | Author: Brandon Y. Yang
 
 There are **_a lot_** of resources out there that explain transformers[^1], but I wanted to write my own blog post to explain transformers in a way that I understand.
 
-All provided codes in this blog post are available in the [GitHub repository](https://github.com/branyang02/personal_website/tree/main/src/pages/blog/blogs/Transformers/transformers-code).
+All provided code snippets in this blog post are maintained with the [website source](https://github.com/branyang02/brandonyang/blob/main/src/assets/blog/transformer.md).
 
 **This blog post is NOT**:
 
@@ -1294,6 +1294,6 @@ Note that this example is purely for inference and architectural demonstration p
 
 Now, you should be familiar with the transformer architecture and its components! We have covered the input embeddings, positional encoding, attention mechanism, multi-head attention mechanism, add & norm layer, feed-forward network, encoder block, and decoder block. We have also implemented the encoder-only transformer and decoder-only transformer in PyTorch using basic operations.
 
-I hope this blog post has helped you understand the transformer architecture better. If you have any questions or feedback, feel free to reach out to me on [LinkedIn](https://www.linkedin.com/in/byang02/), or my email at [yang52@seas.upenn.edu](mailto:yang52@seas.upenn.edu).
+I hope this blog post has helped you understand the transformer architecture better. If you have any questions or feedback, feel free to reach out to me on [LinkedIn](https://www.linkedin.com/in/byang02/), or my email at [yang52@engineering.upenn.edu](mailto:yang52@engineering.upenn.edu).
 
 [^1]: Vaswani, A., et al. "Attention is all you need," in Advances in neural information processing systems, vol. 30, 2017.

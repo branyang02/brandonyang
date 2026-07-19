@@ -61,7 +61,7 @@ const Education = () => {
                 />
 
                 <Pane marginLeft={majorScale(2)} flexGrow={1}>
-                    <MarkdownParagraph text="**B.S. in Computer Science**" />
+                    <MarkdownParagraph text="**B.S. in Computer Science with Highest Distinction**" />
                 </Pane>
 
                 <Pane marginLeft="auto">

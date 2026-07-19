@@ -13,7 +13,7 @@ const Experience = () => {
     const experience = [
         {
             date: "May 2026 - Present",
-            title: "Research Lead at [AfterQuery](https://www.afterquery.com/).",
+            title: "Research Lead at [AfterQuery (YC W25)](https://www.afterquery.com/).",
         },
         {
             date: "Aug 2025 - Present",
@@ -24,8 +24,12 @@ const Experience = () => {
             title: "Embodied Intelligence Research Intern at [Spirit AI](https://www.spirit-ai.com/en/).",
         },
         {
-            date: "May 2020 - Present",
-            title: "Research Assistant at UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/)",
+            date: "Aug 2024 - May 2025",
+            title: "Research Assistant at UVA's Learning and Interactive Robotics Lab.",
+        },
+        {
+            date: "May 2022 - May 2024",
+            title: "Research Assistant at UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/).",
         },
         {
             date: "May 2023 - Aug 2023",

@@ -28,7 +28,7 @@ const Home = () => {
     }, []);
 
     const paragraphText = `
-        Hi! I am **Brandon**, a Robotics Masters student at the [University of Pennsylvania](https://www.grasp.upenn.edu/). I work on **Robot Learning and Reasoning**, specifically using **V**ision-**L**anguage-**A**ction (VLA) Models to enable robots to perform complex tasks!
+        Hi! I am **Brandon**, an M.S.E. student in Robotics at the [University of Pennsylvania](https://www.grasp.upenn.edu/). I work on **Robot Learning and Reasoning**, specifically using **V**ision-**L**anguage-**A**ction (VLA) Models to enable robots to perform complex tasks!
 
         ${
             wordCount > 0 && equationCount > 0
@@ -49,7 +49,7 @@ const Home = () => {
                 <title>Brandon Y. Yang</title>
                 <meta
                     name="description"
-                    content="Fourth-year B.S. Computer Science student at UVA, advised by Yen-Ling Kuo. Applying to graduate programs in CS and Robotics for Fall 2025."
+                    content="M.S.E. Robotics student at the University of Pennsylvania working on robot learning, reasoning, and Vision-Language-Action models."
                 />
             </Helmet>
             <Pane className="home-container">

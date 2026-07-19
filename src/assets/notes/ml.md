@@ -14,11 +14,11 @@ Fall 2024 | Author: Brandon Y. Yang
 
 Based on [CS 4774](https://www.cs.virginia.edu/~nn4pj/teaching) taught by [Prof. Rich Nguyen](https://www.cs.virginia.edu/~nn4pj/) at the [University of Virginia](https://engineering.virginia.edu/department/computer-science).
 
-I am a Teaching Assistant for this course and actively taking notes to support students' learning. These notes are meant to be a supplement to the course material and are not intended to be standalone resources.
+These notes were originally written while I was a Teaching Assistant for this course. They are meant to be a supplement to the course material and are not intended to be standalone resources.
 
 P.S. This is a work in progress. Please continue to check for updates!
 
-Please contact me at [yang52@seas.upenn.edu](mailto:yang52@seas.upenn.edu) if you would like to contribute to this project!
+Please contact me at [yang52@engineering.upenn.edu](mailto:yang52@engineering.upenn.edu) if you would like to contribute to this project!
 
 </span>
 
