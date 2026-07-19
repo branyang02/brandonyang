@@ -90,39 +90,39 @@
                   \includegraphics[height=1.5em]{../penn-logo.png}%
               }%
               \hspace{0.2em} University of Pennsylvania%
-          }{Philadelphia, PA}{M.S.E. in Robotics}{Aug 2025 - May 2027}
+          }{Philadelphia, PA}{M.S.E. in Robotics; GPA: 3.7/4.0}{May 2027}
     \item \heading{%
               \raisebox{-0.2\height}{%
                   \includegraphics[height=1.5em]{../uva-logo.png}%
               }%
               \hspace{0.2em} University of Virginia%
-          }{Charlottesville, VA}{B.S. in Computer Science with Highest Distinction $(3.9/4.0)$}{August 2021 - May 2025}
-    \item \textbf{Relevant Coursework}: Physical Intelligence$^*$, Learning in Robotics$^*$, GPU Programming \& Architecture$^*$, Machine Learning, Reinforcement Learning$^*$, Natural Language Processing$^*$, Probabilistic ML$^*$, Optimization$^*$ \\
-          {\footnotesize *Graduate-level courses.}
+          }{Charlottesville, VA}{B.S. in Computer Science, Highest Distinction; GPA: 3.9/4.0}{May 2025}
+    \item \textbf{Selected Coursework}: Physical Intelligence, Learning in Robotics, GPU Programming \& Architecture, Reinforcement Learning, Probabilistic ML, Natural Language Processing
 \end{itemize}
 
 \section{Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
     \item \headingjob{Research Lead}{San Francisco, CA}{AfterQuery (YC W25)}{May 2026 - Present}
           \begin{itemize}
-              \item Leading a 6-person team on frontier AI-agent evaluation research, with a focus on long-context reasoning, multi-turn interaction, simulated users, and computer-use environments.
-              \item Researching scalable robot data-collection methods across UMI-style teleoperation, egocentric recordings, and video datasets for training generalist robot policies.
+              \item Led development of custom UMI-style hardware and a distributed robotics data-collection system for robot learning, spanning device-side capture, server-side processing, storage, and dataset management.
+              \item Directed a 6-person research team building an AI-agent search benchmark, with task authoring and validation workflows, rubric-based grading, agent-run orchestration, trace logging, and reproducible model comparisons.
           \end{itemize}
     \item \headingjob{Embodied Intelligence Research Intern}{Beijing, China}{Spirit AI}{May 2025 - Aug 2025}
           \begin{itemize}
-              \item Trained and deployed Vision-Language-Action (VLA) model variants in PyTorch on a dual-arm robot, experimenting with contrastive objectives, observation-noise curricula, reduced guidance inputs, and mixture-of-experts (MoE).
-              \item Designed and implemented DAgger data-collection pipeline for VLA models, including operator-takeover logic and post-training workflows for scaling corrective demonstrations.
-              \item Integrated robotics simulation environments into a unified, reproducible setup, enabling efficient evaluation of VLA models; containerized training and evaluation workflows with Docker and Slurm. Open-sourced codebase and datasets on \linkhref{https://github.com/Robot-VLA/lerobot-vla.git}{GitHub}.
+              \item Trained, evaluated, and deployed VLA model variants in PyTorch across simulation and a dual-arm robot, studying contrastive objectives, observation-noise curricula, reduced guidance inputs, and mixture-of-experts architectures.
+              \item Designed and implemented a DAgger data-collection pipeline for VLA models, including operator-takeover logic and corrective-demonstration workflows used for model training and evaluation.
+              \item Unified robotics simulation, training, and evaluation workflows into a reproducible Docker/Slurm pipeline for VLA experiments; open-sourced code and datasets on \linkhref{https://github.com/Robot-VLA/lerobot-vla.git}{GitHub}.
           \end{itemize}
 \end{itemize}
 
 \section{Research Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \heading{General Robotics, Automation, Sensing, and Perception Lab, UPenn}{Philadelphia, PA}
-          {Advisor: Dinesh Jayaraman, Junyao Shi}{Aug 2025 - Present}
+    \item \heading{\href{https://penn-pal-lab.github.io/}{Perception, Action, \& Learning Lab}, University of Pennsylvania}{Philadelphia, PA}
+          {Advisor: Dinesh Jayaraman}{Aug 2025 - Present}
           \begin{itemize}
-              \item Designing retrieval-augmented VLA models for robot manipulation.
-              \item Building scalable data pipeline, training and evaluation infrastructure with Docker, Slurm, JAX, Ray, and Hugging Face on GPU clusters.
+              \item Implemented demonstration retrieval for $\pi_{0.5}$ VLA policies, integrating robot data retrieval into training and test-time inference to improve tabletop manipulation. (\textit{CoRL 2026})
+              \item Engineered scalable data transformation, training, and evaluation pipelines using Docker, Slurm, Ray, JAX, PyTorch, and Hugging Face to support retrieval-based VLA policy variants.
+              \item Designed and implemented infrastructure for collecting VLA hidden activations and evaluating activation-steering interventions across MetaWorld, LIBERO, RoboCasa, and real Franka robot experiments. (\textit{ICML 2026 Workshop; NeurIPS 2026})
           \end{itemize}
     \item \heading{Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
           {Advisor: Yen-Ling Kuo}{Aug 2024 - May 2025}
@@ -160,7 +160,7 @@
 \section{Publications}
 \begin{itemize}[label={}, leftmargin=0pt]
     \item Jiani Huang*, \textbf{Brandon Y. Yang*}, Amish Sethi, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model." Submitted to \textit{CoRL 2026}.
-    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." \textit{ICML 2026 Mechanistic Interpretability Workshop}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
+    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." \textit{ICML 2026 Mechanistic Interpretability Workshop}; \textit{NeurIPS 2026}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
     \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Submitted to \textit{NeurIPS 2026 Position Paper Track}.
     \item Lee, Sung-Wook, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``Class: Contrastive learning via action sequence supervision for robot manipulation." \textit{Conference on Robot Learning}, pp. 4743-4766. PMLR, 2025. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
 \end{itemize}
