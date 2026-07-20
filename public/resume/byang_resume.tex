@@ -8,12 +8,10 @@
 \usepackage{verbatim}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
-\usepackage{fontawesome}
 \usepackage{enumitem}
 \usepackage{array}
 \usepackage{setspace}
 \usepackage{multirow}
-\usepackage[inkscapelatex=false]{svg}
 
 \singlespacing
 % \setstretch{1.1}
@@ -79,106 +77,83 @@
 
 \begin{tabular} {@{}l}
     \textbf{\href{https://brandonyifanyang.com/}{\Large{Brandon Yifan Yang}}} \\[3pt]
-    \faLink \, \linkhref{https://brandonyifanyang.com/}{brandonyifanyang.com} \quad \faEnvelope \, \linkhref{mailto:yang52@engineering.upenn.edu}{yang52@engineering.upenn.edu} \quad \faGithub \, \linkhref{https://github.com/branyang02}{branyang02} \quad \faGraduationCap \, \linkhref{https://scholar.google.com/citations?user=dZny9s0AAAAJ&hl=en}{Google Scholar}
+    \linkhref{https://brandonyifanyang.com/}{brandonyifanyang.com} \quad \linkhref{mailto:yang52@engineering.upenn.edu}{yang52@engineering.upenn.edu} \quad \linkhref{https://github.com/branyang02}{github.com/branyang02} \quad \linkhref{https://scholar.google.com/citations?user=dZny9s0AAAAJ&hl=en}{Google Scholar}
 \end{tabular}
 
 
 \section{Education}
 \begin{itemize}
-    \item\heading{%
-              \raisebox{-0.2\height}{%
-                  \includegraphics[height=1.5em]{../penn-logo.png}%
-              }%
-              \hspace{0.2em} University of Pennsylvania%
-          }{Philadelphia, PA}{M.S.E. in Robotics}{Aug 2025 - May 2027}
-    \item \heading{%
-              \raisebox{-0.2\height}{%
-                  \includegraphics[height=1.5em]{../uva-logo.png}%
-              }%
-              \hspace{0.2em} University of Virginia%
-          }{Charlottesville, VA}{B.S. in Computer Science with Highest Distinction $(3.9/4.0)$}{August 2021 - May 2025}
-    \item \textbf{Relevant Coursework}: Physical Intelligence$^*$, Learning in Robotics$^*$, GPU Programming \& Architecture$^*$, Machine Learning, Reinforcement Learning$^*$, Natural Language Processing$^*$, Probabilistic ML$^*$, Optimization$^*$ \\
-          {\footnotesize *Graduate-level courses.}
+    \item \heading{University of Pennsylvania}{Philadelphia, PA}{M.S.E. in Robotics; GPA: 3.7/4.0}{May 2027}
+    \item \heading{University of Virginia}{Charlottesville, VA}{B.S. in Computer Science; Highest Distinction; GPA: 3.9/4.0}{May 2025}
+    \item {\small \textit{Selected coursework}: Learning in Robotics, Reinforcement Learning, Probabilistic Machine Learning, GPU Programming \& Architecture, Physical Intelligence, Natural Language Processing}
+    \item {\small \textit{Teaching}: Lead TA for Computer Systems Organization (2x), Theory of Computation, and Machine Learning (2x)}
 \end{itemize}
 
 \section{Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
     \item \headingjob{Research Lead}{San Francisco, CA}{AfterQuery (YC W25)}{May 2026 - Present}
           \begin{itemize}
-              \item Leading a 6-person team on frontier AI-agent evaluation research, with a focus on long-context reasoning, multi-turn interaction, simulated users, and computer-use environments.
-              \item Researching scalable robot data-collection methods across UMI-style teleoperation, egocentric recordings, and video datasets for training generalist robot policies.
+              \item Led development of custom UMI hardware and a distributed robot data collection system, integrating Rust-based device-side capture and LiDAR tracking with a server-side SLAM pipeline for end-effector tracking and automated storage with Hugging Face dataset management.
+              \item Led a 6-person research team building a full-stack AI-agent search benchmark platform; collected tasks from external experts, built custom quality-control workflows, and automated evaluations across frontier agent harnesses and models.
           \end{itemize}
     \item \headingjob{Embodied Intelligence Research Intern}{Beijing, China}{Spirit AI}{May 2025 - Aug 2025}
           \begin{itemize}
-              \item Trained and deployed Vision-Language-Action (VLA) model variants in PyTorch on a dual-arm robot, experimenting with contrastive objectives, observation-noise curricula, reduced guidance inputs, and mixture-of-experts (MoE).
-              \item Designed and implemented DAgger data-collection pipeline for VLA models, including operator-takeover logic and post-training workflows for scaling corrective demonstrations.
-              \item Integrated robotics simulation environments into a unified, reproducible setup, enabling efficient evaluation of VLA models; containerized training and evaluation workflows with Docker and Slurm. Open-sourced codebase and datasets on \linkhref{https://github.com/Robot-VLA/lerobot-vla.git}{GitHub}.
+              \item Trained and evaluated VLA policy variants in PyTorch across simulation and real dual-arm robot experiments, comparing contrastive objectives, observation-noise curricula, reduced guidance inputs, and mixture-of-experts architectures.
+              \item Designed and implemented a DAgger data-collection pipeline for VLA models, including operator-takeover logic and corrective-demonstration workflows used for post-training and evaluation.
+              \item Built a reproducible Docker/Slurm pipeline for VLA simulation, training, and evaluation workflows; open-sourced code and datasets on \linkhref{https://github.com/Robot-VLA/lerobot-vla.git}{GitHub}.
           \end{itemize}
 \end{itemize}
 
 \section{Research Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \heading{General Robotics, Automation, Sensing, and Perception Lab, UPenn}{Philadelphia, PA}
-          {Advisor: Dinesh Jayaraman, Junyao Shi}{Aug 2025 - Present}
+    \item \heading{\href{https://penn-pal-lab.github.io/}{Perception, Action, \& Learning Lab}, University of Pennsylvania}{Philadelphia, PA}
+          {Advisor: Dinesh Jayaraman}{Aug 2025 - Present}
           \begin{itemize}
-              \item Designing retrieval-augmented VLA models for robot manipulation.
-              \item Building scalable data pipeline, training and evaluation infrastructure with Docker, Slurm, JAX, Ray, and Hugging Face on GPU clusters.
+              \item Implemented demonstration retrieval for $\pi_{0.5}$ VLA policies, integrating robot data retrieval into training and test-time inference for tabletop manipulation experiments. (\textit{CoRL 2026})
+              \item Engineered data transformation, training, and evaluation pipelines for retrieval-based VLA variants using JAX, PyTorch, Hugging Face, Docker, Slurm, and Ray.
+              \item Designed hidden-activation collection and steering infrastructure for diffusion-policy, flow-matching, and autoregressive VLA models across MetaWorld, LIBERO, RoboCasa, and real Franka hardware experiments. (\textit{ICML 2026 Workshop; NeurIPS 2026})
           \end{itemize}
     \item \heading{Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
           {Advisor: Yen-Ling Kuo}{Aug 2024 - May 2025}
           \begin{itemize}
-              \item \textbf{Interpretable Vision-Language-Action Models via Skill Conditioning}
-                    \begin{itemize}
-                        \item Led \textit{SkillVLA}, a skill-conditioned VLA model for language-conditioned manipulation with improved action interpretability via subgoal instructions and learned skill library.
-                        \item Presented as an oral talk at the 2024 UVA LLM Workshop (\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}), earning the Audience Choice Award (top 3 of 28 presentations).
-                    \end{itemize}
-              \item \textbf{Contrastive Learning for Robot Manipulation}
-                    \begin{itemize}
-                        \item Performed contrastive learning over action sequences to learn behavior-grounded visual embeddings, improving visuomotor policies under heterogeneous camera poses and object appearances. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
-                        \item Modified simulation environments and trained PyTorch-based visuomotor policies to evaluate learned embeddings.
-                    \end{itemize}
+              \item \textbf{SkillVLA}: Developed a skill-conditioned VLA model for language-conditioned manipulation, using subgoal instructions and a VQ-VAE latent skill library to structure action generation.
+              \item Presented SkillVLA as an oral talk at the 2024 UVA LLM Workshop (\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}), earning the Audience Choice Award (top 3 of 28 presentations).
+              \item \textbf{Contrastive Learning for Robot Manipulation}: Ran policy-learning experiments for CLASS, evaluating action-sequence-supervised visual embeddings under camera-pose and object-appearance shifts. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
+              \item Modified simulation environments and trained PyTorch visuomotor policies to evaluate learned representations across visual generalization settings.
           \end{itemize}
-    \item \heading{Research Assistant, \href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
+    \item \heading{\href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
           {Advisor: Tariq Iqbal}{May 2022 - May 2024}
           \begin{itemize}
-              \item \href{https://github.com/branyang02/GLOMA}{\textbf{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]
-                    \begin{itemize}
-                        \item Led team of 3 to develop zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and Behavioral Cloning (BC).
-                        \item Integrated language grounding with visual perception by using bounding box guidance from pre-trained language models, enabling precise object relocation without external supervision and improving baseline performance by 65\%.
-                        \item Collected and annotated custom dataset for fine-tuning pre-trained language and vision models.
-                        \item Presented poster at 3 conferences and symposiums.
-                    \end{itemize}
-              \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized multi-agent RL for Collaborative Tasks}} [\linkhref{https://github.com/branyang02/PandaFactory}{code}]
-                    \begin{itemize}
-                        \item Developed long-horizon on/offline centralized MARL for robotic bolt screwing tasks.
-                        \item Designed and optimized custom reward functions in multi-agent framework for task completion and agent collaboration, improving task success rate by 20\%.
-                        \item Deployed and tested custom simulated environments in IsaacGym for training and evaluation.
-                    \end{itemize}
+              \item \textbf{\href{https://github.com/branyang02/GLOMA}{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]: Led a team of 3 in developing a language-grounded image-editing pipeline for object relocation goals in robotic manipulation settings.
+              \item Integrated language grounding with bounding-box-guided visual editing for object relocation.
+              \item Collected and annotated a dataset for fine-tuning pre-trained language and vision models.
+              \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized Multi-Agent RL for Collaborative Tasks}} [\linkhref{https://github.com/branyang02/PandaFactory}{code}]: Implemented offline and online centralized MARL training for long-horizon robotic bolt-screwing tasks in Isaac Gym.
+              \item Designed custom multi-agent reward functions for task completion and collaboration, improving simulated task success by 20\% over the project baseline.
           \end{itemize}
 \end{itemize}
 
 \section{Publications}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item Jiani Huang*, \textbf{Brandon Y. Yang*}, Amish Sethi, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model." Submitted to \textit{CoRL 2026}.
-    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." \textit{ICML 2026 Mechanistic Interpretability Workshop}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
-    \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Submitted to \textit{NeurIPS 2026 Position Paper Track}.
-    \item Lee, Sung-Wook, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``Class: Contrastive learning via action sequence supervision for robot manipulation." \textit{Conference on Robot Learning}, pp. 4743-4766. PMLR, 2025. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
+    \item Jiani Huang*, \textbf{Brandon Y. Yang*}, Amish Sethi, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model." Under review at \textit{CoRL 2026}.
+    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." Accepted poster, \textit{ICML 2026 Mechanistic Interpretability Workshop}; under review at \textit{NeurIPS 2026}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
+    \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Under review at \textit{NeurIPS 2026 Position Paper Track}.
+    \item Sung-Wook Lee, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation." Accepted to \textit{CoRL 2025}. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
 \end{itemize}
-{\footnotesize *Equal contribution.}
+{\footnotesize *Equal contribution among starred authors.}
 
 \section{Software Projects}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \textbf{openpi-cuda} [\linkhref{https://github.com/branyang02/openpi-cuda}{GitHub}]: Developed custom CUDA kernels via C++/Python bindings to accelerate $\pi_{0.5}$ VLA model inference; achieved 18.5ms latency reduction over baseline PyTorch.
-    \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{Website}]: Markdown rendering web app with support for equation previewing, graphing, code running, and more. Built with React, TypeScript, Python, Flask. Deployed on Vercel and Heroku.
-    \item \textbf{Blogs and Notes} [\linkhref{https://www.brandonyifanyang.com/blog}{blog}, \linkhref{https://www.brandonyifanyang.com/notes}{notes}]: Detailed blog posts and course notes with visualizations, graphs, and code on CS and AI topics, written with notie-markdown.
-    \item \textbf{\href{https://github.com/branyang02/smart-oh}{SmartOH}} [\linkhref{https://github.com/branyang02/smart-oh}{GitHub}]: Queue management system designed for office hours. Features real-time queue updates, notifications, and analytics. Built with Next.js, TypeScript, Python, FastAPI. Deployed with CI/CD pipeline on Vercel and AWS EC2.
-    \item \textbf{Voy}: Collaborated with 7 non-profits to develop Voy, a volunteer and driver management platform; competed and received \$1000 in funding from UVA's Entrepreneurship Cup. Built with React, Node.js, TypeScript, JavaScript.
+    \item \textbf{openpi-eval} [\linkhref{https://github.com/branyang02/openpi-eval}{GitHub}, \linkhref{https://huggingface.co/datasets/brandonyang/metaworld_ml45}{Dataset}, \linkhref{https://x.com/brandonyyang02/status/2062678343452135771}{X Post}]: Built single-repo OpenPI evaluation infrastructure for a NeurIPS submission, supporting reproducible $\pi_{0.5}$ rollouts across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab; server-side batching improved policy-server throughput by up to 3.4x in a 64-client LIBERO benchmark.
+    \item \textbf{openpi-cuda} [\linkhref{https://github.com/branyang02/openpi-cuda}{GitHub}]: Developed custom CUDA kernels with C++/Python bindings for $\pi_{0.5}$ VLA inference, reducing latency by 18.5ms versus the PyTorch baseline.
+    \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{Website}]: Built a React/TypeScript markdown renderer with equation previewing, graphing, and code execution; shipped with a Python/Flask backend on Vercel and Heroku.
+    \item \textbf{\href{https://github.com/branyang02/smart-oh}{SmartOH}} [\linkhref{https://github.com/branyang02/smart-oh}{GitHub}]: Built an office-hours queue management system with real-time queue updates, notifications, and analytics using Next.js, TypeScript, Python, and FastAPI; deployed with Vercel, AWS EC2, and CI/CD.
 \end{itemize}
 
 \section{Skills}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \textbf{Programming Languages}: Python, C/C++, Java, JavaScript, TypeScript
-    \item \textbf{Tools \& Frameworks}: \verb|uv|, \verb|ruff|, \verb|ty|, Claude Code, Codex, PyTorch, Jax, CUDA, Slurm, Ray
+    \item \textbf{Programming}: Python, C++, CUDA, TypeScript/JavaScript, Java
+    \item \textbf{ML \& Robotics}: PyTorch, JAX, Hugging Face, Ray, Slurm, robot learning, VLA models
+    \item \textbf{Web \& Infrastructure}: React, FastAPI, Flask, Docker, AWS EC2, Vercel, \verb|uv|, \verb|ruff|, \verb|ty|
 \end{itemize}
 
 \vfill
