@@ -85,7 +85,8 @@
 \begin{itemize}
     \item \heading{University of Pennsylvania}{Philadelphia, PA}{M.S.E. in Robotics; GPA: 3.7/4.0}{May 2027}
     \item \heading{University of Virginia}{Charlottesville, VA}{B.S. in Computer Science; Highest Distinction; GPA: 3.9/4.0}{May 2025}
-    \item \textbf{Selected Coursework}: Learning in Robotics, Reinforcement Learning, Probabilistic Machine Learning, GPU Programming \& Architecture, Physical Intelligence, Natural Language Processing
+    \item {\small \textit{Selected coursework}: Learning in Robotics, Reinforcement Learning, Probabilistic Machine Learning, GPU Programming \& Architecture, Physical Intelligence, Natural Language Processing}
+    \item {\small \textit{Teaching}: Lead TA for Computer Systems Organization (2x), Theory of Computation, and Machine Learning (2x)}
 \end{itemize}
 
 \section{Experience}
@@ -117,8 +118,8 @@
           \begin{itemize}
               \item \textbf{SkillVLA}: Developed a skill-conditioned VLA model for language-conditioned manipulation, using subgoal instructions and a VQ-VAE latent skill library to structure action generation.
               \item Presented SkillVLA as an oral talk at the 2024 UVA LLM Workshop (\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}), earning the Audience Choice Award (top 3 of 28 presentations).
-              \item \textbf{Contrastive Learning for Robot Manipulation}: Trained contrastive objectives over action sequences to learn behavior-grounded visual embeddings for visuomotor policies under varied camera poses and object appearances. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
-              \item Modified simulation environments and trained PyTorch visuomotor policies to evaluate learned behavior-grounded embeddings.
+              \item \textbf{Contrastive Learning for Robot Manipulation}: Ran policy-learning experiments for CLASS, evaluating action-sequence-supervised visual embeddings under camera-pose and object-appearance shifts. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
+              \item Modified simulation environments and trained PyTorch visuomotor policies to evaluate learned representations across visual generalization settings.
           \end{itemize}
     \item \heading{\href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
           {Advisor: Tariq Iqbal}{May 2022 - May 2024}
@@ -134,15 +135,15 @@
 \section{Publications}
 \begin{itemize}[label={}, leftmargin=0pt]
     \item Jiani Huang*, \textbf{Brandon Y. Yang*}, Amish Sethi, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model." Under review at \textit{CoRL 2026}.
-    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." Accepted poster, \textit{ICML 2026 Mechanistic Interpretability Workshop}; submitted to \textit{NeurIPS 2026}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
-    \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Submitted to \textit{NeurIPS 2026 Position Paper Track}.
-    \item Sung-Wook Lee, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation." \textit{Conference on Robot Learning}, pp. 4743--4766. PMLR, 2025. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
+    \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." Accepted poster, \textit{ICML 2026 Mechanistic Interpretability Workshop}; under review at \textit{NeurIPS 2026}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
+    \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Under review at \textit{NeurIPS 2026 Position Paper Track}.
+    \item Sung-Wook Lee, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation." Accepted to \textit{CoRL 2025}. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
 \end{itemize}
 {\footnotesize *Equal contribution among starred authors.}
 
 \section{Software Projects}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \textbf{openpi-eval} [\linkhref{https://github.com/branyang02/openpi-eval}{GitHub}, \linkhref{https://huggingface.co/datasets/brandonyang/metaworld_ml45}{Dataset}]: Built OpenPI evaluation infrastructure for a NeurIPS submission, supporting reproducible \texttt{pi05} rollouts across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab, plus \texttt{pi0\_fast} support where released and server-side inference batching.
+    \item \textbf{openpi-eval} [\linkhref{https://github.com/branyang02/openpi-eval}{GitHub}, \linkhref{https://huggingface.co/datasets/brandonyang/metaworld_ml45}{Dataset}, \linkhref{https://x.com/brandonyyang02/status/2062678343452135771}{X Post}]: Built single-repo OpenPI evaluation infrastructure for a NeurIPS submission, supporting reproducible $\pi_{0.5}$ rollouts across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab; server-side batching improved policy-server throughput by up to 3.4x in a 64-client LIBERO benchmark.
     \item \textbf{openpi-cuda} [\linkhref{https://github.com/branyang02/openpi-cuda}{GitHub}]: Developed custom CUDA kernels with C++/Python bindings for $\pi_{0.5}$ VLA inference, reducing latency by 18.5ms versus the PyTorch baseline.
     \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{Website}]: Built a React/TypeScript markdown renderer with equation previewing, graphing, and code execution; shipped with a Python/Flask backend on Vercel and Heroku.
     \item \textbf{\href{https://github.com/branyang02/smart-oh}{SmartOH}} [\linkhref{https://github.com/branyang02/smart-oh}{GitHub}]: Built an office-hours queue management system with real-time queue updates, notifications, and analytics using Next.js, TypeScript, Python, and FastAPI; deployed with Vercel, AWS EC2, and CI/CD.
@@ -150,9 +151,9 @@
 
 \section{Skills}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \textbf{Programming}: Python, C++, CUDA C++, TypeScript/JavaScript, Java
-    \item \textbf{ML \& Robotics}: PyTorch, JAX, Hugging Face, CUDA, Ray, Slurm, robot learning, VLA models
-    \item \textbf{Web \& Infrastructure}: React, FastAPI, Flask, Docker, AWS EC2, Vercel, \verb|uv|, \verb|ruff|
+    \item \textbf{Programming}: Python, C++, CUDA, TypeScript/JavaScript, Java
+    \item \textbf{ML \& Robotics}: PyTorch, JAX, Hugging Face, Ray, Slurm, robot learning, VLA models
+    \item \textbf{Web \& Infrastructure}: React, FastAPI, Flask, Docker, AWS EC2, Vercel, \verb|uv|, \verb|ruff|, \verb|ty|
 \end{itemize}
 
 \vfill
