@@ -77,7 +77,7 @@
 
 \begin{tabular} {@{}l}
     \textbf{\href{https://brandonyifanyang.com/}{\Large{Brandon Yifan Yang}}} \\[3pt]
-    \linkhref{https://brandonyifanyang.com/}{brandonyifanyang.com} \quad \linkhref{mailto:yang52@engineering.upenn.edu}{yang52@engineering.upenn.edu} \quad \linkhref{https://github.com/branyang02}{github.com/branyang02} \quad \linkhref{https://scholar.google.com/citations?user=dZny9s0AAAAJ&hl=en}{Google Scholar}
+    \linkhref{https://brandonyifanyang.com/}{brandonyifanyang.com} \quad \linkhref{mailto:yang52@engineering.upenn.edu}{yang52@engineering.upenn.edu} \quad \linkhref{https://github.com/branyang02}{github.com/branyang02} \quad \linkhref{https://scholar.google.com/citations?user=dZny9s0AAAAJ&hl=en}{Google Scholar} \quad \linkhref{https://x.com/brandonyyang02}{X}
 \end{tabular}
 
 
@@ -91,9 +91,13 @@
 
 \section{Experience}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item \headingjob{Research Lead}{San Francisco, CA}{AfterQuery (YC W25)}{May 2026 - Present}
+    \item \headingjob{Research Intern: Agentic Autonomous Vehicles}{Mountain View, CA}{Honda Research Institute USA, Inc.}{September 2026 - December 2026}
           \begin{itemize}
-              \item Led development of custom UMI hardware and a distributed robot data collection system, integrating Rust-based device-side capture and LiDAR tracking with a server-side SLAM pipeline for end-effector tracking and automated storage with Hugging Face dataset management.
+              \item Researching gradient-free, self-improving autonomous physical AI systems with frontier model agents.
+          \end{itemize}
+    \item \headingjob{Research Lead}{San Francisco, CA}{AfterQuery (YC W25)}{May 2026 - Aug 2026}
+          \begin{itemize}
+              \item Led development of a custom-designed UMI system; built a new hardware-integration library and end-to-end software for demonstration collection, motion tracking, SLAM, data filtering and storage, and robot imitation policy training and evaluation with dual YAM robot arms.
               \item Led a 6-person research team building a full-stack AI-agent search benchmark platform; collected tasks from external experts, built custom quality-control workflows, and automated evaluations across frontier agent harnesses and models.
           \end{itemize}
     \item \headingjob{Embodied Intelligence Research Intern}{Beijing, China}{Spirit AI}{May 2025 - Aug 2025}
@@ -109,24 +113,21 @@
     \item \heading{\href{https://penn-pal-lab.github.io/}{Perception, Action, \& Learning Lab}, University of Pennsylvania}{Philadelphia, PA}
           {Advisor: Dinesh Jayaraman}{Aug 2025 - Present}
           \begin{itemize}
-              \item Implemented demonstration retrieval for $\pi_{0.5}$ VLA policies, integrating robot data retrieval into training and test-time inference for tabletop manipulation experiments. (\textit{CoRL 2026})
+              \item Implemented demonstration retrieval for $\pi_{0.5}$ VLA policies, integrating robot data retrieval into training and test-time inference for tabletop manipulation experiments.
               \item Engineered data transformation, training, and evaluation pipelines for retrieval-based VLA variants using JAX, PyTorch, Hugging Face, Docker, Slurm, and Ray.
-              \item Designed hidden-activation collection and steering infrastructure for diffusion-policy, flow-matching, and autoregressive VLA models across MetaWorld, LIBERO, RoboCasa, and real Franka hardware experiments. (\textit{ICML 2026 Workshop; NeurIPS 2026})
+              \item Designed hidden-activation collection and steering infrastructure for diffusion-policy, flow-matching, and autoregressive VLA models across MetaWorld, LIBERO, RoboCasa, and real Franka hardware experiments. (\textit{ICML 2026 Workshop; NeurIPS 2026 under review})
           \end{itemize}
     \item \heading{Learning and Interactive Robotics, University of Virginia}{Charlottesville, VA}
           {Advisor: Yen-Ling Kuo}{Aug 2024 - May 2025}
           \begin{itemize}
               \item \textbf{SkillVLA}: Developed a skill-conditioned VLA model for language-conditioned manipulation, using subgoal instructions and a VQ-VAE latent skill library to structure action generation.
               \item Presented SkillVLA as an oral talk at the 2024 UVA LLM Workshop (\linkhref{https://www.brandonyifanyang.com/skillvla.pdf}{slides}), earning the Audience Choice Award (top 3 of 28 presentations).
-              \item \textbf{Contrastive Learning for Robot Manipulation}: Ran policy-learning experiments for CLASS, evaluating action-sequence-supervised visual embeddings under camera-pose and object-appearance shifts. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
-              \item Modified simulation environments and trained PyTorch visuomotor policies to evaluate learned representations across visual generalization settings.
+              \item \textbf{Contrastive Learning for Robot Manipulation}: Modified simulation environments and trained PyTorch visuomotor policies for CLASS to evaluate action-sequence-supervised visual embeddings under camera-pose and object-appearance shifts. (\linkhref{https://class-robot.github.io/}{CoRL 2025})
           \end{itemize}
     \item \heading{\href{https://www.collabrobotics.com/}{Collaborative Robotics Lab}, University of Virginia}{Charlottesville, VA}
           {Advisor: Tariq Iqbal}{May 2022 - May 2024}
           \begin{itemize}
-              \item \textbf{\href{https://github.com/branyang02/GLOMA}{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]: Led a team of 3 in developing a language-grounded image-editing pipeline for object relocation goals in robotic manipulation settings.
-              \item Integrated language grounding with bounding-box-guided visual editing for object relocation.
-              \item Collected and annotated a dataset for fine-tuning pre-trained language and vision models.
+              \item \textbf{\href{https://github.com/branyang02/GLOMA}{Grounded Location for Object Manipulation (GLOMA)}} [\linkhref{https://github.com/branyang02/GLOMA}{code}]: Led a team of 3 in developing a language-grounded, bounding-box-guided image-editing pipeline for object relocation in robotic manipulation; collected and annotated a dataset for fine-tuning pre-trained language and vision models.
               \item \textbf{\href{https://github.com/branyang02/PandaFactory}{Centralized Multi-Agent RL for Collaborative Tasks}} [\linkhref{https://github.com/branyang02/PandaFactory}{code}]: Implemented offline and online centralized MARL training for long-horizon robotic bolt-screwing tasks in Isaac Gym.
               \item Designed custom multi-agent reward functions for task completion and collaboration, improving simulated task success by 20\% over the project baseline.
           \end{itemize}
@@ -134,7 +135,6 @@
 
 \section{Publications}
 \begin{itemize}[label={}, leftmargin=0pt]
-    \item Jiani Huang*, \textbf{Brandon Y. Yang*}, Amish Sethi, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman. ``Retrieval-Augmented Vision-Language-Action Model." Under review at \textit{CoRL 2026}.
     \item Miranda Muqing Miao*, Subin Kim*, \textbf{Brandon Y. Yang*}, Dinesh Jayaraman, and Lyle Ungar. ``Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States." Accepted poster, \textit{ICML 2026 Mechanistic Interpretability Workshop}; under review at \textit{NeurIPS 2026}. \hfill [\linkhref{https://mechinterpworkshop.com/posters/}{Workshop}][\linkhref{https://arxiv.org/abs/2605.17144}{arXiv}]
     \item Amish Sethi*, \textbf{Brandon Y. Yang*}, Michael Evans, Spencer Mateega, and Sam Jung. ``Position: Trust No Multi-Turn Benchmark Without Measuring Its User Simulator." Under review at \textit{NeurIPS 2026 Position Paper Track}.
     \item Sung-Wook Lee, Xuhui Kang, \textbf{Brandon Y. Yang}, and Yen-Ling Kuo. ``CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation." Accepted to \textit{CoRL 2025}. \hfill [\linkhref{https://class-robot.github.io/}{Website}][\linkhref{https://arxiv.org/abs/2508.01600}{arXiv}][\linkhref{https://arxiv.org/pdf/2508.01600}{PDF}]
@@ -144,9 +144,9 @@
 \section{Software Projects}
 \begin{itemize}[label={}, leftmargin=0pt]
     \item \textbf{openpi-eval} [\linkhref{https://github.com/branyang02/openpi-eval}{GitHub}, \linkhref{https://huggingface.co/datasets/brandonyang/metaworld_ml45}{Dataset}, \linkhref{https://x.com/brandonyyang02/status/2062678343452135771}{X Post}]: Built single-repo OpenPI evaluation infrastructure for a NeurIPS submission, supporting reproducible $\pi_{0.5}$ rollouts across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab; server-side batching improved policy-server throughput by up to 3.4x in a 64-client LIBERO benchmark.
+    \item \textbf{agentic-robots} [\linkhref{https://github.com/branyang02/agentic-robots}{GitHub}]: Built an agent-driven control framework for dual YAM robot arms, connecting Codex to camera observations and robot actions through MCP; supports closed-loop visual feedback, action correction, and rollout recording.
     \item \textbf{openpi-cuda} [\linkhref{https://github.com/branyang02/openpi-cuda}{GitHub}]: Developed custom CUDA kernels with C++/Python bindings for $\pi_{0.5}$ VLA inference, reducing latency by 18.5ms versus the PyTorch baseline.
     \item \textbf{\href{https://notie-markdown.vercel.app/}{notie-markdown}} [\linkhref{https://notie-markdown.vercel.app/}{Website}]: Built a React/TypeScript markdown renderer with equation previewing, graphing, and code execution; shipped with a Python/Flask backend on Vercel and Heroku.
-    \item \textbf{\href{https://github.com/branyang02/smart-oh}{SmartOH}} [\linkhref{https://github.com/branyang02/smart-oh}{GitHub}]: Built an office-hours queue management system with real-time queue updates, notifications, and analytics using Next.js, TypeScript, Python, and FastAPI; deployed with Vercel, AWS EC2, and CI/CD.
 \end{itemize}
 
 \section{Skills}
