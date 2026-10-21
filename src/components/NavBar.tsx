@@ -18,7 +18,7 @@ const NavBar = () => {
     const navigate = useNavigate();
 
     const NAME = "Brandon Y. Yang";
-    const TABS = ["Home", "Blog", "Notes", "Projects", "Fun"];
+    const TABS = ["Home", "Publications", "Projects", "Blog", "Notes", "Fun"];
 
     const handleSwitchChange = () => {
         setChecked(!checked);
