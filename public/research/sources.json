@@ -19,7 +19,8 @@
     "videos/robolab_one_bottle_square_pail_success.mp4": "https://raw.githubusercontent.com/branyang02/openpi-eval/main/docs/assets/rollouts/robolab_one_bottle_square_pail_success.mp4",
     "videos/liberopro_goal_task_drawer_pi05_rollout.mp4": "https://raw.githubusercontent.com/branyang02/openpi-eval/main/docs/assets/rollouts/liberopro_goal_task_drawer_pi05_rollout.mp4",
     "videos/agentic-robots-shoelace.mp4": "X post https://x.com/amish_sethi04/status/2102012466758885392 original 960x432 MP4",
-    "videos/metaworld_drawer_open_success.mp4": "https://raw.githubusercontent.com/branyang02/openpi-eval/main/docs/assets/rollouts/metaworld_drawer_open_success.mp4"
+    "videos/metaworld_drawer_open_success.mp4": "https://raw.githubusercontent.com/branyang02/openpi-eval/main/docs/assets/rollouts/metaworld_drawer_open_success.mp4",
+    "videos/openpi-eval-collage.mp4": "Five README rollout MP4s from branyang02/openpi-eval, combined into a labeled 3+2 layout; clips repeat independently for a 24-second preview"
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",

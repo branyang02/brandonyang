@@ -87,13 +87,7 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "openpi-eval",
         title: "openpi-eval",
-        videos: [
-            { label: "MetaWorld", src: "/research/videos/metaworld_drawer_open_success.mp4", poster: "/research/videos/metaworld_drawer_open_success.jpg" },
-            { label: "LIBERO", src: "/research/videos/libero_bbq_sauce_success.mp4", poster: "/research/videos/libero_bbq_sauce_success.jpg" },
-            { label: "LIBERO-Pro", src: "/research/videos/liberopro_goal_task_drawer_pi05_rollout.mp4", poster: "/research/videos/liberopro_goal_task_drawer_pi05_rollout.jpg" },
-            { label: "RoboCasa", src: "/research/videos/robocasa_slide_dishwasher_success.mp4", poster: "/research/videos/robocasa_slide_dishwasher_success.jpg" },
-            { label: "RoboLab", src: "/research/videos/robolab_one_bottle_square_pail_success.mp4", poster: "/research/videos/robolab_one_bottle_square_pail_success.jpg" }
-        ],
+        videos: [{ label: "OpenPI evaluation across five robot benchmarks", src: "/research/videos/openpi-eval-collage.mp4", poster: "/research/videos/openpi-eval-collage.jpg" }],
         venue: "Robot policy evaluation · JAX / PyTorch",
         description: "Reproducible OpenPI policy evaluation across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab. Server-side batching improved policy-server throughput by up to 3.4× in a 64-client LIBERO benchmark.",
         image: "/research/openpi-eval.jpg",
