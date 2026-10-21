@@ -38,3 +38,7 @@ body.dark-mode .video-label { color: #eef3ec; }
 @media (max-width: 700px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
 
 .research-copy .research-contribution { font-size: 13px; margin-top: 0; }
+
+.research-copy h3 a, body.dark-mode .research-copy h3 a { color: inherit; transition: color 150ms ease; }
+.research-copy h3 a:hover, .research-copy h3 a:focus-visible { color: #216b51; }
+body.dark-mode .research-copy h3 a:hover, body.dark-mode .research-copy h3 a:focus-visible { color: #9edfc5; }
