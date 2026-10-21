@@ -47,7 +47,7 @@ export const publications: ResearchEntry[] = [
         id: "coast",
         title: "Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States",
         authors: "Miranda Muqing Miao*, Subin Kim*, Brandon Y. Yang*, Dinesh Jayaraman, and Lyle Ungar",
-        venue: "ICML 2026 Mechanistic Interpretability Workshop · Accepted poster · ICLR 2027 under review · * Equal contribution",
+        venue: "ICML 2026 Mechanistic Interpretability Workshop · ICLR 2027 under review · * Equal contribution",
         description: "Steering VLA hidden states toward representations associated with successful rollouts. COAST fits conceptors from success and failure examples, then applies them at inference time without updating policy weights.",
         image: "/research/coast-combined.svg",
         imageAlt: "COAST method overview above simulated and real robot evaluation environments from Figure 2",
