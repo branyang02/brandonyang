@@ -33,7 +33,8 @@
         "User-provided CIS 7000 group real-robot video, April 26, 2026"
       ],
       "notes": "User-approved COAST thumbnail. Original method PNG rendered separately to preserve text quality. Four cropped camera views, Lanczos scaling, H.264 CRF 14, no audio. Simulator clips are evaluation demos, not confirmed steering comparisons."
-    }
+    },
+    "videos/coast-rollouts-three-local.mp4": "User-approved three-video row derived from coast-rollouts-local.mp4, retaining MetaWorld, LIBERO, and real-robot views; RoboCasa removed. Method PNG remains separate for sharp text."
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",
