@@ -8,7 +8,7 @@ export default function ResearchList({ entries, showCaptions = true }: { entries
         <div className="research-list">
             {entries.map((entry) => (
                 <article className={`research-entry ${entry.image || entry.videos?.length ? "has-figure" : "text-only"}`} data-video-grid={(entry.videos?.length ?? 0) > 1 || undefined} id={entry.id} key={entry.id}>
-                    {entry.videos?.length ? <figure><ProjectVideos videos={entry.videos} /></figure> : entry.image && (
+                    {entry.videos?.length ? <figure>{entry.videoFigureImage && <img className="video-figure-header" src={entry.videoFigureImage} alt={`${entry.title} method overview`} />}<ProjectVideos videos={entry.videos} /></figure> : entry.image && (
                         <figure>
                             <a href={entry.image} target="_blank" rel="noopener noreferrer" aria-label={`View full figure for ${entry.title}`}>
                                 <img src={entry.image} alt={entry.imageAlt ?? entry.title} loading="lazy" decoding="async" />

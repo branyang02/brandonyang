@@ -24,7 +24,16 @@
     "videos/agentic-robots-comparison.mp4": "Original X post 2102012466758885392 human demonstration and overhead robot view, cropped into equal panels in a 960x540 thumbnail",
     "openpi-cuda-architecture.svg": "Implementation diagram grounded in branyang02/openpi-cuda src/openpi_cuda/ops.py and src/openpi/models_cuda/models/{siglip,gemma}.py",
     "videos/agentic-robots-transition.mp4": "Original videos from X post 2102012466758885392. Human demo fills thumbnail for three seconds, then scales down over two seconds into lower-left inset. Complete robot footage preserves both wrist-camera views.",
-    "videos/umi-live-teaser.mp4": "https://branyang02.github.io/umi-live/static/videos/teaser.mp4"
+    "videos/umi-live-teaser.mp4": "https://branyang02.github.io/umi-live/static/videos/teaser.mp4",
+    "videos/coast-rollouts-local.mp4": {
+      "sources": [
+        "https://github.com/user-attachments/assets/343316f1-37d3-464c-ad97-2965f0ebe456",
+        "https://github.com/user-attachments/assets/84053a5e-bb96-4368-843a-466db44f5d3d",
+        "https://github.com/user-attachments/assets/9fa72915-379a-4107-9759-f9a6794db4b4",
+        "User-provided CIS 7000 group real-robot video, April 26, 2026"
+      ],
+      "notes": "User-approved COAST thumbnail. Original method PNG rendered separately to preserve text quality. Four cropped camera views, Lanczos scaling, H.264 CRF 14, no audio. Simulator clips are evaluation demos, not confirmed steering comparisons."
+    }
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",

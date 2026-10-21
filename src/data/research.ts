@@ -10,6 +10,7 @@ export type ResearchEntry = {
     description: string;
     image?: string;
     videos?: ProjectVideo[];
+    videoFigureImage?: string;
     imageAlt?: string;
     imageSource?: string;
     caption?: string;
@@ -50,6 +51,8 @@ export const publications: ResearchEntry[] = [
     },
     {
         id: "coast",
+        videoFigureImage: "/research/coast-overview.png",
+        videos: [{ label: "COAST method with RoboCasa, MetaWorld, LIBERO, and real-robot footage", src: "/research/videos/coast-rollouts-local.mp4", poster: "/research/videos/coast-rollouts-local.jpg" }],
         title: "Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States",
         authors: "Miranda Muqing Miao*, Subin Kim*, Brandon Y. Yang*, Dinesh Jayaraman, and Lyle Ungar",
         venue: "ICML 2026 Mechanistic Interpretability Workshop · ICLR 2027 under review",

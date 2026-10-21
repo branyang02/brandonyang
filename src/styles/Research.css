@@ -42,3 +42,5 @@ body.dark-mode .video-label { color: #eef3ec; }
 .research-copy h3 a, body.dark-mode .research-copy h3 a { color: inherit; transition: color 150ms ease; }
 .research-copy h3 a:hover, .research-copy h3 a:focus-visible { color: #216b51; }
 body.dark-mode .research-copy h3 a:hover, body.dark-mode .research-copy h3 a:focus-visible { color: #9edfc5; }
+
+.research-entry img.video-figure-header { max-height: none; border-radius: 6px 6px 0 0; margin-bottom: 4px; }
