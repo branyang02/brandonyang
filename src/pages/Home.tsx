@@ -9,7 +9,7 @@ import { countWordsAndEquations, getAllMarkdownString } from "../utils/utils";
 import { useEffect, useState } from "react";
 import Education from "../components/Education";
 import ResearchList from "../components/ResearchList";
-import { selectedProjects } from "../data/research";
+import { publications, selectedProjects } from "../data/research";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -83,6 +83,23 @@ const Home = () => {
                         Education
                     </Heading>
                     <Education />
+                </Pane>
+                <Pane className="profile-container" flexShrink={0}>
+                    <Profile />
+                </Pane>
+            </Pane>
+            <section className="research-section" id="selected-publications" aria-labelledby="publications-heading">
+                <h2 id="publications-heading">Selected publications</h2>
+                <ResearchList entries={publications} showCaptions={false} />
+                <a href="/publications">All publications →</a>
+            </section>
+            <section className="research-section" id="selected-projects" aria-labelledby="projects-heading">
+                <h2 id="projects-heading">Selected projects</h2>
+                <p className="research-intro">Tools for evaluating policies, running robots, and improving inference.</p>
+                <ResearchList entries={selectedProjects} />
+                <a href="/projects">More projects →</a>
+            </section>
+            <section className="research-section">
                     <Heading
                         size={800}
                         marginTop={majorScale(2)}
@@ -100,16 +117,6 @@ const Home = () => {
                         News
                     </Heading>
                     <MarkdownParagraph text={newsParagraphText} />
-                </Pane>
-                <Pane className="profile-container" flexShrink={0}>
-                    <Profile />
-                </Pane>
-            </Pane>
-            <section className="research-section" id="selected-projects" aria-labelledby="projects-heading">
-                <h2 id="projects-heading">Selected projects</h2>
-                <p className="research-intro">Tools for evaluating policies, running robots, and improving inference.</p>
-                <ResearchList entries={selectedProjects} />
-                <a href="/projects">More projects →</a>
             </section>
         </div>
     );
