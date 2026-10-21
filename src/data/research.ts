@@ -66,6 +66,7 @@ export const publications: ResearchEntry[] = [
     },
     {
         id: "class",
+        videos: [{ label: "CLASS method overview and real robot demonstrations", src: "/research/videos/class-combined.mp4", poster: "/research/videos/class-combined.jpg" }],
         title: "CLASS: Contrastive Learning via Action Sequence Supervision for Robot Manipulation",
         authors: "Sung-Wook Lee, Xuhui Kang, Brandon Y. Yang, and Yen-Ling Kuo",
         venue: "CoRL 2025",

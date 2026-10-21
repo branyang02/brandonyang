@@ -31,5 +31,14 @@
     "openpi-eval thumbnail is from the author\u2019s X post 2062678343452135771; links back to original post.",
     "CrossSearch has no verified public figure or paper URL yet. No placeholder evidence is used.",
     "RA-VLA figure extracted from user-provided manuscript; full manuscript not hosted."
-  ]
+  ],
+  "class_video_thumbnail": {
+    "output": "videos/class-combined.mp4",
+    "sources": [
+      "https://class-robot.github.io/static/videos/stack.mp4",
+      "https://class-robot.github.io/static/videos/mug.mp4",
+      "https://class-robot.github.io/static/videos/toast.mp4"
+    ],
+    "notes": "Original method figure above three looping robot videos. No task labels. Original 256px videos scaled with Lanczos; composition retains method figure resolution."
+  }
 }
