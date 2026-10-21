@@ -66,59 +66,6 @@ export default function Projects() {
         },
 
         {
-            image: "https://branyang02.github.io/images/smart_oh.png",
-            title: "SmartOH",
-            authors: [
-                {
-                    name: "Edward Wei",
-                    link: "https://edwardwei.com/",
-                },
-                {
-                    name: "Brandon Y. Yang",
-                    link: "https://www.brandonyifanyang.com",
-                },
-                {
-                    name: "Ravi Jayaraman",
-                    link: "https://www.linkedin.com/in/ravi-jayaraman-/",
-                },
-                {
-                    name: "Jack Omohundro",
-                    link: "https://www.linkedin.com/in/jackomohundro/",
-                },
-            ],
-            description:
-                "A queue management system designed for office hours, featuring real-time queue updates, notifications, and analytics.",
-            link: "https://github.com/branyang02/smart-oh",
-            metaLinks: [
-                {
-                    name: "GitHub",
-                    link: "https://github.com/branyang02/smart-oh",
-                },
-            ],
-            techStack: ["Python", "TypeScript", "React", "FastAPI"],
-        },
-        {
-            image: "https://branyang02.github.io/images/ai-calendar.png",
-            title: "AI Calendar Maps",
-            description:
-                "An AI Places Recommendation app that recommends based on your calendar.",
-            link: "https://github.com/branyang02/Django-AI-Calendar-Map",
-            metaLinks: [
-                {
-                    name: "GitHub",
-                    link: "https://github.com/branyang02/Django-AI-Calendar-Map",
-                },
-            ],
-            techStack: [
-                "Python",
-                "JavaScript",
-                "Django",
-                "OpenAI",
-                "Google Cloud",
-                "Heroku",
-            ],
-        },
-        {
             gif: "https://branyang02.github.io/images/tetris.gif",
             title: "Multi-agent Tetris AI",
             description:
