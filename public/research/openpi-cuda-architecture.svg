@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+<title>Custom CUDA kernels integrated into the pi0.5 inference stack</title>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#89cbb3" stroke-width="1.5"/></marker></defs>
+<rect width="960" height="540" rx="20" fill="#142c29"/>
+<g font-family="Arial, sans-serif">
+<text x="48" y="69" fill="#eaf5ef" font-size="38" font-weight="700">π0.5 · CUDA inference</text>
+<text x="48" y="109" fill="#9dbcb0" font-size="21">C++ bindings · PyTorch custom operators</text>
+<g fill="#23433c" stroke="#4c7768" stroke-width="2"><rect x="48" y="154" width="390" height="92" rx="12"/><rect x="522" y="154" width="390" height="92" rx="12"/></g>
+<g fill="#eaf5ef" font-size="29" font-weight="700" text-anchor="middle"><text x="243" y="193">SigLIP</text><text x="717" y="193">Gemma</text></g>
+<g fill="#b7d0c5" font-size="20" text-anchor="middle"><text x="243" y="225">Vision encoder</text><text x="717" y="225">Transformer layers</text></g>
+<g stroke="#89cbb3" stroke-width="3" marker-end="url(#arrow)"><path d="M243 256V293"/><path d="M717 256V293"/></g>
+<g fill="#dff0e6"><rect x="48" y="310" width="390" height="64" rx="9"/><rect x="48" y="392" width="390" height="64" rx="9"/><rect x="522" y="310" width="390" height="64" rx="9"/><rect x="522" y="392" width="390" height="64" rx="9"/></g>
+<g fill="#16392e" font-size="26" text-anchor="middle"><text x="243" y="352">Fused bias + GELU</text><text x="243" y="434">Residual + LayerNorm</text><text x="717" y="352">Fused GeGLU</text><text x="717" y="434">RMSNorm</text></g>
+<text x="48" y="505" fill="#9dbcb0" font-size="20">Custom kernels · Inference integration · Benchmarking</text>
+</g></svg>

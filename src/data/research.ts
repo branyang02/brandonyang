@@ -113,10 +113,10 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "openpi-cuda",
         title: "openpi-cuda",
-        image: "/research/openpi-cuda-benchmark.svg",
-        imageAlt: "Mean inference latency on A100 40GB, JAX 92.9 milliseconds, PyTorch 322.0 milliseconds, CUDA 303.5 milliseconds",
+        image: "/research/openpi-cuda-architecture.svg",
+        imageAlt: "Custom CUDA kernels for SigLIP and Gemma, including fused bias GELU, residual LayerNorm, GeGLU, and RMSNorm",
         venue: "Inference optimization · C++ / CUDA",
-        description: "Custom CUDA kernels for π0.5 inference. On the repo’s A100 40GB benchmark, mean inference time drops from 322.0 ms for the PyTorch baseline to 303.5 ms with CUDA, an 18.5 ms reduction.",
+        description: "Implemented fused activation and normalization kernels in CUDA, with C++ bindings and PyTorch custom-op integration for π0.5’s SigLIP and Gemma layers. Built kernel tests and end-to-end inference benchmarks, measuring an 18.5 ms latency reduction against the PyTorch baseline on A100 40GB.",
         links: [{ label: "Code & benchmark", href: "https://github.com/branyang02/openpi-cuda" }],
     },
 ];

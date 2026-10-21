@@ -21,7 +21,8 @@
     "videos/agentic-robots-shoelace.mp4": "X post https://x.com/amish_sethi04/status/2102012466758885392 original 960x432 MP4",
     "videos/metaworld_drawer_open_success.mp4": "https://raw.githubusercontent.com/branyang02/openpi-eval/main/docs/assets/rollouts/metaworld_drawer_open_success.mp4",
     "videos/openpi-eval-collage.mp4": "Five README rollout MP4s from branyang02/openpi-eval; unlabeled edge-to-edge 3+2 mosaic with uniform row heights, slight centered crop of RoboLab to match tile ratio; independent looping in a 24-second preview",
-    "videos/agentic-robots-comparison.mp4": "Both original videos from X post 2102012466758885392, human demonstration left and robot execution right, independently looping for a 30-second comparison"
+    "videos/agentic-robots-comparison.mp4": "Original X post 2102012466758885392 human demonstration and overhead robot view, cropped into equal panels in a 960x540 thumbnail",
+    "openpi-cuda-architecture.svg": "Implementation diagram grounded in branyang02/openpi-cuda src/openpi_cuda/ops.py and src/openpi/models_cuda/models/{siglip,gemma}.py"
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",
