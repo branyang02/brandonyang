@@ -19,6 +19,7 @@ export type ResearchEntry = {
 export const publications: ResearchEntry[] = [
     {
         id: "umi-live",
+        videos: [{ label: "UMI-Live teaser", src: "/research/videos/umi-live-teaser.mp4", poster: "/research/videos/umi-live-teaser.jpg" }],
         title: "UMI-Live for In-The-Wild Bimanual Robotics Data Collection",
         authors: "Govind Velamoor, Adrian Lin, Sam Jung, Spencer Mateega, Brandon Y. Yang†, and Amish Sethi†",
         venue: "CoRL 2026 UMI Arena Workshop",
