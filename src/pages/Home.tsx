@@ -34,8 +34,6 @@ const Home = () => {
 
         I’m currently a research intern at **Honda Research Institute**, studying self-improving autonomous physical AI systems. At Penn’s Perception, Action, & Learning Lab, I work on demonstration retrieval and activation steering for VLA models. Previously, I led research at **AfterQuery** and trained and evaluated robot policies at **Spirit AI**.
 
-        [Resume](/resume/byang_resume.pdf) · [Publications](/publications) · [Selected projects](#selected-projects)
-
         ${
             wordCount > 0 && equationCount > 0
                 ? `I have written [color:#ec4899]${wordCount}[/color] words, [color:#ec4899]${equationCount}[/color] equations, and [color:#ec4899]${codeLineCount}[/color] lines of code on this website in my [blog](/blog) and [notes](/notes).`
