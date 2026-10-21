@@ -40,8 +40,8 @@ export const publications: ResearchEntry[] = [
     {
         id: "ra-vla",
         title: "Retrieval-Augmented Vision-Language-Action Model",
-        authors: "Jiani Huang, Amish Sethi, Brandon Y. Yang, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman",
-        venue: "CoRL 2026 SimBench2Real Workshop",
+        authors: "Jiani Huang*, Amish Sethi*, Brandon Y. Yang*, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman",
+        venue: "CoRL 2026 SimBench2Real Workshop · * Equal contribution",
         description: "RA-VLA retrieves a relevant DROID demonstration, adapts its trajectory to the current scene, and overlays it on camera observations to guide a fine-tuned VLA. Evaluated in RoboLab-120 and on real-world manipulation tasks.",
         image: "/research/ravla-method.png",
         imageAlt: "RA-VLA pipeline from scene-graph retrieval through trajectory warping to visual policy guidance",

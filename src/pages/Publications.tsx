@@ -11,7 +11,7 @@ export default function Publications() {
             </Helmet>
             <h1>Publications</h1>
             <p className="research-intro">Robot learning, VLA models, and multimodal evaluation.</p>
-            <ResearchList entries={publications} />
+            <ResearchList entries={publications} showCaptions={false} />
         </div>
     );
 }
