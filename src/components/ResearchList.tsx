@@ -7,7 +7,7 @@ export default function ResearchList({ entries, showCaptions = true }: { entries
     return (
         <div className="research-list">
             {entries.map((entry) => (
-                <article className={`research-entry ${entry.image || entry.videos?.length ? "has-figure" : "text-only"}`} id={entry.id} key={entry.id}>
+                <article className={`research-entry ${entry.image || entry.videos?.length ? "has-figure" : "text-only"}`} data-video-grid={(entry.videos?.length ?? 0) > 1 || undefined} id={entry.id} key={entry.id}>
                     {entry.videos?.length ? <figure><ProjectVideos videos={entry.videos} /></figure> : entry.image && (
                         <figure>
                             <a href={entry.image} target="_blank" rel="noopener noreferrer" aria-label={`View full figure for ${entry.title}`}>
