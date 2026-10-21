@@ -54,8 +54,8 @@ export const publications: ResearchEntry[] = [
         authors: "Miranda Muqing Miao*, Subin Kim*, Brandon Y. Yang*, Dinesh Jayaraman, and Lyle Ungar",
         venue: "ICML 2026 Mechanistic Interpretability Workshop · Accepted poster · ICLR 2027 under review · * Equal contribution",
         description: "Steering VLA hidden states toward representations associated with successful rollouts. COAST fits conceptors from success and failure examples, then applies them at inference time without updating policy weights.",
-        image: "/research/coast-overview.png",
-        imageAlt: "COAST fits success and failure conceptors and uses a contrastive conceptor to steer frozen policy activations",
+        image: "/research/coast-combined.svg",
+        imageAlt: "COAST method overview above simulated and real robot evaluation environments from Figure 2",
         imageSource: "https://arxiv.org/abs/2605.17144",
         caption: "COAST method overview",
         links: [

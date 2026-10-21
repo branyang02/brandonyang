@@ -5,7 +5,9 @@
     "coast-overview.png": "https://arxiv.org/html/2605.17144v1/COAST_NeurIPS.png",
     "class-overview.png": "https://class-robot.github.io/static/images/main.png",
     "openpi-eval.jpg": "https://pbs.twimg.com/amplify_video_thumb/2062678286321459200/img/yE3i8saQkS_u0TlU.jpg",
-    "ravla-method.png": "User-provided RA-VLA paper, Figure 1 on page 2, 2026-10-20"
+    "ravla-method.png": "User-provided RA-VLA paper, Figure 1 on page 2, 2026-10-20",
+    "coast-environments.png": "https://arxiv.org/html/2605.17144v1/envs_figure.png",
+    "coast-combined.svg": "Original COAST Figure 1 and Figure 2 images, vertically composed without modifying their contents"
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",
