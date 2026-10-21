@@ -1,68 +1,8 @@
-import "../styles/Projects.css";
 import ResearchList from "../components/ResearchList";
-import { selectedProjects } from "../data/research";
-import { Pane, Text, majorScale, minorScale } from "evergreen-ui";
-import { useDarkMode } from "../context/DarkModeContext";
-
-import {
-    SiDjango,
-    SiExpress,
-    SiFastapi,
-    SiFlask,
-    SiGooglecloud,
-    SiHeroku,
-    SiJavascript,
-    SiMeta,
-    SiNvidia,
-    SiOpenai,
-    SiPython,
-    SiPytorch,
-    SiReact,
-    SiTypescript,
-} from "@icons-pack/react-simple-icons";
-import React from "react";
+import { selectedProjects, type ResearchEntry } from "../data/research";
 import { Helmet } from "react-helmet";
 
-function getLogo(tech: string) {
-    switch (tech) {
-        case "React":
-            return <SiReact color="#61DAFB" size={24} />;
-        case "TypeScript":
-            return <SiTypescript color="#007ACC" size={24} />;
-        case "JavaScript":
-            return <SiJavascript color="#F7DF1E" size={24} />;
-        case "Python":
-            return <SiPython color="#3776AB" size={24} />;
-        case "Django":
-            return <SiDjango color="#092E20" size={24} />;
-        case "OpenAI":
-            return <SiOpenai color="#FF0080" size={24} />;
-        case "Google Cloud":
-            return <SiGooglecloud color="#4285F4" size={24} />;
-        case "Flask":
-            return <SiFlask color="#000000" size={24} />;
-        case "PyTorch":
-            return <SiPytorch color="#EE4C2C" size={24} />;
-        case "Heroku":
-            return <SiHeroku color="#430098" size={24} />;
-        case "FastAPI":
-            return <SiFastapi color="#009688" size={24} />;
-        case "Express":
-            return <SiExpress color="#000000" size={24} />;
-        case "Meta":
-            return <SiMeta color="#000000" size={24} />;
-        case "LlaMA2":
-            return <SiMeta color="#000000" size={24} />;
-        case "Nvidia IsaacGym":
-            return <SiNvidia color="#76B900" size={24} />;
-        default:
-            return null;
-    }
-}
-
-const Projects = () => {
-    const { darkMode } = useDarkMode();
-
+export default function Projects() {
     const projects = [
         {
             image: "https://branyang02.github.io/images/notie.png",
@@ -193,212 +133,22 @@ const Projects = () => {
             techStack: ["Python", "PyTorch"],
         },
     ];
-
+    const allProjects: ResearchEntry[] = [...selectedProjects, ...projects.map((project) => ({
+        id: project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        title: project.title,
+        description: project.description,
+        image: project.image ?? project.gif,
+        imageAlt: project.title,
+        authors: project.authors?.map((author) => author.name).join(", "),
+        venue: project.techStack.join(" · "),
+        links: project.metaLinks.map((link) => ({ label: link.name, href: link.link })),
+    }))];
     return (
-        <div>
-            <Helmet>
-                <title>projects | Brandon Y. Yang</title>
-                <meta
-                    name="description"
-                    content="Projects by Brandon Y. Yang."
-                />
-            </Helmet>
-            <Pane className="project-page">
-                <h1>Projects</h1>
-                <p className="research-intro">Robot learning infrastructure and software I build.</p>
-                <ResearchList entries={selectedProjects} />
-                <h2>Earlier projects</h2>
-                <Pane display="flex" flexDirection="column" alignItems="center">
-                    {projects.map((project, index) => (
-                        <Pane
-                            key={index}
-                            className="legacy-project"
-                            width="100%"
-                            marginBottom={24}
-                            display="flex"
-                            flexDirection="row"
-                            padding={16}
-                            borderRadius={4}
-                        >
-                            <Pane flex={1} marginRight={16}>
-                                {project.image && (
-                                    <a
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <img
-                                            src={project.image}
-                                            alt={project.title}
-                                            style={{
-                                                width: "100%",
-                                                borderRadius: "4px",
-                                            }}
-                                        />
-                                    </a>
-                                )}
-                                {project.gif && (
-                                    <a
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <img
-                                            src={project.gif}
-                                            alt={project.title}
-                                            style={{
-                                                width: "100%",
-                                                borderRadius: "4px",
-                                            }}
-                                        />
-                                    </a>
-                                )}
-                            </Pane>
-                            <Pane flex={2}>
-                                {project.link ? (
-                                    <a
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        <Text
-                                            size={600}
-                                            marginTop={minorScale(2)}
-                                            color={darkMode ? "white" : "black"}
-                                            display="block"
-                                            fontWeight="bold"
-                                        >
-                                            {project.title}
-                                        </Text>
-                                    </a>
-                                ) : (
-                                    <Text
-                                        size={600}
-                                        marginTop={minorScale(2)}
-                                        color={darkMode ? "white" : "black"}
-                                        display="block"
-                                        fontWeight="bold"
-                                    >
-                                        {project.title}
-                                    </Text>
-                                )}
-                                {project.authors && (
-                                    <Text
-                                        size={400}
-                                        marginTop={minorScale(1)}
-                                        color={darkMode ? "white" : "black"}
-                                        display="block"
-                                    >
-                                        {project.authors.map(
-                                            (author, authorIndex) => (
-                                                <React.Fragment
-                                                    key={authorIndex}
-                                                >
-                                                    <a
-                                                        href={author.link}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        style={{
-                                                            textDecoration:
-                                                                "none",
-                                                            fontWeight:
-                                                                author.name.includes(
-                                                                    "Brandon"
-                                                                )
-                                                                    ? "bold"
-                                                                    : "normal",
-                                                        }}
-                                                    >
-                                                        {author.name}
-                                                    </a>
-                                                    {authorIndex <
-                                                        project.authors.length -
-                                                            1 && ", "}
-                                                </React.Fragment>
-                                            )
-                                        )}
-                                    </Text>
-                                )}
-                                <Text
-                                    size={400}
-                                    marginTop={minorScale(2)}
-                                    color={darkMode ? "white" : "black"}
-                                    display="block"
-                                >
-                                    {project.description}
-                                </Text>
-                                {project.metaLinks && (
-                                    <Text
-                                        size={400}
-                                        marginTop={minorScale(1)}
-                                        color={darkMode ? "white" : "black"}
-                                        display="block"
-                                    >
-                                        {project.metaLinks.map(
-                                            (metaLink, metaLinkIndex) => (
-                                                <React.Fragment
-                                                    key={metaLinkIndex}
-                                                >
-                                                    <a
-                                                        href={metaLink.link}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        style={{
-                                                            textDecoration:
-                                                                "none",
-                                                        }}
-                                                    >
-                                                        {metaLink.name}
-                                                    </a>
-                                                    {metaLinkIndex <
-                                                        project.metaLinks
-                                                            .length -
-                                                            1 && " / "}
-                                                </React.Fragment>
-                                            )
-                                        )}
-                                    </Text>
-                                )}
-                                <Pane
-                                    display="flex"
-                                    flexWrap="wrap"
-                                    marginTop={minorScale(2)}
-                                >
-                                    {project.techStack &&
-                                        project.techStack.map(
-                                            (tech, techIndex) => (
-                                                <Pane
-                                                    key={techIndex}
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    marginRight={majorScale(1)}
-                                                >
-                                                    {getLogo(tech)}
-                                                    <Text
-                                                        size={300}
-                                                        marginLeft={minorScale(
-                                                            1
-                                                        )}
-                                                        color={
-                                                            darkMode
-                                                                ? "white"
-                                                                : "black"
-                                                        }
-                                                    >
-                                                        {tech}
-                                                    </Text>
-                                                </Pane>
-                                            )
-                                        )}
-                                </Pane>
-                            </Pane>
-                        </Pane>
-                    ))}
-                </Pane>
-            </Pane>
+        <div className="project-page" style={{ width: "100%" }}>
+            <Helmet><title>Projects | Brandon Y. Yang</title><meta name="description" content="Projects by Brandon Y. Yang." /></Helmet>
+            <h1>Projects</h1>
+            <p className="research-intro">Robot learning infrastructure and software I build.</p>
+            <ResearchList entries={allProjects} showCaptions={false} />
         </div>
     );
-};
-
-export default Projects;
+}

@@ -11,7 +11,9 @@
     "class-stack.png": "First frame extracted at native 256x256 resolution from https://class-robot.github.io/static/videos/stack.mp4",
     "class-mug.png": "First frame extracted at native 256x256 resolution from https://class-robot.github.io/static/videos/mug.mp4",
     "class-toast.png": "First frame extracted at native 256x256 resolution from https://class-robot.github.io/static/videos/toast.mp4",
-    "class-combined.svg": "Original CLASS overview and three real robot video frames, composed without changing their contents"
+    "class-combined.svg": "Original CLASS overview and three real robot video frames, composed without changing their contents",
+    "agentic-robots.jpg": "https://pbs.twimg.com/amplify_video_thumb/2101493079672758272/img/M8tqGJzA9DAOOY6b.jpg",
+    "openpi-cuda-benchmark.svg": "Chart of mean inference_ms from https://github.com/branyang02/openpi-cuda README, A100 40GB: JAX 92.9, PyTorch 322.0, CUDA 303.5"
   },
   "notes": [
     "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",

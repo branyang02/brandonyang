@@ -99,6 +99,8 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "agentic-robots",
         title: "agentic-robots",
+        image: "/research/agentic-robots.jpg",
+        imageAlt: "Dual YAM robot shoelace-tying demonstration from the agentic-robots project post",
         venue: "Physical AI · Robot control infrastructure",
         description: "An observation/action bridge connecting Codex to dual YAM arms and cameras through MCP. Supports camera feedback, action correction, and recorded rollouts, with hardware checks and operator supervision.",
         links: [{ label: "GitHub", href: "https://github.com/branyang02/agentic-robots" }, { label: "Demo on X", href: "https://x.com/amish_sethi04/status/2102012466758885392" }],
@@ -106,6 +108,8 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "openpi-cuda",
         title: "openpi-cuda",
+        image: "/research/openpi-cuda-benchmark.svg",
+        imageAlt: "Mean inference latency on A100 40GB, JAX 92.9 milliseconds, PyTorch 322.0 milliseconds, CUDA 303.5 milliseconds",
         venue: "Inference optimization · C++ / CUDA",
         description: "Custom CUDA kernels for π0.5 inference. On the repo’s A100 40GB benchmark, mean inference time drops from 322.0 ms for the PyTorch baseline to 303.5 ms with CUDA, an 18.5 ms reduction.",
         links: [{ label: "Code & benchmark", href: "https://github.com/branyang02/openpi-cuda" }],
