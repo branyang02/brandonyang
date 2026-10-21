@@ -9,7 +9,7 @@ import { countWordsAndEquations, getAllMarkdownString } from "../utils/utils";
 import { useEffect, useState } from "react";
 import Education from "../components/Education";
 import ResearchList from "../components/ResearchList";
-import { publications, selectedProjects } from "../data/research";
+import { selectedProjects } from "../data/research";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -34,7 +34,7 @@ const Home = () => {
 
         I’m currently a research intern at **Honda Research Institute**, studying self-improving autonomous physical AI systems. At Penn’s Perception, Action, & Learning Lab, I work on demonstration retrieval and activation steering for VLA models. Previously, I led research at **AfterQuery** and trained and evaluated robot policies at **Spirit AI**.
 
-        [Resume](/resume/byang_resume.pdf) · [Publications](#publications) · [Selected projects](#selected-projects)
+        [Resume](/resume/byang_resume.pdf) · [Publications](/publications) · [Selected projects](#selected-projects)
 
         ${
             wordCount > 0 && equationCount > 0
@@ -107,11 +107,6 @@ const Home = () => {
                     <Profile />
                 </Pane>
             </Pane>
-            <section className="research-section" id="publications" aria-labelledby="publications-heading">
-                <h2 id="publications-heading">Publications</h2>
-                <p className="research-intro">Robot learning, VLA models, and multimodal evaluation.</p>
-                <ResearchList entries={publications} />
-            </section>
             <section className="research-section" id="selected-projects" aria-labelledby="projects-heading">
                 <h2 id="projects-heading">Selected projects</h2>
                 <p className="research-intro">Tools for evaluating policies, running robots, and improving inference.</p>
