@@ -12,16 +12,20 @@ import MarkdownParagraph from "./MarkdownParagraph";
 const Experience = () => {
     const experience = [
         {
-            date: "May 2026 - Present",
-            title: "Research Lead at [AfterQuery (YC W25)](https://www.afterquery.com/).",
+            date: "Sep 2026 - Dec 2026",
+            title: "**Research Intern, Agentic Autonomous Vehicles · Honda Research Institute USA**\n\nResearching self-improving autonomous physical AI systems with frontier model agents.",
+        },
+        {
+            date: "May 2026 - Aug 2026",
+            title: "**Research Lead** · [AfterQuery (YC W25)](https://www.afterquery.com/)\n\nLed a six-person research team. Built and tested custom UMI hardware and an end-to-end robot training workflow for efficient, in-the-wild data collection.",
         },
         {
             date: "Aug 2025 - Present",
-            title: "Graduate Research Assistant at UPenn's [GRASP Lab](https://www.grasp.upenn.edu/).",
+            title: "**Graduate Research · Penn Perception, Action, & Learning Lab**\n\nDemonstration retrieval, VLA training and evaluation, and hidden-state activation steering.",
         },
         {
             date: `May 2025 - Aug 2025`,
-            title: "Embodied Intelligence Research Intern at [Spirit AI](https://www.spirit-ai.com/en/).",
+            title: "**Embodied Intelligence Research Intern** · [Spirit AI](https://www.spirit-ai.com/en/)\n\nTrained and evaluated VLA policies in simulation and on real robots; developed DAgger data collection and Docker/Slurm workflows.",
         },
         {
             date: "Aug 2024 - May 2025",

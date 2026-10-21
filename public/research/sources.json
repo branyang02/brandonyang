@@ -1,0 +1,16 @@
+{
+  "verified": "2026-10-20",
+  "assets": {
+    "umi-hardware.png": "https://branyang02.github.io/umi-live/static/images/exploded-view.png",
+    "coast-overview.png": "https://arxiv.org/html/2605.17144v1/COAST_NeurIPS.png",
+    "class-overview.png": "https://class-robot.github.io/static/images/main.png",
+    "openpi-eval.jpg": "https://pbs.twimg.com/amplify_video_thumb/2062678286321459200/img/yE3i8saQkS_u0TlU.jpg",
+    "ravla-method.png": "User-provided RA-VLA paper, Figure 1 on page 2, 2026-10-20"
+  },
+  "notes": [
+    "Publication author order and venues follow the October 19 resume and user corrections. Public COAST arXiv and RA-VLA coauthor page have older metadata.",
+    "openpi-eval thumbnail is from the author\u2019s X post 2062678343452135771; links back to original post.",
+    "CrossSearch has no verified public figure or paper URL yet. No placeholder evidence is used.",
+    "RA-VLA figure extracted from user-provided manuscript; full manuscript not hosted."
+  ]
+}

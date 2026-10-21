@@ -15,3 +15,6 @@ body.dark-mode .project-page a {
 body.dark-mode .project-page a:hover {
     color: #2177e8;
 }
+
+.project-page { width: 100%; }
+@media (max-width: 700px) { .legacy-project { flex-direction: column !important; gap: 16px; } }

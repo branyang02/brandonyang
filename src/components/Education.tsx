@@ -6,7 +6,7 @@ const Education = () => {
     const { darkMode } = useDarkMode();
 
     return (
-        <Pane>
+        <Pane className="education-list">
             <Pane marginBottom={majorScale(3)}>
                 <Pane display="flex" alignItems="center" width="100%">
                     <Image

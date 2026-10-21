@@ -22,3 +22,15 @@
         order: -1;
     }
 }
+
+.home-text { min-width: 0; }
+@media (max-width: 900px) {
+    .home-text { max-width: 100%; margin-right: 0 !important; }
+    .profile-container { margin-bottom: 28px; }
+}
+
+@media (max-width: 600px) {
+    .education-list > div:first-child > div, .education-list > div:last-child { flex-wrap: wrap; gap: 12px; }
+    .education-list img { max-width: 100%; }
+    .education-list div { min-width: 0; }
+}

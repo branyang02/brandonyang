@@ -8,6 +8,8 @@ import { Helmet } from "react-helmet";
 import { countWordsAndEquations, getAllMarkdownString } from "../utils/utils";
 import { useEffect, useState } from "react";
 import Education from "../components/Education";
+import ResearchList from "../components/ResearchList";
+import { publications, selectedProjects } from "../data/research";
 
 const Home = () => {
     const { darkMode } = useDarkMode();
@@ -28,7 +30,11 @@ const Home = () => {
     }, []);
 
     const paragraphText = `
-        Hi! I am **Brandon**, an M.S.E. student in Robotics at the [University of Pennsylvania](https://www.grasp.upenn.edu/). I work on **Robot Learning and Reasoning**, specifically using **V**ision-**L**anguage-**A**ction (VLA) Models to enable robots to perform complex tasks!
+        Hi, I’m **Brandon**, an M.S.E. student in Robotics at the [University of Pennsylvania](https://www.grasp.upenn.edu/), graduating in May 2027. I work on **robot learning, VLA models, and the infrastructure that connects demonstrations to robot behavior**.
+
+        I’m currently a research intern at **Honda Research Institute**, studying self-improving autonomous physical AI systems. At Penn’s Perception, Action, & Learning Lab, I work on demonstration retrieval and activation steering for VLA models. Previously, I led research at **AfterQuery** and trained and evaluated robot policies at **Spirit AI**.
+
+        [Resume](/resume/byang_resume.pdf) · [Publications](#publications) · [Selected projects](#selected-projects)
 
         ${
             wordCount > 0 && equationCount > 0
@@ -38,6 +44,10 @@ const Home = () => {
     `;
 
     const newsParagraphText = `
+    10/2026: [UMI-Live](https://branyang02.github.io/umi-live/) brings together our custom handheld hardware, data collection, and robot learning workflow.
+
+    09/2026: Joined Honda Research Institute as a Research Intern in Agentic Autonomous Vehicles.
+
     08/2025: Moved to Philadelphia to start my M.S.E. in Robotics at UPenn!
 
     08/2021: Started B.S. in [Computer Science at the University of Virginia](https://engineering.virginia.edu/department/computer-science).
@@ -97,6 +107,17 @@ const Home = () => {
                     <Profile />
                 </Pane>
             </Pane>
+            <section className="research-section" id="publications" aria-labelledby="publications-heading">
+                <h2 id="publications-heading">Publications</h2>
+                <p className="research-intro">Robot learning, VLA models, and multimodal evaluation.</p>
+                <ResearchList entries={publications} />
+            </section>
+            <section className="research-section" id="selected-projects" aria-labelledby="projects-heading">
+                <h2 id="projects-heading">Selected projects</h2>
+                <p className="research-intro">Tools for evaluating policies, running robots, and improving inference.</p>
+                <ResearchList entries={selectedProjects} />
+                <a href="/projects">More projects →</a>
+            </section>
         </div>
     );
 };

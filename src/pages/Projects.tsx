@@ -1,4 +1,6 @@
 import "../styles/Projects.css";
+import ResearchList from "../components/ResearchList";
+import { selectedProjects } from "../data/research";
 import { Pane, Text, majorScale, minorScale } from "evergreen-ui";
 import { useDarkMode } from "../context/DarkModeContext";
 
@@ -202,10 +204,15 @@ const Projects = () => {
                 />
             </Helmet>
             <Pane className="project-page">
+                <h1>Projects</h1>
+                <p className="research-intro">Robot learning infrastructure and software I build.</p>
+                <ResearchList entries={selectedProjects} />
+                <h2>Earlier projects</h2>
                 <Pane display="flex" flexDirection="column" alignItems="center">
                     {projects.map((project, index) => (
                         <Pane
                             key={index}
+                            className="legacy-project"
                             width="100%"
                             marginBottom={24}
                             display="flex"

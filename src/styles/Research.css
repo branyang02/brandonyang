@@ -1,0 +1,30 @@
+.research-section { margin-top: 40px; width: 100%; }
+.research-section h2, .project-page h1, .project-page h2 { color: #253b36; line-height: 1.25; }
+.research-section h2 { font-size: 26px; margin: 0 0 8px; }
+.research-intro { margin: 0 0 24px; color: #59665f; line-height: 1.6; }
+.research-entry { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 28px; padding: 28px 0; border-top: 1px solid #d4d8d0; scroll-margin-top: 24px; }
+.research-entry.text-only { grid-template-columns: 1fr; }
+.research-entry figure { margin: 0; align-self: start; }
+.research-entry img { display: block; width: 100%; max-height: 270px; object-fit: contain; background: white; border-radius: 6px; }
+.research-entry figcaption { margin-top: 8px; font-size: 12px; line-height: 1.5; color: #64716a; }
+.research-copy { min-width: 0; }
+.research-copy h3 { font-size: 19px; line-height: 1.4; color: #203b31; margin: 0 0 8px; }
+.research-copy p { margin: 8px 0; line-height: 1.65; color: #3d4b44; font-size: 15px; }
+.research-copy .research-authors { font-size: 13px; }
+.research-copy .research-venue { font-size: 13px; color: #72612e; font-weight: 600; }
+.research-links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 12px; }
+.research-list a { color: #216b51; text-decoration: none; }
+.research-list a:hover { text-decoration: underline; }
+.research-list a:focus-visible { outline: 2px solid #216b51; outline-offset: 4px; }
+body.dark-mode .research-section h2, body.dark-mode .research-copy h3, body.dark-mode .project-page h1, body.dark-mode .project-page h2 { color: #eef3ec; }
+body.dark-mode .research-copy p, body.dark-mode .research-intro { color: #d0d8d1; }
+body.dark-mode .research-copy .research-venue { color: #ddcd99; }
+body.dark-mode .research-list a { color: #9edfc5; }
+body.dark-mode .research-entry { border-color: #5c655e; }
+body.dark-mode .research-entry figcaption { color: #b7c1b9; }
+@media (max-width: 700px) {
+    .research-entry { grid-template-columns: 1fr; gap: 16px; }
+    .research-entry figure { max-width: 100%; }
+    .research-entry img { max-height: 280px; }
+    .research-copy h3 { font-size: 18px; }
+}

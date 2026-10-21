@@ -2,6 +2,7 @@ import {
     faGithub,
     faGoogleScholar,
     faLinkedin,
+    faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +13,7 @@ const Contact = () => {
     const { darkMode } = useDarkMode();
 
     const contactItems = [
+        { icon: faXTwitter, href: "https://x.com/brandonyyang02", text: "@brandonyyang02" },
         {
             icon: faEnvelope,
             href: "mailto:yang52@engineering.upenn.edu",
@@ -24,6 +26,7 @@ const Contact = () => {
         },
         {
             icon: faLinkedin,
+    faXTwitter,
             href: "https://linkedin.com/in/byang02",
             text: "in/byang02",
         },
@@ -38,6 +41,7 @@ const Contact = () => {
         <Pane padding={majorScale(1)}>
             {contactItems.map(({ icon, href, text }) => (
                 <Link
+                    key={href}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
