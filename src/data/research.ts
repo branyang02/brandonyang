@@ -14,14 +14,6 @@ export type ResearchEntry = {
 // Author order and publication status follow the October 19, 2026 resume.
 export const publications: ResearchEntry[] = [
     {
-        id: "crosssearch",
-        title: "CrossSearch: Benchmarking Multimodal Agents on Tasks Requiring Both Local Files and Live Web Evidence",
-        authors: "Amish Sethi, Peter Jiashu Shen, Aiden Ryou, Brandon Y. Yang, Spencer Mateega, and Sam Jung",
-        venue: "Submitted to ACM TheWebConf 2027 · Conference Long Papers",
-        description: "A benchmark for multimodal agents working across local files and live web evidence.",
-        links: [],
-    },
-    {
         id: "umi-live",
         title: "UMI-Live for In-The-Wild Bimanual Robotics Data Collection",
         authors: "Govind Velamoor, Adrian Lin, Sam Jung, Spencer Mateega, Brandon Y. Yang†, and Amish Sethi†",
@@ -69,14 +61,22 @@ export const publications: ResearchEntry[] = [
         authors: "Sung-Wook Lee, Xuhui Kang, Brandon Y. Yang, and Yen-Ling Kuo",
         venue: "CoRL 2025",
         description: "Learning visual representations from action-sequence similarity to improve robot manipulation under changes in camera pose and object appearance. My work included simulation environments and training visuomotor policies.",
-        image: "/research/class-overview.png",
-        imageAlt: "CLASS contrasts behavior cloning representations with action-supervised representations across visual conditions",
+        image: "/research/class-combined.svg",
+        imageAlt: "CLASS representation learning overview above real robot Two-Stack, Mug-Hang, and Toaster-Load tasks",
         imageSource: "https://class-robot.github.io/",
         caption: "CLASS representation-learning overview",
         links: [
             { label: "Project", href: "https://class-robot.github.io/" },
             { label: "Paper", href: "https://arxiv.org/abs/2508.01600" },
         ],
+    },
+    {
+        id: "crosssearch",
+        title: "CrossSearch: Benchmarking Multimodal Agents on Tasks Requiring Both Local Files and Live Web Evidence",
+        authors: "Amish Sethi, Peter Jiashu Shen, Aiden Ryou, Brandon Y. Yang, Spencer Mateega, and Sam Jung",
+        venue: "Submitted to ACM TheWebConf 2027 · Conference Long Papers",
+        description: "A benchmark for multimodal agents working across local files and live web evidence.",
+        links: [],
     },
 ];
 
