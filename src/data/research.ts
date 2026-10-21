@@ -101,7 +101,7 @@ export const selectedProjects: ResearchEntry[] = [
         title: "agentic-robots",
         venue: "Physical AI · Robot control infrastructure",
         description: "An observation/action bridge connecting Codex to dual YAM arms and cameras through MCP. Supports camera feedback, action correction, and recorded rollouts, with hardware checks and operator supervision.",
-        links: [{ label: "GitHub", href: "https://github.com/branyang02/agentic-robots" }],
+        links: [{ label: "GitHub", href: "https://github.com/branyang02/agentic-robots" }, { label: "Demo on X", href: "https://x.com/amish_sethi04/status/2102012466758885392" }],
     },
     {
         id: "openpi-cuda",
