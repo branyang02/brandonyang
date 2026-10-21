@@ -103,7 +103,7 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "agentic-robots",
         title: "agentic-robots",
-        videos: [{ label: "Shoelace tying with dual YAM robots", src: "/research/videos/agentic-robots-shoelace.mp4", poster: "/research/agentic-robots.jpg" }],
+        videos: [{ label: "Human shoelace demonstration beside dual YAM robot execution", src: "/research/videos/agentic-robots-comparison.mp4", poster: "/research/videos/agentic-robots-comparison.jpg" }],
         image: "/research/agentic-robots.jpg",
         imageAlt: "Dual YAM robot shoelace-tying demonstration from the agentic-robots project post",
         venue: "Physical AI · Robot control infrastructure",
