@@ -1,3 +1,4 @@
+import ProjectVideos from "./ProjectVideos";
 import { Fragment } from "react";
 import type { ResearchEntry } from "../data/research";
 import "../styles/Research.css";
@@ -6,8 +7,8 @@ export default function ResearchList({ entries, showCaptions = true }: { entries
     return (
         <div className="research-list">
             {entries.map((entry) => (
-                <article className={`research-entry ${entry.image ? "has-figure" : "text-only"}`} id={entry.id} key={entry.id}>
-                    {entry.image && (
+                <article className={`research-entry ${entry.image || entry.videos?.length ? "has-figure" : "text-only"}`} id={entry.id} key={entry.id}>
+                    {entry.videos?.length ? <figure><ProjectVideos videos={entry.videos} /></figure> : entry.image && (
                         <figure>
                             <a href={entry.image} target="_blank" rel="noopener noreferrer" aria-label={`View full figure for ${entry.title}`}>
                                 <img src={entry.image} alt={entry.imageAlt ?? entry.title} loading="lazy" decoding="async" />

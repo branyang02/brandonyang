@@ -1,3 +1,5 @@
+import type { ProjectVideo } from "../components/ProjectVideos";
+
 export type ResearchEntry = {
     id: string;
     title: string;
@@ -5,6 +7,7 @@ export type ResearchEntry = {
     venue?: string;
     description: string;
     image?: string;
+    videos?: ProjectVideo[];
     imageAlt?: string;
     imageSource?: string;
     caption?: string;
@@ -84,6 +87,13 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "openpi-eval",
         title: "openpi-eval",
+        videos: [
+            { label: "MetaWorld", src: "/research/videos/metaworld_drawer_open_success.mp4", poster: "/research/videos/metaworld_drawer_open_success.jpg" },
+            { label: "LIBERO", src: "/research/videos/libero_bbq_sauce_success.mp4", poster: "/research/videos/libero_bbq_sauce_success.jpg" },
+            { label: "LIBERO-Pro", src: "/research/videos/liberopro_goal_task_drawer_pi05_rollout.mp4", poster: "/research/videos/liberopro_goal_task_drawer_pi05_rollout.jpg" },
+            { label: "RoboCasa", src: "/research/videos/robocasa_slide_dishwasher_success.mp4", poster: "/research/videos/robocasa_slide_dishwasher_success.jpg" },
+            { label: "RoboLab", src: "/research/videos/robolab_one_bottle_square_pail_success.mp4", poster: "/research/videos/robolab_one_bottle_square_pail_success.jpg" }
+        ],
         venue: "Robot policy evaluation · JAX / PyTorch",
         description: "Reproducible OpenPI policy evaluation across MetaWorld, LIBERO, LIBERO-Pro, RoboCasa, and RoboLab. Server-side batching improved policy-server throughput by up to 3.4× in a 64-client LIBERO benchmark.",
         image: "/research/openpi-eval.jpg",
@@ -99,6 +109,7 @@ export const selectedProjects: ResearchEntry[] = [
     {
         id: "agentic-robots",
         title: "agentic-robots",
+        videos: [{ label: "Shoelace tying with dual YAM robots", src: "/research/videos/agentic-robots-shoelace.mp4", poster: "/research/agentic-robots.jpg" }],
         image: "/research/agentic-robots.jpg",
         imageAlt: "Dual YAM robot shoelace-tying demonstration from the agentic-robots project post",
         venue: "Physical AI · Robot control infrastructure",

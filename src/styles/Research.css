@@ -28,3 +28,11 @@ body.dark-mode .research-entry figcaption { color: #b7c1b9; }
     .research-entry img { max-height: 280px; }
     .research-copy h3 { font-size: 18px; }
 }
+
+.project-videos video { display: block; width: 100%; max-height: 300px; object-fit: contain; background: #111; border-radius: 6px; }
+.video-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.video-choices button { font: inherit; font-size: 12px; padding: 5px 8px; border: 1px solid #bac7be; border-radius: 5px; background: transparent; color: #216b51; cursor: pointer; }
+.video-choices button[aria-pressed="true"] { background: #216b51; border-color: #216b51; color: white; }
+.video-choices button:focus-visible { outline: 2px solid #216b51; outline-offset: 2px; }
+body.dark-mode .video-choices button { color: #9edfc5; }
+body.dark-mode .video-choices button[aria-pressed="true"] { color: white; }
