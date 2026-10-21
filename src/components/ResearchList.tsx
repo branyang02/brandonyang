@@ -19,7 +19,7 @@ export default function ResearchList({ entries, showCaptions = true }: { entries
                         </figure>
                     )}
                     <div className="research-copy">
-                        <h3>{entry.title}</h3>
+                        <h3>{entry.titleHref || entry.links[0]?.href ? <a href={entry.titleHref ?? entry.links[0]?.href} target="_blank" rel="noopener noreferrer">{entry.title}</a> : entry.title}</h3>
                         {entry.authors && <p className="research-authors">{entry.authors.split(/(Brandon Y\. Yang[*†]?)/g).map((part, i) => part.startsWith("Brandon") ? <strong key={i}>{part}</strong> : <Fragment key={i}>{part}</Fragment>)}</p>}
                         {entry.venue && <p className="research-venue">{entry.venue}</p>}
                         {entry.contribution && <p className="research-contribution">{entry.contribution}</p>}

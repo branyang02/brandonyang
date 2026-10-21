@@ -3,6 +3,7 @@ import type { ProjectVideo } from "../components/ProjectVideos";
 export type ResearchEntry = {
     id: string;
     title: string;
+    titleHref?: string;
     authors?: string;
     venue?: string;
     contribution?: string;

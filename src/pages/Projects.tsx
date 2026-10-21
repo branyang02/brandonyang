@@ -41,7 +41,7 @@ export default function Projects() {
             ],
             description:
                 "A zero-shot image-editing model grounded by language instructions for object relocation and manipulation tasks, designed for downstream robotic applications using goal-conditioned RL and behavioral cloning.",
-            link: "https://branyang02.github.io/images/gloma.png",
+            link: "https://github.com/branyang02/GLOMA",
             metaLinks: [
                 {
                     name: "GitHub",
@@ -83,6 +83,7 @@ export default function Projects() {
     const allProjects: ResearchEntry[] = [...selectedProjects, ...projects.map((project) => ({
         id: project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         title: project.title,
+        titleHref: project.link,
         description: project.description,
         image: project.image ?? project.gif,
         imageAlt: project.title,
