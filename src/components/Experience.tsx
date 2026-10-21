@@ -13,7 +13,7 @@ const Experience = () => {
     const experience = [
         {
             date: "Sep 2026 - Dec 2026",
-            title: "**Research Intern, Agentic Autonomous Vehicles · Honda Research Institute USA**\n\nResearching self-improving autonomous physical AI systems with frontier model agents.",
+            title: "**Research Intern, Agentic Autonomous Vehicles** · [Honda Research Institute USA](https://usa.honda-ri.com/home)\n\nResearching self-improving autonomous physical AI systems with frontier model agents.",
         },
         {
             date: "May 2026 - Aug 2026",

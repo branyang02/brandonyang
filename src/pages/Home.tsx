@@ -32,7 +32,7 @@ const Home = () => {
     const paragraphText = `
         Hi, I’m **Brandon**, an M.S.E. student in Robotics at the [University of Pennsylvania](https://www.grasp.upenn.edu/), graduating in May 2027. I work on **robot learning, VLA models, and the infrastructure that connects demonstrations to robot behavior**.
 
-        I’m currently a research intern at **Honda Research Institute**, studying self-improving autonomous physical AI systems. At Penn’s Perception, Action, & Learning Lab (PAL), I work on demonstration retrieval and activation steering for VLA models. Previously, I led research at **AfterQuery** and trained and evaluated robot policies at **Spirit AI**.
+        I’m currently a research intern at [Honda Research Institute](https://usa.honda-ri.com/home), studying self-improving autonomous physical AI systems. At Penn’s Perception, Action, & Learning Lab (PAL), I work on demonstration retrieval and activation steering for VLA models. Previously, I led research at **AfterQuery** and trained and evaluated robot policies at **Spirit AI**.
 
         ${
             wordCount > 0 && equationCount > 0
@@ -44,7 +44,7 @@ const Home = () => {
     const newsParagraphText = `
     10/2026: [UMI-Live](https://branyang02.github.io/umi-live/) brings together our custom handheld hardware, data collection, and robot learning workflow.
 
-    09/2026: Joined Honda Research Institute as a Research Intern in Agentic Autonomous Vehicles.
+    09/2026: Joined [Honda Research Institute](https://usa.honda-ri.com/home) as a Research Intern in Agentic Autonomous Vehicles.
 
     08/2025: Moved to Philadelphia to start my M.S.E. in Robotics at UPenn!
 
