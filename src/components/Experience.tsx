@@ -25,7 +25,7 @@ const Experience = () => {
         },
         {
             date: `May 2025 - Aug 2025`,
-            title: "**Embodied Intelligence Research Intern** · [Spirit AI](https://www.spirit-ai.com/en/)\n\nTrained and evaluated VLA policies in simulation and on real robots; developed DAgger data collection and Docker/Slurm workflows.",
+            title: "**Embodied Intelligence Research Intern** · [Spirit AI](https://www.spirit-ai.com/en/)\n\nVLA training and evaluation in simulation and on real robots; DAgger pipeline development.",
         },
         {
             date: "Aug 2024 - May 2025",
