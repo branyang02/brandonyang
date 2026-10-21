@@ -10,7 +10,6 @@ export default function Publications() {
                 <meta name="description" content="Research publications by Brandon Y. Yang on robot learning, VLA models, and multimodal evaluation." />
             </Helmet>
             <h1>Publications</h1>
-            <p className="research-intro">Robot learning, VLA models, and multimodal evaluation.</p>
             <ResearchList entries={publications} showCaptions={false} />
         </div>
     );

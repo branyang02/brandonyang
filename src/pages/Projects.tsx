@@ -147,7 +147,6 @@ export default function Projects() {
         <div className="project-page" style={{ width: "100%" }}>
             <Helmet><title>Projects | Brandon Y. Yang</title><meta name="description" content="Projects by Brandon Y. Yang." /></Helmet>
             <h1>Projects</h1>
-            <p className="research-intro">Robot learning infrastructure and software I build.</p>
             <ResearchList entries={allProjects} showCaptions={false} />
         </div>
     );
