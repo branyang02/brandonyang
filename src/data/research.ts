@@ -39,6 +39,7 @@ export const publications: ResearchEntry[] = [
     },
     {
         id: "ra-vla",
+        videos: [{ label: "RA-VLA method overview followed by six real-world rollouts at 10× speed", src: "/research/videos/ravla-teaser.mp4", poster: "/research/videos/ravla-teaser.jpg" }],
         title: "Retrieval-Augmented Vision-Language-Action Model",
         authors: "Jiani Huang*, Amish Sethi*, Brandon Y. Yang*, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman",
         venue: "CoRL 2026 SimBench2Real Workshop",
