@@ -21,7 +21,7 @@ const Experience = () => {
         },
         {
             date: "Aug 2025 - Present",
-            title: "**Graduate Research · Penn Perception, Action, & Learning Lab**",
+            title: "**Graduate Research** · [Penn Perception, Action, & Learning Lab](https://penn-pal-lab.github.io/)",
         },
         {
             date: `May 2025 - Aug 2025`,
