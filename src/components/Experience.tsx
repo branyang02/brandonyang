@@ -17,7 +17,7 @@ const Experience = () => {
         },
         {
             date: "May 2026 - Aug 2026",
-            title: "**Research Lead** · [AfterQuery (YC W25)](https://www.afterquery.com/)\n\nLed a six-person research team. Built and tested custom UMI hardware and an end-to-end robot training workflow for efficient, in-the-wild data collection.",
+            title: "**Research Lead** · [AfterQuery (YC W25)](https://www.afterquery.com/)\n\nBuilt custom UMI hardware and full-stack software for VLA post-training and evaluation.",
         },
         {
             date: "Aug 2025 - Present",
