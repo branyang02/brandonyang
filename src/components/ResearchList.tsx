@@ -22,7 +22,7 @@ export default function ResearchList({ entries, showCaptions = true }: { entries
                         <h3>{entry.titleHref || entry.links[0]?.href ? <a href={entry.titleHref ?? entry.links[0]?.href} target="_blank" rel="noopener noreferrer">{entry.title}</a> : entry.title}</h3>
                         {entry.authors && <p className="research-authors">{entry.authors.split(/(Brandon Y\. Yang[*†]?)/g).map((part, i) => part.startsWith("Brandon") ? <strong key={i}>{part}</strong> : <Fragment key={i}>{part}</Fragment>)}</p>}
                         {entry.venue && <p className="research-venue">{entry.venue}</p>}
-                        {entry.contribution && <p className="research-contribution">{entry.contribution}</p>}
+                        {entry.contribution && <p className="research-contribution"><strong>{entry.contribution}</strong></p>}
                         <p>{entry.description}</p>
                         {entry.links.length > 0 && <div className="research-links">{entry.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>)}</div>}
                     </div>
