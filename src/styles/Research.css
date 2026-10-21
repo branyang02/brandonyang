@@ -36,3 +36,5 @@ body.dark-mode .research-entry figcaption { color: #b7c1b9; }
 .video-label { font-size: 14px; font-weight: 600; color: #253b36; margin-bottom: 8px; }
 body.dark-mode .video-label { color: #eef3ec; }
 @media (max-width: 700px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+.research-copy .research-contribution { font-size: 13px; margin-top: 0; }

@@ -5,6 +5,7 @@ export type ResearchEntry = {
     title: string;
     authors?: string;
     venue?: string;
+    contribution?: string;
     description: string;
     image?: string;
     videos?: ProjectVideo[];
@@ -20,7 +21,8 @@ export const publications: ResearchEntry[] = [
         id: "umi-live",
         title: "UMI-Live for In-The-Wild Bimanual Robotics Data Collection",
         authors: "Govind Velamoor, Adrian Lin, Sam Jung, Spencer Mateega, Brandon Y. Yang†, and Amish Sethi†",
-        venue: "CoRL 2026 UMI Arena Workshop · † Equal advising",
+        venue: "CoRL 2026 UMI Arena Workshop",
+        contribution: "† Equal advising",
         description: "A handheld bimanual system that connects in-the-wild demonstrations to robot learning. Custom grippers combine cameras, LiDAR–inertial sensing, and onboard compute with reconstruction and LeRobot data processing.",
         image: "/research/umi-hardware.png",
         imageAlt: "Exploded UMI-Live gripper showing its camera, LiDAR, Raspberry Pi, battery and fingers",
@@ -36,7 +38,8 @@ export const publications: ResearchEntry[] = [
         id: "ra-vla",
         title: "Retrieval-Augmented Vision-Language-Action Model",
         authors: "Jiani Huang*, Amish Sethi*, Brandon Y. Yang*, Yuchen Zheng, Christopher Watson, Jianing Qian, Mayur Naik, and Dinesh Jayaraman",
-        venue: "CoRL 2026 SimBench2Real Workshop · * Equal contribution",
+        venue: "CoRL 2026 SimBench2Real Workshop",
+        contribution: "* Equal contribution",
         description: "RA-VLA retrieves a relevant DROID demonstration, adapts its trajectory to the current scene, and overlays it on camera observations to guide a fine-tuned VLA. Evaluated in RoboLab-120 and on real-world manipulation tasks.",
         image: "/research/ravla-method.png",
         imageAlt: "RA-VLA pipeline from scene-graph retrieval through trajectory warping to visual policy guidance",
@@ -47,7 +50,8 @@ export const publications: ResearchEntry[] = [
         id: "coast",
         title: "Contrastive Conceptor Activation Steering (COAST): Unlocking Vision-Language-Action Models through Hidden States",
         authors: "Miranda Muqing Miao*, Subin Kim*, Brandon Y. Yang*, Dinesh Jayaraman, and Lyle Ungar",
-        venue: "ICML 2026 Mechanistic Interpretability Workshop · ICLR 2027 under review · * Equal contribution",
+        venue: "ICML 2026 Mechanistic Interpretability Workshop · ICLR 2027 under review",
+        contribution: "* Equal contribution",
         description: "Steering VLA hidden states toward representations associated with successful rollouts. COAST fits conceptors from success and failure examples, then applies them at inference time without updating policy weights.",
         image: "/research/coast-combined.svg",
         imageAlt: "COAST method overview above simulated and real robot evaluation environments from Figure 2",
