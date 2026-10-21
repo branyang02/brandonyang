@@ -29,19 +29,19 @@ const Experience = () => {
         },
         {
             date: "Aug 2024 - May 2025",
-            title: "Research Assistant at UVA's Learning and Interactive Robotics Lab.",
+            title: "**Research Assistant** · UVA's Learning and Interactive Robotics Lab",
         },
         {
             date: "May 2022 - May 2024",
-            title: "Research Assistant at UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/).",
+            title: "**Research Assistant** · UVA's [Collaborative Robotics Lab](https://www.collabrobotics.com/)",
         },
         {
             date: "May 2023 - Aug 2023",
-            title: "AI/ML Research Intern at [UVA Link Lab](https://engineering.virginia.edu/link-lab)",
+            title: "**AI/ML Research Intern** · [UVA Link Lab](https://engineering.virginia.edu/link-lab)",
         },
         {
             date: "Jan 2023 - May 2025",
-            title: "TA for [Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/), [Theory of Computation](https://markfloryan.github.io/dmt2/readme.html), and [Machine Learning](https://www.cs.virginia.edu/~nn4pj/teaching) at UVA.",
+            title: "**Teaching Assistant** · UVA\n\n[Computer Systems Organization](https://www.cs.virginia.edu/~jh2jf/courses/cs2130/spring2023/), [Theory of Computation](https://markfloryan.github.io/dmt2/readme.html), and [Machine Learning](https://www.cs.virginia.edu/~nn4pj/teaching).",
         },
     ];
 
