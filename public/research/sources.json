@@ -1,7 +1,7 @@
 {
   "verified": "2026-10-20",
   "assets": {
-    "umi-hardware.png": "https://branyang02.github.io/umi-live/static/images/exploded-view.png",
+    "umi-hardware.png": "https://umi-live.github.io/static/images/exploded-view.png",
     "coast-overview.png": "https://arxiv.org/html/2605.17144v1/COAST_NeurIPS.png",
     "class-overview.png": "https://class-robot.github.io/static/images/main.png",
     "openpi-eval.jpg": "https://pbs.twimg.com/amplify_video_thumb/2062678286321459200/img/yE3i8saQkS_u0TlU.jpg",
@@ -24,7 +24,7 @@
     "videos/agentic-robots-comparison.mp4": "Original X post 2102012466758885392 human demonstration and overhead robot view, cropped into equal panels in a 960x540 thumbnail",
     "openpi-cuda-architecture.svg": "Implementation diagram grounded in branyang02/openpi-cuda src/openpi_cuda/ops.py and src/openpi/models_cuda/models/{siglip,gemma}.py",
     "videos/agentic-robots-transition.mp4": "Original videos from X post 2102012466758885392. Human demo fills thumbnail for three seconds, then scales down over two seconds into lower-left inset. Complete robot footage preserves both wrist-camera views.",
-    "videos/umi-live-teaser.mp4": "https://branyang02.github.io/umi-live/static/videos/teaser.mp4",
+    "videos/umi-live-teaser.mp4": "https://umi-live.github.io/static/videos/teaser.mp4",
     "videos/coast-rollouts-local.mp4": {
       "sources": [
         "https://github.com/user-attachments/assets/343316f1-37d3-464c-ad97-2965f0ebe456",

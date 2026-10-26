@@ -40,7 +40,7 @@ const Home = () => {
     `;
 
     const newsParagraphText = `
-    10/2026: [UMI-Live](https://branyang02.github.io/umi-live/) brings together our custom handheld hardware, data collection, and robot learning workflow.
+    10/2026: [UMI-Live](https://umi-live.github.io/) brings together our custom handheld hardware, data collection, and robot learning workflow.
 
     09/2026: Joined [Honda Research Institute](https://usa.honda-ri.com/home) as a Research Intern in Agentic Autonomous Vehicles.
 

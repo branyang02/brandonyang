@@ -29,12 +29,12 @@ export const publications: ResearchEntry[] = [
         description: "A handheld bimanual system that connects in-the-wild demonstrations to robot learning. Custom grippers combine cameras, LiDAR–inertial sensing, and onboard compute with reconstruction and LeRobot data processing.",
         image: "/research/umi-hardware.png",
         imageAlt: "Exploded UMI-Live gripper showing its camera, LiDAR, Raspberry Pi, battery and fingers",
-        imageSource: "https://branyang02.github.io/umi-live/",
+        imageSource: "https://umi-live.github.io/",
         caption: "UMI-Live hardware overview",
         links: [
-            { label: "Project & demos", href: "https://branyang02.github.io/umi-live/" },
+            { label: "Project & demos", href: "https://umi-live.github.io/" },
             { label: "Code", href: "https://github.com/AfterQuery-Research/umi-live" },
-            { label: "Hardware", href: "https://branyang02.github.io/umi-live/hardware.html" },
+            { label: "Hardware", href: "https://umi-live.github.io/hardware.html" },
         ],
     },
     {
