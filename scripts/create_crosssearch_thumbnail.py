@@ -9,12 +9,13 @@ import imageio_ffmpeg
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public/research/videos'
 OUT.mkdir(parents=True, exist_ok=True)
-# The lower 120px remain empty for playback controls at the website's 320px width.
-W, H, FPS, SECONDS = 960, 984, 30, 10
-NAME = 'crosssearch-agent-rubrics'
+# Landscape 16:9 matches the adjacent UMI-Live and RA-VLA thumbnails.
+# All rubric text sits above the lower playback-control safe area.
+W, H, FPS, SECONDS = 960, 540, 30, 10
+NAME = 'crosssearch-agent-rubrics-wide'
 FONT_DIR = Path('C:/Windows/Fonts')
 FONTS = {size: ImageFont.truetype(str(FONT_DIR / 'segoeui.ttf'), size) for size in [36, 38, 40, 42]}
-BOLD = {size: ImageFont.truetype(str(FONT_DIR / 'segoeuib.ttf'), size) for size in [40, 42, 44, 48, 64]}
+BOLD = {size: ImageFont.truetype(str(FONT_DIR / 'segoeuib.ttf'), size) for size in [36, 40, 42, 44, 48, 52, 64]}
 BG, INK = '#F6F8F6', '#18352D'
 BLUE, ORANGE, GREEN = '#2466AC', '#B55618', '#207657'
 
@@ -73,100 +74,83 @@ def particle(draw, points, progress, color):
 
 
 def render(t):
-    im = Image.new('RGB', (W,H), BG)
-    d = ImageDraw.Draw(im)
-    centered(d, 'CrossSearch', 480, 38, BOLD[64], INK)
-    centered(d, 'Benchmarking AI agents', 480, 117, FONTS[42], '#4C625A')
+    im=Image.new('RGB',(W,H),BG)
+    d=ImageDraw.Draw(im)
+    centered(d,'CrossSearch',480,22,BOLD[52],INK)
+    centered(d,'Benchmarking AI agents',480,88,FONTS[36],'#4C625A')
+    blue=pulse(t,.4,1.3,3.3,4.2)
+    orange=pulse(t,1.3,2.2,4.2,5.1)
+    joined=pulse(t,3.8,4.8,7.3,9.6)
+    result=pulse(t,5.4,6.6,8.2,9.6)
 
-    blue_glow = pulse(t,.4,1.3,3.3,4.2)
-    orange_glow = pulse(t,1.3,2.2,4.2,5.1)
-    joined = pulse(t,3.8,4.8,7.3,9.6)
-    result = pulse(t,5.4,6.6,8.2,9.6)
-    # 12px grid: equal outer margins, a 48px source gap and 48px stage gaps.
-    for x,color,label,glow in [(36,BLUE,'Local files',blue_glow),(504,ORANGE,'Live web',orange_glow)]:
-        d.rounded_rectangle((x,192,x+420,396),radius=24,fill='white',outline=blend('#D3DDD6',color,.45+glow*.55),width=3+round(glow*2))
-        centered(d,label,x+210,216,BOLD[48],color)
+    # Equal 24px outer margins and 48px gaps between the three stages.
+    for top,color,label,glow in [(150,BLUE,'Local files',blue),(330,ORANGE,'Live web',orange)]:
+        d.rounded_rectangle((24,top,264,top+132),radius=18,fill='white',outline=blend('#D3DDD6',color,.45+glow*.55),width=3+round(glow*2))
+        centered(d,label,144,top+18,BOLD[40],color)
+    d.rounded_rectangle((113,229,157,269),radius=5,fill='#EDF3FB',outline=BLUE,width=2)
+    d.rounded_rectangle((129,219,173,259),radius=5,fill='white',outline=BLUE,width=2)
+    for y,l in [(230,27),(240,22),(250,26)]:
+        d.line((137,y,137+l,y),fill=blend('#C8D9EC',BLUE,blue),width=3)
+    d.rounded_rectangle((94,403,194,447),radius=6,fill='#FFF6ED',outline=ORANGE,width=2)
+    d.line((95,414,193,414),fill='#E6C5AB',width=2)
+    for x in [102,109,116]:
+        d.ellipse((x-1,407,x+1,409),fill=ORANGE)
+    d.ellipse((132,419,156,443),outline=ORANGE,width=2)
+    d.ellipse((139,419,149,443),outline=ORANGE,width=1)
+    d.line((132,431,156,431),fill=ORANGE,width=2)
 
-    d.rounded_rectangle((200,295,276,374),radius=8,fill='#EDF3FB',outline=BLUE,width=3)
-    d.rounded_rectangle((217,283,293,362),radius=8,fill='white',outline=BLUE,width=3)
-    for y,l in [(303,52),(320,41),(337,48)]:
-        d.line((230,y,230+l,y),fill=blend('#C8D9EC',BLUE,blue_glow),width=5)
-    d.rounded_rectangle((643,283,781,369),radius=9,fill='#FFF6ED',outline=ORANGE,width=3)
-    d.line((644,303,780,303),fill='#E6C5AB',width=3)
-    for x in [657,667,677]:
-        d.ellipse((x-2,291,x+2,295),fill=ORANGE)
-    d.ellipse((690,312,737,359),outline=ORANGE,width=3)
-    d.ellipse((702,312,725,359),outline=ORANGE,width=2)
-    d.line((691,335,736,335),fill=ORANGE,width=2)
-
-    # Evidence flows to the visible agent, which processes it before answering.
-    left=[(246,397),(246,420),(350,420),(350,444)]
-    right=[(714,397),(714,420),(610,420),(610,444)]
-    d.line(left,fill='#B7CCE3',width=5,joint='curve')
-    d.line(right,fill='#E8C4A8',width=5,joint='curve')
+    left=[(265,216),(288,216),(288,278),(311,278)]
+    right=[(265,396),(288,396),(288,334),(311,334)]
+    for path,color in [(left,BLUE),(right,ORANGE)]:
+        d.line(path,fill=blend(BG,color,.4),width=4,joint='curve')
+        x,y=path[-1];d.polygon([(x-8,y-6),(x-8,y+6),(x+1,y)],fill=color)
     for shift in [0,.24]:
         particle(d,left,(t-.5-shift)/3.2,BLUE)
         particle(d,right,(t-1.4-shift)/3.2,ORANGE)
-    d.line((480,577,480,619),fill='#B8CFC1',width=5)
-    d.polygon([(472,610),(488,610),(480,622)],fill=GREEN)
-    particle(d,[(480,577),(480,619)],(t-4.7)/1.2,GREEN)
+    d.line((553,306,597,306),fill='#B8CFC1',width=4)
+    d.polygon([(589,300),(589,312),(599,306)],fill=GREEN)
+    particle(d,[(553,306),(597,306)],(t-4.7)/1.2,GREEN)
 
-    agent_layer=Image.new('RGBA',(W,H))
-    d=ImageDraw.Draw(agent_layer)
-    d.rounded_rectangle((216,444,744,576),radius=24,fill=blend('#E9EFEB','#D4E9DC',joined),outline=blend('#C0CEC4',GREEN,joined),width=3)
-    centered(d,'AI agent',548,462,BOLD[48],INK)
-    centered(d,'Cross-checking',548,522,FONTS[40],'#4C625A')
-
-    # A gently bobbing antenna, attentive eyes and processing lights identify AI.
+    agent_layer=Image.new('RGBA',(W,H));d=ImageDraw.Draw(agent_layer)
+    d.rounded_rectangle((312,234,552,378),radius=18,fill=blend('#E9EFEB','#D4E9DC',joined),outline=blend('#C0CEC4',GREEN,joined),width=3)
+    centered(d,'AI agent',432,252,BOLD[40],INK)
     bob=round(2*math.sin(2*math.pi*t/SECONDS))
-    d.line((326,473,326,458+bob),fill=INK,width=4)
-    d.ellipse((319,449+bob,333,463+bob),fill=blend('#8EAEA0',GREEN,joined))
-    d.rounded_rectangle((281,479,371,541),radius=16,fill='white',outline=INK,width=4)
-    d.rounded_rectangle((272,497,282,524),radius=4,fill='#9AB4A7')
-    d.rounded_rectangle((371,497,381,524),radius=4,fill='#9AB4A7')
+    d.line((432,314,432,302+bob),fill=INK,width=3)
+    d.ellipse((427,295+bob,437,305+bob),fill=blend('#8EAEA0',GREEN,joined))
+    d.rounded_rectangle((392,314,472,360),radius=12,fill='white',outline=INK,width=3)
+    d.rounded_rectangle((385,325,392,348),radius=3,fill='#9AB4A7')
+    d.rounded_rectangle((472,325,479,348),radius=3,fill='#9AB4A7')
     look=round(3*math.sin(2*math.pi*t/SECONDS))
     blink=pulse(t,6.85,6.95,7.05,7.15)
-    for x in [306,346]:
-        height=max(1,round(6*(1-blink)))
-        d.ellipse((x-5+look,501-height,x+5+look,501+height),fill=INK)
-    for i,x in enumerate([311,326,341]):
+    for x in [413,451]:
+        h=max(1,round(5*(1-blink)))
+        d.ellipse((x-4+look,331-h,x+4+look,331+h),fill=INK)
+    for i,x in enumerate([420,432,444]):
         light=joined*(.35+.65*(.5+.5*math.sin(2*math.pi*(t/1.1-i/3))))
-        d.ellipse((x-3,521,x+3,527),fill=blend('#C4D6CC',GREEN,light))
+        d.ellipse((x-2,348,x+2,352),fill=blend('#C4D6CC',GREEN,light))
+    composite_box(im,agent_layer,(312,234,553,379),pop(t,3.55,.13)*pop(t,4.45,.13))
 
-    agent_scale=pop(t,3.55,.13)*pop(t,4.45,.13)
-    composite_box(im,agent_layer,(216,444,745,577),agent_scale)
-
-    answer_layer=Image.new('RGBA',(W,H))
-    d=ImageDraw.Draw(answer_layer)
-    d.rounded_rectangle((84,624,876,864),radius=24,fill=blend('#FFFFFF','#E2F2E9',result),outline=blend('#B7CFC0',GREEN,result),width=3+round(result*2))
-    centered(d,'Grounded answer',480,648,BOLD[48],INK)
-    # Example rubric dimensions, not a claim that a recorded run passed.
-    # Labels stay legible; row outlines and ticks build the checklist in sequence.
+    answer_layer=Image.new('RGBA',(W,H));d=ImageDraw.Draw(answer_layer)
+    d.rounded_rectangle((600,150,936,462),radius=18,fill=blend('#FFFFFF','#E2F2E9',result),outline=blend('#B7CFC0',GREEN,result),width=3+round(result*2))
+    centered(d,'Grounded answer',768,174,BOLD[36],INK)
     reset=1-smooth(9.15,9.8,t)
-    for i,(label,y) in enumerate([
-        ('Uses local evidence',710),
-        ('Uses live web evidence',758),
-        ('Cites supporting sources',806),
-    ]):
+    for i,(label,y) in enumerate([('Local evidence',250),('Web evidence',310),('Cited claims',370)]):
         progress=smooth(6.15+i*.7,6.65+i*.7,t)*reset
         tick=smooth(6.45+i*.7,6.8+i*.7,t)*reset
-        end=round(120+progress*720)
-        if end>120:
-            d.line((120,y+44,end,y+44),fill='#B8D6C5',width=2)
-        d.rounded_rectangle((120,y+3,152,y+35),radius=7,fill=blend('#F3F7F4','#D1E9DC',progress),outline=blend('#B4C7BC',GREEN,progress),width=2)
-        # Draw the check itself as two progressively completed strokes.
-        points=[(127,y+18),(134,y+25),(146,y+11)]
-        length=tick*2
+        end=round(620+progress*292)
+        if end>620:
+            d.line((620,y+44,end,y+44),fill='#B8D6C5',width=2)
+        d.rounded_rectangle((620,y+5,644,y+29),radius=5,fill=blend('#F3F7F4','#D1E9DC',progress),outline=blend('#B4C7BC',GREEN,progress),width=2)
+        points=[(625,y+17),(631,y+23),(640,y+12)];length=tick*2
         if length>0:
-            a,b=points[0],points[1]
-            q=min(1,length)
-            d.line((a[0],a[1],a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q),fill=GREEN,width=4)
+            a,b=points[:2];q=min(1,length)
+            d.line((a[0],a[1],a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q),fill=GREEN,width=3)
         if length>1:
-            a,b=points[1],points[2];q=length-1
-            d.line((a[0],a[1],a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q),fill=GREEN,width=4)
-        box=d.textbbox((0,0),label,font=FONTS[40])
-        d.text((180,y-box[1]),label,font=FONTS[40],fill=INK)
-    composite_box(im,answer_layer,(84,624,877,865),pop(t,5.9,.105))
+            a,b=points[1:];q=length-1
+            d.line((a[0],a[1],a[0]+(b[0]-a[0])*q,a[1]+(b[1]-a[1])*q),fill=GREEN,width=3)
+        box=d.textbbox((0,0),label,font=FONTS[36])
+        d.text((658,y-box[1]),label,font=FONTS[36],fill=INK)
+    composite_box(im,answer_layer,(600,150,937,463),pop(t,5.9,.105))
     return im
 
 
@@ -189,5 +173,5 @@ if __name__ == '__main__':
     preview.mkdir(parents=True,exist_ok=True)
     for t in [0,2,4,6,8,9.97]:
         render(t).save(preview/f'frame-{t:g}.png')
-    render(8.5).resize((293,300),Image.Resampling.LANCZOS).save(preview/'thumbnail-320.png')
+    render(8.5).resize((320,180),Image.Resampling.LANCZOS).save(preview/'thumbnail-320.png')
     print('Created 10-second seamless loop and poster:',OUT)
