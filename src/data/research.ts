@@ -86,6 +86,7 @@ export const publications: ResearchEntry[] = [
     },
     {
         id: "crosssearch",
+        videos: [{ label: "CrossSearch: evidence activates an AI agent, followed by a grounded answer and animated rubric checks", src: "/research/videos/crosssearch-agent-rubrics.mp4", poster: "/research/videos/crosssearch-agent-rubrics.jpg" }],
         title: "CrossSearch: Benchmarking Multimodal Agents on Tasks Requiring Both Local Files and Live Web Evidence",
         authors: "Amish Sethi, Peter Jiashu Shen, Aiden Ryou, Brandon Y. Yang, Spencer Mateega, and Sam Jung",
         venue: "Submitted to ACM TheWebConf 2027 · Conference Long Papers",
