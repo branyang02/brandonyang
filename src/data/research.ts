@@ -33,6 +33,8 @@ export const publications: ResearchEntry[] = [
         caption: "UMI-Live hardware overview",
         links: [
             { label: "Project & demos", href: "https://umi-live.github.io/" },
+            { label: "arXiv", href: "https://arxiv.org/abs/2610.39385" },
+            { label: "PDF", href: "https://arxiv.org/pdf/2610.39385" },
             { label: "Code", href: "https://github.com/AfterQuery-Research/umi-live" },
             { label: "Hardware", href: "https://umi-live.github.io/hardware.html" },
         ],
