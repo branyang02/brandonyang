@@ -17,7 +17,7 @@ const NavBar = () => {
     const [checked, setChecked] = useState(darkMode);
     const navigate = useNavigate();
 
-    const NAME = "Brandon Y. Yang";
+    const NAME = "Brandon Yifan Yang";
     const TABS = ["Home", "Publications", "Projects", "Blog", "Notes", "Fun"];
 
     const handleSwitchChange = () => {

@@ -6,8 +6,8 @@ export default function Publications() {
     return (
         <div className="project-page" style={{ width: "100%" }}>
             <Helmet>
-                <title>Publications | Brandon Y. Yang</title>
-                <meta name="description" content="Research publications by Brandon Y. Yang on robot learning, VLA models, and multimodal evaluation." />
+                <title>Publications | Brandon Yifan Yang</title>
+                <meta name="description" content="Research publications by Brandon Yifan Yang on robot learning, VLA models, and multimodal evaluation." />
             </Helmet>
             <h1>Publications</h1>
             <ResearchList entries={publications} showCaptions={false} />

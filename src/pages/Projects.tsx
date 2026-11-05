@@ -27,7 +27,7 @@ export default function Projects() {
             title: "GLOMA: Grounded Location for Object Manipulation",
             authors: [
                 {
-                    name: "Brandon Y. Yang",
+                    name: "Brandon Yifan Yang",
                     link: "https://www.brandonyifanyang.com",
                 },
                 {
@@ -93,7 +93,7 @@ export default function Projects() {
     }))];
     return (
         <div className="project-page" style={{ width: "100%" }}>
-            <Helmet><title>Projects | Brandon Y. Yang</title><meta name="description" content="Projects by Brandon Y. Yang." /></Helmet>
+            <Helmet><title>Projects | Brandon Yifan Yang</title><meta name="description" content="Projects by Brandon Yifan Yang." /></Helmet>
             <h1>Projects</h1>
             <ResearchList entries={allProjects} showCaptions={false} />
         </div>

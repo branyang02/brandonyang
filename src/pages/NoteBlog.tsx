@@ -124,10 +124,10 @@ const NotesBlogs = ({ type }: { type: string }) => {
     return (
         <div>
             <Helmet>
-                <title>{contentId} | Brandon Y. Yang</title>
+                <title>{contentId} | Brandon Yifan Yang</title>
                 <meta
                     name="description"
-                    content={`Notes and blog on ${contentId} by Brandon Y. Yang`}
+                    content={`Notes and blog on ${contentId} by Brandon Yifan Yang`}
                 />
             </Helmet>
             <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>

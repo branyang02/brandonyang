@@ -52,7 +52,7 @@ const Home = () => {
     return (
         <div>
             <Helmet>
-                <title>Brandon Y. Yang</title>
+                <title>Brandon Yifan Yang</title>
                 <meta
                     name="description"
                     content="M.S.E. Robotics student at the University of Pennsylvania working on robot learning, reasoning, and Vision-Language-Action models."

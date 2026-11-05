@@ -10,7 +10,7 @@
 
 <span class="subtitle">
 
-Fall 2024 | Author: Brandon Y. Yang
+Fall 2024 | Author: Brandon Yifan Yang
 
 Based on [CS 4774](https://www.cs.virginia.edu/~nn4pj/teaching) taught by [Prof. Rich Nguyen](https://www.cs.virginia.edu/~nn4pj/) at the [University of Virginia](https://engineering.virginia.edu/department/computer-science).
 
@@ -2366,14 +2366,14 @@ Thank you for reading my notes! If you find them useful or reference them in you
 **Text Citation:**
 
 ```txt
-Yang, Brandon Y. (October 2024). Machine Learning. Brandon's Notes. Retrieved from https://www.brandonyifanyang.com/notes/ml
+Yang, Brandon Yifan (October 2024). Machine Learning. Brandon's Notes. Retrieved from https://www.brandonyifanyang.com/notes/ml
 ```
 
 **BibTeX Entry:**
 
 ```bibtex
 @misc{yang2024ml,
-    author = {Yang, Brandon Y.},
+    author = {Yang, Brandon Yifan},
     title = {Machine Learning},
     howpublished = {\url{https://www.brandonyifanyang.com/notes/ml}},
     year = {2024},

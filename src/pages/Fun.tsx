@@ -137,10 +137,10 @@ Can't forget the local resorts I love:
     return (
         <div>
             <Helmet>
-                <title>fun | Brandon Y. Yang</title>
+                <title>fun | Brandon Yifan Yang</title>
                 <meta
                     name="description"
-                    content="Fun activities and hobbies of Brandon Y. Yang."
+                    content="Fun activities and hobbies of Brandon Yifan Yang."
                 />
             </Helmet>
             <Pane

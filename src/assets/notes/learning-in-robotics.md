@@ -1,7 +1,7 @@
 # **Learning in Robotics**
 
 <span class="subtitle">
-Spring 2026 | Author: Brandon Y. Yang
+Spring 2026 | Author: Brandon Yifan Yang
 </span>
 
 ---
